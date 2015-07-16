@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <ImageView android:id="@+id/tiger_down_noti_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:contentDescription="@string/tiger_app_name"/>
+
+    <RelativeLayout
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_weight="7"
+        android:orientation="vertical" >
+
+        <ProgressBar
+            android:id="@+id/tiger_filedown_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+        <TextView 
+            android:id="@+id/tiger_filename"
+            android:layout_width="150dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tiger_filedown_progress"
+            android:gravity="left|top"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/tiger_cur_progress"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tiger_filedown_progress"
+            android:gravity="right|top"
+            android:singleLine="true"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,30 @@
+<resources>
+    <!-- error code and message -->
+    <string name="tiger_errorcode_1100" >AES KEY is empty，please login again!</string> 
+    
+    <!-- 文件下载错误码 -->
+    <string name="tiger_errorcode_10001">文件大小与上次下载的不一致</string>
+    <string name="tiger_errorcode_10002">获取文件大小失败</string>
+    <string name="tiger_errorcode_10003">下载保存地址为空</string>
+    <string name="tiger_errorcode_10004">该服务不支持断点下载</string>
+    <string name="tiger_errorcode_10005">内存卡不可用</string>
+    <string name="tiger_errorcode_10006">可用空间不足，请清理空间</string>
+    <string name="tiger_errorcode_10007">文件删除失败</string>
+    <string name="tiger_errorcode_10008">Json数据格式不正确</string>
+    <string name="tiger_errorcode_10009">无网络连接，请确认网络设置是否正确</string>
+    <string name="tiger_errorcode_10010">本地数据库异常</string>
+    <string name="tiger_errorcode_10011">请求异常，请稍后再试</string>
+    <string name="tiger_errorcode_10012">未知错误</string>
+    <string name="tiger_errorcode_10013">连接超时,请稍后再试</string>
+    <string name="tiger_errorcode_10014">服务异常，请联系管理员</string>
+    <string name="tiger_errorcode_10015">校验失败</string>
+    <string name="tiger_errorcode_10016">系统错误</string>
+    <string name="tiger_errorcode_10017">文件不存在</string>
+    
+    <!-- 验证tiger_properties配置环境的错误码和错误信息 -->
+	<string name="tiger_errorcode_20002" >tiger_type配置有误，值只能是login或uniportal</string>
+    <string name="tiger_errorcode_20003" >tiger_type=login情况下，access_uri和min_required_w3_version都必须配置</string>
+	<string name="tiger_errorcode_20004" >%1$s配置项不能为空</string>
+	<string name="tiger_errorcode_20006" >debug_mode配置有误，值只能是uat,sit,release中的一个</string>
+	
+</resources>

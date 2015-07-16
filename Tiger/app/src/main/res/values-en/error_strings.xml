@@ -1,0 +1,29 @@
+<resources>
+
+    <!-- error code and message -->
+    <string name="tiger_errorcode_1100">AES KEY is empty，please login again!</string>
+
+    <!-- 文件下载错误码 -->
+    <string name="tiger_errorcode_10001">File size is inconsistent with last downloaded.</string>
+    <string name="tiger_errorcode_10002">Failed to get file size</string>
+    <string name="tiger_errorcode_10003">The save path is null</string>
+    <string name="tiger_errorcode_10004">This service not support breakpoint download.</string>
+    <string name="tiger_errorcode_10005">The sdCard is not avaliable</string>
+    <string name="tiger_errorcode_10006">The usable space is not enough</string>
+    <string name="tiger_errorcode_10007">Failed to delete file</string>
+    <string name="tiger_errorcode_10008">The format of json is error.</string>
+    <string name="tiger_errorcode_10009">No network</string>
+    <string name="tiger_errorcode_10010">local database error</string>
+    <string name="tiger_errorcode_10011">Request Error,Please try again later</string>
+    <string name="tiger_errorcode_10012">Unknow error</string>
+    <string name="tiger_errorcode_10013">Connection timed out, please try again later</string>
+    <string name="tiger_errorcode_10014">Service is error,Please contact the admin</string>
+    <string name="tiger_errorcode_10015">Verify unsuccessfully.</string>
+    <string name="tiger_errorcode_10016">System error</string>
+    <string name="tiger_errorcode_10017">file not exits</string>
+
+    <!-- 验证tiger_properties配置环境的错误码和错误信息 -->
+    <string name="tiger_errorcode_20004">%1$s配置项不能为空</string>
+    <string name="tiger_errorcode_20006">debug_mode配置有误，值只能是uat,sit,release中的一个</string>
+
+</resources>

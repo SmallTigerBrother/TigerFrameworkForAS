@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp" >
+
+    <RelativeLayout
+        android:id="@+id/tiger_navi_middle_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp" >
+
+        <TextView
+            android:id="@+id/tiger_navi_middle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="XXXX"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tiger_navi_right_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true" >
+
+        <com.mn.tiger.widget.RightImageButton
+            android:id="@+id/tiger_navi_right_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tiger_navi_left_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true" >
+
+        <com.mn.tiger.widget.LeftImageButton
+            android:id="@+id/tiger_navi_left_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+    </RelativeLayout>
+
+</RelativeLayout>
