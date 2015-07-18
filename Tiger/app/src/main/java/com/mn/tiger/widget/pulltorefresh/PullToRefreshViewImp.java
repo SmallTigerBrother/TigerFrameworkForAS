@@ -13,6 +13,7 @@ import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshAdapterView;
 import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshView;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.mn.tiger.widget.pulltorefresh.loading.ILoadingFooterView;
 import com.mn.tiger.widget.pulltorefresh.loading.LoadingFooterView;
 import com.mn.tiger.widget.pulltorefresh.loading.LoadingHeaderView;
 
@@ -38,14 +39,16 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 	private boolean mPullRefreshing = false; // is refreashing.
 
 	// -- footer view
-	private LoadingFooterView mFooterView;
+	private ILoadingFooterView mFooterView;
 	private boolean mEnablePullLoad;
 	private boolean mPullLoading;
 	private boolean mIsFooterReady = false;
-	
+
+	private boolean autoLoadWhileEnd = false;
+
 	// total list items, used to detect is at the bottom of listview.
 	private int mTotalItemCount;
-	
+
 	// for mScroller, scroll back from header or footer.
 	private int mScrollBack;
 	private final static int SCROLLBACK_HEADER = 0;
@@ -53,13 +56,13 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 
 	private final static int SCROLL_DURATION = 400; // scroll back duration
 	private final static int PULL_LOAD_MORE_DELTA = 50; // when pull up >= 50px
-														// at bottom, trigger
-														// load more.
+	// at bottom, trigger
+	// load more.
 	private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
-													// feature.
-	
+	// feature.
+
 	private IPullToRefreshView view;//真正执行拖动刷新的类
-	
+
 	public PullToRefreshViewImp(IPullToRefreshView view)
 	{
 		this.view = view;
@@ -96,12 +99,12 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 			}
 		});
 	}
-	
+
 	public IPullToRefreshView getView()
 	{
 		return view;
 	}
-	
+
 	/**
 	 * 添加footerView
 	 */
@@ -111,7 +114,15 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 		if (mIsFooterReady == false)
 		{
 			mIsFooterReady = true;
-			view.addFooterView(getFooterView());
+			view.addFooterView((View) getFooterView());
+			getFooterView().setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					startLoadMore();
+				}
+			});
 		}
 	}
 
@@ -119,31 +130,32 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 	{
 		switch (mode)
 		{
-		case PULL_FROM_START:
-			setPullRefreshEnable(true);
-			setPullLoadEnable(false);
-			break;
-		case PULL_FROM_END:
-			setPullRefreshEnable(false);
-			setPullLoadEnable(true);
-			break;
-		case BOTH:
-			setPullRefreshEnable(true);
-			setPullLoadEnable(true);
-			break;
-			
-		case DISABLED:
-			setPullLoadEnable(false);
-			setPullRefreshEnable(false);
-			break;
+			case PULL_FROM_START:
+				setPullRefreshEnable(true);
+				setPullLoadEnable(false);
+				break;
+			case PULL_FROM_END:
+				setPullRefreshEnable(false);
+				setPullLoadEnable(true);
+				break;
+			case BOTH:
+				setPullRefreshEnable(true);
+				setPullLoadEnable(true);
+				break;
 
-		default:
-			break;
+			case DISABLED:
+				setPullLoadEnable(false);
+				setPullRefreshEnable(false);
+				break;
+
+			default:
+				break;
 		}
 	}
-	
+
 	/**
 	 * enable or disable pull down refresh feature.
+	 *
 	 * @param enable
 	 */
 	private void setPullRefreshEnable(boolean enable)
@@ -161,7 +173,7 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 
 	/**
 	 * enable or disable pull up load more feature.
-	 * 
+	 *
 	 * @param enable
 	 */
 	private void setPullLoadEnable(boolean enable)
@@ -170,24 +182,16 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 		if (!mEnablePullLoad)
 		{
 			// mFooterView.hide();
-			getFooterView().setVisibility(View.GONE);
-			getFooterView().setOnClickListener(null);
+			((View) getFooterView()).setVisibility(View.GONE);
+			((View) getFooterView()).setOnClickListener(null);
 		}
 		else
 		{
 			mPullLoading = false;
 			// mFooterView.show();
-			getFooterView().setVisibility(View.VISIBLE);
+			((View) getFooterView()).setVisibility(View.VISIBLE);
 			getFooterView().setState(LoadingFooterView.STATE_NORMAL);
 			// both "pull up" and "click" will invoke load more.
-			getFooterView().setOnClickListener(new OnClickListener()
-			{
-				@Override
-				public void onClick(View v)
-				{
-					startLoadMore();
-				}
-			});
 		}
 	}
 
@@ -223,9 +227,10 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 		stopRefresh();
 		stopLoadMore();
 	}
-	
+
 	/**
 	 * 更新headerView高度
+	 *
 	 * @param delta
 	 */
 	private void updateHeaderHeight(float delta)
@@ -247,7 +252,7 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 			view.setSelection(0); // scroll to top each time
 		}
 	}
-	
+
 	/**
 	 * reset header view's height.
 	 */
@@ -317,7 +322,7 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 			onRereshListener.onPullUpToRefresh();
 		}
 	}
-	
+
 	public boolean onTouchEvent(MotionEvent ev)
 	{
 		if (mLastY == -1)
@@ -373,9 +378,9 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 		}
 		return view.superOnTouchEvent(ev);
 	}
-	
+
 	public abstract boolean isReadPullStart();
-	
+
 	public abstract boolean isReadPullEnd();
 
 	public void computeScroll()
@@ -399,10 +404,10 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 	{
 		this.mScrollListener = listener;
 	}
-	
+
 	@Override
 	public void onScroll(IPullToRefreshAdapterView view, int firstVisibleItem, int visibleItemCount,
-			int totalItemCount)
+						 int totalItemCount)
 	{
 		mTotalItemCount = totalItemCount;
 
@@ -415,23 +420,28 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 		{
 			if (null != getFooterView())
 			{
-				getFooterView().setVisibility(View.VISIBLE);
+				((View) getFooterView()).setVisibility(View.VISIBLE);
+			}
+
+			if(isReadPullEnd() && !mPullLoading && autoLoadWhileEnd)
+			{
+				startLoadMore();
 			}
 		}
 		else
 		{
 			if (null != getFooterView())
 			{
-				getFooterView().setVisibility(View.GONE);
+				((View) getFooterView()).setVisibility(View.GONE);
 			}
 		}
 	}
-	
+
 	public int getTotalItemCount()
 	{
 		return mTotalItemCount;
 	}
-	
+
 	@Override
 	public void onScrollStateChanged(IPullToRefreshAdapterView view, int scrollState)
 	{
@@ -443,16 +453,17 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 
 	/**
 	 * 设置拖动加载监听器
+	 *
 	 * @param listener
 	 */
 	public void setOnRefreshListener(OnRefreshListener listener)
 	{
 		this.onRereshListener = listener;
 	}
-	
+
 	/**
 	 * 呈现刷新
-	 * 
+	 *
 	 * @author liananse 2013-9-2
 	 */
 	public void setRefreshState()
@@ -473,13 +484,18 @@ abstract class PullToRefreshViewImp implements OnScrollListener
 		});
 	}
 
-	public LoadingFooterView getFooterView()
+	public ILoadingFooterView getFooterView()
 	{
 		return mFooterView;
 	}
 
-	public void setFooterView(LoadingFooterView mFooterView)
+	public void setFooterView(ILoadingFooterView mFooterView)
 	{
 		this.mFooterView = mFooterView;
+	}
+
+	public void setAutoLoadWhileEnd(boolean autoLoadWhileEnd)
+	{
+		this.autoLoadWhileEnd = autoLoadWhileEnd;
 	}
 }

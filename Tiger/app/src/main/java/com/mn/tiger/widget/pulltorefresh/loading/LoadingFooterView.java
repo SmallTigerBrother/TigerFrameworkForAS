@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-public class LoadingFooterView extends LinearLayout
+public class LoadingFooterView extends LinearLayout implements ILoadingFooterView
 {
 	public final static int STATE_NORMAL = 0;
 	public final static int STATE_READY = 1;

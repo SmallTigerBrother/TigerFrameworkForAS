@@ -16,12 +16,12 @@ public class TGFragmentPagerAdapter extends FragmentPagerAdapter
 	 * 日志标签
 	 */
 	protected final String LOG_TAG = this.getClass().getSimpleName();
-	
+
 	/**
 	 * 所有页面
 	 */
 	private ArrayList<Fragment> pagers;
-	
+
 	public TGFragmentPagerAdapter(FragmentManager fm, List<Fragment> pagers)
 	{
 		super(fm);
@@ -42,5 +42,14 @@ public class TGFragmentPagerAdapter extends FragmentPagerAdapter
 	public int getCount()
 	{
 		return pagers.size();
+	}
+
+	/**
+	 * 获取所有界面
+	 * @return
+	 */
+	public ArrayList<Fragment> getPagers()
+	{
+		return pagers;
 	}
 }

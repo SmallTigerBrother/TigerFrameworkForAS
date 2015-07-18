@@ -10,6 +10,7 @@ import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshAdapterView;
 import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshListenable;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.mn.tiger.widget.pulltorefresh.loading.ILoadingFooterView;
 import com.mn.tiger.widget.viewflow.MultiColumnListView;
 import com.mn.tiger.widget.viewflow.internal.PLA_AbsListView;
 
@@ -17,10 +18,10 @@ import com.mn.tiger.widget.viewflow.internal.PLA_AbsListView;
 /**
  * 拖动刷新瀑布流
  */
-public class PullToRefreshMultiColumnListView extends MultiColumnListView implements IPullToRefreshAdapterView,IPullToRefreshListenable
+public class PullToRefreshMultiColumnListView extends MultiColumnListView implements IPullToRefreshAdapterView, IPullToRefreshListenable
 {
 	private PullToRefreshAdapterViewImp pullToRefreshViewImp;
-	
+
 	public PullToRefreshMultiColumnListView(Context context)
 	{
 		super(context);
@@ -51,10 +52,10 @@ public class PullToRefreshMultiColumnListView extends MultiColumnListView implem
 			{
 				onScrollListener.onScrollStateChanged((IPullToRefreshAdapterView) view, scrollState);
 			}
-			
+
 			@Override
 			public void onScroll(PLA_AbsListView view, int firstVisibleItem, int visibleItemCount,
-					int totalItemCount)
+								 int totalItemCount)
 			{
 				onScrollListener.onScroll((IPullToRefreshAdapterView) view, firstVisibleItem, visibleItemCount, totalItemCount);
 			}
@@ -66,7 +67,7 @@ public class PullToRefreshMultiColumnListView extends MultiColumnListView implem
 	{
 		pullToRefreshViewImp.setMode(mode);
 	}
-	
+
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouchEvent(MotionEvent ev)
@@ -85,19 +86,19 @@ public class PullToRefreshMultiColumnListView extends MultiColumnListView implem
 	{
 		pullToRefreshViewImp.computeScroll();
 	}
-	
+
 	@Override
 	public void superComputeScroll()
 	{
 		super.computeScroll();
 	}
-	
+
 	@Override
 	public void setOnRefreshListener(OnRefreshListener listener)
 	{
 		pullToRefreshViewImp.setOnRefreshListener(listener);
 	}
-	
+
 	@Override
 	public void setOnScrollListener(final OnScrollListener listener)
 	{
@@ -108,19 +109,37 @@ public class PullToRefreshMultiColumnListView extends MultiColumnListView implem
 			{
 				listener.onScrollStateChanged((PLA_AbsListView) view, scrollState);
 			}
-			
+
 			@Override
 			public void onScroll(IPullToRefreshAdapterView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount)
+								 int visibleItemCount, int totalItemCount)
 			{
 				listener.onScroll((PLA_AbsListView) view, firstVisibleItem, visibleItemCount, totalItemCount);
 			}
 		});
 	}
-	
+
 	@Override
 	public void onRefreshComplete()
 	{
-		pullToRefreshViewImp.stopRefreshAndLoadMore();		
+		pullToRefreshViewImp.stopRefreshAndLoadMore();
+	}
+
+	/**
+	 * 设置底部loading视图
+	 * @param mFooterView
+	 */
+	public void setFooterView(ILoadingFooterView mFooterView)
+	{
+		this.pullToRefreshViewImp.setFooterView(mFooterView);
+	}
+
+	/**
+	 * 设置到达底部时是否自动加载
+	 * @param autoLoadWhileEnd
+	 */
+	public void setAutoLoadWhileEnd(boolean autoLoadWhileEnd)
+	{
+		this.pullToRefreshViewImp.setAutoLoadWhileEnd(autoLoadWhileEnd);
 	}
 }

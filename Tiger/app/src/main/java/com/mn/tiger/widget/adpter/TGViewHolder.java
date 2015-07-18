@@ -1,8 +1,13 @@
 package com.mn.tiger.widget.adpter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.concurrent.RecursiveTask;
+
 import butterknife.ButterKnife;
 
 /**
@@ -95,5 +100,15 @@ public abstract class TGViewHolder<T>
 	protected int getColor(int resId)
 	{
 		return getContext().getResources().getColor(resId);
+	}
+
+	protected Drawable getDrawable(int resId)
+	{
+		return getContext().getResources().getDrawable(resId);
+	}
+
+	protected int getDimensionPixelSize(int resId)
+	{
+		return getContext().getResources().getDimensionPixelSize(resId);
 	}
 }

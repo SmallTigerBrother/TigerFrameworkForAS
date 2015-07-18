@@ -44,6 +44,8 @@ public class TGListAdapter<T> extends BaseAdapter
 	 */
 	private Class<? extends TGViewHolder<T>> viewHolderClass;
 
+	private Object tag;
+
 	/**
 	 * @param context
 	 * @param items 列表填充数据
@@ -303,5 +305,15 @@ public class TGListAdapter<T> extends BaseAdapter
 	protected Context getContext()
 	{
 		return context;
+	}
+
+	public void setTag(Object tag)
+	{
+		this.tag = tag;
+	}
+
+	public Object getTag()
+	{
+		return this.tag;
 	}
 }

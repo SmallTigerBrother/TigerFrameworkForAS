@@ -7,11 +7,10 @@ public interface IAuthorizeCallback
 {
 	/**
 	 * 认证成功
+	 * @param authorizeResult
 	 */
-	void onSuccess();
+	void onSuccess(TGAuthorizeResult authorizeResult);
 
-	void onSuccessToConfirmInfo();
-	
 	/**
 	 * 认证出错
 	 * @param code
@@ -19,7 +18,7 @@ public interface IAuthorizeCallback
 	 * @param detail
 	 */
 	void onError(int code, String message, String detail);
-	
+
 	/**
 	 * 认证取消
 	 */

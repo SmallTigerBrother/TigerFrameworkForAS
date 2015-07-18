@@ -17,47 +17,47 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 	 * 缓存用户信息的键值
 	 */
 	private static final String USER_INFO_CACHE_KEY = "Tiger_UserInfo";
-	
+
 	/**
 	 * 用户名/密码为null的异常
 	 */
 	public static final int AUTHORIZE_ERROR_ACCOUNT_PASSWORD_NULL = -1;
-	
+
 	/**
 	 * 用户密码加密错误的异常
 	 */
 	public static final int AUTHORIZE_ERROR_PASSWORD_ENCRYPT = -2;
-	
+
 	/**
 	 * 未登录调用注销方法的异常
 	 */
 	public static final int LOGOUT_ERROR_NEVER_AUTHORIZED = -10;
-	
+
 	/**
 	 * 验证码异常————手机号不正确
 	 */
 	public static final int CODE_ERROR_INVALID_MOBILE = -20;
-	
+
 	/**
 	 * 验证码异常————验证码格式不正确
 	 */
 	public static final int CODE_ERROR_INVALID_CODE_FORMAT = -21;
-	
+
 	/**
 	 * 手机号（用户名）
 	 */
 	protected String account;
-	
+
 	/**
 	 * 密码
 	 */
 	protected String password;
-	
+
 	/**
 	 * 缓存的用户信息
 	 */
 	private static Serializable userInfo;
-	
+
 	/**
 	 * @param activity
 	 * @param account 手机号（用户名）
@@ -66,11 +66,11 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 	public TGAuthorizer(Activity activity,String account, String password)
 	{
 		super(activity, null);
-		
+
 		this.account = account;
 		this.password = password;
 	}
-	
+
 	@Override
 	public void authorize(final IAuthorizeCallback callback)
 	{
@@ -81,12 +81,12 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 			{
 				callback.onError(AUTHORIZE_ERROR_ACCOUNT_PASSWORD_NULL, "", "");
 			}
-			
+
 			return;
 		}
 		executeAuthorize(callback);
 	}
-	
+
 	protected abstract void executeAuthorize(IAuthorizeCallback callback);
 
 	@Override
@@ -107,16 +107,16 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 		//将缓存数据置为null
 		saveUserInfo(getActivity(), null);
 	}
-	
+
 	protected abstract void executeLogout(ILogoutCallback callback);
-	
+
 	@Override
 	public void register(String account, String password, IRegisterCallback callback,
-			Object... args)
+						 Object... args)
 	{
-		
+
 	}
-	
+
 	/**
 	 * 判断是否已登录
 	 * @param context
@@ -126,7 +126,7 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 	{
 		return null != getUserInfo(context);
 	}
-	
+
 	/**
 	 * 获取用户信息
 	 * @param context
@@ -138,10 +138,10 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 		{
 			userInfo = (Serializable) TGCache.getCache(context, USER_INFO_CACHE_KEY);
 		}
-		
+
 		return userInfo;
 	}
-	
+
 	/**
 	 * 保存用户信息
 	 * @param userInfo
