@@ -14,10 +14,15 @@ buildscript {
     }
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 allprojects {
     repositories {
+        maven {
+            url properties.getProperty("sdk.dir") + "/extras/android/m2repository"
+        }
+        mavenLocal()
         jcenter()
-        mavenCentral()
     }
 }
 tasks.withType(JavaCompile) {
