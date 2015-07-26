@@ -182,12 +182,12 @@ public class TGListAdapter<T> extends BaseAdapter
 	 */
 	public void updateData(List<T> data)
 	{
+		this.items.clear();
 		if(null != data)
 		{
-			this.items.clear();
 			this.items.addAll(data);
-			notifyDataSetChanged();
 		}
+		notifyDataSetChanged();
 	}
 
 	/**
@@ -196,12 +196,12 @@ public class TGListAdapter<T> extends BaseAdapter
 	 */
 	public void updateData(T[] data)
 	{
+		this.items.clear();
 		if(null != data)
 		{
-			this.items.clear();
 			this.items.addAll(Arrays.asList(data));
-			notifyDataSetChanged();
 		}
+		notifyDataSetChanged();
 	}
 
 	/**
