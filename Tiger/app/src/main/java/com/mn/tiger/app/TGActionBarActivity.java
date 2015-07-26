@@ -2,6 +2,7 @@ package com.mn.tiger.app;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -311,6 +312,11 @@ public class TGActionBarActivity extends Activity implements IView
 	public void showToast(String text)
 	{
 		ToastUtils.showToast(this, text);
+	}
+
+	public void startActivity(Class<?> activityClazz)
+	{
+		startActivity(new Intent(this,activityClazz));
 	}
 
 }
