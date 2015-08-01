@@ -25,16 +25,38 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * 执行异步任务的类
 	 */
 	private TGHttpAsyncTask<T> asyncTask;
+
+	private int httpType = HttpType.REQUEST_UNKNOWN;
 	
 	public TGHttpLoader()
 	{
+	}
+
+	/**
+	 * 执行Http请求，请在调用该方法之前，调用setHttpType方法设置请求方式
+	 * @param context
+	 * @param requestUrl
+	 * @param clazz
+	 * @param callback
+	 */
+	public void load(Context context,String requestUrl, Class<T> clazz,
+					 OnLoadCallback<T> callback)
+	{
+		if(httpType == HttpType.REQUEST_UNKNOWN)
+		{
+			LOG.e("[Method:load] you may not set HttpType before use this method, we will try load by HttpType.REQUEST_GET");
+			execute(context, HttpType.REQUEST_GET, requestUrl, clazz.getName(), callback);
+		}
+		else
+		{
+			execute(context, httpType, requestUrl, clazz.getName(), callback);
+		}
 	}
 	
 	/**
 	 * 执行get请求
 	 * @param requestUrl 请求url
 	 * @param clazz 解析结果类名
-	 * @param params 请求参数
 	 * @param callback 请求回调方法
 	 */
 	public void loadByGet(Context context, String requestUrl, Class<T> clazz, 
@@ -63,8 +85,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	/**
 	 * 执行post请求
 	 * @param requestUrl 请求url
-	 * @param resultClsName 解析结果类名
-	 * @param params 请求参数
+	 * @param clazz 解析结果类名
 	 * @param callback 请求回调方法
 	 */
 	public void loadByPost(Context context, String requestUrl, Class<T> clazz,
@@ -92,8 +113,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	/**
 	 * 执行put请求
 	 * @param requestUrl 请求url
-	 * @param resultClsName 解析结果类名
-	 * @param params 请求参数
+	 * @param clazz 解析结果类名
 	 * @param callback 请求回调方法
 	 */
 	public void loadByPut(Context context, String requestUrl, Class<T> clazz,
@@ -121,8 +141,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	/**
 	 * 执行delete请求
 	 * @param requestUrl 请求url
-	 * @param resultClsName 解析结果类名
-	 * @param params 请求参数
+	 * @param clazz 解析结果类名
 	 * @param callback 请求回调方法
 	 */
 	public void loadByDelete(Context context, String requestUrl, Class<T> clazz,
@@ -152,7 +171,6 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param requestType 请求类型
 	 * @param requestUrl 请求url
 	 * @param resultClsName 解析结果类名
-	 * @param params 请求参数
 	 * @param callback 请求回调方法
 	 */
 	protected void execute(Context context, int requestType, String requestUrl,
@@ -288,7 +306,16 @@ public class TGHttpLoader<T> implements IRequestParser
 			this.getAsyncTask().setRequestParams(new HashMap<String, String>());
 		}
 	}
-	
+
+	/**
+	 * 设置请求方式
+	 * @param httpType
+	 */
+	public void setHttpType(int httpType)
+	{
+		this.httpType = httpType;
+	}
+
 	/**
 	 * 获取异步任务
 	 * @return
@@ -309,7 +336,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	protected TGHttpAsyncTask<T> initAsyncTask()
 	{
-		return new TGHttpAsyncTask<T>("", HttpType.REQUEST_GET, null);
+		return new TGHttpAsyncTask<T>("", HttpType.REQUEST_UNKNOWN, null);
 	}
 	
 	/**

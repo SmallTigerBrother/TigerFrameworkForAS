@@ -21,4 +21,9 @@ public class HttpType
 	 * Put请求类型
 	 */
 	public static final int REQUEST_PUT = 3;
+
+	/**
+	 * 未知类型
+	 */
+	public static final int REQUEST_UNKNOWN = -1;
 }
