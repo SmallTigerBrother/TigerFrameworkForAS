@@ -13,16 +13,31 @@ import com.mn.tiger.request.HttpType;
  */
 public class TGDownloadParams implements Cloneable, Serializable 
 {
+	/**
+	 * Post请求类型
+	 */
+	public static final int REQUEST_POST = HttpType.REQUEST_POST;
+
+	/**
+	 * Get请求类型
+	 */
+	public static final int REQUEST_GET = HttpType.REQUEST_GET;
+
 	// 序列化ID
 	private static final long serialVersionUID = 1L;
+
 	// 下载url地址
-    private String url; 
+    private String url;
+
 	// 下载请求参数
 	private HashMap<String, String> params;
+
 	// 文件下载保存的位置
 	private String savePath;
+
 	// 请求方式
 	private int requestType = HttpType.REQUEST_GET;
+
 	// 执行下载的类名
 	private String taskClsName = "";
 	
@@ -64,22 +79,27 @@ public class TGDownloadParams implements Cloneable, Serializable
 	{
 		return savePath;
 	}
+
 	public void setSavePath(String savePath)
 	{
 		this.savePath = savePath;
 	}
+
 	public int getRequestType()
 	{
 		return requestType;
 	}
+
 	public void setRequestType(int requestType)
 	{
 		this.requestType = requestType;
 	}
+
 	public String getTaskClsName()
 	{
 		return taskClsName;
 	}
+
 	public void setTaskClsName(String taskClsName)
 	{
 		this.taskClsName = taskClsName;
