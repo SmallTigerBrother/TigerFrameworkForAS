@@ -20,9 +20,9 @@ import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.utility.FileUtils;
 
 /**
- * 
+ *
  * 该类作用及功能说明: 下载管理类
- * 
+ *
  * @date 2014年8月18日
  */
 public class TGDownloadManager
@@ -39,7 +39,7 @@ public class TGDownloadManager
 
 	/**
 	 * 构造方法
-	 * 
+	 *
 	 * @date 2014年6月24日
 	 * @param context
 	 */
@@ -49,9 +49,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 开始下载
-	 * 
+	 *
 	 * @date 2014年6月20日
 	 * @param downloadParams
 	 */
@@ -61,9 +61,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 取消下载
-	 * 
+	 *
 	 * @date 2014年6月20日
 	 * @param taskId
 	 */
@@ -73,9 +73,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 停止下载
-	 * 
+	 *
 	 * @date 2014年6月20日
 	 * @param taskId
 	 */
@@ -85,9 +85,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 启动传入类型所有下载任务
-	 * 
+	 *
 	 * @date 2014年8月26日
 	 */
 	public void startAll(String type)
@@ -123,9 +123,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 取消传入类型所有下载任务
-	 * 
+	 *
 	 * @date 2014年8月26日
 	 */
 	public void cancelAll(String type)
@@ -142,9 +142,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 停止传入类型所有下载任务
-	 * 
+	 *
 	 * @date 2014年8月26日
 	 */
 	public void pauseAll(String type)
@@ -159,11 +159,11 @@ public class TGDownloadManager
 			}
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 启动所有下载任务
-	 * 
+	 *
 	 * @date 2014年8月26日
 	 */
 	public void startAll()
@@ -199,9 +199,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 取消所有下载任务
-	 * 
+	 *
 	 * @date 2014年8月26日
 	 */
 	public void cancelAll()
@@ -217,9 +217,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 停止所有下载任务
-	 * 
+	 *
 	 * @date 2014年8月26日
 	 */
 	public void pauseAll()
@@ -236,9 +236,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 把下载任务添加到下载队列，返回任务id
-	 * 
+	 *
 	 * @date 2014年6月18日
 	 * @param downloadParams
 	 * @return
@@ -246,7 +246,7 @@ public class TGDownloadManager
 	private int enqueue(TGDownloadParams downloadParams)
 	{
 		LogTools.p(LOG_TAG, "[Method:enqueue] start");
-		
+
 		final Bundle params = new Bundle();
 		params.putSerializable("downloadParams", downloadParams);
 
@@ -254,32 +254,25 @@ public class TGDownloadManager
 		{
 			downloadParams.setTaskClsName(TGDownloadTask.class.getName());
 		}
-		
+
 		// 获取本地是否有相同的下载任务
 		TGDownloader downloader = getLocalDownloader(downloadParams);
 		// 检查本地下载任务和下载文件
 		downloader = checkLocalDownloader(downloader);
-		
+
 		// 构建任务参数，当没有taskID传入时，直接构建新任务下载。
 		// 当有taskID传入时，需要在下载队列中查看是否已经有该下载任务，如果有，则不需要新加入任务。
 		TGTaskParams taskParams = null;
 		if(downloader != null)
 		{
 			//如果当前任务正在下载中，直接返回当前任务的id
-			if(downloader.getDownloadStatus() == TGDownloader.DOWNLOAD_DOWNLOADING)
-			{
-				return Integer.parseInt(downloader.getId());
-			}
-			else
-			{
-				taskParams = TGTaskManager.createTaskParams(params,
-						downloadParams.getTaskClsName(), resultHandler, Integer.parseInt(downloader.getId()));
-			}
+			taskParams = TGTaskManager.createTaskParams(params,
+					downloadParams.getTaskClsName(), resultHandler, Integer.parseInt(downloader.getId()));
 		}
 		else
 		{
 			taskParams = TGTaskManager.createTaskParams(params,
-				downloadParams.getTaskClsName(), resultHandler);
+					downloadParams.getTaskClsName(), resultHandler);
 		}
 
 		taskParams.setBundleParams(params);
@@ -299,7 +292,7 @@ public class TGDownloadManager
 	{
 		return getDownloadInfo(downloadParams.getUrl(), downloadParams.getParams(), downloadParams.getSavePath());
 	}
-	
+
 	/**
 	 * 该方法的作用: 检测本地文件和本地下载记录是否一致
 	 * @date 2014年9月3日
@@ -311,7 +304,7 @@ public class TGDownloadManager
 		{
 			return null;
 		}
-		
+
 		// 如果数据库中有记录，但本地文件不存在，删除数据库记录
 		String savePath = downloader.getSavePath();
 		File file = FileUtils.getFile(savePath);
@@ -320,16 +313,19 @@ public class TGDownloadManager
 			delDownloader(downloader);
 			return null;
 		}
-		
+
+		//重置完成进度
+		downloader.setCompleteSize(file.length());
+		TGDownloadDBHelper.getInstance(getContext()).updateDownloader(downloader);
+
 		return downloader;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 根据传入的key，注册数据观察者
-	 * 
+	 *
 	 * @date 2014年3月31日
-	 * @param entityType
 	 * @param observer
 	 */
 	public void registerDownloadObserver(int taskId, TGDownloadObserver observer)
@@ -340,7 +336,7 @@ public class TGDownloadManager
 
 	/**
 	 * 该方法的作用: 取消注册observer
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param observer
 	 */
@@ -350,9 +346,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用:获取文件下载信息
-	 * 
+	 *
 	 * @date 2014年8月19日
 	 * @param urlstr
 	 * @param params
@@ -367,9 +363,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 根据下载类型查询下载任务信息
-	 * 
+	 *
 	 * @date 2014年8月24日
 	 * @param downloadType
 	 * @return
@@ -380,9 +376,9 @@ public class TGDownloadManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 根据传入sql查询下载任务信息
-	 * 
+	 *
 	 * @date 2014年8月24日
 	 * @param selector
 	 * @return
@@ -391,11 +387,11 @@ public class TGDownloadManager
 	{
 		return TGDownloadDBHelper.getInstance(mContext).getDownloaderBySql(selector);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 删除下载任务
-	 * 
+	 *
 	 * @date 2014年8月24日
 	 * @param downloader
 	 * @return

@@ -20,7 +20,10 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 			}
 			else
 			{
-				file.delete();
+				if(!downloader.isBreakPoints())
+				{
+					file.delete();
+				}
 				return false;
 			}
 		}
@@ -29,7 +32,7 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean isFileCorrect(TGDownloader downloader, HttpResponse response)
 	{
