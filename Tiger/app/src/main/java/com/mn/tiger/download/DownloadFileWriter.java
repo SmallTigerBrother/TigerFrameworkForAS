@@ -143,7 +143,23 @@ class DownloadFileWriter
 		RandomAccessFile randomAccessFile = null;
 		try
 		{
-			File file = getFileOfPath(savePath);
+			File file = new File(savePath);
+			if(completeSize > 0)
+			{
+				//若上次下载的本地文件不存在，则下载出错
+				if (!file.exists())
+				{
+					LOG.e("[Method:writeToRandomFile] the last part file can not be found");
+					downloadHttpClient.onDownloadFailed(downloader);
+					return;
+				}
+			}
+			else
+			{
+				FileUtils.createFile(savePath);
+				FileUtils.chmodFile(file.getAbsolutePath(), "666");
+			}
+
 			randomAccessFile = new RandomAccessFile(file, "rwd");
 			randomAccessFile.seek(startPos);
 
@@ -199,25 +215,5 @@ class DownloadFileWriter
 			}
 		}
 	}
-
-	/**
-	 * 该方法的作用:获取指定路径下的文件，如文件或目录不存在，创建文件目录和文件
-	 * 
-	 * @date 2013-7-30
-	 * @param path
-	 * @return
-	 * @throws IOException
-	 */
-	private File getFileOfPath(String path) throws IOException
-	{
-		File file = new File(path);
-		if (!file.exists())
-		{
-			FileUtils.createFile(path);
-			FileUtils.chmodFile(file.getAbsolutePath(), "666");
-		}
-		return file;
-	}
-
 
 }

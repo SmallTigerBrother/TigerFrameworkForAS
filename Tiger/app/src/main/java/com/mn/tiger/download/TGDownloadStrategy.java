@@ -41,7 +41,6 @@ public class TGDownloadStrategy implements IDownloadStrategy
 	 * @date 2014年8月5日
 	 * @param context
 	 * @param downloadTask
-	 * @param listener
 	 */
 	public TGDownloadStrategy(Context context, TGDownloadTask downloadTask)
 	{
@@ -82,15 +81,15 @@ public class TGDownloadStrategy implements IDownloadStrategy
 	/**
 	 * 该方法的作用:获取请求方法类
 	 * @date 2014年1月23日
-	 * @param TGDownloader
+	 * @param downloader
 	 * @return
 	 */
-	protected ApacheHttpMethod getHttpMethod(TGDownloader download)
+	protected ApacheHttpMethod getHttpMethod(TGDownloader downloader)
 	{
-		LogTools.i(LOG_TAG, "[Method:getHttpMethod] requestUrl:" + download.getUrl());
+		LogTools.i(LOG_TAG, "[Method:getHttpMethod] requestUrl:" + downloader.getUrl());
 		// 创建post请求的方法
 		ApacheHttpMethod httpMethod = null;
-		if (download.getRequestType() == HttpType.REQUEST_GET)
+		if (downloader.getRequestType() == HttpType.REQUEST_GET)
 		{
 			httpMethod = new ApacheGetMethod();
 		}
@@ -98,14 +97,14 @@ public class TGDownloadStrategy implements IDownloadStrategy
 		{
 			httpMethod = new ApachePostMethod();
 		}
-		httpMethod.setUrl(download.getUrl());
+		httpMethod.setUrl(downloader.getUrl());
 		TGHttpParams httpParams = new TGHttpParams();
-		httpParams.setStringParams(download.getParams());
+		httpParams.setStringParams(downloader.getParams());
 		httpMethod.setReqeustParams(httpParams);
 		//设置是否支持断点续传
-		if(downloader.isBreakPoints())
+		if(this.downloader.isBreakPoints())
 		{
-			httpMethod.setProperty("Range", "bytes="+ downloader.getCompleteSize() + "-" + (downloader.getFileSize() - 1));
+			httpMethod.setProperty("Range", "bytes="+ this.downloader.getCompleteSize() + "-" + (this.downloader.getFileSize() - 1));
 		}
 
 		return httpMethod;

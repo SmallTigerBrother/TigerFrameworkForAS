@@ -20,7 +20,10 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 			}
 			else
 			{
-				file.delete();
+				if(!downloader.isBreakPoints())
+				{
+					file.delete();
+				}
 				return false;
 			}
 		}

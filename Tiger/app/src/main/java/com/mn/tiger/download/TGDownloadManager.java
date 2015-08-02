@@ -266,15 +266,8 @@ public class TGDownloadManager
 		if(downloader != null)
 		{
 			//如果当前任务正在下载中，直接返回当前任务的id
-			if(downloader.getDownloadStatus() == TGDownloader.DOWNLOAD_DOWNLOADING)
-			{
-				return Integer.parseInt(downloader.getId());
-			}
-			else
-			{
-				taskParams = TGTaskManager.createTaskParams(params,
-						downloadParams.getTaskClsName(), resultHandler, Integer.parseInt(downloader.getId()));
-			}
+			taskParams = TGTaskManager.createTaskParams(params,
+					downloadParams.getTaskClsName(), resultHandler, Integer.parseInt(downloader.getId()));
 		}
 		else
 		{
@@ -320,7 +313,7 @@ public class TGDownloadManager
 			delDownloader(downloader);
 			return null;
 		}
-		
+
 		return downloader;
 	}
 	
@@ -329,7 +322,6 @@ public class TGDownloadManager
 	 * 该方法的作用: 根据传入的key，注册数据观察者
 	 * 
 	 * @date 2014年3月31日
-	 * @param entityType
 	 * @param observer
 	 */
 	public void registerDownloadObserver(int taskId, TGDownloadObserver observer)
