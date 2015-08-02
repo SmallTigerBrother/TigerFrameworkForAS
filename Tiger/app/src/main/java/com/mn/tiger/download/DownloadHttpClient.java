@@ -132,6 +132,7 @@ class DownloadHttpClient extends ApacheHttpClient
 	 * 该方法的作用:处理下载结果
 	 * 
 	 * @date 2014年4月25日
+	 * @param httpMethod
 	 * @param httpResult
 	 */
 	protected TGHttpResult dealDownloadResult(HttpResponse response, TGHttpResult httpResult)
@@ -400,6 +401,7 @@ class DownloadHttpClient extends ApacheHttpClient
 	 * 该方法的作用:获取文件长度
 	 * 
 	 * @date 2014年1月14日
+	 * @param headers
 	 * @throws Exception
 	 * @return 文件长度
 	 */
@@ -463,6 +465,7 @@ class DownloadHttpClient extends ApacheHttpClient
 	 * 该方法的作用: 获取文件保存路径
 	 * 
 	 * @date 2014年8月23日
+	 * @param headers
 	 * @return
 	 */
 	private String getSavePath(HttpResponse response)
@@ -481,6 +484,7 @@ class DownloadHttpClient extends ApacheHttpClient
 	 * 该方法的作用: 获取服务器返回文件名
 	 * 
 	 * @date 2014年8月23日
+	 * @param headers
 	 * @return
 	 */
 	protected String getFileName(HttpResponse response)

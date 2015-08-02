@@ -201,7 +201,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	 */
 	public synchronized boolean pauseTask(int taskId)
 	{
-		LogTools.d(LOG_TAG, "[Method:pauseTask] taskId --> " + taskId);
+		LogTools.d(LOG_TAG, "[Method:ppauseTask] taskId --> " + taskId);
 		
 		//将当前运行任务的Clone对象放入队列中
 		TGTask task = getTaskArray().get(taskId);

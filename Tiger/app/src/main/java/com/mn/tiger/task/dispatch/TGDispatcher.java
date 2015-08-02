@@ -208,6 +208,7 @@ public class TGDispatcher
 	 * 该方法的作用:
 	 * 暂停任务
 	 * @date 2014年3月20日
+	 * @param task
 	 * @return
 	 */
 	public boolean pauseTask(int taskId, int taskType)
@@ -288,6 +289,7 @@ public class TGDispatcher
 	 * 该方法的作用:
 	 * 取消任务
 	 * @date 2014年3月20日
+	 * @param task
 	 * @return
 	 */
 	public boolean cancelTask(int taskId, int taskType)
@@ -306,6 +308,7 @@ public class TGDispatcher
 	 * 该方法的作用:
 	 * 取消有序任务列表
 	 * @date 2014年3月20日
+	 * @param task
 	 * @return
 	 */
 	public boolean cancelScheduleTaskList(int taskListId)
