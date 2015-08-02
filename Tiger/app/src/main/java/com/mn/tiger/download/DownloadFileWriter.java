@@ -21,34 +21,34 @@ import com.mn.tiger.utility.FileUtils;
 class DownloadFileWriter
 {
 	private static final Logger LOG = Logger.getLogger(DownloadHttpClient.class);
-	
+
 	private Context context;
-	
+
 	// 下载任务
 	private TGDownloadTask downloadTask;
 
 	// 下载参数
 	private TGDownloader downloader;
-	
+
 	/**
 	 * 已完成的下载大小
 	 */
 	private long completeSize;
-	
+
 	private DownloadHttpClient downloadHttpClient;
-	
-	public DownloadFileWriter(Context context, TGDownloader downloader, 
-			TGDownloadTask downloadTask, DownloadHttpClient httpClient)
+
+	public DownloadFileWriter(Context context, TGDownloader downloader,
+							  TGDownloadTask downloadTask, DownloadHttpClient httpClient)
 	{
 		this.downloader = downloader;
 		this.downloadTask = downloadTask;
 		this.completeSize = downloader.getCompleteSize();
 		this.downloadHttpClient = httpClient;
 	}
-	
+
 	/**
 	 * 该方法的作用:写入文件
-	 * 
+	 *
 	 * @date 2014年1月14日
 	 * @param instream
 	 * @param savePath
@@ -66,7 +66,7 @@ class DownloadFileWriter
 		}
 
 		completeSize = 0;
-		
+
 		File file = new File(savePath);
 		if (!file.exists())
 		{ // 文件不存在时，才创建并chmod文件
@@ -118,10 +118,10 @@ class DownloadFileWriter
 			Commons.closeOutputStream(outStream);
 		}
 	}
-	
+
 	/**
 	 * 该方法的作用:将请求返回的流写入本地文件
-	 * 
+	 *
 	 * @date 2014年1月7日
 	 * @param inStream
 	 * @param savePath
@@ -130,7 +130,7 @@ class DownloadFileWriter
 	 * @throws IOException
 	 */
 	protected void writeToRandomFile(InputStream inStream, String savePath, long startPos,
-			long endPos) throws IOException
+									 long endPos) throws IOException
 	{
 		if (inStream == null)
 		{
@@ -139,11 +139,27 @@ class DownloadFileWriter
 		}
 
 		completeSize = startPos;
-		
+
 		RandomAccessFile randomAccessFile = null;
 		try
 		{
-			File file = getFileOfPath(savePath);
+			File file = new File(savePath);
+			if(completeSize > 0)
+			{
+				//若上次下载的本地文件不存在
+				if (!file.exists())
+				{
+					LOG.e("[Method:writeToRandomFile] the last part file can not be found");
+					downloadHttpClient.onDownloadFailed(downloader);
+					return;
+				}
+			}
+			else
+			{
+				FileUtils.createFile(savePath);
+				FileUtils.chmodFile(file.getAbsolutePath(), "666");
+			}
+
 			randomAccessFile = new RandomAccessFile(file, "rwd");
 			randomAccessFile.seek(startPos);
 
@@ -199,25 +215,5 @@ class DownloadFileWriter
 			}
 		}
 	}
-
-	/**
-	 * 该方法的作用:获取指定路径下的文件，如文件或目录不存在，创建文件目录和文件
-	 * 
-	 * @date 2013-7-30
-	 * @param path
-	 * @return
-	 * @throws IOException
-	 */
-	private File getFileOfPath(String path) throws IOException
-	{
-		File file = new File(path);
-		if (!file.exists())
-		{
-			FileUtils.createFile(path);
-			FileUtils.chmodFile(file.getAbsolutePath(), "666");
-		}
-		return file;
-	}
-
 
 }
