@@ -24,12 +24,12 @@ public class TGTaskManager
 	/**
 	 * Manager单例对象
 	 */
-	private static TGTaskManager instance;
+	private volatile static TGTaskManager instance;
 	
 	/**
 	 * invoker单例对象
 	 */
-	private static TGTaskInvoker invoker;
+	private volatile static TGTaskInvoker invoker;
 	
 	/**
 	 * 任务动作: 开始任务
@@ -52,14 +52,26 @@ public class TGTaskManager
 	 */
 	public static synchronized TGTaskManager getInstance()
 	{
-		if (null == instance)
+		if(null == instance)
 		{
-			instance = new TGTaskManager();
+			synchronized (TGTaskManager.class)
+			{
+				if (null == instance)
+				{
+					instance = new TGTaskManager();
+				}
+			}
 		}
-		
-		if(null == invoker)
+
+		if(null == instance)
 		{
-			invoker = new TGTaskInvoker();
+			synchronized (TGTaskManager.class)
+			{
+				if(null == invoker)
+				{
+					invoker = new TGTaskInvoker();
+				}
+			}
 		}
 
 		return instance;

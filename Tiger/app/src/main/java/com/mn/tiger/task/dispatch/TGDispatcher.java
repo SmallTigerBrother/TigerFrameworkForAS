@@ -33,7 +33,7 @@ public class TGDispatcher
 	/**
 	 * 分发器单例对象
 	 */
-	private static TGDispatcher dispatcher;
+	private volatile static TGDispatcher dispatcher;
 	
 	/**
 	 * 该方法的作用: 获取单例对象
@@ -41,11 +41,17 @@ public class TGDispatcher
 	 * @date 2014年3月17日
 	 * @return
 	 */
-	public synchronized static TGDispatcher getInstance()
+	public static TGDispatcher getInstance()
 	{
 		if (null == dispatcher)
 		{
-			dispatcher = new TGDispatcher();
+			synchronized (TGDispatcher.class)
+			{
+				if(null == dispatcher)
+				{
+					dispatcher = new TGDispatcher();
+				}
+			}
 		}
 
 		return dispatcher;
@@ -289,7 +295,6 @@ public class TGDispatcher
 	 * 该方法的作用:
 	 * 取消任务
 	 * @date 2014年3月20日
-	 * @param task
 	 * @return
 	 */
 	public boolean cancelTask(int taskId, int taskType)
@@ -308,7 +313,6 @@ public class TGDispatcher
 	 * 该方法的作用:
 	 * 取消有序任务列表
 	 * @date 2014年3月20日
-	 * @param task
 	 * @return
 	 */
 	public boolean cancelScheduleTaskList(int taskListId)
