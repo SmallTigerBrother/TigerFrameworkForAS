@@ -50,7 +50,7 @@ public class TGTaskManager
 	 * 获取对象实例
 	 * @return
 	 */
-	public static synchronized TGTaskManager getInstance()
+	public static TGTaskManager getInstance()
 	{
 		if(null == instance)
 		{
@@ -63,7 +63,7 @@ public class TGTaskManager
 			}
 		}
 
-		if(null == instance)
+		if(null == invoker)
 		{
 			synchronized (TGTaskManager.class)
 			{
