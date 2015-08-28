@@ -1,13 +1,13 @@
 package com.mn.tiger.request.sync;
 
-import java.util.Map;
-
 import android.content.Context;
 
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.method.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
+
+import java.util.Map;
 
 public abstract class AbstractSyncHttpLoader
 {
@@ -24,6 +24,8 @@ public abstract class AbstractSyncHttpLoader
 	
 	public abstract TGHttpResult loadByDeleteSync(Context context, String requestUrl, 
 			TGHttpParams parameters, Map<String, String> properties);
+
+	public abstract void cancel();
 	
 	
 	protected TGHttpResult getHttpResultWhileUrlIsNULL(Context context)

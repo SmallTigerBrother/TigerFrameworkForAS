@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.request.HttpType;
 import com.mn.tiger.request.TGHttpLoader.OnLoadCallback;
@@ -127,25 +128,23 @@ public class TGHttpAsyncTask<T>
 	 * 执行任务
 	 * @date 2014年8月22日
 	 */
-	public void execute()
+	public int execute()
 	{
-		if (context instanceof Activity && ((Activity) context).isFinishing())
+		if (null == context || (context instanceof Activity && ((Activity) context).isFinishing()))
 		{
-			return;
+			return taskID;
 		}
 		
 		if(TextUtils.isEmpty(requestUrl))
 		{
 			LogTools.e(LOG_TAG, "[Method:execute] the requestUrl is null, please check your code");
-			return;
+			return taskID;
 		}
-		
-		if(null != context)
-		{
-			onPreExecute();
-			
-			doInBackground(params);
-		}
+
+		onPreExecute();
+		doInBackground(params);
+
+		return taskID;
 	}
 	
 	/**
@@ -173,12 +172,19 @@ public class TGHttpAsyncTask<T>
 		if(isCancelled())
 		{
 			loadCallback.onLoadOver();
-			return -1;
+			return taskID;
 		}
 		
 		TGTaskParams taskParams = initHttpParams(params);
 		
 		taskID = TGTaskManager.getInstance().startTask(context, taskParams);
+
+		//将taskID注册到Activity
+		if(context instanceof TGActionBarActivity)
+		{
+			((TGActionBarActivity)context).registerHttpLoader(taskID);
+		}
+
 		return taskID;
 	}
 	

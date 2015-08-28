@@ -7,7 +7,6 @@ import com.mn.tiger.request.HttpType;
 import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.method.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
-import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -28,6 +27,8 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
 {
     private static final Logger LOG = Logger.getLogger(OkHttpSyncHttpLoader.class);
 
+    private int tag = -1;
+
     private static OkHttpClient okHttpClient = new OkHttpClient();
 
     {
@@ -35,6 +36,12 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
         okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
         okHttpClient.setWriteTimeout(30, TimeUnit.SECONDS);
     }
+
+    public OkHttpSyncHttpLoader(int tag)
+    {
+        this.tag = tag;
+    }
+
     @Override
     public TGHttpResult loadByGetSync(Context context, String requestUrl, TGHttpParams parameters, Map<String, String> properties)
     {
@@ -83,6 +90,14 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
     public TGHttpResult loadByDeleteSync(Context context, String requestUrl, TGHttpParams parameters, Map<String, String> properties)
     {
         return null;
+    }
+
+    /**
+     * 取消Http请求
+     */
+    public void cancel()
+    {
+        okHttpClient.cancel(tag);
     }
 
     /**
@@ -140,6 +155,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             }
         }
 
+        builder.tag(tag);
         return builder.build();
     }
 

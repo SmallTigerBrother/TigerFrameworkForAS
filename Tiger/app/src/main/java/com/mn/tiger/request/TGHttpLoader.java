@@ -1,8 +1,5 @@
 package com.mn.tiger.request;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -13,6 +10,9 @@ import com.mn.tiger.request.async.task.IRequestParser;
 import com.mn.tiger.request.method.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.request.sync.ApacheSyncHttpLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Http请求类（包含异步、同步方法）

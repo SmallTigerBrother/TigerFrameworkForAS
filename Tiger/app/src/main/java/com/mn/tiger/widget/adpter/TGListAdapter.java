@@ -1,16 +1,16 @@
 package com.mn.tiger.widget.adpter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 import android.os.Handler;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 该类作用及功能说明
@@ -56,7 +56,7 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	private boolean strictlyReuse = false;
 
-	private HashMap<Integer, View> convertViews;
+	private SparseArray<View> convertViews;
 
 	/**
 	 * @param context
@@ -86,7 +86,7 @@ public class TGListAdapter<T> extends BaseAdapter
 		this.strictlyReuse = strictlyReuse;
 		if(!strictlyReuse)
 		{
-			convertViews = new HashMap<Integer, View>();
+			convertViews = new SparseArray<View>();
 		}
 		else
 		{

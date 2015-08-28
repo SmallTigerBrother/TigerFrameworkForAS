@@ -1,6 +1,7 @@
 package com.mn.tiger.request.async.task;
 
 import com.mn.tiger.request.receiver.TGHttpResult;
+import com.mn.tiger.request.sync.AbstractSyncHttpLoader;
 import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
 
 /**
@@ -10,9 +11,19 @@ import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
  */
 public class TGDeleteTask extends TGHttpTask
 {
+	private AbstractSyncHttpLoader syncHttpLoader;
+
 	protected TGHttpResult executeHttpRequest()
 	{
-		return new OkHttpSyncHttpLoader().loadByDeleteSync(getContext(),
+		syncHttpLoader = new OkHttpSyncHttpLoader(getTaskID());
+		return syncHttpLoader.loadByDeleteSync(getContext(),
 				getRequestUrl(), getRequestParams(), getRequestProperties());
+	}
+
+	@Override
+	protected void onTaskCancel()
+	{
+		super.onTaskCancel();
+		syncHttpLoader.cancel();
 	}
 }

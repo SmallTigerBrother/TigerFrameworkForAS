@@ -13,10 +13,13 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.mn.tiger.task.TGTask;
+import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -35,14 +38,22 @@ public class TGActionBarActivity extends Activity
 	 */
 	private FrameLayout panelLayout;
 
+	/**
+	 * 加载框
+	 */
 	private DialogFragment loadingDialog;
 
 	/**
-	 * laoding对话框显示次数
+	 * laoding对话框显示计数器
 	 */
 	private int dialogShowCount = 0;
 
+	/**
+	 * Activity声明周期观察者
+	 */
 	private Vector<ActivityObserver> observers;
+
+	private ArrayList<Integer> httpTaskIDList= new ArrayList<Integer>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -248,7 +259,29 @@ public class TGActionBarActivity extends Activity
 			observers.clear();
 		}
 
+		onCancelHttpLoader();
+
 		super.onDestroy();
+	}
+
+	/**
+	 * 将HttpLoader的taskID注册到Activity中
+	 * @param taskID
+	 */
+	public void registerHttpLoader(int taskID)
+	{
+		httpTaskIDList.add(taskID);
+	}
+
+	/**
+	 * 取消Http请求
+	 */
+	protected void onCancelHttpLoader()
+	{
+		for (Integer taskID : httpTaskIDList)
+		{
+			TGTaskManager.getInstance().cancelTask(taskID, TGTask.TASK_TYPE_HTTP);
+		}
 	}
 
 	/**
@@ -390,5 +423,23 @@ public class TGActionBarActivity extends Activity
 				iterator.next().onBackPressed();
 			}
 		}
+	}
+
+	@Override
+	public void onTrimMemory(int level)
+	{
+		super.onTrimMemory(level);
+		if (level == TRIM_MEMORY_UI_HIDDEN)
+		{
+			onTrimMemoryUIHidden();
+		}
+	}
+
+	/**
+	 * 当UI不再显示时回调，用于清理内存
+	 */
+	protected void onTrimMemoryUIHidden()
+	{
+
 	}
 }
