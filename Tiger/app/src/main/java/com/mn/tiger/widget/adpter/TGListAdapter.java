@@ -54,14 +54,8 @@ public class TGListAdapter<T> extends BaseAdapter
 	 */
 	private Object tag;
 
-	/**
-	 * 严格重用（严格重用是指Google提倡的重用方法，非严格重用为每个列表行创建一个对象，对象不回收）
-	 */
 	private boolean strictlyReuse = false;
 
-	/**
-	 * 保存列表行视图的Map
-	 */
 	private HashMap<Integer, View> convertViews;
 
 	/**
@@ -83,7 +77,7 @@ public class TGListAdapter<T> extends BaseAdapter
 		this.convertViewLayoutId = convertViewLayoutId;
 		this.viewHolderClass = viewHolderClass;
 
-		//默认设置为非严格重用
+		//根据内存容量判断是否启用严格重用
 		setStrictlyReuse(false);
 	}
 
@@ -146,10 +140,16 @@ public class TGListAdapter<T> extends BaseAdapter
 			if(!strictlyReuse)
 			{
 				convertViews.put(position, convertView);
+				fillData(position, convertView, parent);
 			}
 		}
-
-		fillData(position, convertView, parent);
+		else
+		{
+			if(strictlyReuse)
+			{
+				fillData(position, convertView, parent);
+			}
+		}
 
 		return convertView;
 	}
@@ -236,6 +236,7 @@ public class TGListAdapter<T> extends BaseAdapter
 			this.items.clear();
 			this.items.addAll(data);
 			notifyDataSetChanged();
+			convertViews.clear();
 		}
 	}
 
@@ -251,6 +252,7 @@ public class TGListAdapter<T> extends BaseAdapter
 			this.items.clear();
 			this.items.addAll(Arrays.asList(data));
 			notifyDataSetChanged();
+			convertViews.clear();
 		}
 	}
 
@@ -333,6 +335,7 @@ public class TGListAdapter<T> extends BaseAdapter
 		{
 			items.remove(position);
 			notifyDataSetChanged();
+			convertViews.remove(position);
 		}
 	}
 
@@ -347,6 +350,7 @@ public class TGListAdapter<T> extends BaseAdapter
 		{
 			items.remove(item);
 			notifyDataSetChanged();
+			convertViews.remove(items.indexOf(item));
 		}
 	}
 
@@ -357,6 +361,7 @@ public class TGListAdapter<T> extends BaseAdapter
 	{
 		items.clear();
 		notifyDataSetChanged();
+		convertViews.clear();
 	}
 
 	protected Context getContext()
