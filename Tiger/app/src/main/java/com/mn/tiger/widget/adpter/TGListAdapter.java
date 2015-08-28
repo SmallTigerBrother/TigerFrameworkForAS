@@ -2,9 +2,11 @@ package com.mn.tiger.widget.adpter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,10 @@ import android.widget.BaseAdapter;
 /**
  * 该类作用及功能说明
  * 基础列表适配器类，实现适配器的基本功能
+ *
  * @version V2.0
- * @see JDK1.6,android-8
  * @date 2012-12-31
+ * @see JDK1.6,android-8
  */
 public class TGListAdapter<T> extends BaseAdapter
 {
@@ -44,26 +47,58 @@ public class TGListAdapter<T> extends BaseAdapter
 	 */
 	private Class<? extends TGViewHolder<T>> viewHolderClass;
 
+	private Handler handler;
+
+	/**
+	 * 可用于adapter、viewholder之间传值
+	 */
 	private Object tag;
 
 	/**
-	 * @param context
-	 * @param items 列表填充数据
-	 * @param convertViewLayoutId  列表行视图layoutId
-	 * @param viewHolderClass ViewHolder类名
+	 * 严格重用（严格重用是指Google提倡的重用方法，非严格重用为每个列表行创建一个对象，对象不回收）
 	 */
-	public TGListAdapter(Context context, List<T> items,int convertViewLayoutId,
+	private boolean strictlyReuse = false;
+
+	/**
+	 * 保存列表行视图的Map
+	 */
+	private HashMap<Integer, View> convertViews;
+
+	/**
+	 * @param context
+	 * @param items               列表填充数据
+	 * @param convertViewLayoutId 列表行视图layoutId
+	 * @param viewHolderClass     ViewHolder类名
+	 */
+	public TGListAdapter(Context context, List<T> items, int convertViewLayoutId,
 						 Class<? extends TGViewHolder<T>> viewHolderClass)
 	{
 		this.context = context;
 		this.items = new ArrayList<T>();
-		if(null != items)
+		if (null != items)
 		{
 			this.items.addAll(items);
 		}
 
 		this.convertViewLayoutId = convertViewLayoutId;
 		this.viewHolderClass = viewHolderClass;
+
+		//默认设置为非严格重用
+		setStrictlyReuse(false);
+	}
+
+	public void setStrictlyReuse(boolean strictlyReuse)
+	{
+		this.strictlyReuse = strictlyReuse;
+		if(!strictlyReuse)
+		{
+			convertViews = new HashMap<Integer, View>();
+		}
+		else
+		{
+			convertViews.clear();
+			convertViews = null;
+		}
 	}
 
 	/**
@@ -99,9 +134,19 @@ public class TGListAdapter<T> extends BaseAdapter
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		if(null == convertView)
+		if(!strictlyReuse)
+		{
+			convertView = convertViews.get(position);
+		}
+
+		if (null == convertView)
 		{
 			convertView = initView(parent, position);
+
+			if(!strictlyReuse)
+			{
+				convertViews.put(position, convertView);
+			}
 		}
 
 		fillData(position, convertView, parent);
@@ -111,13 +156,14 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 初始化convertView（仅在无法重用视图时调用）
+	 *
 	 * @return
 	 */
 	protected View initView(ViewGroup parent, int position)
 	{
 		TGViewHolder<T> viewHolder = null;
 		View convertView = null;
-		if(convertViewLayoutId > 0)
+		if (convertViewLayoutId > 0)
 		{
 			try
 			{
@@ -139,6 +185,7 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 填充列表行数据（每次调用getView时都会调用）
+	 *
 	 * @param position
 	 * @param convertView
 	 * @param parent
@@ -156,6 +203,7 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 初始化ViewHolder
+	 *
 	 * @return
 	 */
 	protected TGViewHolder<T> initViewHolder()
@@ -177,40 +225,43 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 该方法的作用:更新列表数据
-	 * @date 2013-1-17
+	 *
 	 * @param data 列表数据
+	 * @date 2013-1-17
 	 */
 	public void updateData(List<T> data)
 	{
-		this.items.clear();
-		if(null != data)
+		if (null != data)
 		{
+			this.items.clear();
 			this.items.addAll(data);
+			notifyDataSetChanged();
 		}
-		notifyDataSetChanged();
 	}
 
 	/**
 	 * 更新列表行数据
+	 *
 	 * @param data
 	 */
 	public void updateData(T[] data)
 	{
-		this.items.clear();
-		if(null != data)
+		if (null != data)
 		{
+			this.items.clear();
 			this.items.addAll(Arrays.asList(data));
+			notifyDataSetChanged();
 		}
-		notifyDataSetChanged();
 	}
 
 	/**
 	 * 向列表行追加数据
+	 *
 	 * @param data
 	 */
 	public void appendData(List<T> data)
 	{
-		if(null != data)
+		if (null != data)
 		{
 			this.items.addAll(data);
 			notifyDataSetChanged();
@@ -219,11 +270,12 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 向列表行追加数据
+	 *
 	 * @param data
 	 */
 	public void appendData(T[] data)
 	{
-		if(null != data)
+		if (null != data)
 		{
 			this.items.addAll(Arrays.asList(data));
 			notifyDataSetChanged();
@@ -233,8 +285,9 @@ public class TGListAdapter<T> extends BaseAdapter
 	/**
 	 * 该方法的作用:
 	 * 获取列表数据
-	 * @date 2014年2月10日
+	 *
 	 * @return
+	 * @date 2014年2月10日
 	 */
 	public List<T> getListItems()
 	{
@@ -243,11 +296,12 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 获取列表第一个元素
+	 *
 	 * @return 若列表无数据，返回null
 	 */
 	public T getFirstItem()
 	{
-		if(!items.isEmpty())
+		if (!items.isEmpty())
 		{
 			return items.get(0);
 		}
@@ -256,11 +310,12 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 获取列表最后一个元素
+	 *
 	 * @return 若列表无数据，返回null
 	 */
 	public T getLastItem()
 	{
-		if(!items.isEmpty())
+		if (!items.isEmpty())
 		{
 			return items.get(items.size() - 1);
 		}
@@ -269,11 +324,12 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 删除列表行
+	 *
 	 * @param position 列表行位置
 	 */
 	public void removeItem(int position)
 	{
-		if(items.size() > position && position >= 0)
+		if (items.size() > position && position >= 0)
 		{
 			items.remove(position);
 			notifyDataSetChanged();
@@ -282,11 +338,12 @@ public class TGListAdapter<T> extends BaseAdapter
 
 	/**
 	 * 删除列表行
+	 *
 	 * @param item 列表行数据
 	 */
 	public void removeItem(T item)
 	{
-		if(items.contains(item))
+		if (items.contains(item))
 		{
 			items.remove(item);
 			notifyDataSetChanged();
@@ -307,13 +364,23 @@ public class TGListAdapter<T> extends BaseAdapter
 		return context;
 	}
 
-	public void setTag(Object tag)
+	public Handler getHandler()
 	{
-		this.tag = tag;
+		return handler;
+	}
+
+	public void setHandler(Handler handler)
+	{
+		this.handler = handler;
 	}
 
 	public Object getTag()
 	{
-		return this.tag;
+		return tag;
+	}
+
+	public void setTag(Object tag)
+	{
+		this.tag = tag;
 	}
 }
