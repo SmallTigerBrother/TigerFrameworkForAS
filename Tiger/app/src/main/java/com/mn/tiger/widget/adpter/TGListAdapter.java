@@ -233,10 +233,13 @@ public class TGListAdapter<T> extends BaseAdapter
 	{
 		if (null != data)
 		{
-			this.items.clear();
-			this.items.addAll(data);
-			notifyDataSetChanged();
+			if(this.items != data)
+			{
+				this.items.clear();
+				this.items.addAll(data);
+			}
 			convertViews.clear();
+			notifyDataSetChanged();
 		}
 	}
 
@@ -251,8 +254,8 @@ public class TGListAdapter<T> extends BaseAdapter
 		{
 			this.items.clear();
 			this.items.addAll(Arrays.asList(data));
-			notifyDataSetChanged();
 			convertViews.clear();
+			notifyDataSetChanged();
 		}
 	}
 
@@ -334,8 +337,8 @@ public class TGListAdapter<T> extends BaseAdapter
 		if (items.size() > position && position >= 0)
 		{
 			items.remove(position);
-			notifyDataSetChanged();
 			convertViews.remove(position);
+			notifyDataSetChanged();
 		}
 	}
 
@@ -349,8 +352,8 @@ public class TGListAdapter<T> extends BaseAdapter
 		if (items.contains(item))
 		{
 			items.remove(item);
-			notifyDataSetChanged();
 			convertViews.remove(items.indexOf(item));
+			notifyDataSetChanged();
 		}
 	}
 
@@ -360,8 +363,8 @@ public class TGListAdapter<T> extends BaseAdapter
 	public void removeAll()
 	{
 		items.clear();
-		notifyDataSetChanged();
 		convertViews.clear();
+		notifyDataSetChanged();
 	}
 
 	protected Context getContext()
