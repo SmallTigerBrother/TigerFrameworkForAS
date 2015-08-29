@@ -1,7 +1,5 @@
 package com.mn.tiger.request.sync;
 
-import java.util.Map;
-
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -10,6 +8,8 @@ import com.mn.tiger.request.method.ApacheGetMethod;
 import com.mn.tiger.request.method.ApachePostMethod;
 import com.mn.tiger.request.method.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
+
+import java.util.Map;
 
 
 public class ApacheSyncHttpLoader extends AbstractSyncHttpLoader
@@ -70,4 +70,9 @@ public class ApacheSyncHttpLoader extends AbstractSyncHttpLoader
 		return null;
 	}
 
+	@Override
+	public void cancel()
+	{
+
+	}
 }
