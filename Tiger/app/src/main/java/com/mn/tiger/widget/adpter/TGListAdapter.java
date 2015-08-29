@@ -91,7 +91,6 @@ public class TGListAdapter<T> extends BaseAdapter
 		else
 		{
 			convertViews.clear();
-			convertViews = null;
 		}
 	}
 
@@ -224,6 +223,24 @@ public class TGListAdapter<T> extends BaseAdapter
 	}
 
 	/**
+	 * 更新一条数据
+	 * @param position
+	 * @param data
+	 */
+	public void updateData(int position, T data)
+	{
+		if(position >=0 && position < getCount() && null == data)
+		{
+			if(!strictlyReuse)
+			{
+				convertViews.remove(position);
+			}
+			this.items.set(position, data);
+			this.notifyDataSetChanged();
+		}
+	}
+
+	/**
 	 * 该方法的作用:更新列表数据
 	 *
 	 * @param data 列表数据
@@ -255,6 +272,61 @@ public class TGListAdapter<T> extends BaseAdapter
 			this.items.clear();
 			this.items.addAll(Arrays.asList(data));
 			convertViews.clear();
+			notifyDataSetChanged();
+		}
+	}
+
+	/**
+	 * 局部刷新，data必需是列表中数据的一部分
+	 * @param data
+	 */
+	public void updatePartData(List<T> data)
+	{
+		if (null != data)
+		{
+			if(this.items != data)
+			{
+				for (int i = 0; i < data.size(); i++)
+				{
+					T dataItem = data.get(i);
+					int position = this.items.indexOf(dataItem);
+					if(position > -1)
+					{
+						this.items.set(position, dataItem);
+						convertViews.remove(position);
+					}
+					else
+					{
+						this.items.add(dataItem);
+					}
+				}
+			}
+			notifyDataSetChanged();
+		}
+	}
+
+	/**
+	 * 局部刷新，data必需是列表中数据的一部分
+	 * @param data
+	 */
+	public void updatePartData(T[] data)
+	{
+		if (null != data)
+		{
+			for (int i = 0; i < data.length; i++)
+			{
+				T dataItem = data[i];
+				int position = this.items.indexOf(dataItem);
+				if(position > -1)
+				{
+					this.items.set(position, dataItem);
+					convertViews.remove(position);
+				}
+				else
+				{
+					this.items.add(dataItem);
+				}
+			}
 			notifyDataSetChanged();
 		}
 	}
