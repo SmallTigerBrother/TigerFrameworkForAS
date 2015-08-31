@@ -1,8 +1,5 @@
 package com.mn.tiger.widget.viewpager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -21,6 +18,9 @@ import com.mn.tiger.widget.adpter.TGListAdapter;
 import com.mn.tiger.widget.tab.TGTabView;
 import com.mn.tiger.widget.tab.TGTabView.OnTabChangeListener;
 import com.mn.tiger.widget.viewpager.TGAutoFlipViewPager.CirclePagerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 带底部圆点导航的自动滚动Banner
@@ -320,6 +320,16 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 	public int getCurrentPage()
 	{
 		return bannerViewPager.getCurrentItem();
+	}
+
+	/**
+	 *设置当前页
+	 * @param page
+	 * @return
+	 */
+	public void setCurrentPage(int page)
+	{
+		bannerViewPager.setCurrentItem(page);
 	}
 
 	@SuppressWarnings("deprecation")
