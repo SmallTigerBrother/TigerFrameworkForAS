@@ -1,16 +1,14 @@
 package com.mn.tiger.test.mock;
 
-import java.util.HashMap;
-
 import android.text.TextUtils;
 
 import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.receiver.TGHttpResult;
-import com.mn.tiger.request.sync.ApacheSyncHttpLoader;
 import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
 import com.mn.tiger.utility.FileUtils;
+
+import java.util.HashMap;
 
 public class HttpMockTester
 {
@@ -33,7 +31,7 @@ public class HttpMockTester
 
 		if(dataKey.startsWith("http://") || dataKey.startsWith("https://"))
 		{
-			httpResult = new OkHttpSyncHttpLoader().loadByGetSync(
+			httpResult = new OkHttpSyncHttpLoader(-1).loadByGetSync(
 					TGApplication.getInstance(), dataKey, null, null);
 		}
 		else
