@@ -139,8 +139,8 @@ public class TGListAdapter<T> extends BaseAdapter
             if(!strictlyReuse)
             {
                 convertViews.put(position, convertView);
-                fillData(position, convertView, parent);
             }
+            fillData(position, convertView, parent);
         }
         else
         {
