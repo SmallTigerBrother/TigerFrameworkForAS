@@ -167,13 +167,20 @@ public class TGTabView extends LinearLayout
 			this.addTabItem(tabItem);
 		}
 
-		// 注册数据观察者
-		if (null != dataSetObserver)
+		try
 		{
-			adapter.unregisterDataSetObserver(dataSetObserver);
+			// 注册数据观察者
+			if (null != dataSetObserver)
+			{
+				adapter.unregisterDataSetObserver(dataSetObserver);
+			}
+			dataSetObserver = new TabViewDatasetObserver();
+			adapter.registerDataSetObserver(dataSetObserver);
 		}
-		dataSetObserver = new TabViewDatasetObserver();
-		adapter.registerDataSetObserver(dataSetObserver);
+		catch (Exception e)
+		{
+			LOG.e(e);
+		}
 
 		// 设置选中项
 		if (currentTabIndex != -1)
