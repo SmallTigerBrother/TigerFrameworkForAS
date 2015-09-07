@@ -1,12 +1,12 @@
 package com.mn.tiger.notification;
 
-import java.io.Serializable;
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+
+import java.io.Serializable;
 
 /**
  * 通知建造者类
@@ -43,7 +43,7 @@ public class TGNotificationBuilder
 		// 统一设置图标
 		builder = new NotificationCompat.Builder(context);
 		builder.setAutoCancel(true);
-
+		intent = new Intent();
 		// 初始化intent
 		intent.setAction(NOTIFICATION_CLICK_ACTION);
 	}
