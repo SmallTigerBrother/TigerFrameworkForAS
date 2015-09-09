@@ -1,6 +1,7 @@
 package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,16 +16,24 @@ public class TGRecyclerView extends RecyclerView
     public TGRecyclerView(Context context)
     {
         super(context);
+        setOrientation(VERTICAL);
     }
 
     public TGRecyclerView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        setOrientation(VERTICAL);
     }
 
     public TGRecyclerView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        setOrientation(VERTICAL);
+    }
+
+    public void setOrientation(int orientation)
+    {
+        this.setLayoutManager(new LinearLayoutManager(getContext(), orientation, false));
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener)
