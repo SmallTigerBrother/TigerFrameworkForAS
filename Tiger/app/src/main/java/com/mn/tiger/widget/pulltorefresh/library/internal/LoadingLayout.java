@@ -34,7 +34,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mn.tiger.R;
-import com.mn.tiger.widget.pulltorefresh.library.ILoadingLayout;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Orientation;
 

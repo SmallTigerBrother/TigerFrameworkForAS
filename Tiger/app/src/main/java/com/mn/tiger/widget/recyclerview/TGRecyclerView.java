@@ -36,6 +36,11 @@ public class TGRecyclerView extends RecyclerView
         this.setLayoutManager(new LinearLayoutManager(getContext(), orientation, false));
     }
 
+    public void setLayoutManager(LayoutManager layoutManager)
+    {
+        this.setLayoutManager(layoutManager);
+    }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener)
     {
         this.onItemClickListener = onItemClickListener;

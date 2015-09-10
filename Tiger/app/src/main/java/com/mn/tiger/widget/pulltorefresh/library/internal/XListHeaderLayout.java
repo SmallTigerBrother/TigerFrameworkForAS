@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.mn.tiger.R;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase;
 import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Orientation;
 import com.mn.tiger.widget.pulltorefresh.loading.LoadingHeaderView;
 

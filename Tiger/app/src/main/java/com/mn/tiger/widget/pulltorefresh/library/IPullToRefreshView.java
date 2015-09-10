@@ -1,51 +1,62 @@
 package com.mn.tiger.widget.pulltorefresh.library;
 
-import com.mn.tiger.widget.pulltorefresh.OnScrollListener;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.mn.tiger.widget.pulltorefresh.loading.ILoadingFooterView;
-
-import android.content.Context;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewTreeObserver;
-
 public interface IPullToRefreshView
 {
-	Context getContext();
-
-	void addHeaderView(View headerView);
-
-	void addFooterView(View footerView);
-
-	ViewTreeObserver getViewTreeObserver();
-
-	void invalidate();
-
-	void setSuperOnSrcollListener(OnScrollListener onScrollListener);
-
 	void setMode(Mode mode);
-
-	boolean superOnTouchEvent(MotionEvent ev);
-
-	void postInvalidate();
-
-	void superComputeScroll();
-
-	void setSelection(int index);
 
 	void setOnRefreshListener(OnRefreshListener listener);
 
 	void onRefreshComplete();
 
-	int getScrollY();
+	/**
+	 * An advanced version of the Listener to listen for callbacks to Refresh.
+	 * This listener is different as it allows you to differentiate between Pull
+	 * Ups, and Pull Downs.
+	 *
+	 * @author Chris Banes
+	 */
+	public interface OnRefreshListener
+	{
+		// TODO These methods need renaming to START/END rather than DOWN/UP
 
-	int getHeight();
+		/**
+		 * onPullDownToRefresh will be called only when the user has Pulled from
+		 * the start, and released.
+		 */
+		void onPullDownToRefresh();
 
-	View getChildAt(int index);
+		/**
+		 * onPullUpToRefresh will be called only when the user has Pulled from
+		 * the end, and released.
+		 */
+		void onPullUpToRefresh();
+	}
 
-	void setFooterView(ILoadingFooterView mFooterView);
+	public static enum Mode
+	{
 
-	void setAutoLoadWhileEnd(boolean autoLoadWhileEnd);
+		/**
+		 * Disable all Pull-to-Refresh gesture and Refreshing handling
+		 */
+		DISABLED,
 
+		/**
+		 * Only allow the user to Pull from the start of the Refreshable View to
+		 * refresh. The start is either the Top or Left, depending on the
+		 * scrolling direction.
+		 */
+		PULL_FROM_START,
+
+		/**
+		 * Only allow the user to Pull from the end of the Refreshable View to
+		 * refresh. The start is either the Bottom or Right, depending on the
+		 * scrolling direction.
+		 */
+		PULL_FROM_END,
+
+		/**
+		 * Allow the user to both Pull from the start, from the end to refresh.
+		 */
+		BOTH,
+	}
 }

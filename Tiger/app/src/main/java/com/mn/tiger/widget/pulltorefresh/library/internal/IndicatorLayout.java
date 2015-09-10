@@ -16,7 +16,6 @@
 package com.mn.tiger.widget.pulltorefresh.library.internal;
 
 import com.mn.tiger.R;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

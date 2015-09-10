@@ -1,506 +1,115 @@
 package com.mn.tiger.widget.pulltorefresh;
 
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.RelativeLayout;
-import android.widget.Scroller;
-
-import com.mn.tiger.R;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshAdapterView;
 import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshView;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.mn.tiger.widget.pulltorefresh.loading.ILoadingFooterView;
-import com.mn.tiger.widget.pulltorefresh.loading.LoadingFooterView;
-import com.mn.tiger.widget.pulltorefresh.loading.LoadingHeaderView;
+
+import java.lang.reflect.Field;
+
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 
 /**
- * 拖动刷新AdapterView实现类（封装拖动、刷新等功能）
+ * Created by Dalang on 2015/9/11.
  */
-abstract class PullToRefreshViewImp implements OnScrollListener
+class PullToRefreshViewImp
 {
     private static final Logger LOG = Logger.getLogger(PullToRefreshViewImp.class);
-    
-    private float mLastY = -1; // save event y
-    private Scroller mScroller; // used for scroll back
-    private OnScrollListener mScrollListener; // user's scroll listener
-    
-    // the interface to trigger refresh and load more.
-    private OnRefreshListener onRereshListener;
-    
-    // -- header view
-    public LoadingHeaderView mHeaderView;
-    // header view content, use it to calculate the Header's height. And hide it
-    // when disable pull refresh.
-    private RelativeLayout mHeaderViewContent;
-    private int mHeaderViewHeight; // header view's height
-    private boolean mEnablePullRefresh = true;
-    private boolean mPullRefreshing = false; // is refreashing.
-    
-    // -- footer view
-    private ILoadingFooterView mFooterView;
-    private boolean mEnablePullLoad;
-    private boolean mPullLoading;
-    private boolean mIsFooterReady = false;
-    
-    private boolean autoLoadWhileEnd = false;
-    
-    // total list items, used to detect is at the bottom of listview.
-    private int mTotalItemCount;
-    
-    // for mScroller, scroll back from header or footer.
-    private int mScrollBack;
-    private final static int SCROLLBACK_HEADER = 0;
-    private final static int SCROLLBACK_FOOTER = 1;
-    
-    private final static int SCROLL_DURATION = 400; // scroll back duration
-    private final static int PULL_LOAD_MORE_DELTA = 50; // when pull up >= 50px
-    // at bottom, trigger
-    // load more.
-    private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
-    // feature.
-    
-    private IPullToRefreshView view;//真正执行拖动刷新的类
-    
-    public PullToRefreshViewImp(IPullToRefreshView view)
+
+    private BGARefreshLayout refreshLayout;
+
+    private BGARefreshViewHolder refreshViewHolder;
+
+    private Field mRefreshHeaderViewField;
+
+    PullToRefreshViewImp(BGARefreshLayout layout)
     {
-        this.view = view;
-        init();
+        this.refreshLayout = layout;
     }
-    
-    /**
-     * 初始化
-     */
-    private void init()
-    {
-        mScroller = new Scroller(view.getContext(), new DecelerateInterpolator());
-        // XListView need the scroll event, and it will dispatch the event to
-        // user's listener (as a proxy).
-        view.setSuperOnSrcollListener(this);
-        
-        // init header view
-        mHeaderView = new LoadingHeaderView(view.getContext());
-        mHeaderViewContent = (RelativeLayout) mHeaderView.findViewById(R.id.xlistview_header_content);
-        view.addHeaderView(mHeaderView);
-        
-        // init footer view
-        setFooterView(new LoadingFooterView(view.getContext()));
-        
-        // init header height
-        mHeaderView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener()
-                                                                    {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout()
-            {
-                mHeaderViewHeight = mHeaderViewContent.getHeight();
-                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            }
-        });
-    }
-    
-    public IPullToRefreshView getView()
-    {
-        return view;
-    }
-    
-    /**
-     * 添加footerView
-     */
-    public void addFooterViewIfNeed()
-    {
-        // make sure LoadingFooterView is the last footer view, and only add once.
-        if (mIsFooterReady == false)
-        {
-            mIsFooterReady = true;
-            view.addFooterView((View) getFooterView());
-            getFooterView().setOnClickListener(new OnClickListener()
-                                               {
-                @Override
-                public void onClick(View v)
-                {
-                    startLoadMore();
-                }
-            });
-        }
-    }
-    
-    public void setMode(Mode mode)
+
+    public void setMode(IPullToRefreshView.Mode mode)
     {
         switch (mode)
         {
-            case PULL_FROM_START:
-                setPullRefreshEnable(true);
-                setPullLoadEnable(false);
-                break;
-            case PULL_FROM_END:
-                setPullRefreshEnable(false);
-                setPullLoadEnable(true);
-                break;
-            case BOTH:
-                setPullRefreshEnable(true);
-                setPullLoadEnable(true);
-                break;
-                
             case DISABLED:
-                setPullLoadEnable(false);
-                setPullRefreshEnable(false);
+                setPullStartDisable();
+                setPullEndDisable();
                 break;
-                
-            default:
+
+            case BOTH:
+                setPullStartEnable();
+                setPullEndEnable();
                 break;
-        }
-    }
-    
-    /**
-     * enable or disable pull down refresh feature.
-     *
-     * @param enable
-     */
-    private void setPullRefreshEnable(boolean enable)
-    {
-        mEnablePullRefresh = enable;
-        if (!mEnablePullRefresh)
-        { // disable, hide the content
-            mHeaderViewContent.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            mHeaderViewContent.setVisibility(View.VISIBLE);
-        }
-    }
-    
-    /**
-     * enable or disable pull up load more feature.
-     *
-     * @param enable
-     */
-    private void setPullLoadEnable(boolean enable)
-    {
-        mEnablePullLoad = enable;
-        if (!mEnablePullLoad)
-        {
-            // mFooterView.hide();
-            ((View) getFooterView()).setVisibility(View.GONE);
-            ((View) getFooterView()).setOnClickListener(null);
-        }
-        else
-        {
-            mPullLoading = false;
-            // mFooterView.show();
-            ((View) getFooterView()).setVisibility(View.VISIBLE);
-            getFooterView().setState(LoadingFooterView.STATE_NORMAL);
-            // both "pull up" and "click" will invoke load more.
-        }
-    }
-    
-    /**
-     * stop refresh, reset header view.
-     */
-    public void stopRefresh()
-    {
-        if (mPullRefreshing == true)
-        {
-            mPullRefreshing = false;
-            resetHeaderHeight();
-        }
-    }
-    
-    /**
-     * stop load more, reset footer view.
-     */
-    public void stopLoadMore()
-    {
-        if (mPullLoading == true)
-        {
-            mPullLoading = false;
-            getFooterView().setState(LoadingFooterView.STATE_NORMAL);
-        }
-    }
-    
-    /**
-     * 停止刷新和加载
-     */
-    public void stopRefreshAndLoadMore()
-    {
-        stopRefresh();
-        stopLoadMore();
-    }
-    
-    /**
-     * 更新headerView高度
-     *
-     * @param delta
-     */
-    private void updateHeaderHeight(float delta)
-    {
-        if (((int) delta + mHeaderView.getVisiableHeight()) < (mHeaderViewHeight + 30))
-        {
-            mHeaderView.setVisiableHeight((int) delta + mHeaderView.getVisiableHeight());
-            if (mEnablePullRefresh && !mPullRefreshing)
-            { // 未处于刷新状态，更新箭头
-                if (mHeaderView.getVisiableHeight() > mHeaderViewHeight)
-                {
-                    mHeaderView.setState(LoadingHeaderView.STATE_READY);
-                }
-                else
-                {
-                    mHeaderView.setState(LoadingHeaderView.STATE_NORMAL);
-                }
-            }
-            view.setSelection(0); // scroll to top each time
-        }
-    }
-    
-    /**
-     * reset header view's height.
-     */
-    private void resetHeaderHeight()
-    {
-        int height = mHeaderView.getVisiableHeight();
-        if (height == 0) // not visible.
-            return;
-        // refreshing and header isn't shown fully. do nothing.
-        if (mPullRefreshing && height <= mHeaderViewHeight)
-        {
-            return;
-        }
-        int finalHeight = 0; // default: scroll back to dismiss header.
-        // is refreshing, just scroll back to show all the header.
-        if (mPullRefreshing && height > mHeaderViewHeight)
-        {
-            finalHeight = mHeaderViewHeight;
-        }
-        mScrollBack = SCROLLBACK_HEADER;
-        mScroller.startScroll(0, height, 0, finalHeight - height, SCROLL_DURATION);
-        // trigger computeScroll
-        view.invalidate();
-    }
-    
-    private void updateFooterHeight(float delta)
-    {
-        int height = getFooterView().getBottomMargin() + (int) delta;
-        
-        if (height < PULL_LOAD_MORE_DELTA + 30)
-        {
-            if (mEnablePullLoad && !mPullLoading)
-            {
-                if (height > PULL_LOAD_MORE_DELTA)
-                { // height enough to invoke load
-                    // more.
-                    getFooterView().setState(LoadingFooterView.STATE_READY);
-                }
-                else
-                {
-                    getFooterView().setState(LoadingFooterView.STATE_NORMAL);
-                }
-            }
-            getFooterView().setBottomMargin(height);
-        }
-        
-        // setSelection(mTotalItemCount - 1); // scroll to bottom
-    }
-    
-    private void resetFooterHeight()
-    {
-        int bottomMargin = getFooterView().getBottomMargin();
-        if (bottomMargin > 0)
-        {
-            mScrollBack = SCROLLBACK_FOOTER;
-            mScroller.startScroll(0, bottomMargin, 0, -bottomMargin, SCROLL_DURATION);
-            view.invalidate();
-        }
-    }
-    
-    private void startLoadMore()
-    {
-        mPullLoading = true;
-        getFooterView().setState(LoadingFooterView.STATE_LOADING);
-        if (onRereshListener != null)
-        {
-            onRereshListener.onPullUpToRefresh();
-        }
-    }
-    
-    public boolean onTouchEvent(MotionEvent ev)
-    {
-        if (mLastY == -1)
-        {
-            mLastY = ev.getRawY();
-        }
-        
-        switch (ev.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-                mLastY = ev.getRawY();
+
+            case PULL_FROM_END:
+                setPullStartDisable();
+                setPullEndEnable();
                 break;
-            case MotionEvent.ACTION_MOVE:
-                final float deltaY = ev.getRawY() - mLastY;
-                mLastY = ev.getRawY();
-                if (isReadPullStart() && (mHeaderView.getVisiableHeight() > 0 || deltaY > 0))
-                {
-                    // the first item is showing, header has shown or pull down.
-                    updateHeaderHeight(deltaY / OFFSET_RADIO);
-                }
-                else if (isReadPullEnd() && (getFooterView().getBottomMargin() > 0 || deltaY < 0))
-                {
-                    // last item, already pulled up or want to pull up.
-                    updateFooterHeight(-deltaY / OFFSET_RADIO);
-                }
-                break;
-            default:
-                mLastY = -1; // reset
-                if (isReadPullStart())
-                {
-                    // invoke refresh
-                    if (mEnablePullRefresh && mHeaderView.getVisiableHeight() > mHeaderViewHeight)
-                    {
-                        mPullRefreshing = true;
-                        mHeaderView.setState(LoadingHeaderView.STATE_REFRESHING);
-                        if (onRereshListener != null)
-                        {
-                            onRereshListener.onPullDownToRefresh();
-                        }
-                    }
-                    resetHeaderHeight();
-                }
-                else if (isReadPullEnd())
-                {
-                    // invoke load more.
-                    if (mEnablePullLoad && getFooterView().getBottomMargin() > PULL_LOAD_MORE_DELTA && !autoLoadWhileEnd)
-                    {
-                        LOG.d("[Method:onTouchEvent] invoke load more");
-                        startLoadMore();
-                    }
-                    resetFooterHeight();
-                }
+
+            case PULL_FROM_START:
+                setPullStartEnable();
+                setPullStartDisable();
                 break;
         }
-        return view.superOnTouchEvent(ev);
     }
-    
-    public abstract boolean isReadPullStart();
-    
-    public abstract boolean isReadPullEnd();
-    
-    public void computeScroll()
+
+    public void setRefreshViewHolder(BGARefreshViewHolder refreshViewHolder)
     {
-        if (mScroller.computeScrollOffset())
-        {
-            if (mScrollBack == SCROLLBACK_HEADER)
-            {
-                mHeaderView.setVisiableHeight(mScroller.getCurrY());
-            }
-            else
-            {
-                getFooterView().setBottomMargin(mScroller.getCurrY());
-            }
-            view.postInvalidate();
-        }
-        view.superComputeScroll();
+        this.refreshViewHolder = refreshViewHolder;
     }
-    
-    public void setOnScrollListener(OnScrollListener listener)
+
+    private void setPullStartDisable()
     {
-        this.mScrollListener = listener;
-    }
-    
-    @Override
-    public void onScroll(IPullToRefreshAdapterView view, int firstVisibleItem, int visibleItemCount,
-                         int totalItemCount)
-    {
-        mTotalItemCount = totalItemCount;
-        
-        if (mScrollListener != null)
+        if(null == mRefreshHeaderViewField)
         {
-            mScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        }
-        
-        if (totalItemCount > visibleItemCount && mEnablePullLoad)
-        {
-            if (null != getFooterView())
+            try
             {
-                ((View) getFooterView()).setVisibility(View.VISIBLE);
+                mRefreshHeaderViewField = BGARefreshLayout.class.getField("mRefreshHeaderViewField");
+                mRefreshHeaderViewField.setAccessible(true);
+                mRefreshHeaderViewField.set(refreshLayout, null);
             }
-            
-            if(isReadPullEnd() && !mPullLoading && autoLoadWhileEnd)
+            catch (Exception e)
             {
-                LOG.d("[Method:onScroll] invoke load more");
-                startLoadMore();
-            }
-        }
-        else
-        {
-            if (null != getFooterView())
-            {
-                ((View) getFooterView()).setVisibility(View.GONE);
+                LOG.e(e);
             }
         }
     }
-    
-    public int getTotalItemCount()
+
+    private void setPullStartEnable()
     {
-        return mTotalItemCount;
+        refreshLayout.setRefreshViewHolder(refreshViewHolder);
     }
-    
-    @Override
-    public void onScrollStateChanged(IPullToRefreshAdapterView view, int scrollState)
+
+    private void setPullEndDisable()
     {
-        if (mScrollListener != null)
+        if(null != refreshViewHolder)
         {
-            mScrollListener.onScrollStateChanged(view, scrollState);
+            try
+            {
+                Field mIsLoadingMoreEnabledField = BGARefreshViewHolder.class.getField("mIsLoadingMoreEnabled");
+                mIsLoadingMoreEnabledField.setAccessible(true);
+                mIsLoadingMoreEnabledField.set(refreshViewHolder, true);
+            }
+            catch (Exception e)
+            {
+                LOG.e(e);
+            }
         }
     }
-    
-    /**
-     * 设置拖动加载监听器
-     *
-     * @param listener
-     */
-    public void setOnRefreshListener(OnRefreshListener listener)
+
+    private void setPullEndEnable()
     {
-        this.onRereshListener = listener;
-    }
-    
-    /**
-     * 呈现刷新
-     *
-     * @author liananse 2013-9-2
-     */
-    public void setRefreshState()
-    {
-        mHeaderView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener()
-                                                                    {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout()
+        if(null != refreshViewHolder)
+        {
+            try
             {
-                mHeaderViewHeight = mHeaderViewContent.getHeight();
-                updateHeaderHeight(mHeaderViewHeight);
-                mPullRefreshing = true;
-                mHeaderView.setState(LoadingHeaderView.STATE_REFRESHING);
-                resetHeaderHeight();
-                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                Field mIsLoadingMoreEnabledField = BGARefreshViewHolder.class.getField("mIsLoadingMoreEnabled");
+                mIsLoadingMoreEnabledField.setAccessible(true);
+                mIsLoadingMoreEnabledField.set(refreshViewHolder, true);
             }
-        });
-    }
-    
-    public ILoadingFooterView getFooterView()
-    {
-        return mFooterView;
-    }
-    
-    public void setFooterView(ILoadingFooterView mFooterView)
-    {
-        this.mFooterView = mFooterView;
-    }
-    
-    public void setAutoLoadWhileEnd(boolean autoLoadWhileEnd)
-    {
-        this.autoLoadWhileEnd = autoLoadWhileEnd;
+            catch (Exception e)
+            {
+                LOG.e(e);
+            }
+        }
     }
 }

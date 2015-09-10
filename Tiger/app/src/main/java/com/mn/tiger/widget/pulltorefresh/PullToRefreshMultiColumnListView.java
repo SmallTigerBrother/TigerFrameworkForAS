@@ -1,65 +1,80 @@
 package com.mn.tiger.widget.pulltorefresh;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.widget.ListAdapter;
+import android.view.ViewGroup;
 
-import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshAdapterView;
-import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshListenable;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.mn.tiger.widget.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.mn.tiger.widget.pulltorefresh.loading.ILoadingFooterView;
-import com.mn.tiger.widget.viewflow.MultiColumnListView;
-import com.mn.tiger.widget.viewflow.internal.PLA_AbsListView;
+import com.mn.tiger.log.Logger;
+import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshView;
+import com.mn.tiger.widget.recyclerview.TGRecyclerView;
+
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 
 
 /**
  * 拖动刷新瀑布流
  */
-public class PullToRefreshMultiColumnListView extends MultiColumnListView implements IPullToRefreshAdapterView, IPullToRefreshListenable
+public class PullToRefreshMultiColumnListView extends BGARefreshLayout implements IPullToRefreshView
 {
-	private PullToRefreshAdapterViewImp pullToRefreshViewImp;
+	private static Logger LOG = Logger.getLogger(PullToRefreshMultiColumnListView.class);
+
+	private TGRecyclerView recyclerView;
+
+	private PullToRefreshViewImp pullToRefreshViewImp;
 
 	public PullToRefreshMultiColumnListView(Context context)
 	{
 		super(context);
-		pullToRefreshViewImp = new PullToRefreshAdapterViewImp(this);
+		initRecyclerView();
+
+		pullToRefreshViewImp = new PullToRefreshViewImp(this);
 	}
 
 	public PullToRefreshMultiColumnListView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-		pullToRefreshViewImp = new PullToRefreshAdapterViewImp(this);
+		initRecyclerView();
+
+		pullToRefreshViewImp = new PullToRefreshViewImp(this);
+	}
+
+	private void initRecyclerView()
+	{
+		recyclerView = new TGRecyclerView(getContext());
+		recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+		LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		layoutParams.weight = 1;
+		this.addView(recyclerView, layoutParams);
 	}
 
 	@Override
-	public void setAdapter(ListAdapter adapter)
+	public void setRefreshViewHolder(BGARefreshViewHolder refreshViewHolder)
 	{
-		pullToRefreshViewImp.addFooterViewIfNeed();
-		super.setAdapter(adapter);
+		pullToRefreshViewImp.setRefreshViewHolder(refreshViewHolder);
+		super.setRefreshViewHolder(refreshViewHolder);
 	}
 
-	@Override
-	public void setSuperOnSrcollListener(
-			final com.mn.tiger.widget.pulltorefresh.OnScrollListener onScrollListener)
+	public void setColumnCount(int columnCount)
 	{
-		super.setOnScrollListener(new OnScrollListener()
-		{
-			@Override
-			public void onScrollStateChanged(PLA_AbsListView view, int scrollState)
-			{
-				onScrollListener.onScrollStateChanged((IPullToRefreshAdapterView) view, scrollState);
-			}
+		((StaggeredGridLayoutManager)recyclerView.getLayoutManager()).setSpanCount(columnCount);
+	}
 
-			@Override
-			public void onScroll(PLA_AbsListView view, int firstVisibleItem, int visibleItemCount,
-								 int totalItemCount)
-			{
-				onScrollListener.onScroll((IPullToRefreshAdapterView) view, firstVisibleItem, visibleItemCount, totalItemCount);
-			}
-		});
+	public void setAdapter(RecyclerView.Adapter adapter)
+	{
+		recyclerView.setAdapter(adapter);
+	}
+
+	public RecyclerView.Adapter getAdapter()
+	{
+		return recyclerView.getAdapter();
+	}
+
+	public void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
+	{
+		recyclerView.setOnItemClickListener(onItemClickListener);
 	}
 
 	@Override
@@ -68,78 +83,17 @@ public class PullToRefreshMultiColumnListView extends MultiColumnListView implem
 		pullToRefreshViewImp.setMode(mode);
 	}
 
-	@SuppressLint("ClickableViewAccessibility")
-	@Override
-	public boolean onTouchEvent(MotionEvent ev)
-	{
-		return pullToRefreshViewImp.onTouchEvent(ev);
-	}
-
-	@Override
-	public boolean superOnTouchEvent(MotionEvent ev)
-	{
-		return super.onTouchEvent(ev);
-	}
-
-	@Override
-	public void computeScroll()
-	{
-		pullToRefreshViewImp.computeScroll();
-	}
-
-	@Override
-	public void superComputeScroll()
-	{
-		super.computeScroll();
-	}
-
 	@Override
 	public void setOnRefreshListener(OnRefreshListener listener)
 	{
-		pullToRefreshViewImp.setOnRefreshListener(listener);
-	}
 
-	@Override
-	public void setOnScrollListener(final OnScrollListener listener)
-	{
-		pullToRefreshViewImp.setOnScrollListener(new com.mn.tiger.widget.pulltorefresh.OnScrollListener()
-		{
-			@Override
-			public void onScrollStateChanged(IPullToRefreshAdapterView view, int scrollState)
-			{
-				listener.onScrollStateChanged((PLA_AbsListView) view, scrollState);
-			}
-
-			@Override
-			public void onScroll(IPullToRefreshAdapterView view, int firstVisibleItem,
-								 int visibleItemCount, int totalItemCount)
-			{
-				listener.onScroll((PLA_AbsListView) view, firstVisibleItem, visibleItemCount, totalItemCount);
-			}
-		});
 	}
 
 	@Override
 	public void onRefreshComplete()
 	{
-		pullToRefreshViewImp.stopRefreshAndLoadMore();
+		this.endRefreshing();
+		this.endLoadingMore();
 	}
 
-	/**
-	 * 设置底部loading视图
-	 * @param mFooterView
-	 */
-	public void setFooterView(ILoadingFooterView mFooterView)
-	{
-		this.pullToRefreshViewImp.setFooterView(mFooterView);
-	}
-
-	/**
-	 * 设置到达底部时是否自动加载
-	 * @param autoLoadWhileEnd
-	 */
-	public void setAutoLoadWhileEnd(boolean autoLoadWhileEnd)
-	{
-		this.pullToRefreshViewImp.setAutoLoadWhileEnd(autoLoadWhileEnd);
-	}
 }

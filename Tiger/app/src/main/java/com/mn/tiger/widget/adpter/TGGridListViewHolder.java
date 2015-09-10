@@ -1,10 +1,11 @@
 package com.mn.tiger.widget.adpter;
 
-import butterknife.ButterKnife;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import butterknife.ButterKnife;
 
 
 /**
