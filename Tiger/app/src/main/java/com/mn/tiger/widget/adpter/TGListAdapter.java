@@ -1,7 +1,6 @@
 package com.mn.tiger.widget.adpter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,7 +18,6 @@ import java.util.List;
  *
  * @version V2.0
  * @date 2012-12-31
- * @see JDK1.6,android-8
  */
 public class TGListAdapter<T> extends BaseAdapter
 {
@@ -47,16 +46,27 @@ public class TGListAdapter<T> extends BaseAdapter
      */
     private Class<? extends TGViewHolder<T>> viewHolderClass;
 
-    private Handler handler;
+    /**
+     * 保存extras数据的数组
+     */
+    private SparseArray<Object> extras;
 
     /**
-     * 可用于adapter、viewholder之间传值
+     * 是否为严格重用
      */
-    private Object tag;
+    private boolean strictlyReuse = true;
 
-    private boolean strictlyReuse = false;
+    /**
+     * 保存列表行View的数组
+     */
+    private HashMap<Object, View> convertViews;
 
-    private SparseArray<View> convertViews;
+    /**
+     * Adapter填充的ViewGroup
+     */
+    private ViewGroup parentView;
+
+    private TGViewHolder<T> internalViewHolder;
 
     /**
      * @param context
@@ -76,22 +86,17 @@ public class TGListAdapter<T> extends BaseAdapter
 
         this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
+        this.internalViewHolder = initViewHolder();
 
         //根据内存容量判断是否启用严格重用
-        setStrictlyReuse(false);
+        setStrictlyReuse(strictlyReuse);
     }
 
     public void setStrictlyReuse(boolean strictlyReuse)
     {
         this.strictlyReuse = strictlyReuse;
-        if(!strictlyReuse)
-        {
-            convertViews = new SparseArray<View>();
-        }
-        else
-        {
-            convertViews.clear();
-        }
+        convertViews = new HashMap<Object, View>();
+        convertViews.clear();
     }
 
     /**
@@ -121,30 +126,38 @@ public class TGListAdapter<T> extends BaseAdapter
         return position;
     }
 
+    @Override
+    public int getItemViewType(int position)
+    {
+        return null != internalViewHolder ? internalViewHolder.getItemViewType(position) : IGNORE_ITEM_VIEW_TYPE;
+    }
+
     /**
      * @see BaseAdapter#getView(int, View, ViewGroup)
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        if(!strictlyReuse)
+        this.parentView = parent;
+
+        if (!strictlyReuse)
         {
-            convertView = convertViews.get(position);
+            convertView = convertViews.get(getItem(position));
         }
 
         if (null == convertView)
         {
             convertView = initView(parent, position);
 
-            if(!strictlyReuse)
+            if (!strictlyReuse)
             {
-                convertViews.put(position, convertView);
+                convertViews.put(getItem(position), convertView);
             }
             fillData(position, convertView, parent);
         }
         else
         {
-            if(strictlyReuse)
+            if (strictlyReuse)
             {
                 fillData(position, convertView, parent);
             }
@@ -160,23 +173,8 @@ public class TGListAdapter<T> extends BaseAdapter
      */
     protected View initView(ViewGroup parent, int position)
     {
-        TGViewHolder<T> viewHolder = null;
-        View convertView = null;
-        if (convertViewLayoutId > 0)
-        {
-            try
-            {
-                convertView = LayoutInflater.from(context).inflate(convertViewLayoutId, null);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
-        viewHolder = initViewHolder();
-        viewHolder.setLayoutId(convertViewLayoutId);
-        convertView = viewHolder.initView(convertView, parent, position);
+        TGViewHolder<T> viewHolder = initViewHolder();
+        View convertView = viewHolder.initView(parent, getItemViewType(position));
         convertView.setTag(viewHolder);
 
         return convertView;
@@ -193,11 +191,12 @@ public class TGListAdapter<T> extends BaseAdapter
     protected void fillData(int position, View convertView, ViewGroup parent)
     {
         TGViewHolder<T> viewHolder = (TGViewHolder<T>) convertView.getTag();
-        //填充列表行数据
-        viewHolder.fillData(parent, convertView, items.get(position), position);
 
         //更新列表行尺寸
-        viewHolder.updateViewDimension(parent, convertView, items.get(position), position);
+        viewHolder.updateViewDimension(parent, convertView, items.get(position), position, getItemViewType(position));
+
+        //填充列表行数据
+        viewHolder.fillData(parent, convertView, items.get(position), position, getItemViewType(position));
     }
 
     /**
@@ -208,35 +207,47 @@ public class TGListAdapter<T> extends BaseAdapter
     protected TGViewHolder<T> initViewHolder()
     {
         TGViewHolder<T> viewHolder = null;
-        try
+        if(null != viewHolderClass)
         {
-            viewHolder = viewHolderClass.newInstance();
-            viewHolder.setContext(context);
-            viewHolder.setAdapter(this);
+            try
+            {
+                viewHolder = viewHolderClass.newInstance();
+                viewHolder.setContext(context);
+                viewHolder.setAdapter(this);
+                viewHolder.setLayoutId(convertViewLayoutId);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
         }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-
         return viewHolder;
     }
 
     /**
      * 更新一条数据
+     *
      * @param position
      * @param data
      */
     public void updateData(int position, T data)
     {
-        if(position >=0 && position < getCount() && null == data)
+        if (position >= 0 && position < getCount() && null != data)
         {
-            if(!strictlyReuse)
+            if (!strictlyReuse)
             {
-                convertViews.remove(position);
+                View convertView = convertViews.get(getItem(position));
+                this.items.set(position, data);
+                if (null != convertView)
+                {
+                    fillData(position, convertView, parentView);
+                }
             }
-            this.items.set(position, data);
-            this.notifyDataSetChanged();
+            else
+            {
+                this.items.set(position, data);
+                notifyDataSetChanged();
+            }
         }
     }
 
@@ -250,7 +261,7 @@ public class TGListAdapter<T> extends BaseAdapter
     {
         if (null != data)
         {
-            if(this.items != data)
+            if (this.items != data)
             {
                 this.items.clear();
                 this.items.addAll(data);
@@ -278,27 +289,35 @@ public class TGListAdapter<T> extends BaseAdapter
 
     /**
      * 局部刷新，data必需是列表中数据的一部分
+     *
      * @param data
      */
     public void updatePartData(List<T> data)
     {
-        if (null != data)
+        if (null != data && this.items != data)
         {
-            if(this.items != data)
+            for (int i = 0; i < data.size(); i++)
             {
-                for (int i = 0; i < data.size(); i++)
+                T dataItem = data.get(i);
+                int position = this.items.indexOf(dataItem);
+                if (position > -1)
                 {
-                    T dataItem = data.get(i);
-                    int position = this.items.indexOf(dataItem);
-                    if(position > -1)
+                    if (!strictlyReuse)
                     {
-                        this.items.set(position, dataItem);
-                        convertViews.remove(position);
+                        View convertView = convertViews.get(dataItem);
+                        if (null != convertView)
+                        {
+                            fillData(position, convertView, parentView);
+                        }
                     }
                     else
                     {
-                        this.items.add(dataItem);
+                        this.items.set(position, dataItem);
                     }
+                }
+                else
+                {
+                    this.items.add(dataItem);
                 }
             }
             notifyDataSetChanged();
@@ -307,6 +326,7 @@ public class TGListAdapter<T> extends BaseAdapter
 
     /**
      * 局部刷新，data必需是列表中数据的一部分
+     *
      * @param data
      */
     public void updatePartData(T[] data)
@@ -317,10 +337,20 @@ public class TGListAdapter<T> extends BaseAdapter
             {
                 T dataItem = data[i];
                 int position = this.items.indexOf(dataItem);
-                if(position > -1)
+                if (position > -1)
                 {
-                    this.items.set(position, dataItem);
-                    convertViews.remove(position);
+                    if (!strictlyReuse)
+                    {
+                        View convertView = convertViews.get(dataItem);
+                        if (null != convertView)
+                        {
+                            fillData(position, convertView, parentView);
+                        }
+                    }
+                    else
+                    {
+                        this.items.set(position, dataItem);
+                    }
                 }
                 else
                 {
@@ -333,6 +363,7 @@ public class TGListAdapter<T> extends BaseAdapter
 
     /**
      * 局部刷新，data必需是列表中数据的一个
+     *
      * @param data
      */
     public void updatePartData(T data)
@@ -340,16 +371,14 @@ public class TGListAdapter<T> extends BaseAdapter
         if (null != data)
         {
             int position = this.items.indexOf(data);
-            if(position > -1)
+            if (position > -1)
             {
-                this.items.set(position, data);
-                convertViews.remove(position);
+                updateData(position, data);
             }
             else
             {
-                this.items.add(data);
+                appendData(data);
             }
-            notifyDataSetChanged();
         }
     }
 
@@ -383,6 +412,7 @@ public class TGListAdapter<T> extends BaseAdapter
 
     /**
      * 向列表行追加数据
+     *
      * @param data
      */
     public void appendData(T data)
@@ -444,7 +474,7 @@ public class TGListAdapter<T> extends BaseAdapter
         if (items.size() > position && position >= 0)
         {
             items.remove(position);
-            convertViews.remove(position);
+            convertViews.remove(getItem(position));
             notifyDataSetChanged();
         }
     }
@@ -458,8 +488,8 @@ public class TGListAdapter<T> extends BaseAdapter
     {
         if (items.contains(item))
         {
+            convertViews.remove(item);
             items.remove(item);
-            convertViews.remove(items.indexOf(item));
             notifyDataSetChanged();
         }
     }
@@ -479,23 +509,33 @@ public class TGListAdapter<T> extends BaseAdapter
         return context;
     }
 
-    public Handler getHandler()
+    /**
+     * 设置Extra数据
+     *
+     * @param key
+     * @param extra
+     */
+    public void putExtra(int key, Object extra)
     {
-        return handler;
+        if (null == extras)
+        {
+            extras = new SparseArray<Object>();
+        }
+        extras.put(key, extra);
     }
 
-    public void setHandler(Handler handler)
+    /**
+     * 获取Extra数据
+     *
+     * @param key
+     * @return
+     */
+    public Object getExtra(int key)
     {
-        this.handler = handler;
-    }
-
-    public Object getTag()
-    {
-        return tag;
-    }
-
-    public void setTag(Object tag)
-    {
-        this.tag = tag;
+        if (null == extras)
+        {
+            return null;
+        }
+        return extras.get(key);
     }
 }

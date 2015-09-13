@@ -77,6 +77,10 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 	 */
 	private boolean circleable = true;
 
+	private DotTabAdapter dotTabAdapter;
+
+	private BannerPagerAdapter bannerPagerAdapter;
+
 	public DotIndicatorBannerPagerView(Context context)
 	{
 		super(context);
@@ -129,14 +133,23 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 		dataList.clear();
 		dataList.addAll(data);
 
-		// 初始化indicator
-		tabView.setAdapter(new DotTabAdapter((Activity) getContext(), dataList));
-		tabView.setOnTabChangeListener(this);
-		// 必须在setOnTabChangeListener后调用
-		tabView.setSelection(0);
+		if(null == dotTabAdapter)
+		{
+			dotTabAdapter = new DotTabAdapter((Activity) getContext(), dataList);
+			tabView.setAdapter(dotTabAdapter);
+			// 初始化indicator
+			tabView.setOnTabChangeListener(this);
+			tabView.setSelection(0);
+		}
+		else
+		{
+			dotTabAdapter.updateData(data);
+		}
 
 		// 初始化banner
-		bannerViewPager.setAdapter(new BannerPagerAdapter((Activity) getContext(), dataList));
+		bannerPagerAdapter = new BannerPagerAdapter((Activity) getContext(), dataList);
+		bannerViewPager.setAdapter(bannerPagerAdapter);
+
 		bannerViewPager.setOnPageChangeListener(this);
 
 		// 设置导航圆点显示模式
@@ -329,7 +342,10 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 	 */
 	public void setCurrentPage(int page)
 	{
-		bannerViewPager.setCurrentItem(page);
+		if(page != bannerViewPager.getCurrentItem())
+		{
+			bannerViewPager.setCurrentItem(page);
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -373,7 +389,14 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 		@Override
 		protected void fillData(int position, View convertView, ViewGroup parent)
 		{
-			convertView.setBackgroundDrawable(dotDefaultRes);
+			if(tabView.getCurrentTab() == position)
+			{
+				convertView.setBackgroundDrawable(dotSelectedRes);
+			}
+			else
+			{
+				convertView.setBackgroundDrawable(dotDefaultRes);
+			}
 		}
 	}
 

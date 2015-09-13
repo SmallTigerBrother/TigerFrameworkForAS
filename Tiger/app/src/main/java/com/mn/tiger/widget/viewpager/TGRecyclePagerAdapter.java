@@ -205,6 +205,19 @@ public class TGRecyclePagerAdapter<T> extends PagerAdapter
     {
         return pagerData;
     }
+
+    public void updateData(List<T> data)
+    {
+        if(null != data)
+        {
+            if(pagerData != data)
+            {
+                this.pagerData.clear();
+                this.pagerData.addAll(data);
+            }
+            this.notifyDataSetChanged();
+        }
+    }
     
     /**
      * 保存重用视图的数组

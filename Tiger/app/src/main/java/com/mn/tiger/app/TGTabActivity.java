@@ -1,8 +1,5 @@
 package com.mn.tiger.app;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -10,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,6 +22,9 @@ import com.mn.tiger.widget.tab.TGTabView.LayoutParams;
 import com.mn.tiger.widget.tab.TGTabView.OnTabChangeListener;
 import com.mn.tiger.widget.viewpager.TGFragmentPagerAdapter;
 import com.mn.tiger.widget.viewpager.TGViewPager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * 带底部Tab的FragmentActivity
@@ -260,9 +259,9 @@ OnPageChangeListener, OnTabChangeListener
         private TGBadgeView badgeView;
         
         @Override
-        public View initView(View convertView, ViewGroup parent, int position)
+        public View initView(ViewGroup parent, int viewType)
         {
-            View view = super.initView(convertView, parent, position);
+            View view = super.initView(parent, viewType);
             //设置tab均分
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                                                          LayoutParams.WRAP_CONTENT, 1);
@@ -278,7 +277,7 @@ OnPageChangeListener, OnTabChangeListener
         }
         
         @Override
-        public void fillData(ViewGroup parent, View convertView, TabModel itemData, int position)
+        public void fillData(ViewGroup parent, View convertView, TabModel itemData, int position, int viewType)
         {
             TGTabView.displayImage(itemData.getDefaultResName(), imageView);
             if(TextUtils.isEmpty(itemData.getTabName()))

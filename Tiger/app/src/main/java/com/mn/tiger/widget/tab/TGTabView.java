@@ -46,7 +46,20 @@ public class TGTabView extends LinearLayout
 	/**
 	 * 数据观察者对象，用于更新Tabview
 	 */
-	private DataSetObserver dataSetObserver = null;
+	private DataSetObserver dataSetObserver = new DataSetObserver()
+	{
+		@Override
+		public void onChanged()
+		{
+			bindViews();
+		}
+
+		@Override
+		public void onInvalidated()
+		{
+			bindViews();
+		}
+	};
 
 	public TGTabView(Context context)
 	{
@@ -155,31 +168,37 @@ public class TGTabView extends LinearLayout
 	 */
 	public void setAdapter(BaseAdapter adapter)
 	{
-		// 添加TabItem
-		this.removeAllViews();
-		this.adapter = adapter;
-		this.tabItems.clear();
-		for (int i = 0; i < adapter.getCount(); i++)
-		{
-			TabItem tabItem = new TabItem();
-			tabItem.setIndex(i);
-			tabItem.setConvertView(adapter.getView(i, null, this));
-			this.addTabItem(tabItem);
-		}
-
 		try
 		{
 			// 注册数据观察者
-			if (null != dataSetObserver)
+			if (null != this.adapter && null != dataSetObserver)
 			{
-				adapter.unregisterDataSetObserver(dataSetObserver);
+				this.adapter.unregisterDataSetObserver(dataSetObserver);
 			}
-			dataSetObserver = new TabViewDatasetObserver();
-			adapter.registerDataSetObserver(dataSetObserver);
 		}
 		catch (Exception e)
 		{
 			LOG.e(e);
+		}
+
+		this.adapter = adapter;
+		this.adapter.registerDataSetObserver(dataSetObserver);
+		this.adapter.notifyDataSetChanged();
+	}
+
+	private void bindViews()
+	{
+		if(null != adapter)
+		{
+			this.tabItems.clear();
+			this.removeAllViews();
+			for (int i = 0; i < adapter.getCount(); i++)
+			{
+				TabItem tabItem = new TabItem();
+				tabItem.setIndex(i);
+				tabItem.setConvertView(adapter.getView(i, null, this));
+				this.addTabItem(tabItem);
+			}
 		}
 
 		// 设置选中项
@@ -240,7 +259,7 @@ public class TGTabView extends LinearLayout
 
 		/**
 		 * 设置内容视图
-		 * @param contentView
+		 * @param convertView
 		 *            内容视图
 		 */
 		public void setConvertView(View convertView)
@@ -265,18 +284,6 @@ public class TGTabView extends LinearLayout
 		public void setIndex(int index)
 		{
 			this.index = index;
-		}
-	}
-
-	/**
-	 * 数据观察者类
-	 */
-	private class TabViewDatasetObserver extends DataSetObserver
-	{
-		@Override
-		public void onChanged()
-		{
-			setAdapter(adapter);
 		}
 	}
 	

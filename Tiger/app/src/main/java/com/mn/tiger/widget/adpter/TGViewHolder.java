@@ -1,12 +1,11 @@
 package com.mn.tiger.widget.adpter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.concurrent.RecursiveTask;
+import android.widget.BaseAdapter;
 
 import butterknife.ButterKnife;
 
@@ -33,12 +32,24 @@ public abstract class TGViewHolder<T>
 
 	/**
 	 * 初始化列表行视图
-	 * @param convertView
 	 * @return 需要返回convertView
 	 */
-	public View initView(View convertView, ViewGroup parent, int position)
+	public View initView(ViewGroup parent, int viewType)
 	{
-		ButterKnife.bind(this, convertView);
+		View convertView = null;
+		if (layoutId > 0)
+		{
+			try
+			{
+				convertView = LayoutInflater.from(context).inflate(layoutId, null);
+				ButterKnife.bind(this, convertView);
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+
 		return convertView;
 	}
 
@@ -65,7 +76,7 @@ public abstract class TGViewHolder<T>
 	 * @param itemData
 	 * @param position
 	 */
-	protected void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position)
+	protected void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position, int viewType)
 	{
 
 	}
@@ -75,7 +86,12 @@ public abstract class TGViewHolder<T>
 	 * @param itemData
 	 * @param position
 	 */
-	public abstract void fillData(ViewGroup parent, View convertView, T itemData, int position);
+	public abstract void fillData(ViewGroup parent, View convertView, T itemData, int position, int viewType);
+
+	protected int getItemViewType(int position)
+	{
+		return BaseAdapter.IGNORE_ITEM_VIEW_TYPE;
+	}
 
 	protected Context getContext()
 	{

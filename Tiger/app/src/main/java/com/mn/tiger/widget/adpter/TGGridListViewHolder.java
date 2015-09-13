@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 public abstract class TGGridListViewHolder<T> extends TGViewHolder<T>
 {
 	@Override
-	public View initView(View convertView, ViewGroup parent,int position)
+	public View initView(ViewGroup parent,int viewType)
 	{
 		int columnNum = ((TGGridListAdapter<T>)getAdapter()).getColumnNum();
 		
@@ -51,7 +51,7 @@ public abstract class TGGridListViewHolder<T> extends TGViewHolder<T>
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void fillData(ViewGroup parent, View convertView, T itemData, int position)
+	public void fillData(ViewGroup parent, View convertView, T itemData, int position, int viewType)
 	{
 		TGGridListAdapter<T> listAdapter = (TGGridListAdapter<T>) getAdapter();
  		int columnNum = listAdapter.getColumnNum();
@@ -97,7 +97,7 @@ public abstract class TGGridListViewHolder<T> extends TGViewHolder<T>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void updateViewDimension(ViewGroup parent, View convertView, T itemData,
-			int position)
+			int position, int viewType)
 	{
 		TGGridListAdapter<T> listAdapter = (TGGridListAdapter<T>) getAdapter();
  		int columnNum = listAdapter.getColumnNum();
