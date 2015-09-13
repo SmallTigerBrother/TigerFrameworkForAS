@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
-import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshView;
 import com.mn.tiger.widget.recyclerview.TGRecyclerView;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;

@@ -1,7 +1,6 @@
 package com.mn.tiger.widget.pulltorefresh;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshView;
 
 import java.lang.reflect.Field;
 

@@ -1,4 +1,4 @@
-package com.mn.tiger.widget.pulltorefresh.library;
+package com.mn.tiger.widget.pulltorefresh;
 
 public interface IPullToRefreshView
 {

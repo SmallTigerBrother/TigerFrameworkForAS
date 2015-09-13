@@ -15,16 +15,8 @@
  *******************************************************************************/
 package com.mn.tiger.widget.pulltorefresh;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ScrollView;
-
-import com.mn.tiger.R;
-import com.mn.tiger.widget.pulltorefresh.library.IPullToRefreshView;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 
