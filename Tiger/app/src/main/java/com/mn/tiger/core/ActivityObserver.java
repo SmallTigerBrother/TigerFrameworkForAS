@@ -1,4 +1,4 @@
-package com.mn.tiger.app;
+package com.mn.tiger.core;
 
 import android.content.Intent;
 

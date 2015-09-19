@@ -1,9 +1,5 @@
 package com.mn.tiger.collection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.content.Context;
 
 import com.mn.tiger.datastorage.TGDBManager;
@@ -12,12 +8,26 @@ import com.mn.tiger.datastorage.db.sqlite.Selector;
 import com.mn.tiger.datastorage.db.sqlite.WhereBuilder;
 import com.mn.tiger.log.Logger;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 本地收藏管理类
  */
 public class LocalCollectionManager<T extends ICollectable> implements ICollectionManager<T>
 {
 	private static final Logger LOG = Logger.getLogger(LocalCollectionManager.class);
+
+	/**
+	 * 本地数据插入异常
+	 */
+	public static final int ERROR_INSERT_LOCAL_COLLECTION = -1;
+
+	/**
+	 * 本地数据移除异常
+	 */
+	public static final int ERROR_REMOVE_LOCAL_COLLECTION = -2;
 	
 	/**
 	 * 收藏数据类名
@@ -67,14 +77,14 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 	
 	@Override
 	public void insertCollection(Context context, T collectInfo,
-			IModifyCollectionCallback callback)
+			OnInsertCallback callback)
 	{
 		try
 		{
 			getDBManager(context).saveOrUpdate(collectInfo);
 			if(null != callback)
 			{
-				callback.onSuccess(OPERATE_INSERT);
+				callback.onInsertSuccess();
 			}
 		}
 		catch (DbException e)
@@ -82,21 +92,21 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 			LOG.e("[Method:insertLocalCollection] " + e.getMessage());
 			if(null != callback)
 			{
-				callback.onError(ERROR_INSERT_LOCAL_COLLECTION, e.getMessage());
+				callback.onInsertError(ERROR_INSERT_LOCAL_COLLECTION, e.getMessage());
 			}
 		}
 	}
 
 	@Override
 	public void insertCollection(Context context, T[] collectInfos,
-			IModifyCollectionCallback callback)
+			OnInsertCallback callback)
 	{
 		try
 		{
 			getDBManager(context).saveOrUpdateAll(Arrays.asList(collectInfos));
 			if(null != callback)
 			{
-				callback.onSuccess(OPERATE_INSERT);
+				callback.onInsertSuccess();
 			}
 		}
 		catch (DbException e)
@@ -104,14 +114,14 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 			LOG.e("[Method:insertLocalCollection] " + e.getMessage());
 			if(null != callback)
 			{
-				callback.onError(ERROR_INSERT_LOCAL_COLLECTION, e.getMessage());
+				callback.onInsertError(ERROR_INSERT_LOCAL_COLLECTION, e.getMessage());
 			}
 		}
 	}
 	
 	@Override
 	public void removeCollection(Context context, Object value, 
-			IModifyCollectionCallback callback)
+			OnRemoveCallback callback)
 	{
 		try
 		{
@@ -119,7 +129,7 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 						WhereBuilder.b(idColumnName, "=", value));
 			if(null != callback)
 			{
-				callback.onSuccess(OPERATE_REMOVE);
+				callback.onRemoveSuccess();
 			}
 		}
 		catch (DbException e)
@@ -127,7 +137,7 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 			LOG.e("[Method:removeLocalCollection] " + e.getMessage());
 			if(null != callback)
 			{
-				callback.onError(ERROR_REMOVE_LOCAL_COLLECTION, e.getMessage());
+				callback.onRemoveError(ERROR_REMOVE_LOCAL_COLLECTION, e.getMessage());
 			}
 		}
 	}
@@ -140,7 +150,7 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 
 	@Override
 	public void getCollections(Context context, int pageNo, int pageSize,
-			IQueryCollectionsCallback<List<T>> callback)
+			OnQueryCallback<List<T>> callback)
 	{
 		List<T> allProductInfos = findAllLocalCollectionsDesc(context);
 		//pageNo从1开始
@@ -153,7 +163,7 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 			//调用回调
 			if(null != callback)
 			{
-				callback.onSuccess(new ArrayList<T>());
+				callback.onQuerySuccess(new ArrayList<T>());
 			}
 			return;
 		}
@@ -167,12 +177,12 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		//调用回调
 		if(null != callback)
 		{
-			callback.onSuccess(allProductInfos.subList(startIndex, endIndex));
+			callback.onQuerySuccess(allProductInfos.subList(startIndex, endIndex));
 		}
 	}
 
 	@Override
-	public void getCollections(Context context, Object lastCollectionId, int pageSize, IQueryCollectionsCallback<Object> callback)
+	public <E> void getCollections(Context context, Object lastCollectionId, int pageSize, OnQueryCallback<E> callback)
 	{
 
 	}

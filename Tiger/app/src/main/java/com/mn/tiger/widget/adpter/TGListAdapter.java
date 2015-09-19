@@ -2,14 +2,12 @@ package com.mn.tiger.widget.adpter;
 
 import android.content.Context;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -51,21 +49,6 @@ public class TGListAdapter<T> extends BaseAdapter
      */
     private SparseArray<Object> extras;
 
-    /**
-     * 是否为严格重用
-     */
-    private boolean strictlyReuse = true;
-
-    /**
-     * 保存列表行View的数组
-     */
-    private HashMap<Object, View> convertViews;
-
-    /**
-     * Adapter填充的ViewGroup
-     */
-    private ViewGroup parentView;
-
     private TGViewHolder<T> internalViewHolder;
 
     /**
@@ -87,16 +70,6 @@ public class TGListAdapter<T> extends BaseAdapter
         this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
         this.internalViewHolder = initViewHolder();
-
-        //根据内存容量判断是否启用严格重用
-        setStrictlyReuse(strictlyReuse);
-    }
-
-    public void setStrictlyReuse(boolean strictlyReuse)
-    {
-        this.strictlyReuse = strictlyReuse;
-        convertViews = new HashMap<Object, View>();
-        convertViews.clear();
     }
 
     /**
@@ -138,30 +111,11 @@ public class TGListAdapter<T> extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        this.parentView = parent;
-
-        if (!strictlyReuse)
-        {
-            convertView = convertViews.get(getItem(position));
-        }
-
         if (null == convertView)
         {
             convertView = initView(parent, position);
-
-            if (!strictlyReuse)
-            {
-                convertViews.put(getItem(position), convertView);
-            }
-            fillData(position, convertView, parent);
         }
-        else
-        {
-            if (strictlyReuse)
-            {
-                fillData(position, convertView, parent);
-            }
-        }
+        fillData(position, convertView, parent);
 
         return convertView;
     }
@@ -234,20 +188,8 @@ public class TGListAdapter<T> extends BaseAdapter
     {
         if (position >= 0 && position < getCount() && null != data)
         {
-            if (!strictlyReuse)
-            {
-                View convertView = convertViews.get(getItem(position));
-                this.items.set(position, data);
-                if (null != convertView)
-                {
-                    fillData(position, convertView, parentView);
-                }
-            }
-            else
-            {
-                this.items.set(position, data);
-                notifyDataSetChanged();
-            }
+            this.items.set(position, data);
+            notifyDataSetChanged();
         }
     }
 
@@ -266,7 +208,6 @@ public class TGListAdapter<T> extends BaseAdapter
                 this.items.clear();
                 this.items.addAll(data);
             }
-            convertViews.clear();
             notifyDataSetChanged();
         }
     }
@@ -282,7 +223,6 @@ public class TGListAdapter<T> extends BaseAdapter
         {
             this.items.clear();
             this.items.addAll(Arrays.asList(data));
-            convertViews.clear();
             notifyDataSetChanged();
         }
     }
@@ -302,18 +242,7 @@ public class TGListAdapter<T> extends BaseAdapter
                 int position = this.items.indexOf(dataItem);
                 if (position > -1)
                 {
-                    if (!strictlyReuse)
-                    {
-                        View convertView = convertViews.get(dataItem);
-                        if (null != convertView)
-                        {
-                            fillData(position, convertView, parentView);
-                        }
-                    }
-                    else
-                    {
-                        this.items.set(position, dataItem);
-                    }
+                    this.items.set(position, dataItem);
                 }
                 else
                 {
@@ -339,18 +268,7 @@ public class TGListAdapter<T> extends BaseAdapter
                 int position = this.items.indexOf(dataItem);
                 if (position > -1)
                 {
-                    if (!strictlyReuse)
-                    {
-                        View convertView = convertViews.get(dataItem);
-                        if (null != convertView)
-                        {
-                            fillData(position, convertView, parentView);
-                        }
-                    }
-                    else
-                    {
-                        this.items.set(position, dataItem);
-                    }
+                    this.items.set(position, dataItem);
                 }
                 else
                 {
@@ -474,7 +392,6 @@ public class TGListAdapter<T> extends BaseAdapter
         if (items.size() > position && position >= 0)
         {
             items.remove(position);
-            convertViews.remove(getItem(position));
             notifyDataSetChanged();
         }
     }
@@ -488,7 +405,6 @@ public class TGListAdapter<T> extends BaseAdapter
     {
         if (items.contains(item))
         {
-            convertViews.remove(item);
             items.remove(item);
             notifyDataSetChanged();
         }
@@ -500,7 +416,6 @@ public class TGListAdapter<T> extends BaseAdapter
     public void removeAll()
     {
         items.clear();
-        convertViews.clear();
         notifyDataSetChanged();
     }
 

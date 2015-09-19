@@ -2,7 +2,7 @@ package com.mn.tiger.push;
 
 import android.content.Context;
 
-import com.mn.tiger.cache.TGCache;
+import com.mn.tiger.core.cache.TGCache;
 import com.mn.tiger.datastorage.TGDBManager;
 import com.mn.tiger.datastorage.db.exception.DbException;
 import com.mn.tiger.datastorage.db.sqlite.Selector;

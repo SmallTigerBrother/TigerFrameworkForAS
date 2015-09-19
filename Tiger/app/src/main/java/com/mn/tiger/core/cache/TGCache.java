@@ -1,4 +1,4 @@
-package com.mn.tiger.cache;
+package com.mn.tiger.core.cache;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

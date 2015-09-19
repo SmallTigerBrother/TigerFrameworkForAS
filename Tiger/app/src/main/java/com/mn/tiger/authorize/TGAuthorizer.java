@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.mn.tiger.cache.TGCache;
+import com.mn.tiger.core.cache.TGCache;
 
 /**
  * 登录认证类

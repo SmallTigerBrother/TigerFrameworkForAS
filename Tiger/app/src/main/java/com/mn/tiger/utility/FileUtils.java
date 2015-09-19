@@ -21,7 +21,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
 
-import com.mn.tiger.encode.TGEncode;
+import com.mn.tiger.core.encode.TGEncode;
 import com.mn.tiger.log.LogTools;
 
 /**

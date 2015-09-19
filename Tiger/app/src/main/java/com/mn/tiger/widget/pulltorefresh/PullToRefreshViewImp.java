@@ -1,5 +1,8 @@
 package com.mn.tiger.widget.pulltorefresh;
 
+import android.os.Handler;
+import android.view.View;
+
 import com.mn.tiger.log.Logger;
 
 import java.lang.reflect.Field;
@@ -10,7 +13,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 /**
  * Created by Dalang on 2015/9/11.
  */
-class PullToRefreshViewImp
+class PullToRefreshViewImp implements BGARefreshLayout.BGARefreshLayoutDelegate
 {
     private static final Logger LOG = Logger.getLogger(PullToRefreshViewImp.class);
 
@@ -18,97 +21,196 @@ class PullToRefreshViewImp
 
     private BGARefreshViewHolder refreshViewHolder;
 
-    private Field mRefreshHeaderViewField;
+    private IPullToRefreshView.OnRefreshListener onRefreshListener;
+
+    private static Handler handler = new Handler();
+
+    private IPullToRefreshView.Mode mode = IPullToRefreshView.Mode.BOTH;
 
     PullToRefreshViewImp(BGARefreshLayout layout)
     {
         this.refreshLayout = layout;
+        this.refreshLayout.setIsShowLoadingMoreView(true);
     }
 
     public void setMode(IPullToRefreshView.Mode mode)
     {
-        switch (mode)
+        if(this.mode != mode)
         {
-            case DISABLED:
-                setPullStartDisable();
-                setPullEndDisable();
-                break;
+            this.mode = mode;
+            switch (mode)
+            {
+                case DISABLED:
+                    setPullStartDisable();
+                    setPullEndDisable();
+                    break;
 
-            case BOTH:
-                setPullStartEnable();
-                setPullEndEnable();
-                break;
+                case BOTH:
+                    setPullStartEnable();
+                    setPullEndEnable();
+                    break;
 
-            case PULL_FROM_END:
-                setPullStartDisable();
-                setPullEndEnable();
-                break;
+                case PULL_FROM_END:
+                    setPullStartDisable();
+                    setPullEndEnable();
+                    break;
 
-            case PULL_FROM_START:
-                setPullStartEnable();
-                setPullStartDisable();
-                break;
+                case PULL_FROM_START:
+                    setPullStartEnable();
+                    setPullEndDisable();
+                    break;
+            }
         }
     }
 
     public void setRefreshViewHolder(BGARefreshViewHolder refreshViewHolder)
     {
         this.refreshViewHolder = refreshViewHolder;
+        setMode(mode);
     }
 
     private void setPullStartDisable()
     {
-        if(null == mRefreshHeaderViewField)
+        try
         {
-            try
+            Field mRefreshHeaderViewField = BGARefreshLayout.class.getDeclaredField("mRefreshHeaderView");
+            if(null != mRefreshHeaderViewField)
             {
-                mRefreshHeaderViewField = BGARefreshLayout.class.getField("mRefreshHeaderViewField");
                 mRefreshHeaderViewField.setAccessible(true);
-                mRefreshHeaderViewField.set(refreshLayout, null);
+                View mRefreshHeaderView = ((View) mRefreshHeaderViewField.get(refreshLayout));
+                if(null != mRefreshHeaderView)
+                {
+                    mRefreshHeaderViewField.set(refreshLayout, null);
+                }
             }
-            catch (Exception e)
-            {
-                LOG.e(e);
-            }
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
         }
     }
 
     private void setPullStartEnable()
     {
-        refreshLayout.setRefreshViewHolder(refreshViewHolder);
+        try
+        {
+            Field mRefreshHeaderViewField = BGARefreshLayout.class.getDeclaredField("mRefreshHeaderView");
+            if(null != mRefreshHeaderViewField)
+            {
+                mRefreshHeaderViewField.setAccessible(true);
+                Object value = mRefreshHeaderViewField.get(refreshLayout);
+                if(null == value && null != refreshViewHolder)
+                {
+                    mRefreshHeaderViewField.set(refreshLayout, refreshViewHolder.getRefreshHeaderView());
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
+        }
     }
 
     private void setPullEndDisable()
     {
-        if(null != refreshViewHolder)
+        try
         {
-            try
+            final Field mLoadMoreFooterViewField = BGARefreshLayout.class.getDeclaredField("mLoadMoreFooterView");
+            if(null != mLoadMoreFooterViewField && null != refreshViewHolder)
             {
-                Field mIsLoadingMoreEnabledField = BGARefreshViewHolder.class.getField("mIsLoadingMoreEnabled");
-                mIsLoadingMoreEnabledField.setAccessible(true);
-                mIsLoadingMoreEnabledField.set(refreshViewHolder, true);
+                mLoadMoreFooterViewField.setAccessible(true);
+                final View mLoadMoreFooterView = ((View) mLoadMoreFooterViewField.get(refreshLayout));
+                handler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try
+                        {
+                            if(null != mLoadMoreFooterView)
+                            {
+                                mLoadMoreFooterViewField.set(refreshLayout, null);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            LOG.e(e);
+                        }
+                    }
+                }, refreshViewHolder.getTopAnimDuration());
             }
-            catch (Exception e)
-            {
-                LOG.e(e);
-            }
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
         }
     }
 
     private void setPullEndEnable()
     {
-        if(null != refreshViewHolder)
+        try
         {
-            try
+            Field mLoadMoreFooterViewField = BGARefreshLayout.class.getDeclaredField("mLoadMoreFooterView");
+            if(null != mLoadMoreFooterViewField)
             {
-                Field mIsLoadingMoreEnabledField = BGARefreshViewHolder.class.getField("mIsLoadingMoreEnabled");
-                mIsLoadingMoreEnabledField.setAccessible(true);
-                mIsLoadingMoreEnabledField.set(refreshViewHolder, true);
+                mLoadMoreFooterViewField.setAccessible(true);
+                Object value = mLoadMoreFooterViewField.get(refreshLayout);
+                if(null == value && null != refreshViewHolder)
+                {
+                    mLoadMoreFooterViewField.set(refreshLayout, refreshViewHolder.getLoadMoreFooterView());
+                }
             }
-            catch (Exception e)
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
+        }
+    }
+
+    public void setOnRefreshListener(IPullToRefreshView.OnRefreshListener onRefreshListener)
+    {
+        this.onRefreshListener = onRefreshListener;
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout bgaRefreshLayout)
+    {
+        if(null != onRefreshListener)
+        {
+            onRefreshListener.onPullDownToRefresh();
+        }
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout bgaRefreshLayout)
+    {
+        if(null != onRefreshListener)
+        {
+            onRefreshListener.onPullUpToRefresh();
+        }
+        return true;
+    }
+
+    public void postRefreshRunnable(Runnable runnable)
+    {
+        try
+        {
+            Field mIsLoadingMoreField = BGARefreshLayout.class.getDeclaredField("mIsLoadingMore");
+            mIsLoadingMoreField.setAccessible(true);
+            Boolean mIsLoadingMore = (Boolean)mIsLoadingMoreField.get(refreshLayout);
+
+            if(!mIsLoadingMore && null != refreshViewHolder)
             {
-                LOG.e(e);
+                handler.postDelayed(runnable, refreshViewHolder.getTopAnimDuration());
             }
+            else
+            {
+                handler.post(runnable);
+            }
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
         }
     }
 }

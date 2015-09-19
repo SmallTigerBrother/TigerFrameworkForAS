@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.utility.ImageLoaderUitls;
+import com.mn.tiger.utility.ImageLoaderUtils;
 
 /**
  * 自定义Tab视图
@@ -299,7 +299,7 @@ public class TGTabView extends LinearLayout
 			if(imageName.startsWith("http"))
 			{
 				//如果是在线文件，使用ImageLoader加载
-				ImageLoaderUitls.displayImage(imageName, imageView);
+				ImageLoaderUtils.displayImage(imageName, imageView);
 			}
 			else if(imageName.startsWith("file"))
 			{

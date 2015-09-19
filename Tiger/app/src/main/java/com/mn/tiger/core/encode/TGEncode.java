@@ -1,4 +1,4 @@
-package com.mn.tiger.encode;
+package com.mn.tiger.core.encode;
 
 import it.sauronsoftware.base64.Base64;
 
@@ -24,9 +24,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.mn.tiger.cache.TGCache;
+import com.mn.tiger.core.cache.TGCache;
 import com.mn.tiger.utility.FileUtils;
-import com.mn.tiger.zip.TGZip;
+import com.mn.tiger.core.zip.TGZip;
 
 public class TGEncode
 {

@@ -2,6 +2,7 @@ package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -38,6 +39,16 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
 
     private ViewGroup parent;
 
+    /**
+     * 保存extras数据的数组
+     */
+    private SparseArray<Object> extras;
+
+    /**
+     * 保存position - viewHolder的数组
+     */
+    private SparseArray<TGRecyclerViewHolder<T>> viewHolders;
+
     public TGRecyclerViewAdapter(Context context, List<T> items, int convertViewLayoutId,
                                  Class<? extends TGRecyclerViewHolder<T>> viewHolderClass)
     {
@@ -48,8 +59,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             this.items.addAll(items);
         }
 
+        this.viewHolders = new SparseArray<TGRecyclerViewHolder<T>>();
+
         this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
+        this.setHasStableIds(true);
     }
 
     @Override
@@ -58,7 +72,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         this.parent = parent;
         TGRecyclerViewHolder<T> viewHolder = initViewHolder();
         viewHolder.setOnItemClickListener(onItemClickListener);
-        viewHolder.setRecyclerView((RecyclerView)parent);
+        viewHolder.setRecyclerView((RecyclerView) parent);
         InternalRecyclerViewHolder<T> internalRecyclerViewHolder = new InternalRecyclerViewHolder<T>(viewHolder.initView(parent,viewType));
         internalRecyclerViewHolder.setTGRecyclerViewHolder(viewHolder);
         return internalRecyclerViewHolder;
@@ -69,6 +83,32 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         holder.getTGRecyclerViewHolder().updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
         holder.getTGRecyclerViewHolder().fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+    }
+
+    @Override
+    public void onViewAttachedToWindow(InternalRecyclerViewHolder<T> holder)
+    {
+        super.onViewAttachedToWindow(holder);
+        //保存ViewHolder
+        viewHolders.put(holder.getAdapterPosition(), holder.getTGRecyclerViewHolder());
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(InternalRecyclerViewHolder<T> holder)
+    {
+        super.onViewDetachedFromWindow(holder);
+        //移除ViewHolder
+        viewHolders.remove(holder.getAdapterPosition());
+    }
+
+    /**
+     * 获取指定位置的ViewHolder
+     * @param position
+     * @return
+     */
+    public TGRecyclerViewHolder<T> getViewHolderAtPosition(int position)
+    {
+        return viewHolders.get(position);
     }
 
     @Override
@@ -90,6 +130,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             viewHolder = viewHolderClass.newInstance();
             viewHolder.setContext(context);
             viewHolder.setAdapter(this);
+            viewHolder.setLayoutId(convertViewLayoutId);
         }
         catch (Exception e)
         {
@@ -108,6 +149,17 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public int getItemCount()
     {
         return items.size();
+    }
+
+    public int getCount()
+    {
+        return getItemCount();
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
     }
 
     void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
@@ -181,8 +233,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                     }
                     else
                     {
-                        this.items.add(dataItem);
-                        notifyItemInserted(items.size() - 1);
+                        throw new RuntimeException("The data" + dataItem.toString() + " must be a part of list");
                     }
                 }
             }
@@ -208,8 +259,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                 }
                 else
                 {
-                    this.items.add(dataItem);
-                    notifyItemInserted(items.size() - 1);
+                    throw new RuntimeException("The data" + dataItem.toString() + " must be a part of list");
                 }
             }
         }
@@ -231,8 +281,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             }
             else
             {
-                this.items.add(data);
-                this.notifyItemInserted(items.size() - 1);
+                throw new RuntimeException("The data" + data.toString() + " must be a part of list");
             }
         }
     }
@@ -279,6 +328,122 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     }
 
     /**
+     * 在指定位置插入一条数据
+     * @param position
+     * @param data
+     */
+    public void insertData(int position, T data)
+    {
+        if(null != data && position >= 0 && position < this.items.size())
+        {
+            this.items.add(position, data);
+            notifyItemInserted(position);
+
+            notifyItemRangeChanged(position, this.items.size() - position);
+        }
+    }
+
+    /**
+     * 删除列表行
+     *
+     * @param position 列表行位置
+     */
+    public void removeItem(int position)
+    {
+        if (items.size() > position && position >= 0)
+        {
+            items.remove(position);
+            notifyItemRemoved(position);
+
+            notifyItemRangeChanged(position, this.items.size() - position);
+        }
+        else
+        {
+            throw new RuntimeException("invalid position " + position + ", the list size is " + items.size());
+        }
+    }
+
+    /**
+     * 删除列表行
+     *
+     * @param item 列表行数据
+     */
+    public void removeItem(T item)
+    {
+        int position = items.indexOf(item);
+        if (position > -1)
+        {
+            items.remove(item);
+            notifyItemRemoved(position);
+
+            notifyItemRangeChanged(position, this.items.size() - position);
+        }
+        else
+        {
+            throw new RuntimeException("The data" + item.toString() + " must be a part of list");
+        }
+    }
+
+    /**
+     * 删除多行数据
+     * @param data
+     */
+    public void removeItems(T[] data)
+    {
+        if(null != data && data.length > 0)
+        {
+            int minPosition = 0;
+            int position = -1;
+            for (T item : data)
+            {
+                position = items.indexOf(item);
+                if(minPosition > position && position > -1)
+                {
+                    minPosition = position;
+                }
+                items.remove(item);
+                notifyItemRemoved(position);
+            }
+
+            notifyItemRangeChanged(minPosition, this.items.size() - minPosition);
+        }
+    }
+
+    /**
+     * 删除多行数据
+     * @param data
+     */
+    public void removeItems(List<T> data)
+    {
+        if(null != data && data.size() > 0)
+        {
+            int minPosition = 0;
+            int position = -1;
+            for (T item : data)
+            {
+                position = items.indexOf(item);
+                if(minPosition > position && position > -1)
+                {
+                    minPosition = position;
+                }
+                items.remove(item);
+                notifyItemRemoved(position);
+            }
+
+            notifyItemRangeChanged(minPosition, this.items.size() - minPosition);
+        }
+    }
+
+    /**
+     * 清除所有数据
+     */
+    public void removeAll()
+    {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
      * 该方法的作用:
      * 获取列表数据
      *
@@ -318,47 +483,39 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         return null;
     }
 
-    /**
-     * 删除列表行
-     *
-     * @param position 列表行位置
-     */
-    public void removeItem(int position)
-    {
-        if (items.size() > position && position >= 0)
-        {
-            items.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
-
-    /**
-     * 删除列表行
-     *
-     * @param item 列表行数据
-     */
-    public void removeItem(T item)
-    {
-        int position = items.indexOf(item);
-        if (position > -1)
-        {
-            items.remove(item);
-            notifyItemRemoved(position);
-        }
-    }
-
-    /**
-     * 清除所有数据
-     */
-    public void removeAll()
-    {
-        items.clear();
-        notifyDataSetChanged();
-    }
-
     public Context getContext()
     {
         return context;
+    }
+
+    /**
+     * 设置Extra数据
+     *
+     * @param key
+     * @param extra
+     */
+    public void putExtra(int key, Object extra)
+    {
+        if (null == extras)
+        {
+            extras = new SparseArray<Object>();
+        }
+        extras.put(key, extra);
+    }
+
+    /**
+     * 获取Extra数据
+     *
+     * @param key
+     * @return
+     */
+    public Object getExtra(int key)
+    {
+        if (null == extras)
+        {
+            return null;
+        }
+        return extras.get(key);
     }
 
     static class InternalRecyclerViewHolder<T> extends RecyclerView.ViewHolder

@@ -1,26 +1,32 @@
 package com.mn.tiger.utility;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.mn.tiger.app.TGApplication;
-import com.mn.tiger.widget.viewflow.internal.PLA_AbsListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 /**
  * Imageloader工具类
  */
-public class ImageLoaderUitls
+public class ImageLoaderUtils
 {
     private static Handler retryHandler = new Handler();
-    
+
+    private static final int PAUSE_IMAGE_LOADER_SCROLL_DY = 300;
+
+    private static final int RESUME_IMAGE_LOADER_SCROLL_DY = 150;
+
     /**
      * 异步加载图片
      * @param uri 图片地址
@@ -30,7 +36,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().displayImage(uri, imageView);
     }
-    
+
     /**
      * 异步加载图片
      * @param uri 图片地址
@@ -40,8 +46,8 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().displayImage(uri, imageAware);
     }
-    
-    
+
+
     /**
      * 异步加载图片
      * @param uri 图片地址
@@ -52,7 +58,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().displayImage(uri, imageView, listener);
     }
-    
+
     /**
      * 异步加载图片
      * @param uri 图片地址
@@ -63,7 +69,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().displayImage(uri, imageView, options);
     }
-    
+
     /**
      * 异步加载图片
      * @param uri 图片地址
@@ -75,9 +81,9 @@ public class ImageLoaderUitls
                                     ImageLoadingListener listener)
     {
         TGApplication.getInstance().getImageLoader().displayImage(uri, imageView,
-                                                                  options, listener);
+                options, listener);
     }
-    
+
     /**
      * 加载Resource中的图片资源
      * @param resId
@@ -85,10 +91,10 @@ public class ImageLoaderUitls
      */
     public static void displayResourceImage(int resId, ImageView imageView)
     {
-        TGApplication.getInstance().getImageLoader().displayImage("drawable://" + resId, imageView,
-                                                                  TGApplication.getInstance().getResourceDisplayImageOptions());
+        TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.DRAWABLE.wrap(resId + ""), imageView,
+                TGApplication.getInstance().getResourceDisplayImageOptions());
     }
-    
+
     /**
      * 加载Resource中的图片资源
      * @param resId
@@ -97,9 +103,32 @@ public class ImageLoaderUitls
      */
     public static void displayResourceImage(int resId, ImageView imageView, DisplayImageOptions options)
     {
-        TGApplication.getInstance().getImageLoader().displayImage("drawable://" + resId, imageView, options);
+        TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.DRAWABLE.wrap(resId + ""), imageView, options);
     }
-    
+
+    /**
+     * 加载本地的图片资源
+     * @param filePath
+     * @param imageView
+     */
+    public static void displayLocalImage(String filePath, ImageView imageView)
+    {
+        TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.FILE.wrap(filePath), imageView,
+                TGApplication.getInstance().getResourceDisplayImageOptions());
+    }
+
+    /**
+     * 加载本地的图片资源
+     * @param filePath
+     * @param imageView
+     * @param options
+     */
+    public static void displayLocalImage(String filePath, ImageView imageView, DisplayImageOptions options)
+    {
+        TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.FILE.wrap(filePath), imageView, options);
+    }
+
+
     /**
      * 异步下载图片
      * @param uri 图片地址
@@ -109,7 +138,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().loadImage(uri, listener);
     }
-    
+
     /**
      * 异步下载图片
      * @param uri 图片地址
@@ -120,7 +149,17 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().loadImage(uri, options, listener);
     }
-    
+
+    /**
+     * 异步转换图片大小
+     * @param uri  图片地址
+     * @param imageSize  转换大小
+     * @return
+     */
+    public static Bitmap loadImageSync(String uri, ImageSize imageSize){
+        return TGApplication.getInstance().getImageLoader().loadImageSync(ImageDownloader.Scheme.FILE.wrap(uri), imageSize, simpleDisplayImageOptions());
+    }
+
     /**
      * 获取磁盘缓存的大小
      * @return 磁盘缓存大小，单位为byte
@@ -130,7 +169,7 @@ public class ImageLoaderUitls
     {
         return FileUtils.getDirSize(TGApplication.getInstance().getImageLoader().getDiskCache().getDirectory());
     }
-    
+
     /**
      * 清理磁盘缓存
      */
@@ -138,7 +177,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().clearDiskCache();
     }
-    
+
     /**
      * 清理内存缓存
      */
@@ -146,7 +185,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().clearMemoryCache();
     }
-    
+
     /**
      * 暂停ImageLoader
      */
@@ -154,7 +193,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().pause();
     }
-    
+
     /**
      * 重启ImageLoader
      */
@@ -162,7 +201,7 @@ public class ImageLoaderUitls
     {
         TGApplication.getInstance().getImageLoader().resume();
     }
-    
+
     /**
      * 创建一个懒加载的OnScrollListener，当屏幕滚动时不加载图片
      * @return
@@ -178,51 +217,42 @@ public class ImageLoaderUitls
                 {
                     case SCROLL_STATE_IDLE:
                     case SCROLL_STATE_TOUCH_SCROLL:
-                        ImageLoaderUitls.resumeImageLoader();
+                        ImageLoaderUtils.resumeImageLoader();
                         break;
                     case SCROLL_STATE_FLING:
-                        ImageLoaderUitls.pauseImageLoader();
+                        ImageLoaderUtils.pauseImageLoader();
                         break;
                 }
             }
-            
+
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
             {
             }
         };
     }
-    
-    /**
-     * 创建一个懒加载的PLAOnScrollListener，当屏幕滚动时不加载图片
-     * @return
-     */
-    public static PLA_AbsListView.OnScrollListener newLazyloadPLAOnScrollListener()
+
+    public static RecyclerView.OnScrollListener newLazyLoadRecyclerViewOnScrollListener()
     {
-        return new PLA_AbsListView.OnScrollListener()
+        return new RecyclerView.OnScrollListener()
         {
             @Override
-            public void onScrollStateChanged(PLA_AbsListView view, int scrollState)
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                switch (scrollState)
+                super.onScrolled(recyclerView, dx, dy);
+                dy = Math.abs(dy);
+                if(dy > PAUSE_IMAGE_LOADER_SCROLL_DY)
                 {
-                    case SCROLL_STATE_IDLE:
-                    case SCROLL_STATE_TOUCH_SCROLL:
-                        ImageLoaderUitls.resumeImageLoader();
-                        break;
-                    case SCROLL_STATE_FLING:
-                        ImageLoaderUitls.pauseImageLoader();
-                        break;
+                    ImageLoaderUtils.pauseImageLoader();
                 }
-            }
-            
-            @Override
-            public void onScroll(PLA_AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-            {
+                else if(dy < PAUSE_IMAGE_LOADER_SCROLL_DY)
+                {
+                    ImageLoaderUtils.resumeImageLoader();
+                }
             }
         };
     }
-    
+
     /**
      * 创建一个当内存溢出时自动重试的ImageLoadingListener
      * @param listener
@@ -233,7 +263,7 @@ public class ImageLoaderUitls
         final ImageLoadingListener imageLoadingListener = new ImageLoadingListener()
         {
             private int retryCount = 0;
-            
+
             @Override
             public void onLoadingStarted(String imageUri, View view)
             {
@@ -242,7 +272,7 @@ public class ImageLoaderUitls
                     listener.onLoadingStarted(imageUri, view);
                 }
             }
-            
+
             @Override
             public void onLoadingFailed(final String imageUri,final View view, FailReason failReason)
             {
@@ -253,7 +283,7 @@ public class ImageLoaderUitls
                         TGApplication.getInstance().getImageLoader().clearMemoryCache();
                         //重新加载图片
                         retryHandler.postDelayed(new Runnable()
-                                                 {
+                        {
                             @Override
                             public void run()
                             {
@@ -264,19 +294,19 @@ public class ImageLoaderUitls
                                 }
                             }
                         }, 200);
-                        
+
                         break;
-                        
+
                     default:
                         break;
                 }
-                
+
                 if(null != listener)
                 {
                     listener.onLoadingFailed(imageUri, view, failReason);
                 }
             }
-            
+
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
             {
@@ -285,7 +315,7 @@ public class ImageLoaderUitls
                     listener.onLoadingComplete(imageUri, view, loadedImage);
                 }
             }
-            
+
             @Override
             public void onLoadingCancelled(String imageUri, View view)
             {
@@ -295,21 +325,21 @@ public class ImageLoaderUitls
                 }
             }
         };
-        
+
         return imageLoadingListener;
     }
-    
+
     private class OOMRetryImageLoadingListener implements ImageLoadingListener
     {
         private int retryCount = 0;
-        
+
         private ImageLoadingListener listener;
-        
+
         public  OOMRetryImageLoadingListener(ImageLoadingListener listener)
         {
             this.listener = listener;
         }
-        
+
         @Override
         public void onLoadingStarted(String imageUri, View view)
         {
@@ -318,7 +348,7 @@ public class ImageLoaderUitls
                 listener.onLoadingStarted(imageUri, view);
             }
         }
-        
+
         @Override
         public void onLoadingFailed(final String imageUri,final View view, FailReason failReason)
         {
@@ -329,7 +359,7 @@ public class ImageLoaderUitls
                     TGApplication.getInstance().getImageLoader().clearMemoryCache();
                     //重新加载图片
                     retryHandler.postDelayed(new Runnable()
-                                             {
+                    {
                         @Override
                         public void run()
                         {
@@ -344,19 +374,19 @@ public class ImageLoaderUitls
                             }
                         }
                     }, 300);
-                    
+
                     break;
-                    
+
                 default:
                     break;
             }
-            
+
             if(null != listener)
             {
                 listener.onLoadingFailed(imageUri, view, failReason);
             }
         }
-        
+
         @Override
         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
         {
@@ -365,7 +395,7 @@ public class ImageLoaderUitls
                 listener.onLoadingComplete(imageUri, view, loadedImage);
             }
         }
-        
+
         @Override
         public void onLoadingCancelled(String imageUri, View view)
         {
@@ -375,8 +405,8 @@ public class ImageLoaderUitls
             }
         }
     }
-    
-    
+
+
     /**
      *新建一个可以设置占位符的ImageLoadingListener
      * @param backgroundColor 占位符背景色
@@ -392,22 +422,34 @@ public class ImageLoaderUitls
                 ((ImageView)view).setScaleType(ImageView.ScaleType.CENTER);
                 ((ImageView)view).setBackgroundColor(backgroundColor);
             }
-            
+
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason)
             {
             }
-            
+
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
             {
                 ((ImageView)view).setScaleType(ImageView.ScaleType.FIT_XY);
             }
-            
+
             @Override
             public void onLoadingCancelled(String imageUri, View view)
             {
             }
         };
     }
+
+    public static DisplayImageOptions simpleDisplayImageOptions()
+    {
+        DisplayImageOptions.Builder builder =  new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .imageScaleType(ImageScaleType.EXACTLY);
+
+        return builder.build();
+    }
+
 }

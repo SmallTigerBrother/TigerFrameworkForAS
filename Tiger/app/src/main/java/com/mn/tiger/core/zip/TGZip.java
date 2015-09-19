@@ -1,4 +1,4 @@
-package com.mn.tiger.zip;
+package com.mn.tiger.core.zip;
 
 /**
  * @date 2013-2-22

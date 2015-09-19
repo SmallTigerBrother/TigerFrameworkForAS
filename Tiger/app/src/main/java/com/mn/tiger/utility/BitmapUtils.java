@@ -32,7 +32,6 @@ import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.text.TextUtils;
-import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -676,7 +675,7 @@ public class BitmapUtils
             if (imageName.startsWith("http"))
             {
                 //如果是在线文件，使用ImageLoader加载
-                ImageLoaderUitls.displayImage(imageName, imageView);
+                ImageLoaderUtils.displayImage(imageName, imageView);
             }
             else if (imageName.startsWith("file"))
             {
@@ -717,7 +716,7 @@ public class BitmapUtils
             if (imageName.startsWith("http"))
             {
                 //如果是在线文件，使用ImageLoader加载
-                ImageLoaderUitls.displayImage(imageName, imageAware);
+                ImageLoaderUtils.displayImage(imageName, imageAware);
             }
             else if (imageName.startsWith("file"))
             {

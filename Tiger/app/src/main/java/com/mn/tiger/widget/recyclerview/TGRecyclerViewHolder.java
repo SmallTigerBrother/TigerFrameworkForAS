@@ -44,7 +44,7 @@ public abstract class TGRecyclerViewHolder<T>
      */
     public View initView(ViewGroup parent, int viewType)
     {
-        View convertView = LayoutInflater.from(getContext()).inflate(layoutId, null);
+        View convertView = LayoutInflater.from(getContext()).inflate(layoutId, parent, false);
         ButterKnife.bind(this, convertView);
         if(null != internalOnClickListener)
         {
