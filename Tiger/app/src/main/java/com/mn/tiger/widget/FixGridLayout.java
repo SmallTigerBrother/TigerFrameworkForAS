@@ -53,8 +53,9 @@ public class FixGridLayout extends ViewGroup {
 		int y = 0;
 		int i = 0;
 		int count = getChildCount();
+		View childView = null;
 		for (int j = 0; j < count; j++) {
-			final View childView = getChildAt(j);
+			childView = getChildAt(j);
 			// 获取子控件Child的宽高
 			int w = childView.getMeasuredWidth();
 			int h = childView.getMeasuredHeight();
@@ -89,8 +90,9 @@ public class FixGridLayout extends ViewGroup {
 		// 记录ViewGroup中Child的总个数
 		int count = getChildCount();
 		// 设置子空间Child的宽高
+		View childView = null;
 		for (int i = 0; i < count; i++) {
-			View childView = getChildAt(i);
+			childView = getChildAt(i);
 			/*
 			 * 090 This is called to find out how big a view should be. 091 The
 			 * parent supplies constraint information in the width and height

@@ -205,13 +205,14 @@ public class BitmapUtils
         // 循环切割
         int xValue = 0;
         int yValue = 0;
+        Bitmap bitmap_piece = null;
         for (int i = 0; i < yPiece; i++)
         {
             for (int j = 0; j < xPiece; j++)
             {
                 xValue = j * pieceWidth;
                 yValue = i * pieceHeight;
-                Bitmap bitmap_piece = Bitmap.createBitmap(bitmap, xValue, yValue, pieceWidth,
+                bitmap_piece = Bitmap.createBitmap(bitmap, xValue, yValue, pieceWidth,
                         pieceHeight);
                 pieces.add(bitmap_piece);
             }

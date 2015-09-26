@@ -251,9 +251,10 @@ public class TGPagerSlidingTabStrip extends HorizontalScrollView
 
     private void updateTabStyles()
     {
+        View v = null;
         for (int i = 0; i < tabCount; i++)
         {
-            View v = tabsContainer.getChildAt(i);
+            v = tabsContainer.getChildAt(i);
 
             if(tabBackgroundResId > 0)
             {

@@ -74,9 +74,10 @@ public class ListLayout extends LinearLayout
 		{
 			this.removeAllViews();
 			int count = this.mAdapter.getCount();
+			View itemView = null;
 			for (int i = 0; i < count; i++)
 			{
-				View itemView = this.mAdapter.getView(i, null, this);
+				itemView = this.mAdapter.getView(i, null, this);
 				if (itemView != null)
 				{
 					if (mItemLayoutParams != null)

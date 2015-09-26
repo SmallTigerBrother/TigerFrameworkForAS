@@ -947,9 +947,10 @@ public class TGDBManager
 		if (entityKvList != null)
 		{
 			WhereBuilder wb = WhereBuilder.b();
+			Object value = null;
 			for (KeyValue keyValue : entityKvList)
 			{
-				Object value = keyValue.getValue();
+				value = keyValue.getValue();
 				if (value != null)
 				{
 					wb.and(keyValue.getKey(), "=", value);
@@ -1049,9 +1050,10 @@ public class TGDBManager
 		if (entityKvList != null)
 		{
 			WhereBuilder wb = WhereBuilder.b();
+			Object value = null;
 			for (KeyValue keyValue : entityKvList)
 			{
-				Object value = keyValue.getValue();
+				value = keyValue.getValue();
 				if (value != null)
 				{
 					wb.and(keyValue.getKey(), "=", value);
@@ -1247,9 +1249,10 @@ public class TGDBManager
 		if (entityKvList != null)
 		{
 			WhereBuilder wb = WhereBuilder.b();
+			Object value = null;
 			for (KeyValue keyValue : entityKvList)
 			{
-				Object value = keyValue.getValue();
+				value = keyValue.getValue();
 				if (value != null)
 				{
 					wb.and(keyValue.getKey(), "=", value);
@@ -1379,9 +1382,10 @@ public class TGDBManager
 	{
 		if (list != null && contentValues != null)
 		{
+			Object value = null;
 			for (KeyValue kv : list)
 			{
-				Object value = kv.getValue();
+				value = kv.getValue();
 				if (value != null)
 				{
 					contentValues.put(kv.getKey(), value.toString());

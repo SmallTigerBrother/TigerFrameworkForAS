@@ -59,15 +59,18 @@ public class CursorUtils
 				return entity;
 			}
 			int columnCount = cursor.getColumnCount();
+			String columnName = null;
+			Column column = null;
+			Foreign foreign = null;
 			for (int i = 0; i < columnCount; i++)
 			{
-				String columnName = cursor.getColumnName(i);
-				Column column = table.columnMap.get(columnName);
+				columnName = cursor.getColumnName(i);
+				column = table.columnMap.get(columnName);
 				if (column != null)
 				{
 					if (column instanceof Foreign)
 					{
-						Foreign foreign = (Foreign) column;
+						foreign = (Foreign) column;
 						foreign.db = db;
 						foreign.setValue2Entity(entity, cursor, i);
 					}

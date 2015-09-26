@@ -176,12 +176,14 @@ public class WhereBuilder
 				if (items != null)
 				{
 					StringBuffer stringBuffer = new StringBuffer("(");
+					Object itemColValue = null;
+					String valueStr = null;
 					for (Object item : items)
 					{
-						Object itemColValue = ColumnUtils.convert2DbColumnValueIfNeeded(item);
+						itemColValue = ColumnUtils.convert2DbColumnValueIfNeeded(item);
 						if ("TEXT".equals(ColumnConverterFactory.getDbColumnType(itemColValue.getClass())))
 						{
-							String valueStr = itemColValue.toString();
+							valueStr = itemColValue.toString();
 							if (valueStr.indexOf('\'') != -1)
 							{ // convert single quotations
 								valueStr = valueStr.replace("'", "''");

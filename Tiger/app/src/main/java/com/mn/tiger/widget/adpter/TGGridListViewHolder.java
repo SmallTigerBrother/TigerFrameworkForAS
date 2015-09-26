@@ -57,12 +57,13 @@ public abstract class TGGridListViewHolder<T> extends TGViewHolder<T>
  		int columnNum = listAdapter.getColumnNum();
 		
 		LinearLayout rowLayout = (LinearLayout) convertView;
-		View childGridView;
+		View childGridView = null;
+		T childData = null;
 		//遍历各个子视图，并填充数据
 		for(int i = 0; i< columnNum; i++)
 		{
 			childGridView = rowLayout.getChildAt(i);
-			T childData = (T) listAdapter.getItem(position, i);
+			childData = (T) listAdapter.getItem(position, i);
 			if(null != childData)
 			{
 				//若有数据，则显示视图，并设置为enable
@@ -102,12 +103,13 @@ public abstract class TGGridListViewHolder<T> extends TGViewHolder<T>
 		TGGridListAdapter<T> listAdapter = (TGGridListAdapter<T>) getAdapter();
  		int columnNum = listAdapter.getColumnNum();
 		LinearLayout rowLayout = (LinearLayout) convertView;
-		View childGridView;
+		View childGridView = null;
+		T childData = null;
 		//遍历更新各个子视图
 		for(int i = 0; i < columnNum; i++)
 		{
 			childGridView = rowLayout.getChildAt(i);
-			T childData = (T) listAdapter.getItem(position, i);
+			childData = (T) listAdapter.getItem(position, i);
 			if(null != childData)
 			{
 				updateViewDimension(parent, (LinearLayout) convertView, 

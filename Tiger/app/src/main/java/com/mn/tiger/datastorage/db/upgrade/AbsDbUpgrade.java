@@ -84,11 +84,15 @@ public abstract class AbsDbUpgrade
 			// 遍历备份库中所有表，检查是否是业务表， 如果是业务表，从临时数据库迁移数据到新数据库
 			LogTools.p(TAG, "[Method: onUpgrade]  "
 					+ "create new table, move data to new table from backup.");
+			TigerTables table = null;
+			Class<?> newClass = null;
+			SqlInfo sqlInfo = null;
+			List<DbModel> dbModelList = null;
 			for (String tableName : tableNames)
 			{
 				Log.i(TAG, "tableName : " + tableName);
 				// 在备份库记录业务表名得表中查询，判断是否存在该业务表
-				TigerTables table = tempDb.findFirst(TigerTables.class,
+				table = tempDb.findFirst(TigerTables.class,
 						WhereBuilder.b("name", "=", tableName));
 				if (table == null)
 				{
@@ -96,16 +100,16 @@ public abstract class AbsDbUpgrade
 				}
 
 				// 检查新版本中是否还存在该表对应的entity，如不存在，则不需在新库中创建该表
-				Class<?> newClass = findClassForName(table);
+				newClass = findClassForName(table);
 				if (newClass == null)
 				{
 					continue;
 				}
 
 				// 检查该备份库业务表中是否有数据
-				SqlInfo sqlInfo = new SqlInfo();
+				sqlInfo = new SqlInfo();
 				sqlInfo.setSql("SELECT * FROM " + tableName);
-				List<DbModel> dbModelList = tempDb.findDbModelAll(sqlInfo);
+				dbModelList = tempDb.findDbModelAll(sqlInfo);
 				// 如果没有数据，在首次操作该表时，才建表
 				LogTools.p(TAG, "[Method: onUpgrade]  " + tableName + " data size : "
 						+ (dbModelList == null ? null : dbModelList.size()));
@@ -228,15 +232,18 @@ public abstract class AbsDbUpgrade
 		{
 			result.addBindArgWithoutConverter("");
 		}
-		
+
+		Map.Entry<String, Column> entry = null;
+		Column column = null;
+		String columnName = null;
 		while (iter.hasNext())
 		{
 			// 判断该列是否在原有数据库中存在，如存在，拷贝数据，如不存在，写入默认数据
-			Map.Entry<String, Column> entry = (Map.Entry<String, Column>) iter.next();
-			Column column = entry.getValue();
+			entry = (Map.Entry<String, Column>) iter.next();
+			column = entry.getValue();
 
 			sqlBuffer.append(entry.getKey()).append(",");
-			String columnName = column.getColumnName();
+			columnName = column.getColumnName();
 			// TODO String columnType = column.getColumnDbType();
 			if (oldColumns.contains(columnName))
 			{
@@ -253,7 +260,6 @@ public abstract class AbsDbUpgrade
 			{
 				result.addBindArgWithoutConverter(column.getDefaultValue());
 			}
-
 		}
 
 		sqlBuffer.deleteCharAt(sqlBuffer.length() - 1);

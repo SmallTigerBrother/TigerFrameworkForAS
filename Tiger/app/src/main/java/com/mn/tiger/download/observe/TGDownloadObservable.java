@@ -80,11 +80,12 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				break;
 			case TGDownloader.DOWNLOAD_DOWNLOADING:
 				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_DOWNLOADING ;" + "observer size: " + mObservers.size());
+				int progress = 0;
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null && downloader.getFileSize() > 0)
 					{
-    					int progress = (int) (downloader.getCompleteSize() * 100 / downloader.getFileSize());
+						progress = (int) (downloader.getCompleteSize() * 100 / downloader.getFileSize());
     					observer.onProgress(downloader, progress);
 					}
 				}

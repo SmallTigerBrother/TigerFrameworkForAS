@@ -328,13 +328,14 @@ public class SqlInfoBuilder
 		}
 
 		Collection<Column> columns = TableUtils.getColumnMap(entityType).values();
+		KeyValue kv = null;
 		for (Column column : columns)
 		{
 			if (column instanceof Foreign)
 			{
 				((Foreign) column).db = db;
 			}
-			KeyValue kv = column2KeyValue(entity, column);
+			kv = column2KeyValue(entity, column);
 			if (kv != null)
 			{
 				keyValueList.add(kv);

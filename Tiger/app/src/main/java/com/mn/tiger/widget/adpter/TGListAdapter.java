@@ -236,10 +236,12 @@ public class TGListAdapter<T> extends BaseAdapter
     {
         if (null != data && this.items != data)
         {
+            T dataItem = null;
+            int position = -1;
             for (int i = 0; i < data.size(); i++)
             {
-                T dataItem = data.get(i);
-                int position = this.items.indexOf(dataItem);
+                dataItem = data.get(i);
+                position = this.items.indexOf(dataItem);
                 if (position > -1)
                 {
                     this.items.set(position, dataItem);
@@ -262,10 +264,12 @@ public class TGListAdapter<T> extends BaseAdapter
     {
         if (null != data)
         {
+            T dataItem = null;
+            int position = -1;
             for (int i = 0; i < data.length; i++)
             {
-                T dataItem = data[i];
-                int position = this.items.indexOf(dataItem);
+                dataItem = data[i];
+                position = this.items.indexOf(dataItem);
                 if (position > -1)
                 {
                     this.items.set(position, dataItem);

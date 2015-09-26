@@ -1,12 +1,12 @@
 package com.mn.tiger.utility;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.mn.tiger.log.LogTools;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -194,9 +194,10 @@ public class StringUtils
 			char[] charArray = string.toCharArray();
 			StringBuffer buffer = new StringBuffer();
 			// 遍历数组中所有元素，转换成int型，再拼接
+			int code = 0;
 			for (char ch : charArray)
 			{
-				int code = (int) ch;
+				code = (int) ch;
 				buffer.append(code);
 			}
 			return buffer.toString();
@@ -221,11 +222,12 @@ public class StringUtils
 			int count = noSpace.length() / 5;
 			StringBuffer buffer = new StringBuffer();
 
+			int uCode = 0;
 			for (int j = 0; j < count; j++)
 			{
 				// 截取每个字符的Unicode并转换成char型
 				end += 5;
-				int uCode = Integer.valueOf(noSpace.substring(j * 5, end));
+				uCode = Integer.valueOf(noSpace.substring(j * 5, end));
 				buffer.append((char) uCode);
 
 			}
@@ -251,10 +253,11 @@ public class StringUtils
 			if (urls.length > 1)
 			{
 				String param = urls[1];
-				String params[] = param.split("[&]");
+				String[] params = param.split("[&]");
+				String[] keyAndValue = null;
 				for (String string : params)
 				{
-					String keyAndValue[] = string.split("[=]");
+					keyAndValue = string.split("[=]");
 					if (keyAndValue.length > 1)
 					{
 						String key = keyAndValue[0];

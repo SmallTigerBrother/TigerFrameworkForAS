@@ -43,8 +43,9 @@ public class SqlInfo {
     public String[] getBindArgsAsStrArray() {
         if (bindArgs != null) {
             String[] strings = new String[bindArgs.size()];
+            Object value = null;
             for (int i = 0; i < bindArgs.size(); i++) {
-                Object value = bindArgs.get(i);
+                value = bindArgs.get(i);
                 strings[i] = value == null ? null : value.toString();
             }
             return strings;

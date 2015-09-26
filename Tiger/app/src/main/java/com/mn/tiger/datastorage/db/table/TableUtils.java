@@ -1,16 +1,16 @@
 package com.mn.tiger.datastorage.db.table;
 
+import android.text.TextUtils;
+
+import com.mn.tiger.datastorage.db.annotation.Id;
+import com.mn.tiger.datastorage.db.annotation.Table;
+import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
+import com.mn.tiger.log.LogTools;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-
-import android.text.TextUtils;
-
-import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
-import com.mn.tiger.datastorage.db.annotation.Table;
-import com.mn.tiger.datastorage.db.annotation.Id;
-import com.mn.tiger.log.LogTools;
 
 public class TableUtils
 {
@@ -71,6 +71,9 @@ public class TableUtils
 		try
 		{
 			Field[] fields = entityType.getDeclaredFields();
+			Column column = null;
+			Foreign foreign = null;
+			ColumnObject columnObject = null;
 			for (Field field : fields)
 			{
 				if (ColumnUtils.isTransient(field) || Modifier.isStatic(field.getModifiers()))
@@ -81,7 +84,7 @@ public class TableUtils
 				{
 					if (!field.getName().equals(primaryKeyFieldName))
 					{
-						Column column = new Column(entityType, field);
+						column = new Column(entityType, field);
 						if (!columnMap.containsKey(column.getColumnName()))
 						{
 							columnMap.put(column.getColumnName(), column);
@@ -90,18 +93,18 @@ public class TableUtils
 				}
 				else if (ColumnUtils.isForeign(field))
 				{
-					Foreign column = new Foreign(entityType, field);
-					if (!columnMap.containsKey(column.getColumnName()))
+					foreign = new Foreign(entityType, field);
+					if (!columnMap.containsKey(foreign.getColumnName()))
 					{
-						columnMap.put(column.getColumnName(), column);
+						columnMap.put(foreign.getColumnName(), foreign);
 					}
 				}
 				else if (ColumnUtils.isPropertyObject(field))
 				{
-					ColumnObject column = new ColumnObject(entityType, field);
-					if (!columnMap.containsKey(column.getColumnName()))
+					columnObject = new ColumnObject(entityType, field);
+					if (!columnMap.containsKey(columnObject.getColumnName()))
 					{
-						columnMap.put(column.getColumnName(), column);
+						columnMap.put(columnObject.getColumnName(), columnObject);
 					}
 				}
 			}

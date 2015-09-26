@@ -135,6 +135,7 @@ public class Logger
 		Logger logger;
 
 		LogConfig config = null;
+		String cfgTagPrefix = null;
 		if (mConfigs != null)
 		{
 			for (LogConfig cfg : mConfigs)
@@ -147,7 +148,7 @@ public class Logger
 				// 例如 com.jianq.*， 表示com.jianq下面的所有子包， 都是用该配置
 				if (!TextUtils.isEmpty(cfg.filter) && cfg.filter.endsWith(".*"))
 				{
-					String cfgTagPrefix = cfg.filter.substring(0, cfg.filter.lastIndexOf('.'));
+					cfgTagPrefix = cfg.filter.substring(0, cfg.filter.lastIndexOf('.'));
 					if (pkgName.startsWith(cfgTagPrefix))
 					{
 						config = cfg;

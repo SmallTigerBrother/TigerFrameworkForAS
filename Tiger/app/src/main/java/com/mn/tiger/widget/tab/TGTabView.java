@@ -192,9 +192,10 @@ public class TGTabView extends LinearLayout
 		{
 			this.tabItems.clear();
 			this.removeAllViews();
+			TabItem tabItem = null;
 			for (int i = 0; i < adapter.getCount(); i++)
 			{
-				TabItem tabItem = new TabItem();
+				tabItem = new TabItem();
 				tabItem.setIndex(i);
 				tabItem.setConvertView(adapter.getView(i, null, this));
 				this.addTabItem(tabItem);
