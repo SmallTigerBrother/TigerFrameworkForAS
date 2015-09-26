@@ -21,8 +21,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
  */
 public class ImageLoaderUtils
 {
-    private static Handler retryHandler = new Handler();
-
     private static final int PAUSE_IMAGE_LOADER_SCROLL_DY = 300;
 
     private static final int RESUME_IMAGE_LOADER_SCROLL_DY = 150;
@@ -128,6 +126,30 @@ public class ImageLoaderUtils
         TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.FILE.wrap(filePath), imageView, options);
     }
 
+    /**
+     * 加载本地的图片资源
+     * @param filePath
+     * @param imageView
+     * @param listener
+     */
+    public static void displayLocalImage(String filePath, ImageView imageView, ImageLoadingListener listener)
+    {
+        TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.FILE.wrap(filePath),imageView,
+                TGApplication.getInstance().getResourceDisplayImageOptions() , listener);
+    }
+
+    /**
+     * 加载本地的图片资源
+     * @param filePath
+     * @param imageView
+     * @param listener
+     */
+    public static void displayLocalImage(String filePath, ImageView imageView, DisplayImageOptions options,
+                                         ImageLoadingListener listener)
+    {
+        TGApplication.getInstance().getImageLoader().displayImage(ImageDownloader.Scheme.FILE.wrap(filePath),
+                imageView, options, listener);
+    }
 
     /**
      * 异步下载图片
@@ -156,8 +178,10 @@ public class ImageLoaderUtils
      * @param imageSize  转换大小
      * @return
      */
-    public static Bitmap loadImageSync(String uri, ImageSize imageSize){
-        return TGApplication.getInstance().getImageLoader().loadImageSync(ImageDownloader.Scheme.FILE.wrap(uri), imageSize, simpleDisplayImageOptions());
+    public static Bitmap loadImageSync(String uri, ImageSize imageSize)
+    {
+        return TGApplication.getInstance().getImageLoader().loadImageSync(ImageDownloader.Scheme.FILE.wrap(uri),
+                imageSize, simpleDisplayImageOptions());
     }
 
     /**
@@ -253,194 +277,6 @@ public class ImageLoaderUtils
         };
     }
 
-    /**
-     * 创建一个当内存溢出时自动重试的ImageLoadingListener
-     * @param listener
-     * @return
-     */
-    public static ImageLoadingListener newOOMRetryImageLoadingListener(final ImageLoadingListener listener)
-    {
-        final ImageLoadingListener imageLoadingListener = new ImageLoadingListener()
-        {
-            private int retryCount = 0;
-
-            @Override
-            public void onLoadingStarted(String imageUri, View view)
-            {
-                if(null != listener)
-                {
-                    listener.onLoadingStarted(imageUri, view);
-                }
-            }
-
-            @Override
-            public void onLoadingFailed(final String imageUri,final View view, FailReason failReason)
-            {
-                switch (failReason.getType())
-                {
-                    case OUT_OF_MEMORY:
-                        //回收内存
-                        TGApplication.getInstance().getImageLoader().clearMemoryCache();
-                        //重新加载图片
-                        retryHandler.postDelayed(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                retryCount++;
-                                if(retryCount <= 3)
-                                {
-                                    displayImage(imageUri, (ImageView) view, listener);
-                                }
-                            }
-                        }, 200);
-
-                        break;
-
-                    default:
-                        break;
-                }
-
-                if(null != listener)
-                {
-                    listener.onLoadingFailed(imageUri, view, failReason);
-                }
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-            {
-                if(null != listener)
-                {
-                    listener.onLoadingComplete(imageUri, view, loadedImage);
-                }
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view)
-            {
-                if(null != listener)
-                {
-                    listener.onLoadingCancelled(imageUri, view);
-                }
-            }
-        };
-
-        return imageLoadingListener;
-    }
-
-    private class OOMRetryImageLoadingListener implements ImageLoadingListener
-    {
-        private int retryCount = 0;
-
-        private ImageLoadingListener listener;
-
-        public  OOMRetryImageLoadingListener(ImageLoadingListener listener)
-        {
-            this.listener = listener;
-        }
-
-        @Override
-        public void onLoadingStarted(String imageUri, View view)
-        {
-            if(null != listener)
-            {
-                listener.onLoadingStarted(imageUri, view);
-            }
-        }
-
-        @Override
-        public void onLoadingFailed(final String imageUri,final View view, FailReason failReason)
-        {
-            switch (failReason.getType())
-            {
-                case OUT_OF_MEMORY:
-                    //回收内存
-                    TGApplication.getInstance().getImageLoader().clearMemoryCache();
-                    //重新加载图片
-                    retryHandler.postDelayed(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            retryCount++;
-                            if(retryCount <= 3)
-                            {
-                                displayImage(imageUri, (ImageView) view, OOMRetryImageLoadingListener.this);
-                            }
-                            else
-                            {
-                                displayImage(imageUri, (ImageView)view, listener);
-                            }
-                        }
-                    }, 300);
-
-                    break;
-
-                default:
-                    break;
-            }
-
-            if(null != listener)
-            {
-                listener.onLoadingFailed(imageUri, view, failReason);
-            }
-        }
-
-        @Override
-        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-        {
-            if(null != listener)
-            {
-                listener.onLoadingComplete(imageUri, view, loadedImage);
-            }
-        }
-
-        @Override
-        public void onLoadingCancelled(String imageUri, View view)
-        {
-            if(null != listener)
-            {
-                listener.onLoadingCancelled(imageUri, view);
-            }
-        }
-    }
-
-
-    /**
-     *新建一个可以设置占位符的ImageLoadingListener
-     * @param backgroundColor 占位符背景色
-     * @return
-     */
-    public static ImageLoadingListener newPlaceHolderImageLoadingListener(final int backgroundColor)
-    {
-        return new ImageLoadingListener()
-        {
-            @Override
-            public void onLoadingStarted(String imageUri, View view)
-            {
-                ((ImageView)view).setScaleType(ImageView.ScaleType.CENTER);
-                ((ImageView)view).setBackgroundColor(backgroundColor);
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason)
-            {
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-            {
-                ((ImageView)view).setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view)
-            {
-            }
-        };
-    }
-
     public static DisplayImageOptions simpleDisplayImageOptions()
     {
         DisplayImageOptions.Builder builder =  new DisplayImageOptions.Builder()
@@ -450,6 +286,58 @@ public class ImageLoaderUtils
                 .imageScaleType(ImageScaleType.EXACTLY);
 
         return builder.build();
+    }
+
+    public static class OOMRetryImageLoaderListener implements ImageLoadingListener
+    {
+        private static final Handler retryHandler = new Handler();
+
+        volatile int retryCount = 0;
+
+        @Override
+        public void onLoadingStarted(String imageUri, View view)
+        {
+        }
+
+        @Override
+        public void onLoadingFailed(final String imageUri, final View view, FailReason failReason)
+        {
+            switch (failReason.getType())
+            {
+                case OUT_OF_MEMORY:
+                    //回收内存
+                    TGApplication.getInstance().getImageLoader().clearMemoryCache();
+                    Runtime.getRuntime().gc();
+                    //重新加载图片
+                    retryHandler.postDelayed(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            retryCount++;
+                            if (retryCount <= 3)
+                            {
+                                ImageLoaderUtils.displayImage(imageUri, (ImageView) view, OOMRetryImageLoaderListener.this);
+                            }
+                        }
+                    }, 1000);
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
+        {
+        }
+
+        @Override
+        public void onLoadingCancelled(String imageUri, View view)
+        {
+        }
     }
 
 }

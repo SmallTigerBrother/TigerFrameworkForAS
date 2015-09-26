@@ -150,8 +150,31 @@ public class PullToRefreshRecyclerView extends BGARefreshLayout implements IPull
         @Override
         public int findFirstCompletelyVisibleItemPosition()
         {
-            int position = super.findFirstCompletelyVisibleItemPosition();
-            return position == -1 ? 0 : position;
+            int firstCompletelyVisibleItemPosition = super.findFirstCompletelyVisibleItemPosition();
+            int firstVisibleItemPosition = super.findFirstVisibleItemPosition();
+            if(firstCompletelyVisibleItemPosition != RecyclerView.NO_POSITION)
+            {
+                return firstCompletelyVisibleItemPosition;
+            }
+            else
+            {
+                return firstVisibleItemPosition;
+            }
+        }
+
+        @Override
+        public int findLastCompletelyVisibleItemPosition()
+        {
+            int lastCompletelyVisibleItemPosition =  super.findLastCompletelyVisibleItemPosition();
+            int lastVisibleItemPosition = super.findLastVisibleItemPosition();
+            if(lastCompletelyVisibleItemPosition != RecyclerView.NO_POSITION)
+            {
+                return lastCompletelyVisibleItemPosition;
+            }
+            else
+            {
+                return lastVisibleItemPosition;
+            }
         }
     }
 

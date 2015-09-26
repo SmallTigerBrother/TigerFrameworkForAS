@@ -189,7 +189,7 @@ public class TGAutoFlipViewPager extends ViewPager
 	 * 设置滚动周期
 	 * @param duration
 	 */
-	public void setSrollDuration(int duration)
+	public void setScrollDuration(int duration)
 	{
 		this.duration = duration;
 	}

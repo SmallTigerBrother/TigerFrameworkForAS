@@ -38,6 +38,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'cn.bingoogolapple:bga-refreshlayout:1.0.7@aar'
+    compile files('libs/jpush-sdk-release1.8.1.jar')
 }
 
 

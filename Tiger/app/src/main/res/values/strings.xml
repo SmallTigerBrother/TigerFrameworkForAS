@@ -69,5 +69,7 @@
     <string name="hours_ago">%1$s小时前</string>
     <string name="minutes_ago">%1$s分钟前</string>
     <string name="just_now">刚刚</string>
+
+    <string name="tiger_ptr_loading">loading...</string>
     
 </resources>

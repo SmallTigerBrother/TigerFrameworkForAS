@@ -1,16 +1,5 @@
 package com.mn.tiger.utility;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -27,16 +16,25 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.mn.tiger.log.LogTools;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 图片处理工具类
@@ -138,8 +136,8 @@ public class BitmapUtils
     /**
      * 该方法的作用:混合兩張圖片
      *
-     * @param src
      * @param src1
+     * @param src2
      * @param flag
      * @return
      * @date 2014年3月24日
@@ -205,12 +203,14 @@ public class BitmapUtils
         // 计算切割后每张图片的高度
         int pieceHeight = height / yPiece;
         // 循环切割
+        int xValue = 0;
+        int yValue = 0;
         for (int i = 0; i < yPiece; i++)
         {
             for (int j = 0; j < xPiece; j++)
             {
-                int xValue = j * pieceWidth;
-                int yValue = i * pieceHeight;
+                xValue = j * pieceWidth;
+                yValue = i * pieceHeight;
                 Bitmap bitmap_piece = Bitmap.createBitmap(bitmap, xValue, yValue, pieceWidth,
                         pieceHeight);
                 pieces.add(bitmap_piece);
@@ -236,15 +236,19 @@ public class BitmapUtils
         img.getPixels(pixels, 0, width, 0, 0, width, height);
         int alpha = 0xFF << 24;
         // 将所有的像素点颜色设置成灰色
+        int grey = 0;
+        int red = 0;
+        int green = 0;
+        int blue = 0;
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
             {
-                int grey = pixels[width * i + j];
+                grey = pixels[width * i + j];
 
-                int red = ((grey & 0x00FF0000) >> 16);
-                int green = ((grey & 0x0000FF00) >> 8);
-                int blue = (grey & 0x000000FF);
+                red = ((grey & 0x00FF0000) >> 16);
+                green = ((grey & 0x0000FF00) >> 8);
+                grey = (grey & 0x000000FF);
 
                 grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue * 0.11);
                 grey = alpha | (grey << 16) | (grey << 8) | grey;
@@ -314,7 +318,7 @@ public class BitmapUtils
      * 该方法的作用:压缩图片质量
      *
      * @param bitmap
-     * @param toFile
+     * @param path
      * @param quality
      * @return
      * @date 2013-4-16
@@ -707,7 +711,6 @@ public class BitmapUtils
      * 显示图片资源
      *
      * @param imageName image的名称，支持http，file，和资源文件名称
-     * @param imageView
      */
     public static void displayImage(Context context, String imageName, ImageAware imageAware)
     {
@@ -745,50 +748,6 @@ public class BitmapUtils
     }
 
     /**
-     * 模糊图片: 高斯模糊   与renderscript-v8.jar包一起用, 具说兼容api11, 但看这包感觉兼容api8
-     *
-     * @param context
-     * @param bitmap
-     * @param blur    0 < radius <= 25
-     * @return
-     */
-    public static Bitmap blurBitmap(Context context, Bitmap bitmap, float blur)
-    {
-
-        //Let's create an empty bitmap with the same size of the bitmap we want to blur
-        Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
-
-        //Instantiate a new Renderscript
-        RenderScript rs = RenderScript.create(context);
-
-        //Create an Intrinsic Blur Script using the Renderscript
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-
-        //Create the Allocations (in/out) with the Renderscript and the in/out bitmaps
-        Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
-        Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
-
-        //Set the radius of the blur
-        blurScript.setRadius(blur);
-
-        //Perform the Renderscript
-        blurScript.setInput(allIn);
-        blurScript.forEach(allOut);
-
-        //Copy the final bitmap created by the out Allocation to the outBitmap
-        allOut.copyTo(outBitmap);
-
-        //recycle the original bitmap
-        bitmap.recycle();
-
-        //After finishing everything, we destroy the Renderscript.
-        rs.destroy();
-
-        return outBitmap;
-    }
-
-
-    /**
      * 获取当前activity的视图
      *
      * @param activity
@@ -810,6 +769,79 @@ public class BitmapUtils
         // 销毁缓存信息
         view.destroyDrawingCache();
         return bmp;
+    }
+
+    /**
+     * 保存图片
+     *
+     * @param bitmap
+     * @param path
+     * @return 2013-8-22
+     * @author liananse
+     */
+    public static boolean saveBitmapToFile(Bitmap bitmap, String path)
+    {
+        boolean result = false;
+        BufferedOutputStream bos = null;
+        BufferedInputStream bis = null;
+        ByteArrayOutputStream baos = null;
+        try
+        {
+            bos = new BufferedOutputStream(new FileOutputStream(path));
+            baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            bis = new BufferedInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            int b = -1;
+            while ((b = bis.read()) != -1)
+            {
+                bos.write(b);
+            }
+            result = true;
+        }
+        catch (Exception e)
+        {
+            result = false;
+            try
+            {
+                bos.close();
+                bis.close();
+            }
+            catch (Exception e1)
+            {
+                result = false;
+            }
+        }
+        finally
+        {
+            try
+            {
+                bos.close();
+                bis.close();
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取地址图片宽高
+     *
+     * @param filePath 图片地址
+     * @return 0=宽  1=高
+     */
+    public static int[] getLocalImageWidthAndHeight(String filePath)
+    {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        int[] width_height = new int[2];
+        width_height[0] = options.outWidth;
+        width_height[1] = options.outHeight;
+        return width_height;
     }
 
 }
