@@ -5,10 +5,7 @@ import android.content.Context;
 import com.mn.tiger.core.cache.TGCache;
 import com.mn.tiger.datastorage.TGDBManager;
 import com.mn.tiger.datastorage.db.exception.DbException;
-import com.mn.tiger.datastorage.db.sqlite.Selector;
-import com.mn.tiger.datastorage.db.sqlite.WhereBuilder;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.push.data.JPushMessage;
 import com.mn.tiger.push.data.TGPushUnReadCount;
 
 /**
@@ -29,7 +26,10 @@ public abstract class JPushMessageManager
 	 * 未读消息个数
 	 */
 	private static TGPushUnReadCount pushUnReadCount;
-	
+
+	/**
+	 * 未读消息数量类
+	 */
 	private Class<?> pushUnReadCountClazz;
 	
 	/**
@@ -60,7 +60,7 @@ public abstract class JPushMessageManager
 	 * @param context
 	 * @param pushMessage
 	 */
-	public void savePushMessage(Context context, JPushMessage pushMessage)
+	public void savePushMessage(Context context, Object pushMessage)
 	{
 		try
 		{
@@ -71,53 +71,29 @@ public abstract class JPushMessageManager
 			LOG.e(e.getMessage(), e);
 		}
 	}
-	
+
 	/**
 	 * 保存未读消息数
 	 * @param context
-	 * @param deltaCount
+	 * @param count
 	 * @param messageType
 	 */
 	public synchronized void saveUnReadCount(Context context, int count, int messageType)
 	{
-		onSaveUnReadCount(context, getCachedPushUnReadCount(context), count, messageType);
+		TGPushUnReadCount pushUnReadCount = getCachedPushUnReadCount(context);
+		pushUnReadCount.setUnReadCount(messageType, count);
+		saveAllUnReadCount(context, pushUnReadCount);
 	}
-	
-	protected abstract void onSaveUnReadCount(Context context,TGPushUnReadCount unReadCount, int count, int messageType);
-	
+
 	/**
 	 * 保存未读消息数
 	 * @param context
-	 * @param deltaCount
-	 * @param messageType
+	 * @param unReadCount
 	 */
 	public synchronized void saveAllUnReadCount(Context context, TGPushUnReadCount unReadCount)
 	{
 		pushUnReadCount = unReadCount;
 		TGCache.saveCache(context, UNREAD_COUNT_CACHE_KEY, unReadCount);
-	}
-	
-	/**
-	 * 获取最后一个消息
-	 * @param context
-	 * @param messageType 消息类型
-	 * @return
-	 */
-	public JPushMessage getLastMessage(Context context, int messageType)
-	{
-		try
-		{
-			return getPushMsgDBManager(context).findFirst(Selector
-					.from(JPushMessage.class)
-					.where(WhereBuilder.b("type", "=", messageType))
-					.orderBy("time", true));
-		}
-		catch (DbException e)
-		{
-			LOG.e(e.getMessage(), e);
-		}
-		
-		return null;
 	}
 	
 	/**
@@ -128,11 +104,10 @@ public abstract class JPushMessageManager
 	 */
 	public int getCachedUnReadCount(Context context, int messageType)
 	{
-		return getCachedUnReadCount(context, getCachedPushUnReadCount(context), messageType);
+		TGPushUnReadCount pushUnReadCount = getCachedPushUnReadCount(context);
+		return pushUnReadCount.getUnReadCount(messageType);
 	}
-	
-	public abstract int getCachedUnReadCount(Context context,TGPushUnReadCount unReadCount ,int messageType);
-	
+
 	/**
 	 * 获取所有未读消息个数
 	 * @return
@@ -166,7 +141,7 @@ public abstract class JPushMessageManager
 	public int getAllUnreadCount(Context context)
 	{
 		TGPushUnReadCount pushUnReadCount = getCachedPushUnReadCount(context);
-		return null != pushUnReadCount ? pushUnReadCount.getAllUnReadCount() : 0;
+		return pushUnReadCount.getAllUnReadCount();
 	}
 	
 	/**
