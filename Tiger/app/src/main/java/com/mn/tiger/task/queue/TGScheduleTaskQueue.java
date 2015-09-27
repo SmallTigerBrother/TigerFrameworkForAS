@@ -33,7 +33,7 @@ public class TGScheduleTaskQueue extends TGTaskQueue
 	@Override
 	public void executeNextTask()
 	{
-		setState(MPQueueState.RUNNING);
+		setState(TGQueueState.RUNNING);
 		taskList.get(taskList.size() - 1).setTaskListener(lastTaskListener);
 		threadPool.executeTaskList(taskList);
 	}

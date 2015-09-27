@@ -96,20 +96,14 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 * 
 	 * @date 2014年3月17日
 	 */
-	public void pauseTaskQueue()
-	{
-		
-	}
+	public abstract void pauseTaskQueue();
 	
 	/**
 	 * 该方法的作用: 重启任务队列
 	 * 
 	 * @date 2014年3月17日
 	 */
-	public void restart()
-	{
-		
-	}
+	public abstract void restart();
 	
 	/**
 	 * 该方法的作用:
@@ -166,17 +160,6 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 		return taskArray;
 	}
 
-	/**
-	 * 该方法的作用:
-	 * 设置任务列表
-	 * @date 2014年8月22日
-	 * @param taskArray
-	 */
-	public void setTaskArray(SparseArray<TGTask> taskArray)
-	{
-		this.taskArray = taskArray;
-	}
-	
 	/**
 	 * 该方法的作用: 对分发器加锁，暂停所有已派发任务
 	 * 
@@ -236,10 +219,10 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 			}
 		});
 	}
-	
+
 	/**
 	 * 该方法的作用: 获取锁
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 * @return
 	 */
@@ -249,13 +232,13 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 		{
 			lock = new TGLock();
 		}
-		
+
 		return lock;
 	}
 
 	/**
 	 * 该方法的作用: 设置锁
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 * @param lock
 	 */
@@ -269,7 +252,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 * 队列状态
 	 * @date 2014年3月17日
 	 */
-	public enum MPQueueState
+	public enum TGQueueState
 	{
 		/**
 		 * 正在等待

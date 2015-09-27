@@ -39,7 +39,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 队列状态
 	 */
-	private MPQueueState state = MPQueueState.WAITING;
+	private TGQueueState state = TGQueueState.WAITING;
 	
 	/**
 	 * 任务监听
@@ -82,7 +82,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		LogTools.d(LOG_TAG, "[Method:executeNextTask]");
 
 		//若当前队列状态为暂停，则直接退出
-		if(state == MPQueueState.PAUSE)
+		if(state == TGQueueState.PAUSE)
 		{
 			LogTools.p(LOG_TAG, "[Method:executeNextTask] the queue has been paused!");
 			return;
@@ -97,7 +97,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		// 若已无任务，队列状态改为等待
 		if(totalTask <= 0)
 		{
-			state = MPQueueState.WAITING;
+			state = TGQueueState.WAITING;
 		}
 		
 		// 队列中有任务，取最大个数等待任务执行
@@ -115,7 +115,7 @@ public class TGTaskQueue extends AbsTaskQueue
 				{
 					runTask.executeTask(threadPool);
 					runningTaskList.add(runTask.getTaskID());
-					state = MPQueueState.RUNNING;
+					state = TGQueueState.RUNNING;
 				}
 			}
 			else
@@ -179,7 +179,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	{
 		LogTools.d(LOG_TAG, "[Method:pauseTaskQueue]");
 		//设置队列运行状态为PAUSE
-		state = MPQueueState.PAUSE;
+		state = TGQueueState.PAUSE;
 		
 		//依次暂停任务
 		TGTask task = null;
@@ -252,7 +252,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		LogTools.d(LOG_TAG, "[Method:restart]");
 
 		//设置队列运行状态为WAITING
-		state = MPQueueState.WAITING;
+		state = TGQueueState.WAITING;
 		//执行下一个任务
 		executeNextTask();
 	}
@@ -283,7 +283,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	{
 		super.cancelAllTasks();
 		//修改队列状态
-		state = MPQueueState.WAITING;
+		state = TGQueueState.WAITING;
 	}
 	
 	/**
@@ -292,7 +292,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	 * @date 2014年8月22日
 	 * @return
 	 */
-	public MPQueueState getState()
+	public TGQueueState getState()
 	{
 		return state;
 	}
@@ -303,7 +303,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	 * @date 2014年8月22日
 	 * @param state
 	 */
-	public void setState(MPQueueState state)
+	public void setState(TGQueueState state)
 	{
 		this.state = state;
 	}
@@ -405,7 +405,7 @@ public class TGTaskQueue extends AbsTaskQueue
 				case TaskError.LOCK_DISPATER_CODE:
 					
 					//若当前状态不为暂停状态，则立即暂停所有任务
-					if(state != MPQueueState.PAUSE)
+					if(state != TGQueueState.PAUSE)
 					{
 						//先上锁
 						TGTaskQueue.this.lock(new onLockListener()
@@ -428,7 +428,7 @@ public class TGTaskQueue extends AbsTaskQueue
 							@Override
 							public void onUnLockSuccess()
 							{
-								TGTaskQueue.this.setState(MPQueueState.WAITING);
+								TGTaskQueue.this.setState(TGQueueState.WAITING);
 								TGTaskQueue.this.executeNextTask();
 							}
 							
