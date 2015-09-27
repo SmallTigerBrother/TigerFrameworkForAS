@@ -4,22 +4,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mn.tiger.log.LogTools;
-import com.mn.tiger.request.method.ProgressEntiryWrapper.ProgressListener;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,8 +21,6 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
     private static final long serialVersionUID = 1L;
 
     private static String ENCODING = "UTF-8";
-
-    private ProgressListener progressListener;
 
     private long contentLength = 0;
 
@@ -101,80 +87,6 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
         }
 
         return urlBuffer.toString();
-    }
-
-    /**
-     * Returns an HttpEntity containing all request parameters
-     */
-    public HttpEntity getEntity()
-    {
-        HttpEntity entity = null;
-
-        HashMap<String, String> stringParams = getStringParams();
-        HashMap<String, String> fileParams = getFileParams();
-
-        if (null != fileParams && !fileParams.isEmpty())
-        {
-            MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-            multipartEntityBuilder.setCharset(Charset.forName(HTTP.UTF_8));
-            multipartEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-            // Add string params
-            for (ConcurrentHashMap.Entry<String, String> entry : stringParams.entrySet())
-            {
-                multipartEntityBuilder.addTextBody(entry.getKey(), entry.getValue());
-            }
-
-            // Add file params
-            try
-            {
-                for (HashMap.Entry<String, String> entry : fileParams.entrySet())
-                {
-                    multipartEntityBuilder.addBinaryBody(entry.getKey(),new File(entry.getValue()));
-                }
-            }
-            catch (Exception e)
-            {
-                LogTools.d(LOG_TAG, e.getMessage(), e);
-            }
-
-            entity = multipartEntityBuilder.build();
-
-            if(null != progressListener)
-            {
-                entity = new ProgressEntiryWrapper(entity,this.progressListener);
-            }
-        }
-        else
-        {
-            try
-            {
-                entity = new UrlEncodedFormEntity(getParamsList(), ENCODING);
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                LogTools.d(LOG_TAG, e.getMessage(), e);
-            }
-        }
-
-        contentLength = entity.getContentLength();
-        return entity;
-    }
-
-    protected List<BasicNameValuePair> getParamsList()
-    {
-        List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
-
-        for (ConcurrentHashMap.Entry<String, String> entry : getStringParams().entrySet())
-        {
-            lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-        }
-
-        return lparams;
-    }
-
-    public void setProgressListener(ProgressListener progressListener)
-    {
-        this.progressListener = progressListener;
     }
 
     public long getContentLength()
