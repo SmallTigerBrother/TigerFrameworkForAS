@@ -16,11 +16,6 @@ import com.mn.tiger.utility.NetworkUtils;
 public class TGDownloadTask extends TGTask
 {
 	/**
-	 * 下载策略
-	 */
-	private IDownloadStrategy downloadStrategy = null;
-	
-	/**
 	 * 下载信息
 	 */
 	private TGDownloadParams mDownloadParams;
@@ -28,7 +23,14 @@ public class TGDownloadTask extends TGTask
 	/**
 	 * 下载进度
 	 */
-	private int progress = -1; 
+	private int progress = -1;
+
+	/**
+	 * 下载信息
+	 */
+	protected TGDownloader downloader;
+
+	private TGDownloadHttpClient downloadHttpClient;
 	
 	/**
 	 * 构造函数
@@ -71,7 +73,7 @@ public class TGDownloadTask extends TGTask
 	{
 		if(getTaskState() == TGTaskState.WAITING)
 		{
-			downloadStrategy.cancel();
+			downloadHttpClient.cancel();
 			TGDownloader downloader = TGDownloader.getInstance(getContext(), mDownloadParams, this.getTaskID());
 			onDownloadCancel(downloader);
 		}
@@ -118,10 +120,14 @@ public class TGDownloadTask extends TGTask
 	 */
 	protected void executeDownload()
 	{
+		LogTools.p(LOG_TAG, "[Method:executeDownload]");
 		if(NetworkUtils.isConnectivityAvailable(getContext()))
 		{
-			downloadStrategy = new TGDownloadStrategy(getContext(), this);
-			downloadStrategy.download(mDownloadParams);
+			// 获取下载参数
+			downloader = TGDownloader.getInstance(getContext(), mDownloadParams, getTaskID());
+			downloadHttpClient = new OKHttpDownloadClient(getContext(), downloader, this);
+			// 执行下载操作
+			downloadHttpClient.execute();
 		}
 		else
 		{
@@ -145,7 +151,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadStart(TGDownloader downloader) 
 	{
-		LogTools.p(LOG_TAG, "[Metohd:downloadStart]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LogTools.p(LOG_TAG, "[Method:downloadStart]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 	}
 	
@@ -155,7 +161,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadSuccess(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Metohd:downloadSucceed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LogTools.p(LOG_TAG, "[Method:downloadSucceed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 		onTaskFinished();
 	}
@@ -170,7 +176,7 @@ public class TGDownloadTask extends TGTask
 		int currentProgress = (int) (downloader.getCompleteSize() * 100 / downloader.getFileSize());
 		if (currentProgress != progress)
 		{
-			LogTools.d(LOG_TAG, "[Metohd:downloadProgress]" + "; taskid: " + TGDownloadTask.this.getTaskID() + 
+			LogTools.d(LOG_TAG, "[Method:downloadProgress]" + "; taskid: " + TGDownloadTask.this.getTaskID() +
 					" ; progress : " + currentProgress);
 			
 			progress = currentProgress;
@@ -184,9 +190,9 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadFailed(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Metohd:downloadFailed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LogTools.p(LOG_TAG, "[Method:downloadFailed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
-		onTaskError(((TGDownloader)downloader).getErrorCode(), ((TGDownloader)downloader).getErrorMsg());
+		onTaskError((downloader).getErrorCode(), (downloader).getErrorMsg());
 	}
 	
 	/**
@@ -195,7 +201,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadPause(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Metohd:downloadPause]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LogTools.p(LOG_TAG, "[Method:downloadPause]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 	}
 	
@@ -205,12 +211,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadCancel(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Metohd:downloadCanceled]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LogTools.p(LOG_TAG, "[Method:downloadCanceled]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
-	}
-	
-	public void setDownloadStrategy(IDownloadStrategy downloadStrategy)
-	{
-		this.downloadStrategy = downloadStrategy;
 	}
 }

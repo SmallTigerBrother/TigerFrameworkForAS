@@ -364,6 +364,8 @@ public abstract class TGDownloadHttpClient
         downloader.setCheckKey("");
         downloader.setErrorCode(0);
         downloader.setErrorMsg("");
+
+        onRetry(downloader);
     }
 
     protected abstract void onRetry(TGDownloader downloader);

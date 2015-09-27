@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.request.receiver.TGHttpResult;
-import com.mn.tiger.upload.TGUploadPostMethod.IUploadSendListener;
 import com.mn.tiger.utility.FileUtils;
 
 import java.net.HttpURLConnection;
@@ -117,40 +116,8 @@ public class TGUploadStrategy implements IUploadStrategy
 	 */
 	protected void executeUpload(Context context, TGUploader uploader)
 	{
-//		LogTools.p(LOG_TAG, "[Method:request]");
-//
-//		// 任务结束，不执行上传
-//		if (null == uploadTask)
-//		{
-//			uploadCancel(mpUploader);
-//			return;
-//		}
-//		
-//		TGHttpClient httpClient = new DefaultHttpClient(context);
-//		// 创建post请求的方法
-//		TGUploadPostMethod postMethod = new TGUploadPostMethod(context, uploader, uploadTask, sendListener);
-//		setProperties(postMethod);
-//		
-//		TGHttpReceiver httpReceiver = new DefaultHttpReceiver(context);
-//		// 执行上传操作
-//		TGHttpResult httpResult = httpClient.executeHttpMethod(postMethod, httpReceiver);
-//
-//		dealRequestResult(uploader, httpResult);
-//		
-//		sendListener.onFinish(mpUploader);
 	}
 
-	/**
-	 * 
-	 * 该方法的作用: 设置请求头参数
-	 * @date 2014年8月26日
-	 * @param postMethod
-	 */
-	protected void setProperties(TGUploadPostMethod postMethod)
-	{
-		
-	}
-	
 	/**
 	 * 该方法的作用:处理请求结果
 	 * 
@@ -181,49 +148,6 @@ public class TGUploadStrategy implements IUploadStrategy
 	}
 	
 	/**
-	 * 接收上传数据回调
-	 */
-	IUploadSendListener sendListener = new IUploadSendListener()
-	{
-		@Override
-		public void uploading(TGUploader uploader, int progress)
-		{
-			// 回调上传中方法
-			uploadUploading(uploader, progress);
-		}
-
-		@Override
-		public void onFinish(TGUploader uploader)
-		{
-			// 上传完每一块, 记录进度到数据库
-			uploader.setCompleteSize(uploader.getCompleteSize() + uploader.getEndPosition() - uploader.getStartPosition());
-			TGUploadDBHelper.getInstance(context).updateUploader(uploader);
-			// 检测上传大小是否大于等于文件大小，如果小于文件大小，说明是分块上传，调用上传中方法
-			if(uploader.getCompleteSize() < uploader.getFileSize())
-			{
-				int currentProgress = (int) (uploader.getCompleteSize() * 100 / uploader.getFileSize());
-				uploadUploading(uploader, currentProgress);
-				return;
-			}
-			
-			// 回调上传成功方法
-			uploadFinish(uploader);
-		}
-
-		@Override
-		public void onFailed(TGUploader uploader)
-		{
-			uploadFailed(uploader);
-		}
-
-		@Override
-		public void onStop(TGUploader uploader)
-		{
-			uploadStop(uploader);
-		}
-	};
-	
-	/**
 	 * 
 	 * 该方法的作用: 上传过程中
 	 * @date 2014年8月19日
@@ -245,6 +169,17 @@ public class TGUploadStrategy implements IUploadStrategy
 	 */
 	private void uploadFinish(TGUploader uploader)
 	{
+		// 上传完每一块, 记录进度到数据库
+		uploader.setCompleteSize(uploader.getCompleteSize() + uploader.getEndPosition() - uploader.getStartPosition());
+		TGUploadDBHelper.getInstance(context).updateUploader(uploader);
+		// 检测上传大小是否大于等于文件大小，如果小于文件大小，说明是分块上传，调用上传中方法
+		if(uploader.getCompleteSize() < uploader.getFileSize())
+		{
+			int currentProgress = (int) (uploader.getCompleteSize() * 100 / uploader.getFileSize());
+			uploadUploading(uploader, currentProgress);
+			return;
+		}
+
 		// 删除本地记录
 		uploader.setUploadStatus(TGUploadManager.UPLOAD_SUCCEED);
 		TGUploadDBHelper.getInstance(context).deleteUploader(uploader);
