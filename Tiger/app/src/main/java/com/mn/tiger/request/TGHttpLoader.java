@@ -275,6 +275,39 @@ public class TGHttpLoader<T> implements IRequestParser
 	}
 
 	/**
+	 * 添加int类型的请求参数
+	 *
+	 * @param key
+	 * @param value
+	 */
+	public void addRequestParam(String key, int value)
+	{
+		this.addRequestParam(key, value + "");
+	}
+
+	/**
+	 * 添加long类型的请求参数
+	 *
+	 * @param key
+	 * @param value
+	 */
+	public void addRequestParam(String key, long value)
+	{
+		this.addRequestParam(key, value + "");
+	}
+
+	/**
+	 * 添加double类型那个的请求参数
+	 *
+	 * @param key
+	 * @param value
+	 */
+	public void addRequestParam(String key, double value)
+	{
+		this.addRequestParam(key, value + "");
+	}
+
+	/**
 	 * 添加请求参数
 	 * @param key 参数键
 	 * @param filePath 文件路径
