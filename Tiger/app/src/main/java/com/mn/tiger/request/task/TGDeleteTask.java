@@ -1,4 +1,4 @@
-package com.mn.tiger.request.async.task;
+package com.mn.tiger.request.task;
 
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.request.sync.AbstractSyncHttpLoader;

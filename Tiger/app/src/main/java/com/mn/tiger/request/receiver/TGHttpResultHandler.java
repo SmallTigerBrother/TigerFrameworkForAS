@@ -1,4 +1,4 @@
-package com.mn.tiger.request.async;
+package com.mn.tiger.request.receiver;
 
 import android.app.Activity;
 import android.content.Context;

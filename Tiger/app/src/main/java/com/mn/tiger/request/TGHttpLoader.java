@@ -1,15 +1,26 @@
 package com.mn.tiger.request;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.mn.tiger.app.TGActionBarActivity;
+import com.mn.tiger.log.LogTools;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.async.TGHttpAsyncTask;
-import com.mn.tiger.request.async.task.IRequestParser;
-import com.mn.tiger.request.method.TGHttpParams;
+import com.mn.tiger.request.receiver.TGHttpResultHandler;
+import com.mn.tiger.request.task.TGDeleteTask;
+import com.mn.tiger.request.task.TGGetTask;
+import com.mn.tiger.request.task.TGHttpTask;
+import com.mn.tiger.request.task.TGPostTask;
+import com.mn.tiger.request.task.TGPutTask;
+import com.mn.tiger.request.error.TGHttpErrorHandler;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
+import com.mn.tiger.task.TGTask;
+import com.mn.tiger.task.TGTaskManager;
+import com.mn.tiger.task.TGTaskParams;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +33,73 @@ public class TGHttpLoader<T> implements IRequestParser
 	private static final Logger LOG = Logger.getLogger(TGHttpLoader.class);
 
 	/**
-	 * 执行异步任务的类
+	 * 运行环境
 	 */
-	private TGHttpAsyncTask<T> asyncTask;
+	private Context context;
 
-	private int httpType = HttpType.REQUEST_UNKNOWN;
+	/**
+	 * 请求URL
+	 */
+	private String requestUrl;
+
+	/**
+	 * 请求类型，默认为Post类型
+	 */
+	private int requestType = HttpType.REQUEST_GET;
+
+	/**
+	 * 网络请求headers参数
+	 */
+	private HashMap<String, String> properties = null;
+
+	/**
+	 * 网络请求参数
+	 */
+	private TGHttpParams params = null;
+
+	/**
+	 * 字符串参数
+	 */
+	private HashMap<String, String> stringParams = null;
+
+	/**
+	 * 文件参数
+	 */
+	private HashMap<String, String> fileParams = null;
+
+	/**
+	 * 任务是否已取消
+	 */
+	private boolean isCancel = false;
+
+	/**
+	 * 任务ID
+	 */
+	private int taskID = -1;
+
+	/**
+	 * 执行任务类名
+	 */
+	private String taskClsName = null;
+
+	/**
+	 * 解析类的类名
+	 */
+	private String parserClsName = "";
+
+	/**
+	 * 结果类的类名
+	 */
+	private String resultClsName = "";
+
+	/**
+	 * 请求结果回调类
+	 */
+	private OnLoadCallback<T> loadCallback;
 
 	public TGHttpLoader()
 	{
+		parserClsName = this.getClass().getName();
 	}
 
 	/**
@@ -42,14 +112,14 @@ public class TGHttpLoader<T> implements IRequestParser
 	public void load(Context context,String requestUrl, Class<T> clazz,
 					 OnLoadCallback<T> callback)
 	{
-		if(httpType == HttpType.REQUEST_UNKNOWN)
+		if(requestType == HttpType.REQUEST_UNKNOWN)
 		{
 			LOG.e("[Method:load] you may not set HttpType before use this method, we will try load by HttpType.REQUEST_GET");
 			execute(context, HttpType.REQUEST_GET, requestUrl, clazz.getName(), callback);
 		}
 		else
 		{
-			execute(context, httpType, requestUrl, clazz.getName(), callback);
+			execute(context, requestType, requestUrl, clazz.getName(), callback);
 		}
 	}
 
@@ -176,43 +246,174 @@ public class TGHttpLoader<T> implements IRequestParser
 	protected void execute(Context context, int requestType, String requestUrl,
 			String resultClsName,  OnLoadCallback<T> callback)
 	{
-		getAsyncTask().setContext(context);
-		getAsyncTask().setRequestType(requestType);
-		getAsyncTask().setRequestUrl(requestUrl);
-		getAsyncTask().setResultClsName(resultClsName);
-		getAsyncTask().setLoadCallback(callback);
-		getAsyncTask().setParserClsName(TGHttpLoader.this.getClass().getName());
-
-		getAsyncTask().execute();
+		this.context = context;
+		this.requestType = requestType;
+		this.resultClsName = resultClsName;
+		this.loadCallback = callback;
+		this.requestUrl = requestUrl;
+		this.executeLoad();
 	}
 
 	/**
-	 * 解析请求结果
+	 * 该方法的作用:
+	 * 执行任务
+	 * @date 2014年8月22日
 	 */
-	@Override
-	public Object parseRequestResult(TGHttpResult httpResult, String resultClsName)
+	public int executeLoad()
 	{
-		//判断解析结果的className是否为Void
-		if(!TextUtils.isEmpty(resultClsName) && !resultClsName.equals(Void.class.getName()))
+		if (null == context || (context instanceof Activity && ((Activity) context).isFinishing()))
 		{
-			String jsonStr = httpResult.getResult();
-			//判断结果是否为空
-			if (!TextUtils.isEmpty(jsonStr))
-			{
-				try
-				{
-					Gson gson = new Gson();
-					return gson.fromJson(jsonStr, Class.forName(resultClsName));
-				}
-				catch (Exception e)
-				{
-					LOG.e("url : "  + getAsyncTask().getRequestUrl() + "\n params : " +
-				        getAsyncTask().getStringParams() + "\n" + e.getMessage());
-				}
-			}
+			return taskID;
 		}
 
-		return null;
+		if(TextUtils.isEmpty(requestUrl))
+		{
+			LOG.e("[Method:execute] the requestUrl is null, please check your code");
+			return taskID;
+		}
+
+		onPreExecute();
+		doInBackground(params);
+
+		return taskID;
+	}
+
+	/**
+	 * 请求之前执行方法（MainThread）
+	 */
+	protected void onPreExecute()
+	{
+		if(null != loadCallback)
+		{
+			loadCallback.onLoadStart();
+		}
+	}
+
+	/**
+	 * 该方法的作用:
+	 * 后台执行
+	 * @date 2014年8月22日
+	 * @param params
+	 * @return
+	 */
+	protected int doInBackground(TGHttpParams params)
+	{
+		LOG.d("[Method: doInBackground]  " + "start request.");
+
+		if(isCancelled())
+		{
+			loadCallback.onLoadOver();
+			return taskID;
+		}
+
+		TGTaskParams taskParams = initHttpParams(params);
+
+		taskID = TGTaskManager.getInstance().startTask(context, taskParams);
+
+		//将taskID注册到Activity
+		if(context instanceof TGActionBarActivity)
+		{
+			((TGActionBarActivity)context).registerHttpLoader(taskID);
+		}
+
+		return taskID;
+	}
+
+	/**
+	 * 该方法的作用:
+	 * 初始化Http请求参数（MainTread）
+	 * @date 2014年8月22日
+	 * @param params
+	 * @return
+	 */
+	protected TGTaskParams initHttpParams(TGHttpParams params)
+	{
+		if(requestType > HttpType.REQUEST_PUT ||
+				requestType < HttpType.REQUEST_POST)
+		{
+			throw new RuntimeException("Your requestType is invalid!");
+		}
+
+		// 设置请求参数
+		Bundle data = new Bundle();
+		data.putString(TGHttpTask.PARAM_URL, requestUrl);
+		data.putSerializable(TGHttpTask.PARAM_PROPERTIES, properties);
+		if(null != params)
+		{
+			data.putSerializable(TGHttpTask.PARAM_PARAMS, params);
+		}
+
+		data.putString(TGHttpTask.PARAM_PARSERCLSNAME, parserClsName);
+		data.putString(TGHttpTask.PARAM_RESLUTCLSNAME, resultClsName);
+
+		TGTaskParams taskParams = TGTaskManager.createTaskParams(data,
+				getTaskClsName(requestType), initHttpResultHandler());
+		taskParams.setTaskType(TGTask.TASK_TYPE_HTTP);
+
+		return taskParams;
+	}
+
+	/**
+	 * 初始化http请求回调接口
+	 * @return
+	 */
+	protected final TGHttpResultHandler initHttpResultHandler()
+	{
+		TGHttpResultHandler resultHandler = new TGHttpResultHandler(context)
+		{
+			@Override
+			protected void onSuccess(TGHttpResult httpResult)
+			{
+				LogTools.i(LOG_TAG, "[Method:onSuccess]");
+				//解析请求结果
+				if(!isCancelled() && null != loadCallback)
+				{
+					loadCallback.onLoadSuccess(parseResult(httpResult.getObjectResult()),
+							httpResult);
+				}
+			}
+
+			@Override
+			protected void onError(TGHttpResult httpResult)
+			{
+				LogTools.i(LOG_TAG, "[Method:onError]");
+				//解析请求结果
+				if(!isCancelled() && null != loadCallback)
+				{
+					loadCallback.onLoadError(httpResult.getResponseCode(),
+							httpResult.getResult(), httpResult);
+				}
+			}
+
+			@Override
+			protected void onReturnCachedResult(TGHttpResult httpResult)
+			{
+				LogTools.i(LOG_TAG, "[Method:onReturnCachedResult]");
+				//解析请求结果
+				if(!isCancelled() && null != loadCallback)
+				{
+					loadCallback.onLoadCache(parseResult(httpResult.getObjectResult()),
+							httpResult);
+				}
+			}
+
+			@Override
+			protected void onRequestOver()
+			{
+				if(null != loadCallback)
+				{
+					loadCallback.onLoadOver();
+				}
+			}
+
+			@Override
+			protected boolean hasError(TGHttpResult result)
+			{
+				return TGHttpLoader.this.hasError(result);
+			}
+		};
+
+		return resultHandler;
 	}
 
 	/**
@@ -220,23 +421,28 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	public void cancel()
 	{
-		getAsyncTask().cancel();
+		this.isCancel = true;
+		TGTaskManager.getInstance().cancelTask(taskID, TGTask.TASK_TYPE_HTTP);
+		if(null != loadCallback)
+		{
+			this.loadCallback.onLoadOver();
+		}
 	}
 
 	/**
-	 * 该方法的作用: 批量设置Headers请求参数
+	 * 该方法的作用: 设置Headers请求参数(会清空原有参数)
 	 * @date 2014年5月23日
 	 * @param properties
 	 */
 	public void setProperties(Map<String, String> properties)
 	{
+		if(this.properties != properties)
+		{
+			this.properties.clear();
+		}
 		if(null != properties)
 		{
-			this.getAsyncTask().setProperties(properties);
-		}
-		else
-		{
-			this.getAsyncTask().setProperties(new HashMap<String, String>());
+			this.properties.putAll(properties);
 		}
 	}
 
@@ -247,26 +453,36 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	public void addProperty(String key, String value)
 	{
-		if(null != key && null != value)
+		this.properties.put(key, value);
+	}
+
+	/**
+	 * 设置字符串参数（会清空原有参数）
+	 * @param params
+	 */
+	public void setRequestParams(Map<String, String> params)
+	{
+		if(this.stringParams != params)
 		{
-			this.getAsyncTask().addProperty(key, value);
+			this.stringParams.clear();
 		}
-		else
+
+		if(null != params)
 		{
-			LOG.e("[Method:addProperty] IllegalArguments were found key == " + key + " ; value == " + value);
+			this.stringParams.putAll(params);
 		}
 	}
 
 	/**
-	 * 添加请求参数
-	 * @param key 参数键
-	 * @param value 参数值
+	 * 添加字符串参数
+	 * @param key
+	 * @param value
 	 */
 	public void addRequestParam(String key, String value)
 	{
 		if(null != key && null != value)
 		{
-			this.getAsyncTask().addRequestParam(key, value);
+			this.stringParams.put(key, value);
 		}
 		else
 		{
@@ -308,15 +524,21 @@ public class TGHttpLoader<T> implements IRequestParser
 	}
 
 	/**
-	 * 添加请求参数
-	 * @param key 参数键
-	 * @param filePath 文件路径
+	 * 添加文件参数
+	 * @param key
+	 * @param filePath
 	 */
 	public void addFileParam(String key, String filePath)
 	{
 		if(null != key && null != filePath)
 		{
-			this.getAsyncTask().addFileParam(key, filePath);
+			if(null == fileParams)
+			{
+				fileParams = new HashMap<String, String>();
+				params.put("file_param", fileParams);
+			}
+
+			fileParams.put(key, filePath);
 		}
 		else
 		{
@@ -325,59 +547,115 @@ public class TGHttpLoader<T> implements IRequestParser
 	}
 
 	/**
-	 * 设置请求参数（会将已添加的参数替换）
-	 * @param params
+	 * 解析请求结果（从已解析成对象的结果中解析出所需要的结果），默认直接返回原始结果
+	 * @param originalResultObject  已解析成对象的原始结果
+	 * @return 目标对象结果
 	 */
-	public void setRequestParams(Map<String, String> params)
+	@SuppressWarnings("unchecked")
+	protected T parseResult(Object originalResultObject)
 	{
-		if(null != params)
-		{
-			this.getAsyncTask().setRequestParams(params);
-		}
-		else
-		{
-			this.getAsyncTask().setRequestParams(new HashMap<String, String>());
-		}
+		return (T) originalResultObject;
 	}
 
 	/**
-	 * 设置请求方式
-	 * @param httpType
-	 */
-	public void setHttpType(int httpType)
-	{
-		this.httpType = httpType;
-	}
-
-	/**
-	 * 获取异步任务
+	 * 判断网络请求结果是否有异常
+	 * @param httpResult
 	 * @return
 	 */
-	protected final TGHttpAsyncTask<T> getAsyncTask()
+	protected boolean hasError(TGHttpResult httpResult)
 	{
-		if(null == asyncTask)
-		{
-			asyncTask = initAsyncTask();
-		}
-
-		return asyncTask;
+		return TGHttpErrorHandler.hasHttpError(httpResult);
 	}
 
 	/**
-	 * 初始化异步任务（可Override）
+	 * 该方法的作用:
+	 * 获取执行任务的类名
+	 * @date 2014年8月22日
+	 * @param requestType
 	 * @return
 	 */
-	protected TGHttpAsyncTask<T> initAsyncTask()
+	protected String getTaskClsName(int requestType)
 	{
-		return new TGHttpAsyncTask<T>("", HttpType.REQUEST_UNKNOWN, null);
+		if(TextUtils.isEmpty(taskClsName))
+		{
+			switch (requestType)
+			{
+				case HttpType.REQUEST_GET:
+					taskClsName = TGGetTask.class.getName();
+
+					break;
+				case HttpType.REQUEST_POST:
+					taskClsName = TGPostTask.class.getName();
+
+					break;
+				case HttpType.REQUEST_PUT:
+					taskClsName = TGPutTask.class.getName();
+
+					break;
+				case HttpType.REQUEST_DELETE:
+					taskClsName = TGDeleteTask.class.getName();
+
+					break;
+				default:
+					taskClsName = "";
+
+					break;
+			}
+		}
+
+		return taskClsName;
 	}
+
+	/**
+	 * 是否已取消
+	 * @return
+	 */
+	public boolean isCancelled()
+	{
+		return isCancel;
+	}
+
+	public Context getContext()
+	{
+		return context;
+	}
+
+	/**
+	 * 解析请求结果
+	 */
+	@Override
+	public Object parseRequestResult(TGHttpResult httpResult, String resultClsName)
+	{
+		//判断解析结果的className是否为Void
+		if(!TextUtils.isEmpty(resultClsName) && !resultClsName.equals(Void.class.getName()))
+		{
+			String jsonStr = httpResult.getResult();
+			//判断结果是否为空
+			if (!TextUtils.isEmpty(jsonStr))
+			{
+				try
+				{
+					Gson gson = new Gson();
+					return gson.fromJson(jsonStr, Class.forName(resultClsName));
+				}
+				catch (Exception e)
+				{
+					LOG.e("url : "  + this.requestUrl + "\n params : " +
+							stringParams + "\n" + e.getMessage());
+				}
+			}
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * 请求结果的回调
 	 *
 	 * @date 2014-6-10
 	 */
-	public static interface OnLoadCallback<T>
+	public interface OnLoadCallback<T>
 	{
 		/**
 		 * 启动加载时回调

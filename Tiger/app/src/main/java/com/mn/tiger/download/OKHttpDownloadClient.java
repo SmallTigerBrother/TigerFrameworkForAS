@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.HttpType;
-import com.mn.tiger.request.method.TGHttpParams;
+import com.mn.tiger.request.TGHttpParams;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

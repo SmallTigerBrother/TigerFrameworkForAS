@@ -1,4 +1,4 @@
-package com.mn.tiger.request.async.task;
+package com.mn.tiger.request.task;
 
 import java.util.HashMap;
 
@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.mn.tiger.log.LogTools;
+import com.mn.tiger.request.IRequestParser;
 import com.mn.tiger.request.error.TGHttpError;
-import com.mn.tiger.request.method.TGHttpParams;
+import com.mn.tiger.request.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.test.mock.HttpMockTester;
@@ -51,8 +52,6 @@ public abstract class TGHttpTask extends TGTask
 	 */
 	public static final String PARAM_CACHEABLE = "cacheable";
 	
-	public static final String PARAM_HTTP_IMPLEMENTATION_TYPE = "httpImplementationType";
-
 	/**
 	 * 缓存用的Key
 	 */

@@ -1,4 +1,4 @@
-package com.mn.tiger.request.method;
+package com.mn.tiger.request;
 
 import android.text.TextUtils;
 import android.util.Log;

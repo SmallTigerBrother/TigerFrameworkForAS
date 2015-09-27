@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.request.error.TGHttpError;
-import com.mn.tiger.request.method.TGHttpParams;
+import com.mn.tiger.request.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
 
 import java.util.Map;
