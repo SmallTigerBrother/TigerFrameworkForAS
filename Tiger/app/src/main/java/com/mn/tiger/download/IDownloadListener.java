@@ -8,15 +8,15 @@ package com.mn.tiger.download;
  */
 public interface IDownloadListener
 {
-	public void downloadStart(TGDownloader downloader);
+	void downloadStart(TGDownloader downloader);
 	
-	public void downloadSucceed(TGDownloader downloader);
+	void downloadSucceed(TGDownloader downloader);
 	
-	public void downloadProgress(TGDownloader downloader, int progress);
+	void downloadProgress(TGDownloader downloader, int progress);
 	
-	public void downloadFailed(TGDownloader downloader);
+	void downloadFailed(TGDownloader downloader);
 	
-	public void downloadPause(TGDownloader downloader);
+	void downloadPause(TGDownloader downloader);
 	
-	public void downloadCanceled(TGDownloader downloader);
+	void downloadCanceled(TGDownloader downloader);
 }

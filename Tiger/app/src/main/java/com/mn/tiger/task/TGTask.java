@@ -165,7 +165,7 @@ public class TGTask implements Cloneable
 		}
 		
 		//销毁所有属性
-		onDestory();
+		onDestroy();
 	}
 
 	/**
@@ -320,7 +320,7 @@ public class TGTask implements Cloneable
 			taskListener.onTaskCancel(this.getTaskID());
 		}
 		
-		onDestory();
+		onDestroy();
 	}
 	
 	/**
@@ -338,14 +338,14 @@ public class TGTask implements Cloneable
 			taskListener.onTaskPause(this.getTaskID());
 		}
 		
-		onDestory();
+		onDestroy();
 	}
 	
 	/**
 	 * 该方法的作用: 清空回调接口，清空属性，销毁任务
 	 * @date 2014年8月15日
 	 */
-	protected void onDestory()
+	protected void onDestroy()
 	{
 		messenger = null;
 		taskListener = null;

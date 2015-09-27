@@ -104,7 +104,6 @@ public class TGHttpAsyncTask<T>
 	private OnLoadCallback<T> loadCallback;
 	
 	/**
-	 * @param context
 	 * @param requestUrl
 	 * @param requestType
 	 * @param callback

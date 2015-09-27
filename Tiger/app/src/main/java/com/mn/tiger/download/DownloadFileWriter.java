@@ -20,7 +20,7 @@ import com.mn.tiger.utility.FileUtils;
  */
 class DownloadFileWriter
 {
-	private static final Logger LOG = Logger.getLogger(DownloadHttpClient.class);
+	private static final Logger LOG = Logger.getLogger(DownloadFileWriter.class);
 
 	private Context context;
 
@@ -35,10 +35,10 @@ class DownloadFileWriter
 	 */
 	private long completeSize;
 
-	private DownloadHttpClient downloadHttpClient;
+	private TGDownloadHttpClient downloadHttpClient;
 
 	public DownloadFileWriter(Context context, TGDownloader downloader,
-							  TGDownloadTask downloadTask, DownloadHttpClient httpClient)
+							  TGDownloadTask downloadTask, TGDownloadHttpClient httpClient)
 	{
 		this.downloader = downloader;
 		this.downloadTask = downloadTask;

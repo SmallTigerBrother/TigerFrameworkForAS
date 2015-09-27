@@ -3,17 +3,8 @@ package com.mn.tiger.request.method;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.mn.tiger.log.LogTools;
+import com.mn.tiger.request.method.ProgressEntiryWrapper.ProgressListener;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -22,8 +13,15 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import com.mn.tiger.log.LogTools;
-import com.mn.tiger.request.method.ProgressEntiryWrapper.ProgressListener;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 网络请求参数
@@ -81,21 +79,20 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
      * @return
      * @throws UnsupportedEncodingException
      */
-    public String mergeStringParams2KeyValuePair() throws UnsupportedEncodingException
+    public static String mergeStringParams2KeyValuePair(Map<String, String> parameters) throws UnsupportedEncodingException
     {
         StringBuffer urlBuffer = new StringBuffer();
-        Map<String, String> StrParams = getStringParams();
 
-        if(null != StrParams)
+        if(null != parameters)
         {
-            Object[] paraKeys = StrParams.keySet().toArray();
+            Object[] paraKeys = parameters.keySet().toArray();
             int parameterLength = paraKeys.length;
 
             for (int i = 0; i < parameterLength; i++)
             {
                 urlBuffer.append(URLEncoder.encode((String) paraKeys[i], ENCODING));
                 urlBuffer.append("=");
-                urlBuffer.append(URLEncoder.encode(StrParams.get(paraKeys[i]), ENCODING));
+                urlBuffer.append(URLEncoder.encode(parameters.get(paraKeys[i]), ENCODING));
                 if (i != (parameterLength - 1))
                 {
                     urlBuffer.append("&");
@@ -185,19 +182,16 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
         return contentLength;
     }
 
-    public static String appendParams2Url(String url, TGHttpParams params)
+    public static String appendParams2Url(String url, Map<String, String> parameters)
     {
         String paramsString = null;
-        if (params instanceof Map<?, ?>)
+        try
         {
-            try
-            {
-                paramsString = ((TGHttpParams)params).mergeStringParams2KeyValuePair();
-            }
-            catch (UnsupportedEncodingException e)
-            {
-                LogTools.e(LOG_TAG, e);
-            }
+            paramsString = mergeStringParams2KeyValuePair(parameters);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            LogTools.e(LOG_TAG, e);
         }
 
         if (!TextUtils.isEmpty(paramsString))

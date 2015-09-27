@@ -10,5 +10,5 @@ public interface IDownloadStrategy
 {
 	void download(TGDownloadParams downloadParams);
 	
-	void shutdown();
+	void cancel();
 }

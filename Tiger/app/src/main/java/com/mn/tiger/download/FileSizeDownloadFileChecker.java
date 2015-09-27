@@ -9,7 +9,7 @@ import com.mn.tiger.utility.FileUtils;
 public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 {
 	@Override
-	public boolean isFileAlreadDownloaded(TGDownloader downloader, HttpResponse response)
+	public boolean isFileAlreadyDownloaded(TGDownloader downloader)
 	{
 		File file = new File(downloader.getSavePath());
 		if(file.exists())
@@ -34,7 +34,7 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 	}
 
 	@Override
-	public boolean isFileCorrect(TGDownloader downloader, HttpResponse response)
+	public boolean isFileCorrect(TGDownloader downloader)
 	{
 		return downloader.getFileSize() == FileUtils.getFileSize(downloader.getSavePath());
 	}

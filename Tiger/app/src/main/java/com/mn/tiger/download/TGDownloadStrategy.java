@@ -3,11 +3,6 @@ package com.mn.tiger.download;
 import android.content.Context;
 
 import com.mn.tiger.log.LogTools;
-import com.mn.tiger.request.HttpType;
-import com.mn.tiger.request.method.ApacheGetMethod;
-import com.mn.tiger.request.method.ApacheHttpMethod;
-import com.mn.tiger.request.method.ApachePostMethod;
-import com.mn.tiger.request.method.TGHttpParams;
 
 /**
  * 下载策略类
@@ -34,14 +29,13 @@ public class TGDownloadStrategy implements IDownloadStrategy
 	 */
 	protected TGDownloader downloader;
 	
-	private DownloadHttpClient downloadHttpClient;
+	private TGDownloadHttpClient downloadHttpClient;
 	
 	/**
 	 * 构造函数
 	 * @date 2014年8月5日
 	 * @param context
 	 * @param downloadTask
-	 * @param listener
 	 */
 	public TGDownloadStrategy(Context context, TGDownloadTask downloadTask)
 	{
@@ -70,50 +64,16 @@ public class TGDownloadStrategy implements IDownloadStrategy
 	{
 		LogTools.p(LOG_TAG, "[Method:executeDownload]");
 
-		downloadHttpClient = new DownloadHttpClient(context, downloader, 
+		downloadHttpClient = new OKHttpDownloadClient(context, downloader,
 				downloadTask);		
-		// 创建请求方法
-		ApacheHttpMethod httpMethod = getHttpMethod(downloader);
-		
+
 		// 执行下载操作
-		downloadHttpClient.execute(httpMethod);
+		downloadHttpClient.execute();
 	}
 
-	/**
-	 * 该方法的作用:获取请求方法类
-	 * @date 2014年1月23日
-	 * @param TGDownloader
-	 * @return
-	 */
-	protected ApacheHttpMethod getHttpMethod(TGDownloader download)
-	{
-		LogTools.i(LOG_TAG, "[Method:getHttpMethod] requestUrl:" + download.getUrl());
-		// 创建post请求的方法
-		ApacheHttpMethod httpMethod = null;
-		if (download.getRequestType() == HttpType.REQUEST_GET)
-		{
-			httpMethod = new ApacheGetMethod();
-		}
-		else
-		{
-			httpMethod = new ApachePostMethod();
-		}
-		httpMethod.setUrl(download.getUrl());
-		TGHttpParams httpParams = new TGHttpParams();
-		httpParams.setStringParams(download.getParams());
-		httpMethod.setReqeustParams(httpParams);
-		//设置是否支持断点续传
-		if(downloader.isBreakPoints())
-		{
-			httpMethod.setProperty("Range", "bytes="+ downloader.getCompleteSize() + "-" + (downloader.getFileSize() - 1));
-		}
-
-		return httpMethod;
-	}
-	
 	@Override
-	public void shutdown()
+	public void cancel()
 	{
-		downloadHttpClient.shutdown();
+		downloadHttpClient.cancel();
 	}
 }

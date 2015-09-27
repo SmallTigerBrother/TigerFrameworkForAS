@@ -10,16 +10,14 @@ public interface IDownloadFileChecker
 	/**
 	 * 判断文件是否已下载
 	 * @param downloader
-	 * @param response
 	 * @return
 	 */
-	boolean isFileAlreadDownloaded(TGDownloader downloader, HttpResponse response);
+	boolean isFileAlreadyDownloaded(TGDownloader downloader);
 	
 	/**
 	 * 判断已下载的文件是否正确
 	 * @param downloader
-	 * @param response
 	 * @return
 	 */
-	boolean isFileCorrect(TGDownloader downloader, HttpResponse response);
+	boolean isFileCorrect(TGDownloader downloader);
 }

@@ -1,18 +1,16 @@
 package com.mn.tiger.download;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
-import org.apache.http.HttpResponse;
-
 import android.text.TextUtils;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.Commons;
 import com.mn.tiger.utility.FileUtils;
 import com.mn.tiger.utility.MD5;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * MD5校验码检查器
@@ -22,13 +20,13 @@ public class MD5DownloadFileChecker implements IDownloadFileChecker
 	private static final Logger LOG = Logger.getLogger(MD5DownloadFileChecker.class);
 	
 	@Override
-	public boolean isFileAlreadDownloaded(TGDownloader downloader, HttpResponse response)
+	public boolean isFileAlreadyDownloaded(TGDownloader downloader)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isFileCorrect(TGDownloader downloader, HttpResponse response)
+	public boolean isFileCorrect(TGDownloader downloader)
 	{
 		return equalDownloadFileCheckStr(downloader.getUrl(), downloader.getCheckKey());
 	}

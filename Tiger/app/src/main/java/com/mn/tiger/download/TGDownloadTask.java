@@ -71,6 +71,7 @@ public class TGDownloadTask extends TGTask
 	{
 		if(getTaskState() == TGTaskState.WAITING)
 		{
+			downloadStrategy.cancel();
 			TGDownloader downloader = TGDownloader.getInstance(getContext(), mDownloadParams, this.getTaskID());
 			onDownloadCancel(downloader);
 		}
@@ -132,10 +133,10 @@ public class TGDownloadTask extends TGTask
 	}
 	
 	@Override
-	protected void onDestory()
+	protected void onDestroy()
 	{
 		progress = -1;
-		super.onDestory();
+		super.onDestroy();
 	}
 	
 	/**

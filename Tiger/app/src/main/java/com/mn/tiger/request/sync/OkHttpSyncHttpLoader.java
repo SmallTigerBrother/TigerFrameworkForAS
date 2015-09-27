@@ -7,6 +7,8 @@ import com.mn.tiger.request.HttpType;
 import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.method.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
+import com.mn.tiger.task.utils.TGTaskIDCreator;
+import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -32,9 +34,9 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
     private static OkHttpClient okHttpClient = new OkHttpClient();
 
     {
-        okHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.setWriteTimeout(30, TimeUnit.SECONDS);
+        okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
+        okHttpClient.setWriteTimeout(120, TimeUnit.SECONDS);
     }
 
     public OkHttpSyncHttpLoader(int tag)
@@ -111,10 +113,14 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
     {
         Response response = okHttpClient.newCall(request).execute();
         TGHttpResult httpResult = initHttpResult(context);
+        httpResult.setResponseCode(response.code());
         if(response.isSuccessful())
         {
-            httpResult.setResponseCode(response.code());
             httpResult.setResult(response.body().string());
+        }
+        else
+        {
+            httpResult.setResult(response.message());
         }
         return httpResult;
     }
@@ -135,10 +141,10 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
         switch (httpType)
         {
             case HttpType.REQUEST_GET:
-                builder.url(TGHttpParams.appendParams2Url(requestUrl, parameters)).get();
+                builder.url(TGHttpParams.appendParams2Url(requestUrl, parameters.getStringParams())).get();
                 break;
             case HttpType.REQUEST_POST:
-                RequestBody requestBody = initMultiPartRequestBody(parameters);
+                RequestBody requestBody = initRequestBody(parameters);
                 builder.url(requestUrl).post(requestBody);
                 break;
             case HttpType.REQUEST_PUT:
@@ -179,25 +185,34 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
      * @return
      * @throws IOException
      */
-    private RequestBody initMultiPartRequestBody(TGHttpParams parameters) throws IOException
+    private RequestBody initRequestBody(TGHttpParams parameters) throws IOException
     {
-        MultipartBuilder builder = new MultipartBuilder();
-        builder.type(MultipartBuilder.FORM);
-        for(Map.Entry<String, String> entry :parameters.getStringParams().entrySet())
+        if(null == parameters.getFileParams())
         {
-            builder.addFormDataPart(entry.getKey(), entry.getValue());
+            FormEncodingBuilder builder = new FormEncodingBuilder();
+            for(Map.Entry<String, String> entry :parameters.getStringParams().entrySet())
+            {
+                builder.add(entry.getKey(), entry.getValue());
+            }
+            return builder.build();
         }
-
-        if(null != parameters.getFileParams())
+        else
         {
+            MultipartBuilder builder = new MultipartBuilder();
+            builder.type(MultipartBuilder.FORM);
+            for(Map.Entry<String, String> entry :parameters.getStringParams().entrySet())
+            {
+                builder.addFormDataPart(entry.getKey(), entry.getValue());
+            }
+
+            File file = null;
             for(Map.Entry<String, String> entry :parameters.getFileParams().entrySet())
             {
-                File file = new File(entry.getValue());
+                file = new File(entry.getValue());
                 builder.addFormDataPart(entry.getKey(), file.getName(),
                         RequestBody.create(MediaType.parse("application/octet-stream"), file));
             }
+            return builder.build();
         }
-
-        return builder.build();
     }
 }
