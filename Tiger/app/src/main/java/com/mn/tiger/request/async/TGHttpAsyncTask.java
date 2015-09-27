@@ -22,7 +22,7 @@ import com.mn.tiger.request.method.TGHttpParams;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
-import com.mn.tiger.task.invoke.TGTaskParams;
+import com.mn.tiger.task.TGTaskParams;
 
 /**
  * 该类作用及功能说明

@@ -1,12 +1,10 @@
 package com.mn.tiger.task;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 
-import com.mn.tiger.task.invoke.TGTaskInvoker;
-import com.mn.tiger.task.invoke.TGTaskParams;
 import com.mn.tiger.task.utils.TGTaskIDCreator;
+
+import java.util.ArrayList;
 
 
 /**
@@ -55,6 +53,6 @@ public class TGScheduleTaskList extends ArrayList<TGTask>
 	 */
 	public boolean addTaskByParams(Context context, TGTaskParams taskParams)
 	{
-		return this.add(TGTaskInvoker.createTask(context, taskParams));
+		return this.add(TGTaskManager.createTask(context, taskParams));
 	}
 }

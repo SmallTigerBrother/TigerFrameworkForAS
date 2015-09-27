@@ -1,15 +1,14 @@
 package com.mn.tiger.task;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.os.Bundle;
 
 import com.mn.tiger.log.LogTools;
-import com.mn.tiger.task.invoke.TGTaskInvoker;
-import com.mn.tiger.task.invoke.TGTaskParams;
+import com.mn.tiger.task.dispatch.TGDispatcher;
 import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.task.utils.TGTaskIDCreator;
+
+import java.util.HashMap;
 
 /**
  * 任务管理器，单例类
@@ -25,11 +24,6 @@ public class TGTaskManager
 	 * Manager单例对象
 	 */
 	private volatile static TGTaskManager instance;
-	
-	/**
-	 * invoker单例对象
-	 */
-	private volatile static TGTaskInvoker invoker;
 	
 	/**
 	 * 任务动作: 开始任务
@@ -63,17 +57,6 @@ public class TGTaskManager
 			}
 		}
 
-		if(null == invoker)
-		{
-			synchronized (TGTaskManager.class)
-			{
-				if(null == invoker)
-				{
-					invoker = new TGTaskInvoker();
-				}
-			}
-		}
-
 		return instance;
 	}
 	
@@ -98,8 +81,17 @@ public class TGTaskManager
 	
 		LogTools.d(LOG_TAG, "[Method:startTask]");
 		taskParams.setTaskMode(TASK_START_MODE);
-		
-		return invoker.invokeTask(context, taskParams);
+
+		LogTools.p(LOG_TAG, "[Method:invoke]");
+		TGTask task = createTask(context, taskParams);
+		// 分发并执行任务
+		if (null != task)
+		{
+			TGDispatcher.getInstance().dispatchTask(task);
+			return task.getTaskID();
+		}
+
+		return -1;
 	}
 	
 	/**
@@ -117,7 +109,8 @@ public class TGTaskManager
 		
 		LogTools.d(LOG_TAG, "[Method:startScheduleTaskList]");
 		taskList.setTaskMode(TASK_START_MODE);
-		return invoker.invokeScheduleTaskList(context, taskList);
+		TGDispatcher.getInstance().dispatchScheduleTaskList(taskList);
+		return taskList.getTaskListId();
 	}
 	
 	/**
@@ -139,7 +132,9 @@ public class TGTaskManager
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskType(taskType);
 		taskParams.setTaskMode(TASK_CANCEL_MODE);
-		invoker.invokeTask(null, taskParams);
+		// 结束任务并删除
+		TGDispatcher.getInstance().cancelTask(taskParams.getTaskID(),
+				taskParams.getTaskType());
 	}
 	
 	/**
@@ -156,13 +151,15 @@ public class TGTaskManager
 		
 		LogTools.d(LOG_TAG, "[Method:startScheduleTaskList]");
 		taskList.setTaskMode(TASK_CANCEL_MODE);
-		invoker.invokeScheduleTaskList(context, taskList);
+		// 结束任务并删除
+		TGDispatcher.getInstance().cancelScheduleTaskList(taskList.getTaskListId());
 	}
 	
 	/**
 	 * 停止任务
 	 * @date 2014年5月21日
-	 * @param task
+	 * @param taskId
+	 * @param taskType
 	 */
 	public void pauseTask(int taskId, int taskType)
 	{
@@ -178,7 +175,36 @@ public class TGTaskManager
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskType(taskType);
 		taskParams.setTaskMode(TASK_PAUSE_MODE);
-		invoker.invokeTask(null, taskParams);
+		// 结束任务并删除
+		TGDispatcher.getInstance().pauseTask(taskParams.getTaskID(),
+				taskParams.getTaskType());
+	}
+
+	/**
+	 * 该方法的作用:
+	 * @date 2014年5月16日
+	 * @param taskParams
+	 * @return
+	 */
+	public static TGTask createTask(Context context, TGTaskParams taskParams)
+	{
+		LogTools.d(LOG_TAG, "[Method:createTask]");
+		TGTask task = null;
+		try
+		{
+			task = (TGTask) Class.forName(taskParams.getTaskClsName()).newInstance();
+			task.setMessenger(taskParams.getMessenger());
+			task.setTaskID(taskParams.getTaskID());
+			task.setType(taskParams.getTaskType());
+			task.setParams(taskParams.getParams());
+			task.setContext(context);
+			return task;
+		}
+		catch (Exception e)
+		{
+			LogTools.e(LOG_TAG, "[method:createTask] create task error.", e);
+		}
+		return task;
 	}
 	
 	/**

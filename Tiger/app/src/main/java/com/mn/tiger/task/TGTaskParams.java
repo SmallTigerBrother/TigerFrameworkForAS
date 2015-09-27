@@ -1,4 +1,4 @@
-package com.mn.tiger.task.invoke;
+package com.mn.tiger.task;
 
 import java.io.Serializable;
 import java.util.HashMap;

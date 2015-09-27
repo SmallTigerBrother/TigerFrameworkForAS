@@ -214,7 +214,8 @@ public class TGDispatcher
 	 * 该方法的作用:
 	 * 暂停任务
 	 * @date 2014年3月20日
-	 * @param task
+	 * @param taskId
+	 * @param taskType
 	 * @return
 	 */
 	public boolean pauseTask(int taskId, int taskType)
