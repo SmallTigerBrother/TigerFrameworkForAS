@@ -23,9 +23,6 @@ public abstract class TGUploadHttpClient
     /** 上传文件路径 */
     protected TGUploader uploader;
 
-    /** 上传监听 */
-    protected IUploadListener uploadListener;
-
     /** 上传任务 */
     protected TGUploadTask uploadTask;
 
@@ -47,15 +44,13 @@ public abstract class TGUploadHttpClient
      * @param context
      * @param uploader
      */
-    public TGUploadHttpClient(Context context, TGUploader uploader,
-                              TGUploadTask uploadTask, IUploadListener uploadListener)
+    public TGUploadHttpClient(Context context, TGUploader uploader, TGUploadTask uploadTask)
     {
         // 初始化上传参数
         this.context = context;
         this.uploader = uploader;
         this.completeSize = uploader.getCompleteSize();
         this.uploadTask = uploadTask;
-        this.uploadListener = uploadListener;
     }
 
     public void execute()
@@ -168,45 +163,99 @@ public abstract class TGUploadHttpClient
         }
     }
 
-    protected void onUploadStart(TGUploader uploader)
+
+    public void onUploadStart(TGUploader uploader)
     {
-        if (uploadListener != null)
-        {
-        }
+        uploader.setUploadStatus(TGUploadManager.UPLOAD_STARTING);
+        uploadTask.onUploadStart(uploader);
     }
 
-    protected void onUploading(TGUploader uploader, int progress)
+    /**
+     *
+     * 该方法的作用: 上传过程中
+     * @date 2014年8月19日
+     * @param uploader
+     */
+    private void onUploading(TGUploader uploader, int progress)
     {
-        if (uploadListener != null)
-        {
-            uploadListener.onUploading(uploader, progress);
-        }
+        // 修改上传状态为正在上传
+        uploader.setUploadStatus(TGUploadManager.UPLOAD_UPLOADING);
+        uploadTask.onUploading(uploader, progress);
     }
 
-    protected void onUploadFailed(int errorCode, String errorMsg)
+    /**
+     *
+     * 该方法的作用: 上传文件完成，删除数据库记录
+     * @date 2014年8月19日
+     * @param uploader
+     */
+    private void onUploadFinish(TGUploader uploader)
     {
-        if (uploadListener != null)
+        // 上传完每一块, 记录进度到数据库
+        uploader.setCompleteSize(uploader.getCompleteSize() + uploader.getEndPosition() - uploader.getStartPosition());
+        TGUploadDBHelper.getInstance(context).updateUploader(uploader);
+        // 检测上传大小是否大于等于文件大小，如果小于文件大小，说明是分块上传，调用上传中方法
+        if(uploader.getCompleteSize() < uploader.getFileSize())
         {
-            uploader.setErrorCode(errorCode);
-            uploader.setErrorMsg(errorMsg);
-            uploadListener.onUploadFailed(uploader);
+            int currentProgress = (int) (uploader.getCompleteSize() * 100 / uploader.getFileSize());
+            onUploading(uploader, currentProgress);
+            return;
         }
-        else
-        {
-            LOG.e("[Method:uploadFailed]  uploadListener is null,Please set sendListener on Construct..");
-        }
+
+        // 删除本地记录
+        uploader.setUploadStatus(TGUploadManager.UPLOAD_SUCCEED);
+        TGUploadDBHelper.getInstance(context).deleteUploader(uploader);
+
+        uploadTask.onUploadFinish(uploader);
     }
 
-    protected void onUploadStop(TGUploader uploader)
+    /**
+     *
+     * 该方法的作用: 上传文件过程中出现异常，如果不是断点上传，删除本地文件
+     * @date 2014年8月19日
+     * @param uploader
+     */
+    protected void onUploadFailed(TGUploader uploader)
     {
-        if (uploadListener != null)
+        uploader.setUploadStatus(TGUploadManager.UPLOAD_FAILED);
+        // 如果不是分块上传，删除数据库记录
+        if(true)
         {
-            uploadListener.onUploadStop(uploader);
+            TGUploadDBHelper.getInstance(context).deleteUploader(uploader);
         }
-        else
+
+        uploadTask.onUploadFailed(uploader);
+    }
+
+    /**
+     *
+     * 该方法的作用: 停止上传，如果不是断点上传，删除本地文件
+     * @date 2014年8月19日
+     * @param uploader
+     */
+    private void onUploadStop(TGUploader uploader)
+    {
+        uploader.setUploadStatus(TGUploadManager.UPLOAD_PAUSE);
+        // 如果不是分块上传，删除数据库记录
+        if(true)
         {
-            LOG.e("[Method:uploadStop]  uploadListener is null,Please set sendListener on Construct..");
+            TGUploadDBHelper.getInstance(context).deleteUploader(uploader);
         }
+        uploadTask.onUploadStop(uploader);
+    }
+
+    /**
+     * 该方法的作用: 取消上传，直接删除本地文件和数据库记录
+     * @date 2014年8月19日
+     * @param uploader
+     */
+    private void onUploadCancel(TGUploader uploader)
+    {
+        uploader.setUploadStatus(TGUploadManager.UPLOAD_PAUSE);
+        // 删除数据库记录
+        TGUploadDBHelper.getInstance(context).deleteUploader(uploader);
+
+        uploadTask.onUploadCancel(uploader);
     }
 
     public void setPartBOUNDARY(String bOUNDARY)
@@ -224,58 +273,9 @@ public abstract class TGUploadHttpClient
         return "tiger_upload_code";
     }
 
-    /**
-     * 该类作用及功能说明 上传数据监听类
-     *
-     * @date 2014年1月8日
-     */
-    public interface IUploadListener
-    {
-        /**
-         * 该方法的作用:正在上传文件流
-         *
-         * @date 2014年1月22日
-         * @param uploader
-         *            上传信息
-         */
-        void onUploading(TGUploader uploader, int progress);
-
-        /**
-         * 该方法的作用:上传文件流结束
-         *
-         * @date 2014年1月22日
-         * @param uploader
-         *            上传信息
-         */
-        void onUploadFinish(TGUploader uploader);
-
-        /**
-         * 该方法的作用:下载出错
-         *
-         * @date 2014年1月22日
-         * @param uploader
-         *            上传信息
-         */
-        void onUploadFailed(TGUploader uploader);
-
-        /**
-         * 该方法的作用:下载停止
-         *
-         * @date 2014年1月22日
-         * @param uploader
-         *            上传信息
-         */
-        void onUploadStop(TGUploader uploader);
-    }
-
     public void setUploader(TGUploader uploader)
     {
         this.uploader = uploader;
-    }
-
-    public void setUploadListener(IUploadListener uploadListener)
-    {
-        this.uploadListener = uploadListener;
     }
 
     public void setUploadTask(TGUploadTask uploadTask)

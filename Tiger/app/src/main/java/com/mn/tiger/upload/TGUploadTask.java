@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.upload.observe.TGUploadObserveController;
+import com.mn.tiger.utility.FileUtils;
 
 /**
  * 
@@ -20,19 +21,14 @@ public class TGUploadTask extends TGTask
 	protected static final String LOG_TAG = TGUploadTask.class.getSimpleName();
 	
 	/**
-	 * 上传策略
+	 * 上传信息
 	 */
-	protected IUploadStrategy uploadStrategy = null;
+	protected TGUploader uploader;
 	
 	/**
 	 * 上传信息 
 	 */
-	protected TGUploadParams mpUploadParams;
-	
-	/**
-	 * 上传任务监听
-	 */
-	private IUploadListener uploadListener = new DefaultUploadListener();
+	protected TGUploadParams uploadParams;
 	
 	/**
 	 * 构造函数
@@ -67,10 +63,59 @@ public class TGUploadTask extends TGTask
 	 */
 	protected void uploadInBackground()
 	{
-		LogTools.p(LOG_TAG, "[Metohd:uploadInBackground]" + "; taskid: " + this.getTaskID());
-		mpUploadParams = getUploadParams();
+		LogTools.p(LOG_TAG, "[Method:uploadInBackground]" + "; taskid: " + this.getTaskID());
+		uploadParams = getUploadParams();
 		
 		executeUpload();
+	}
+
+	/**
+	 *
+	 * 该方法的作用: 执行上传任务
+	 * @date 2014年7月23日
+	 */
+	protected void executeUpload()
+	{
+		//TODO 上传
+		// 获取上传参数
+		uploader = getUploader(uploadParams);
+	}
+
+	/**
+	 *
+	 * 该方法的作用: 获取上传信息
+	 * @date 2014年8月18日
+	 * @param mpUploadParams
+	 * @return
+	 */
+	protected TGUploader getUploader(TGUploadParams mpUploadParams)
+	{
+		TGUploader uploader = null;
+		uploader = TGUploadDBHelper.getInstance(getContext()).getBreakPointUploader(mpUploadParams.getFilePath());
+
+		if(uploader == null)
+		{
+			uploader = createNewUploader(mpUploadParams);
+		}
+		uploader.setUploadStatus(TGUploadManager.UPLOAD_STARTING);
+
+		return uploader;
+	}
+
+	protected TGUploader createNewUploader(TGUploadParams uploadParams)
+	{
+		TGUploader uploader = new TGUploader();
+		uploader.setId(getTaskID().toString());
+		uploader.setServiceURL(uploadParams.getServiceURL());
+		uploader.setType(uploadParams.getUploadType());
+		uploader.setFilePath(uploadParams.getFilePath());
+		uploader.setTaskClsName(uploadParams.getTaskClsName());
+		uploader.setFileSize(FileUtils.getFileSize(uploadParams.getFilePath()));
+		uploader.setStartPosition(0);
+		uploader.setEndPosition(FileUtils.getFileSize(uploadParams.getFilePath()));
+		uploader.setParamsClsName(uploadParams.getClass().getName());
+
+		return uploader;
 	}
 	
 	/**
@@ -92,18 +137,7 @@ public class TGUploadTask extends TGTask
 		return uploadParams;
 	}
 	
-	/**
-	 * 
-	 * 该方法的作用: 执行上传任务
-	 * @date 2014年7月23日
-	 */
-	protected void executeUpload()
-	{
-		// 上传
-		uploadStrategy = new TGUploadStrategy(getContext(), this, uploadListener);
-		uploadStrategy.upload(mpUploadParams);
-	}
-	
+
 	@Override
 	protected void onTaskCancel() 
 	{
@@ -121,96 +155,71 @@ public class TGUploadTask extends TGTask
 		
 		return task;
 	}
-	
+
+	void onUploadStart(TGUploader uploader)
+	{
+		LogTools.p(LOG_TAG, "[Method:onUploadStart]");
+		sendTaskResult(uploader);
+	}
+
 	/**
-	 * 
-	 * 该类作用及功能说明: 默认上传监听
-	 * 
-	 * @date 2014年8月25日
+	 *
+	 * 该方法的作用: 上传过程中
+	 * @date 2014年8月19日
+	 * @param uploader
 	 */
-	public class DefaultUploadListener implements IUploadListener
+	void onUploading(TGUploader uploader, int progress)
 	{
-		private final String LOG_TAG = this.getClass().getSimpleName();
-		
-		@Override
-		public void uploadStart(TGUploader uploader)
-		{
-			LogTools.p(LOG_TAG, "[Metohd:uploadStart]");
-			sendUploadResult(uploader);
-		}
-		
-		@Override
-		public void uploadSucceed(TGUploader uploader)
-		{
-			LogTools.p(LOG_TAG, "[Metohd:uploadSucceed]" + "; taskid: " + TGUploadTask.this.getTaskID());
-			sendUploadResult(uploader);
-			onTaskFinished();
-		}
-		
-		@Override
-		public void uploadProgress(TGUploader uploader, int progress)
-		{
-			LogTools.d(LOG_TAG, "[Metohd:uploadProgress]" + "; taskid: " + TGUploadTask.this.getTaskID());
-			sendUploadResult(uploader);
-			onTaskChanged(progress);
-		}
-		
-		@Override
-		public void uploadFailed(TGUploader uploader)
-		{
-			LogTools.p(LOG_TAG, "[Metohd:uploadFailed]" + "; taskid: " + TGUploadTask.this.getTaskID());
-			sendUploadResult(uploader);
-			
-			onTaskError(uploader.getErrorCode(), uploader.getErrorMsg());
-		}
-		
-		@Override
-		public void uploadCanceled(TGUploader uploader)
-		{
-			LogTools.p(LOG_TAG, "[Metohd:uploadCanceled]" + "; taskid: " + TGUploadTask.this.getTaskID());
-			sendUploadResult(uploader);
-		}
-		
-		@Override
-		public void uploadStop(TGUploader uploader)
-		{
-			LogTools.p(LOG_TAG, "[Metohd:uploadStop]" + "; taskid: " + TGUploadTask.this.getTaskID());
-			sendUploadResult(uploader);
-		}
-		
-		private void sendUploadResult(TGUploader uploader)
-		{
-			sendTaskResult(uploader);
-		}
+		// 修改上传状态为正在上传
+		uploader.setUploadStatus(TGUploadManager.UPLOAD_UPLOADING);
+
+		sendTaskResult(uploader);
+		onTaskChanged(progress);
 	}
 
-	public IUploadStrategy getUploadStrategy()
+	/**
+	 *
+	 * 该方法的作用: 上传文件完成，删除数据库记录
+	 * @date 2014年8月19日
+	 * @param uploader
+	 */
+	void onUploadFinish(TGUploader uploader)
 	{
-		return uploadStrategy;
+		sendTaskResult(uploader);
+		onTaskFinished();
 	}
 
-	public void setUploadStrategy(IUploadStrategy uploadStrategy)
+	/**
+	 * 该方法的作用: 上传文件过程中出现异常，如果不是断点上传，删除本地文件
+	 * @date 2014年8月19日
+	 * @param uploader
+	 */
+	void onUploadFailed(TGUploader uploader)
 	{
-		this.uploadStrategy = uploadStrategy;
+		sendTaskResult(uploader);
+		onTaskFinished();
 	}
 
-	public TGUploadParams getMpUploadParams()
+	/**
+	 *
+	 * 该方法的作用: 停止上传，如果不是断点上传，删除本地文件
+	 * @date 2014年8月19日
+	 * @param uploader
+	 */
+	void onUploadStop(TGUploader uploader)
 	{
-		return mpUploadParams;
+		sendTaskResult(uploader);
+		onTaskFinished();
 	}
 
-	public void setMpUploadParams(TGUploadParams mpUploadParams)
+	/**
+	 *
+	 * 该方法的作用: 取消上传，直接删除本地文件和数据库记录
+	 * @date 2014年8月19日
+	 * @param uploader
+	 */
+	void onUploadCancel(TGUploader uploader)
 	{
-		this.mpUploadParams = mpUploadParams;
-	}
-
-	public IUploadListener getUploadListener()
-	{
-		return uploadListener;
-	}
-
-	public void setUploadListener(IUploadListener uploadListener)
-	{
-		this.uploadListener = uploadListener;
+		sendTaskResult(uploader);
 	}
 }
