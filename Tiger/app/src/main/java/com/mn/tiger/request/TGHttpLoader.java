@@ -130,7 +130,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param callback 请求回调方法
 	 */
 	public void loadByGet(Context context, String requestUrl, Class<T> clazz,
-			OnLoadCallback<T> callback)
+						  OnLoadCallback<T> callback)
 	{
 		execute(context, HttpType.REQUEST_GET, requestUrl, clazz.getName(), callback);
 	}
@@ -146,7 +146,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @return
 	 */
 	public TGHttpResult loadByGetSync(Context context, String requestUrl,
-			TGHttpParams parameters, Map<String, String> properties)
+									  TGHttpParams parameters, Map<String, String> properties)
 	{
 		return new OkHttpSyncHttpLoader(0).loadByGetSync(
 				context, requestUrl, parameters, properties);
@@ -159,7 +159,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param callback 请求回调方法
 	 */
 	public void loadByPost(Context context, String requestUrl, Class<T> clazz,
-			OnLoadCallback<T> callback)
+						   OnLoadCallback<T> callback)
 	{
 		execute(context, HttpType.REQUEST_POST, requestUrl, clazz.getName(), callback);
 	}
@@ -174,7 +174,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @return
 	 */
 	public TGHttpResult loadByPostSync(Context context, String requestUrl,
-			TGHttpParams parameters, Map<String, String> properties)
+									   TGHttpParams parameters, Map<String, String> properties)
 	{
 		return new OkHttpSyncHttpLoader(0).loadByPostSync(
 				context, requestUrl, parameters, properties);
@@ -187,7 +187,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param callback 请求回调方法
 	 */
 	public void loadByPut(Context context, String requestUrl, Class<T> clazz,
-			OnLoadCallback<T> callback)
+						  OnLoadCallback<T> callback)
 	{
 		execute(context, HttpType.REQUEST_PUT, requestUrl, clazz.getName(), callback);
 	}
@@ -202,7 +202,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @return
 	 */
 	public TGHttpResult loadByPutSync(Context context, String requestUrl,
-			TGHttpParams parameters, Map<String, String> properties)
+									  TGHttpParams parameters, Map<String, String> properties)
 	{
 		return new OkHttpSyncHttpLoader(0).loadByPutSync(
 				context, requestUrl, parameters, properties);
@@ -215,7 +215,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param callback 请求回调方法
 	 */
 	public void loadByDelete(Context context, String requestUrl, Class<T> clazz,
-			OnLoadCallback<T> callback)
+							 OnLoadCallback<T> callback)
 	{
 		execute(context, HttpType.REQUEST_DELETE, requestUrl, clazz.getName(), callback);
 	}
@@ -230,7 +230,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @return
 	 */
 	public TGHttpResult loadByDeleteSync(Context context, String requestUrl,
-			TGHttpParams parameters, Map<String, String> properties)
+										 TGHttpParams parameters, Map<String, String> properties)
 	{
 		return new OkHttpSyncHttpLoader(0).loadByDeleteSync(
 				context, requestUrl, parameters, properties);
@@ -244,7 +244,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param callback 请求回调方法
 	 */
 	protected void execute(Context context, int requestType, String requestUrl,
-			String resultClsName,  OnLoadCallback<T> callback)
+						   String resultClsName,  OnLoadCallback<T> callback)
 	{
 		this.context = context;
 		this.requestType = requestType;
@@ -368,7 +368,7 @@ public class TGHttpLoader<T> implements IRequestParser
 				//解析请求结果
 				if(!isCancelled() && null != loadCallback)
 				{
-					loadCallback.onLoadSuccess(parseResult(httpResult.getObjectResult()),
+					loadCallback.onLoadSuccess(parseOriginalResult(httpResult.getObjectResult()),
 							httpResult);
 				}
 			}
@@ -392,7 +392,7 @@ public class TGHttpLoader<T> implements IRequestParser
 				//解析请求结果
 				if(!isCancelled() && null != loadCallback)
 				{
-					loadCallback.onLoadCache(parseResult(httpResult.getObjectResult()),
+					loadCallback.onLoadCache(parseOriginalResult(httpResult.getObjectResult()),
 							httpResult);
 				}
 			}
@@ -552,7 +552,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @return 目标对象结果
 	 */
 	@SuppressWarnings("unchecked")
-	protected T parseResult(Object originalResultObject)
+	protected T parseOriginalResult(Object originalResultObject)
 	{
 		return (T) originalResultObject;
 	}
@@ -649,6 +649,15 @@ public class TGHttpLoader<T> implements IRequestParser
 		return null;
 	}
 
+	protected String getRequestUrl()
+	{
+		return requestUrl;
+	}
+
+	protected HashMap<String, String> getStringParams()
+	{
+		return stringParams;
+	}
 
 	/**
 	 * 请求结果的回调
