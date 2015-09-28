@@ -1,40 +1,68 @@
 package com.mn.tiger.upload;
 
 import java.io.Serializable;
+import java.util.HashMap;
+
+import com.mn.tiger.request.TGHttpParams;
 
 /**
- * 
+ *
  * 该类作用及功能说明: 上传请求参数
- * 
+ *
  * @date 2014年8月25日
  */
-public class TGUploadParams implements Cloneable, Serializable 
+public class TGUploadParams extends TGHttpParams implements Cloneable, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	// 本地上传的路径
-	private String filePath;
-	
 	// 文件上传的服务地址url
 	private String serviceURL;
-	
+
 	// 下载类型
 	private String uploadType;
-	
+
 	// 执行下载的类名
 	private String taskClsName = "";
-	
+
 	// 任务权重
 	private int weight;
 
-	public String getFilePath()
+	/**
+	 * 字符串参数
+	 */
+	private HashMap<String, String> stringParams;
+
+	/**
+	 * 文件参数
+	 */
+	private HashMap<String, String> fileParams;
+
+	/**
+	 * 添加字符串参数
+	 * @param key
+	 * @param value
+	 */
+	public void addStringParam(String key, String value)
 	{
-		return filePath;
+		if(null == stringParams)
+		{
+			stringParams = new HashMap<String, String>();
+		}
+		stringParams.put(key, value);
 	}
 
-	public void setFilePath(String filePath)
+	/**
+	 * 添加文件参数
+	 * @param key
+	 * @param filePath
+	 */
+	public void addFileParam(String key, String filePath)
 	{
-		this.filePath = filePath;
+		if(null == fileParams)
+		{
+			fileParams = new HashMap<String, String>();
+		}
+		fileParams.put(key, filePath);
 	}
 
 	public String getServiceURL()
@@ -76,5 +104,5 @@ public class TGUploadParams implements Cloneable, Serializable
 	{
 		this.weight = weight;
 	}
-	
+
 }

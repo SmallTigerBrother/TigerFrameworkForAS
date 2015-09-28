@@ -1,15 +1,19 @@
 package com.mn.tiger.upload;
 
-import com.mn.tiger.datastorage.db.annotation.Column;
-import com.mn.tiger.datastorage.db.annotation.Id;
-import com.mn.tiger.datastorage.db.annotation.Transient;
-
 import java.io.Serializable;
+import java.util.HashMap;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mn.tiger.datastorage.db.annotation.Column;
+import com.mn.tiger.datastorage.db.annotation.ColumnObject;
+import com.mn.tiger.datastorage.db.annotation.Id;
+import com.mn.tiger.request.TGHttpParams;
 
 /**
- * 
+ *
  * 该类作用及功能说明: 包含所有上传信息（上传url、上传文件路径等）的类
- * 
+ *
  * @date 2014年6月18日
  */
 public class TGUploader implements Cloneable, Serializable
@@ -17,75 +21,50 @@ public class TGUploader implements Cloneable, Serializable
 	private static final long serialVersionUID = 1L;
 	@Id
 	private String id;
-	// 上传的用户名
-	@Column(column = "userName")
-	private String userName;
 	// 文件上传的服务地址
 	@Column(column = "serviceURL")
 	private String serviceURL;
+
 	// 文件上传请求参数
-	@Column(column = "params")
-	private String params;
+	@ColumnObject(column = "stringParams")
+	private HashMap<String, String> stringParams;
+
 	// 本地上传文件的路径
-	@Column(column = "filePath")
-	private String filePath;
-	// 上传服务站点名称
-	@Column(column = "serverName")
-	private String serverName;
-	// 上传完成后，返回的文档id
-	@Column(column = "docId")
-	private String docId;
-	// 服务器保存的路径
-	@Column(column = "uuid")
-	private String uuid;
+	@Column(column = "fileParams")
+	private HashMap<String, String> fileParams;
+
 	// 文件上传完成的字节数
 	@Column(column = "completeSize")
 	private long completeSize;
+
 	// 上传的文件大小
 	@Column(column = "fileSize")
 	private long fileSize;
-	// 上传的文件名称
-	@Column(column = "docName")
-	private String docName;
-	// 上传的文档类型
-	@Column(column = "docType")
-	private String docType;
-	// 文档版本号
-	@Column(column = "docVersion")
-	private String docVersion;
+
 	// 上传状态(客户端记录上传状态)
 	@Column(column = "uploadStatus")
 	private int uploadStatus = TGUploadManager.UPLOAD_WAITING;
-	// 上传状态(服务端返回上传状态0-失败，1-续传成功，2-上传成功)
-	@Column(column = "serverUploadStatus")
-	private int serverUploadStatus = 0;
+
 	// 上传出错时，错误码
 	@Column(column = "errorCode")
 	private int errorCode;
+
 	// 上传出错时，错误信息
 	@Column(column = "errorMsg")
 	private String errorMsg;
+
 	// 自定义执行的任务类的名称
 	@Column(column = "taskClsName")
 	private String taskClsName = "";
-	
+
 	// 上传参数的类名，用户反射生成上传参数
 	@Column(column = "paramsClsName")
 	private String paramsClsName = TGUploadParams.class.getName();
-	
+
 	// 上传类型
 	@Column(column = "type")
 	private String type;
-	// 限制区域站点
-	@Column(column = "finalSite")
-	private String finalSite;
-	// 上传的起始位置(用于断点上传)
-	@Transient
-	private long startPosition;
-	// 上传的结束位置(用于断点上传)
-	@Transient
-	private long endPosition;
-	
+
 	public TGUploader()
 	{
 	}
@@ -98,16 +77,6 @@ public class TGUploader implements Cloneable, Serializable
 	public void setServiceURL(String serviceURL)
 	{
 		this.serviceURL = serviceURL;
-	}
-
-	public String getFilePath()
-	{
-		return filePath;
-	}
-
-	public void setFilePath(String filePath)
-	{
-		this.filePath = filePath;
 	}
 
 	public long getFileSize()
@@ -128,16 +97,6 @@ public class TGUploader implements Cloneable, Serializable
 	public void setUploadStatus(int uploadStatus)
 	{
 		this.uploadStatus = uploadStatus;
-	}
-
-	public int getServerUploadStatus()
-	{
-		return serverUploadStatus;
-	}
-
-	public void setServerUploadStatus(int serverUploadStatus)
-	{
-		this.serverUploadStatus = serverUploadStatus;
 	}
 
 	public int getErrorCode()
@@ -170,76 +129,6 @@ public class TGUploader implements Cloneable, Serializable
 		this.id = id;
 	}
 
-	public String getUserName()
-	{
-		return userName;
-	}
-
-	public void setUserName(String userName)
-	{
-		this.userName = userName;
-	}
-
-	public String getServerName()
-	{
-		return serverName;
-	}
-
-	public void setServerName(String serverName)
-	{
-		this.serverName = serverName;
-	}
-
-	public String getDocId()
-	{
-		return docId;
-	}
-
-	public void setDocId(String docId)
-	{
-		this.docId = docId;
-	}
-
-	public String getUuid()
-	{
-		return uuid;
-	}
-
-	public void setUuid(String uuid)
-	{
-		this.uuid = uuid;
-	}
-
-	public String getDocName()
-	{
-		return docName;
-	}
-
-	public void setDocName(String docName)
-	{
-		this.docName = docName;
-	}
-
-	public String getDocType()
-	{
-		return docType;
-	}
-
-	public void setDocType(String docType)
-	{
-		this.docType = docType;
-	}
-
-	public String getDocVersion()
-	{
-		return docVersion;
-	}
-
-	public void setDocVersion(String docVersion)
-	{
-		this.docVersion = docVersion;
-	}
-
 	public String getTaskClsName()
 	{
 		return taskClsName;
@@ -260,14 +149,58 @@ public class TGUploader implements Cloneable, Serializable
 		this.type = type;
 	}
 
-	public String getParams()
+	public HashMap<String, String> getStringParams()
 	{
-		return params;
+		return stringParams;
 	}
 
-	public void setParams(String params)
+	public void setStringParams(HashMap<String, String> params)
 	{
-		this.params = params;
+		this.stringParams = params;
+	}
+
+	@SuppressWarnings("unused")
+	private String getStringParamsStr()
+	{
+		return new Gson().toJson(stringParams, new TypeToken<HashMap<String,String>>(){}.getType());
+	}
+
+	@SuppressWarnings("unused")
+	private void setStringParamsStr(String params)
+	{
+		this.stringParams = new Gson().fromJson(params, new TypeToken<HashMap<String,String>>(){}.getType());
+	}
+
+	@SuppressWarnings("unused")
+	private String getFileParamsStr()
+	{
+		return new Gson().toJson(fileParams, new TypeToken<HashMap<String,String>>(){}.getType());
+	}
+
+	@SuppressWarnings("unused")
+	private void setFileParamsStr(String params)
+	{
+		this.fileParams = new Gson().fromJson(params, new TypeToken<HashMap<String,String>>(){}.getType());
+	}
+
+	public HashMap<String, String> getFileParams()
+	{
+		return fileParams;
+	}
+
+	public void setFileParams(HashMap<String, String> fileParams)
+	{
+		this.fileParams = fileParams;
+	}
+
+	public void setParamsClsName(String paramsClsName)
+	{
+		this.paramsClsName = paramsClsName;
+	}
+
+	public String getParamsClsName()
+	{
+		return paramsClsName;
 	}
 
 	public long getCompleteSize()
@@ -280,46 +213,6 @@ public class TGUploader implements Cloneable, Serializable
 		this.completeSize = completeSize;
 	}
 
-	public String getFinalSite()
-	{
-		return finalSite;
-	}
-
-	public long getStartPosition()
-	{
-		return startPosition;
-	}
-
-	public void setStartPosition(long startPosition)
-	{
-		this.startPosition = startPosition;
-	}
-
-	public long getEndPosition()
-	{
-		return endPosition;
-	}
-
-	public void setEndPosition(long endPosition)
-	{
-		this.endPosition = endPosition;
-	}
-
-	public void setFinalSite(String finalSite)
-	{
-		this.finalSite = finalSite;
-	}
-
-	public void setParamsClsName(String paramsClsName)
-	{
-		this.paramsClsName = paramsClsName;
-	}
-	
-	public String getParamsClsName()
-	{
-		return paramsClsName;
-	}
-	
 	@Override
 	public Object clone()
 	{
@@ -333,5 +226,26 @@ public class TGUploader implements Cloneable, Serializable
 			e.printStackTrace();
 		}
 		return obj;
+	}
+
+	public TGHttpParams convertToHttpParams()
+	{
+		TGHttpParams httpParams = new TGHttpParams();
+		httpParams.setStringParams(this.stringParams);
+		httpParams.setFileParams(this.fileParams);
+
+		return httpParams;
+	}
+
+	public static TGUploader getInstanse(TGUploadParams uploadParams)
+	{
+		TGUploader uploader = new TGUploader();
+		uploader.setFileParams(uploadParams.getFileParams());
+		uploader.setStringParams(uploadParams.getStringParams());
+		uploader.setParamsClsName(uploadParams.getClass().getName());
+		uploader.setTaskClsName(uploadParams.getTaskClsName());
+		uploader.setType(uploadParams.getUploadType());
+
+		return uploader;
 	}
 }

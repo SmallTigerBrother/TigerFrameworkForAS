@@ -1,7 +1,13 @@
 package com.mn.tiger.upload;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mn.tiger.datastorage.TGDBManager;
 import com.mn.tiger.datastorage.db.exception.DbException;
 import com.mn.tiger.datastorage.db.sqlite.WhereBuilder;
@@ -9,13 +15,9 @@ import com.mn.tiger.datastorage.db.upgrade.AbsDbUpgrade;
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.utility.Constant;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 该类作用及功能说明:数据库操作类
- * 
+ *
  * @date 2014年6月5日
  */
 public class TGUploadDBHelper
@@ -38,12 +40,12 @@ public class TGUploadDBHelper
 	/**
 	 * 数据库名称
 	 */
-	private static String database_name = "tiger_upload.db";
+	private static String DATABASE_NAME = "tiger_upload.db";
 
 	/**
 	 * 数据库版本
 	 */
-	private static int database_version = 1;
+	private static int DATABASE_VERSION = 1;
 
 	/** 本地文件path */
 	private final String UPLOADER_COLUMN_FILE_PATH = "filePath";
@@ -52,9 +54,9 @@ public class TGUploadDBHelper
 	private final String UPLOADER_COLUMN_TYPE = "type";
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 获取单例实例
-	 * 
+	 *
 	 * @date 2014年8月29日
 	 * @param context
 	 * @return
@@ -70,7 +72,7 @@ public class TGUploadDBHelper
 
 	/**
 	 * 构造函数
-	 * 
+	 *
 	 * @date 2014年8月29日
 	 * @param context
 	 */
@@ -80,9 +82,9 @@ public class TGUploadDBHelper
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 创建上传数据库
-	 * 
+	 *
 	 * @date 2014年8月29日
 	 * @param context
 	 * @return
@@ -90,7 +92,7 @@ public class TGUploadDBHelper
 	private TGDBManager getDB(Context context)
 	{
 		TGDBManager db = TGDBManager.create(context, context.getApplicationInfo().dataDir
-						+ File.separator + Constant.STORE_DATABASE_PATH, database_name, database_version,
+						+ File.separator + Constant.STORE_DATABASE_PATH, DATABASE_NAME, DATABASE_VERSION,
 				new AbsDbUpgrade()
 				{
 					@Override
@@ -119,16 +121,19 @@ public class TGUploadDBHelper
 
 	/**
 	 * 根据本地文件路径查找上传具体信息
-	 * 
+	 *
 	 * @throws DbException
 	 */
-	public synchronized TGUploader getUploader(String filePath)
+	public synchronized TGUploader getUploader(HashMap<String, String> fileParams)
 	{
 		TGUploader uploader = null;
 		try
 		{
 			uploader = dbManager.findFirst(TGUploader.class,
-					WhereBuilder.b(UPLOADER_COLUMN_FILE_PATH, "=", filePath));
+					WhereBuilder.b(UPLOADER_COLUMN_FILE_PATH, "=",
+							new Gson().toJson(fileParams, new TypeToken<HashMap<String, String>>()
+							{
+							}.getType())));
 		}
 		catch (DbException e)
 		{
@@ -140,7 +145,7 @@ public class TGUploadDBHelper
 
 	/**
 	 * 查找所有上传具体信息
-	 * 
+	 *
 	 * @throws DbException
 	 */
 	public synchronized List<TGUploader> getAllUploader()
@@ -160,7 +165,7 @@ public class TGUploadDBHelper
 
 	/**
 	 * 根据类型查找上传具体信息
-	 * 
+	 *
 	 * @throws DbException
 	 */
 	public synchronized List<TGUploader> getUploaderByType(String type)
@@ -180,31 +185,8 @@ public class TGUploadDBHelper
 	}
 
 	/**
-	 * 查询断点记录
-	 * 
-	 * @throws DbException
-	 */
-	public synchronized TGUploader getBreakPointUploader(String filePath)
-	{
-		TGUploader uploader = null;
-		try
-		{
-			uploader = dbManager.findFirst(
-					TGUploader.class,
-					WhereBuilder.b(UPLOADER_COLUMN_FILE_PATH, "=", filePath).and("uploadStatus",
-							"<>", TGUploadManager.UPLOAD_UPLOADING));
-		}
-		catch (DbException e)
-		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
-		}
-
-		return uploader;
-	}
-
-	/**
 	 * 该方法的作用:保存文件上传信息(有记录则更新记录)
-	 * 
+	 *
 	 * @date 2014年1月8日
 	 * @param info
 	 * @throws DbException
@@ -223,7 +205,7 @@ public class TGUploadDBHelper
 
 	/**
 	 * 该方法的作用:更新文件上传状态
-	 * 
+	 *
 	 * @date 2014年1月6日
 	 * @param info
 	 * @throws DbException
@@ -247,7 +229,7 @@ public class TGUploadDBHelper
 
 	/**
 	 * 上传完成后删除数据库中的数据
-	 * 
+	 *
 	 * @throws DbException
 	 */
 	public synchronized void deleteUploader(TGUploader info)
@@ -264,7 +246,7 @@ public class TGUploadDBHelper
 
 	/**
 	 * 上传完成后删除数据库中的数据
-	 * 
+	 *
 	 * @throws DbException
 	 */
 	public synchronized void deleteUploader(String filePath)
@@ -278,26 +260,5 @@ public class TGUploadDBHelper
 		{
 			LogTools.e(LOG_TAG, e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * 
-	 * 该方法的作用: 获取所有上传信息
-	 * 
-	 * @date 2014年8月29日
-	 * @return
-	 */
-	public List<TGUploader> findAllUploader()
-	{
-		try
-		{
-			return dbManager.findAll(TGUploader.class);
-		}
-		catch (DbException e)
-		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
-		}
-
-		return new ArrayList<TGUploader>();
 	}
 }

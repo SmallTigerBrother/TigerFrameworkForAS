@@ -5,12 +5,11 @@ import android.os.Bundle;
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.upload.observe.TGUploadObserveController;
-import com.mn.tiger.utility.FileUtils;
 
 /**
- * 
+ *
  * 该类作用及功能说明: 上传任务类
- * 
+ *
  * @date 2014年6月28日
  */
 public class TGUploadTask extends TGTask
@@ -19,17 +18,17 @@ public class TGUploadTask extends TGTask
 	 * 日志标签
 	 */
 	protected static final String LOG_TAG = TGUploadTask.class.getSimpleName();
-	
+
 	/**
 	 * 上传信息
 	 */
 	protected TGUploader uploader;
-	
+
 	/**
 	 * 上传信息 
 	 */
 	protected TGUploadParams uploadParams;
-	
+
 	/**
 	 * 构造函数
 	 * @date 2014年6月28日
@@ -39,7 +38,7 @@ public class TGUploadTask extends TGTask
 		super();
 		this.setType(TASK_TYPE_UPLOAD);
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 执行自身（任务真正的执行方法）
@@ -54,9 +53,9 @@ public class TGUploadTask extends TGTask
 		// 任务完成，结束任务
 		return TGTaskState.FINISHED;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 后台执行上传任务
 	 * @date 2014年6月28日
 	 * @return
@@ -65,7 +64,7 @@ public class TGUploadTask extends TGTask
 	{
 		LogTools.p(LOG_TAG, "[Method:uploadInBackground]" + "; taskid: " + this.getTaskID());
 		uploadParams = getUploadParams();
-		
+
 		executeUpload();
 	}
 
@@ -85,17 +84,17 @@ public class TGUploadTask extends TGTask
 	 *
 	 * 该方法的作用: 获取上传信息
 	 * @date 2014年8月18日
-	 * @param mpUploadParams
+	 * @param uploadParams
 	 * @return
 	 */
-	protected TGUploader getUploader(TGUploadParams mpUploadParams)
+	protected TGUploader getUploader(TGUploadParams uploadParams)
 	{
 		TGUploader uploader = null;
-		uploader = TGUploadDBHelper.getInstance(getContext()).getBreakPointUploader(mpUploadParams.getFilePath());
+		uploader = TGUploadDBHelper.getInstance(getContext()).getUploader(uploadParams.getFileParams());
 
 		if(uploader == null)
 		{
-			uploader = createNewUploader(mpUploadParams);
+			uploader = createNewUploader(uploadParams);
 		}
 		uploader.setUploadStatus(TGUploadManager.UPLOAD_STARTING);
 
@@ -108,18 +107,16 @@ public class TGUploadTask extends TGTask
 		uploader.setId(getTaskID().toString());
 		uploader.setServiceURL(uploadParams.getServiceURL());
 		uploader.setType(uploadParams.getUploadType());
-		uploader.setFilePath(uploadParams.getFilePath());
+		uploader.setFileParams(uploadParams.getFileParams());
 		uploader.setTaskClsName(uploadParams.getTaskClsName());
-		uploader.setFileSize(FileUtils.getFileSize(uploadParams.getFilePath()));
-		uploader.setStartPosition(0);
-		uploader.setEndPosition(FileUtils.getFileSize(uploadParams.getFilePath()));
+		uploader.setFileSize(uploadParams.getContentLength());
 		uploader.setParamsClsName(uploadParams.getClass().getName());
 
 		return uploader;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 获取上传任务参数
 	 * @date 2014年6月19日
 	 * @return
@@ -130,21 +127,21 @@ public class TGUploadTask extends TGTask
 		{
 			return null;
 		}
-		
+
 		Bundle params = (Bundle) getParams();
 		TGUploadParams uploadParams = (TGUploadParams) params.getSerializable("uploadParams");
 
 		return uploadParams;
 	}
-	
+
 
 	@Override
-	protected void onTaskCancel() 
+	protected void onTaskCancel()
 	{
 		TGUploadObserveController.getInstance().unregisterObserverByKey(String.valueOf(this.getTaskID()));
 		super.onTaskCancel();
 	}
-	
+
 	/**
 	 * 上传任务，暂停时的克隆方法，设置新的执行时间，放到上传任务的最后执行
 	 */
@@ -152,7 +149,7 @@ public class TGUploadTask extends TGTask
 	public Object clone() throws CloneNotSupportedException
 	{
 		TGTask task = (TGTask)super.clone();
-		
+
 		return task;
 	}
 

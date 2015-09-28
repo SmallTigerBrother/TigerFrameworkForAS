@@ -191,17 +191,6 @@ public abstract class TGUploadHttpClient
      */
     private void onUploadFinish(TGUploader uploader)
     {
-        // 上传完每一块, 记录进度到数据库
-        uploader.setCompleteSize(uploader.getCompleteSize() + uploader.getEndPosition() - uploader.getStartPosition());
-        TGUploadDBHelper.getInstance(context).updateUploader(uploader);
-        // 检测上传大小是否大于等于文件大小，如果小于文件大小，说明是分块上传，调用上传中方法
-        if(uploader.getCompleteSize() < uploader.getFileSize())
-        {
-            int currentProgress = (int) (uploader.getCompleteSize() * 100 / uploader.getFileSize());
-            onUploading(uploader, currentProgress);
-            return;
-        }
-
         // 删除本地记录
         uploader.setUploadStatus(TGUploadManager.UPLOAD_SUCCEED);
         TGUploadDBHelper.getInstance(context).deleteUploader(uploader);
