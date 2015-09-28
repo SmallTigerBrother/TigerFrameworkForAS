@@ -13,7 +13,7 @@ public class TGPutTask extends TGHttpTask
 {
 	private AbstractSyncHttpLoader syncHttpLoader;
 
-	protected TGHttpResult executeHttpRequest() 
+	protected TGHttpResult executeHttpRequest()
 	{
 		syncHttpLoader = new OkHttpSyncHttpLoader(getTaskID());
 		return syncHttpLoader.loadByPutSync(getContext(), getRequestUrl(),
@@ -23,7 +23,14 @@ public class TGPutTask extends TGHttpTask
 	@Override
 	protected void onTaskCancel()
 	{
-		super.onTaskCancel();
 		syncHttpLoader.cancel();
+		super.onTaskCancel();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		syncHttpLoader = null;
 	}
 }

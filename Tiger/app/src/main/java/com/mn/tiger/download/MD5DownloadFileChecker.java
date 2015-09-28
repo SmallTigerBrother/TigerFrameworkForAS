@@ -18,7 +18,7 @@ import java.io.InputStream;
 public class MD5DownloadFileChecker implements IDownloadFileChecker
 {
 	private static final Logger LOG = Logger.getLogger(MD5DownloadFileChecker.class);
-	
+
 	@Override
 	public boolean isFileAlreadyDownloaded(TGDownloader downloader)
 	{
@@ -30,7 +30,7 @@ public class MD5DownloadFileChecker implements IDownloadFileChecker
 	{
 		return equalDownloadFileCheckStr(downloader.getUrl(), downloader.getCheckKey());
 	}
-	
+
 	/**
 	 * 该方法的作用: 校验下载完成后的文件流校验值是否和服务端下发的校验值一致
 	 *           返回true, 表示下载文件与服务端文件一致；否则不一致
@@ -45,17 +45,18 @@ public class MD5DownloadFileChecker implements IDownloadFileChecker
 		// 服务端没返回md5时，不做校验
 		if(TextUtils.isEmpty(serverCheckString))
 		{
+			LOG.e("[method:equalDownloadFileCheckStr]: serverCheckString is null, so return true");
 			return true;
 		}
-		
+
 		// 文件不存在，返回校验不通过
 		File file = FileUtils.getFile(fileUrl);
 		if(file == null || !file.exists())
 		{
-			LOG.e("[method:equalDownloadFileCheckStr]: " + "file is not exist.");
+			LOG.e("[method:equalDownloadFileCheckStr]: " + "file is not exist. so return false");
 			return false;
 		}
-		
+
 		String fileCheckStr = getLocalFileCheckStr(fileUrl);
 		LOG.i("[method:equalDownloadFileCheckStr], " + "fileCheckString: " + fileCheckStr
 				+ "\r\n ; serverCheckString: " + serverCheckString + "\r\n ; url: " + fileUrl);
@@ -63,22 +64,23 @@ public class MD5DownloadFileChecker implements IDownloadFileChecker
 		{
 			if (fileCheckStr.equals(serverCheckString))
 			{
+				LOG.e("[method:equalDownloadFileCheckStr]: true");
 				return true;
 			}
 			else
 			{
 				// 删除错误文件
 				file.delete();
-				
-				LOG.e("[method:equalDownloadFileCheckStr]: " + "check string is not the same.");
+
+				LOG.e("[method:equalDownloadFileCheckStr]: " + "check string is not the same. so return false");
 			}
 		}
 
 		return false;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 获取本地文件加密字符串: 默认为MD5加密
 	 * @date 2014年8月23日
 	 * @param filePath
@@ -102,7 +104,7 @@ public class MD5DownloadFileChecker implements IDownloadFileChecker
 		{
 			Commons.closeInputStream(inputStream);
 		}
-		
+
 		return fileCheckStr;
 	}
 

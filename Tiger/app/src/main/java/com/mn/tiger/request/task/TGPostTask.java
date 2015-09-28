@@ -24,7 +24,14 @@ public class TGPostTask extends TGHttpTask
 	@Override
 	protected void onTaskCancel()
 	{
-		super.onTaskCancel();
 		syncHttpLoader.cancel();
+		super.onTaskCancel();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		syncHttpLoader = null;
 	}
 }

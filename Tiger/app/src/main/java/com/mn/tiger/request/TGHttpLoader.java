@@ -99,6 +99,9 @@ public class TGHttpLoader<T> implements IRequestParser
 
 	public TGHttpLoader()
 	{
+		stringParams = new HashMap<String, String>();
+		params = new TGHttpParams();
+		params.setStringParams(stringParams);
 		parserClsName = this.getClass().getName();
 	}
 
@@ -535,7 +538,7 @@ public class TGHttpLoader<T> implements IRequestParser
 			if(null == fileParams)
 			{
 				fileParams = new HashMap<String, String>();
-				params.put("file_param", fileParams);
+				params.setFileParams(fileParams);
 			}
 
 			fileParams.put(key, filePath);

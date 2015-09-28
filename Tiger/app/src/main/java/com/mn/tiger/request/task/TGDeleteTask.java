@@ -6,7 +6,7 @@ import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
 
 /**
  * 该类作用及功能说明 Delete请求任务
- * 
+ *
  * @date 2014年8月22日
  */
 public class TGDeleteTask extends TGHttpTask
@@ -23,7 +23,14 @@ public class TGDeleteTask extends TGHttpTask
 	@Override
 	protected void onTaskCancel()
 	{
-		super.onTaskCancel();
 		syncHttpLoader.cancel();
+		super.onTaskCancel();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		syncHttpLoader = null;
 	}
 }

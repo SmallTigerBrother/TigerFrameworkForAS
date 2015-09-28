@@ -1,13 +1,14 @@
 package com.mn.tiger.download;
 
-import java.io.File;
-
-import org.apache.http.HttpResponse;
-
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.FileUtils;
+
+import java.io.File;
 
 public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 {
+	private static final Logger LOG = Logger.getLogger(FileSizeDownloadFileChecker.class);
+
 	@Override
 	public boolean isFileAlreadyDownloaded(TGDownloader downloader)
 	{
@@ -16,6 +17,7 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 		{
 			if(downloader.getFileSize() > 0 && downloader.getFileSize() == file.length())
 			{
+				LOG.d("[Method:isFileAlreadyDownloaded] true");
 				return true;
 			}
 			else
@@ -24,11 +26,13 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 				{
 					file.delete();
 				}
+				LOG.d("[Method:isFileAlreadyDownloaded] false");
 				return false;
 			}
 		}
 		else
 		{
+			LOG.d("[Method:isFileAlreadyDownloaded] false");
 			return false;
 		}
 	}
@@ -36,6 +40,8 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 	@Override
 	public boolean isFileCorrect(TGDownloader downloader)
 	{
-		return downloader.getFileSize() == FileUtils.getFileSize(downloader.getSavePath());
+		boolean fileCorrect =  downloader.getFileSize() == FileUtils.getFileSize(downloader.getSavePath());
+		LOG.d("[Method:isFileCorrect] " + fileCorrect);
+		return fileCorrect;
 	}
 }

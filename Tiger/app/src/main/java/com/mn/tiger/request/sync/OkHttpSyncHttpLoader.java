@@ -55,9 +55,9 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
                     "\n  result : " + httpResult.getResult());
             return httpResult;
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            LOG.e(e);
+            LOG.e("[Method:loadByGetSync] tag == " + tag + " : " + e);
         }
 
         return getHttpResultWhileUrlIsNULL(context);
@@ -74,9 +74,9 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
                     "\n  result : " + httpResult.getResult());
             return httpResult;
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            LOG.e(e);
+            LOG.e("[Method:loadByPostSync] tag == " + tag + " : " + e);
         }
 
         return getHttpResultWhileUrlIsNULL(context);
@@ -99,6 +99,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
      */
     public void cancel()
     {
+        LOG.d("[Method:cancel] tag == " + tag);
         okHttpClient.cancel(tag);
     }
 

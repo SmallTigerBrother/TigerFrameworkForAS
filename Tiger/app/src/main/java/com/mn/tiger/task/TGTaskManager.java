@@ -19,27 +19,27 @@ public class TGTaskManager
 	 * 日志标签
 	 */
 	protected static final String LOG_TAG = TGTaskManager.class.getSimpleName();
-	
+
 	/**
 	 * Manager单例对象
 	 */
 	private volatile static TGTaskManager instance;
-	
+
 	/**
 	 * 任务动作: 开始任务
 	 */
 	public static final int TASK_START_MODE = 1;
-	
+
 	/**
 	 * 任务动作: 取消任务
 	 */
 	public static final int TASK_CANCEL_MODE = 2;
-	
+
 	/**
 	 * 任务动作: 暂停任务，任务会保留在任务队列中
 	 */
 	public static final int TASK_PAUSE_MODE = 3;
-	
+
 	/**
 	 * 获取对象实例
 	 * @return
@@ -59,14 +59,14 @@ public class TGTaskManager
 
 		return instance;
 	}
-	
+
 	private TGTaskManager()
 	{
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 添加开始任务
 	 * @date 2014年8月11日
 	 * @param taskParams
@@ -78,11 +78,10 @@ public class TGTaskManager
 		{
 			return -1;
 		}
-	
+
 		LogTools.d(LOG_TAG, "[Method:startTask]");
 		taskParams.setTaskMode(TASK_START_MODE);
 
-		LogTools.p(LOG_TAG, "[Method:invoke]");
 		TGTask task = createTask(context, taskParams);
 		// 分发并执行任务
 		if (null != task)
@@ -93,7 +92,7 @@ public class TGTaskManager
 
 		return -1;
 	}
-	
+
 	/**
 	 * 启动有序任务列表
 	 * @param context
@@ -106,13 +105,13 @@ public class TGTaskManager
 		{
 			return -1;
 		}
-		
+
 		LogTools.d(LOG_TAG, "[Method:startScheduleTaskList]");
 		taskList.setTaskMode(TASK_START_MODE);
 		TGDispatcher.getInstance().dispatchScheduleTaskList(taskList);
 		return taskList.getTaskListId();
 	}
-	
+
 	/**
 	 * 取消任务
 	 * @param taskId
@@ -125,9 +124,9 @@ public class TGTaskManager
 			LogTools.e(LOG_TAG, "[Method:cancelTask] the task is invalid; " + "  taskID-->" + taskId);
 			return;
 		}
-	
+
 		LogTools.d(LOG_TAG, "[Method:cancelTask]" + "  taskID-->" + taskId);
-		
+
 		TGTaskParams taskParams = new TGTaskParams();
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskType(taskType);
@@ -136,7 +135,7 @@ public class TGTaskManager
 		TGDispatcher.getInstance().cancelTask(taskParams.getTaskID(),
 				taskParams.getTaskType());
 	}
-	
+
 	/**
 	 * 取消有序任务列表
 	 * @param context
@@ -148,13 +147,13 @@ public class TGTaskManager
 		{
 			return;
 		}
-		
+
 		LogTools.d(LOG_TAG, "[Method:startScheduleTaskList]");
 		taskList.setTaskMode(TASK_CANCEL_MODE);
 		// 结束任务并删除
 		TGDispatcher.getInstance().cancelScheduleTaskList(taskList.getTaskListId());
 	}
-	
+
 	/**
 	 * 停止任务
 	 * @date 2014年5月21日
@@ -168,9 +167,9 @@ public class TGTaskManager
 			LogTools.e(LOG_TAG, "[Method:pauseTask] the task is invalid; " + "  taskID-->" + taskId);
 			return;
 		}
-	
+
 		LogTools.d(LOG_TAG, "[Method:pauseTask]" + "  taskID-->" + taskId);
-		
+
 		TGTaskParams taskParams = new TGTaskParams();
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskType(taskType);
@@ -206,7 +205,7 @@ public class TGTaskManager
 		}
 		return task;
 	}
-	
+
 	/**
 	 * 该方法的作用:创建任务参数
 	 * @param params
@@ -215,11 +214,11 @@ public class TGTaskManager
 	 * @return
 	 */
 	public static TGTaskParams createTaskParams(HashMap<String, String> params, String taskClsName,
-			TGTaskResultHandler taskResultHandler)
+												TGTaskResultHandler taskResultHandler)
 	{
 		return createTaskParams(params, taskClsName, taskResultHandler, TGTaskIDCreator.createNextTaskID());
 	}
-	
+
 	/**
 	 * 该方法的作用:创建任务参数
 	 * @date 2014年6月3日
@@ -230,22 +229,22 @@ public class TGTaskManager
 	 * @return
 	 */
 	public static TGTaskParams createTaskParams(HashMap<String, String> params, String taskClsName,
-			TGTaskResultHandler taskResultHandler, int taskId)
+												TGTaskResultHandler taskResultHandler, int taskId)
 	{
 		TGTaskParams taskParams = new TGTaskParams();
 		taskParams.setMapParams(params);
 		taskParams.setTaskClsName(taskClsName);
-		
+
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskMode(TASK_START_MODE);
 		if (null != taskResultHandler)
 		{
 			taskParams.setMessenger(taskResultHandler.getMessenger());
 		}
-		
+
 		return taskParams;
 	}
-	
+
 	/**
 	 * 该方法的作用:创建任务参数
 	 * @param param
@@ -254,11 +253,11 @@ public class TGTaskManager
 	 * @return
 	 */
 	public static TGTaskParams createTaskParams(String param, String taskClsName,
-			TGTaskResultHandler taskResultHandler)
+												TGTaskResultHandler taskResultHandler)
 	{
 		return createTaskParams(param, taskClsName, taskResultHandler, TGTaskIDCreator.createNextTaskID());
 	}
-	
+
 	/**
 	 * 该方法的作用:创建任务参数
 	 * @param param
@@ -268,12 +267,12 @@ public class TGTaskManager
 	 * @return
 	 */
 	public static TGTaskParams createTaskParams(String param, String taskClsName,
-			TGTaskResultHandler taskResultHandler, int taskId)
+												TGTaskResultHandler taskResultHandler, int taskId)
 	{
 		TGTaskParams taskParams = new TGTaskParams();
 		taskParams.setStringParams(param);
 		taskParams.setTaskClsName(taskClsName);
-		
+
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskMode(TASK_START_MODE);
 		if (null != taskResultHandler)
@@ -292,11 +291,11 @@ public class TGTaskManager
 	 * @return
 	 */
 	public static TGTaskParams createTaskParams(Bundle params, String taskClsName,
-			TGTaskResultHandler taskResultHandler)
+												TGTaskResultHandler taskResultHandler)
 	{
 		return createTaskParams(params, taskClsName, taskResultHandler, TGTaskIDCreator.createNextTaskID());
 	}
-	
+
 	/**
 	 * 该方法的作用:创建任务参数
 	 * @date 2014年6月3日
@@ -308,12 +307,12 @@ public class TGTaskManager
 	 * @return
 	 */
 	public static TGTaskParams createTaskParams(Bundle params, String taskClsName,
-			TGTaskResultHandler taskResultHandler, int taskId)
+												TGTaskResultHandler taskResultHandler, int taskId)
 	{
 		TGTaskParams taskParams = new TGTaskParams();
 		taskParams.setBundleParams(params);
 		taskParams.setTaskClsName(taskClsName);
-		
+
 		taskParams.setTaskID(taskId);
 		taskParams.setTaskMode(TASK_START_MODE);
 		if (null != taskResultHandler)

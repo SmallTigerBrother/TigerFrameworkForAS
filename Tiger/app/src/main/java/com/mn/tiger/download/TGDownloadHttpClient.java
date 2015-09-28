@@ -42,7 +42,7 @@ public abstract class TGDownloadHttpClient
     protected int retryCount = 0;
 
     public TGDownloadHttpClient(Context context, TGDownloader downloader,
-                              TGDownloadTask downloadTask)
+                                TGDownloadTask downloadTask)
     {
         this.context = context;
         this.downloader = downloader;
@@ -62,6 +62,8 @@ public abstract class TGDownloadHttpClient
 
     protected TGHttpResult handleResponse()
     {
+        LOG.d("[Method:handleResponse]");
+
         TGHttpResult httpResult = initHttpResult();
         httpResult.setResponseCode(getResponseCode());
         //从返回值里面读取参数到downloader中
@@ -117,6 +119,8 @@ public abstract class TGDownloadHttpClient
      */
     private void readParamsFromResponse()
     {
+        LOG.d("[Method:readParamsFromResponse]");
+
         long serverFileSize = getContentLength();
         // 第一次请求，设置文件大小
         if (downloader.getFileSize() <= 0)
@@ -125,7 +129,11 @@ public abstract class TGDownloadHttpClient
         }
 
         String acceptRange = getAcceptRangesFromResponseHeaders();
+        LOG.d("[Method:readParamsFromResponse] acceptRange == " + acceptRange);
+
         String savePath = getDownloadFileSavePath();
+        LOG.d("[Method:readParamsFromResponse] savePath == " + savePath);
+
         // 设置文件存储路径
         downloader.setSavePath(savePath);
         if(!downloader.isBreakPoints())

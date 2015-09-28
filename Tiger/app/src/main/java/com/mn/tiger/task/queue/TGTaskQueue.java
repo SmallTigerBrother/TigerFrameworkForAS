@@ -14,9 +14,9 @@ import com.mn.tiger.task.thread.TGFixedThreadPool;
 import com.mn.tiger.task.thread.TGThreadPool;
 
 /**
- * 
+ *
  * 该类作用及功能说明: 可并行执行多个任务的队列
- * 
+ *
  * @date 2014年6月25日
  */
 public class TGTaskQueue extends AbsTaskQueue
@@ -25,37 +25,37 @@ public class TGTaskQueue extends AbsTaskQueue
 	 * @date 2014年6月25日
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 日志标签
 	 */
 	protected final String LOG_TAG = this.getClass().getSimpleName();
-	
+
 	/**
 	 * 该队列中正在运行任务个数
 	 */
 	protected List<Integer> runningTaskList = new ArrayList<Integer>();
-	
+
 	/**
 	 * 队列状态
 	 */
 	private TGQueueState state = TGQueueState.WAITING;
-	
+
 	/**
 	 * 任务监听
 	 */
 	protected ITaskListener taskListener;
-	
+
 	/**
 	 * 执行该队列任务的线程池
 	 */
 	private TGThreadPool threadPool;
-	
+
 	/**
 	 * 最大并发线程数
 	 */
 	private int maxThreadNum;
-	
+
 	/**
 	 * 构造函数
 	 * @date 2014年6月25日
@@ -66,7 +66,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		this.maxThreadNum = maxThreadNum;
 		threadPool = initThreadPool();
 	}
-	
+
 	/**
 	 * 初始化线程池
 	 * @return
@@ -75,39 +75,36 @@ public class TGTaskQueue extends AbsTaskQueue
 	{
 		return new TGFixedThreadPool(getMaxThreadNum());
 	}
-	
+
 	@Override
 	public synchronized void executeNextTask()
 	{
-		LogTools.d(LOG_TAG, "[Method:executeNextTask]");
-
 		//若当前队列状态为暂停，则直接退出
 		if(state == TGQueueState.PAUSE)
 		{
 			LogTools.p(LOG_TAG, "[Method:executeNextTask] the queue has been paused!");
 			return;
 		}
-		
+
 		// Task按运行状态和weight排序
 		sortTaskQueue();
-		
+
 		// 获取队列中的任务总数
 		int totalTask = getTaskArray().size();
-		LogTools.d(LOG_TAG, "[Method:executeNextTask]" + " count: " + totalTask);
+		LogTools.d(LOG_TAG, "[Method:executeNextTask]" + " totalTaskCount: " + totalTask);
+		LogTools.d(LOG_TAG, "[Method:executeNextTask] runningTaskNum: " + runningTaskList.size());
 		// 若已无任务，队列状态改为等待
 		if(totalTask <= 0)
 		{
 			state = TGQueueState.WAITING;
 		}
-		
+
 		// 队列中有任务，取最大个数等待任务执行
 		boolean loop = true;
 		int index = 0;
-		
+
 		do
 		{
-			LogTools.d(LOG_TAG, "[Method:executeNextTask] runningTaskNum: " + 
-		        runningTaskList.size());
 			if(totalTask > index && runningTaskList.size() <= getMaxThreadNum())
 			{
 				TGTask runTask = getTaskArray().get(this.get(index));
@@ -116,31 +113,33 @@ public class TGTaskQueue extends AbsTaskQueue
 					runTask.executeTask(threadPool);
 					runningTaskList.add(runTask.getTaskID());
 					state = TGQueueState.RUNNING;
+
+					LogTools.d(LOG_TAG, "[Method:executeNextTask] runningTaskNum: " + runningTaskList.size());
 				}
 			}
 			else
 			{
 				loop = false;
 			}
-			
+
 			index++;
-			
+
 		}while(loop);
 	}
-	
+
 	@Override
 	protected void sortTaskQueue()
 	{
 		//TODO 
 	}
-	
+
 	@Override
 	public synchronized void addLast(TGTask task)
 	{
 		task.setTaskListener(getTaskListener());
 		super.addLast(task);
 	}
-	
+
 	/**
 	 * 该方法的作用: 移除任务
 	 * @date 2014年6月25日
@@ -156,23 +155,23 @@ public class TGTaskQueue extends AbsTaskQueue
 			{
 				runningTaskList.remove(taskId);
 			}
-    		//销毁任务
+			//销毁任务
 			task = null;
 		}
-		
+
 		// 任务移除队列
 		boolean result =  super.remove(taskId);
-		
+
 		// 执行队列中下一个等待任务
 		LogTools.d(LOG_TAG, "[Method:onRemove] queue size : " + TGTaskQueue.this.size());
 		this.executeNextTask();
-		
+
 		return result;
 	}
 
 	/**
 	 * 该方法的作用: 暂停任务队列
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 */
 	public synchronized void pauseTaskQueue()
@@ -180,7 +179,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		LogTools.d(LOG_TAG, "[Method:pauseTaskQueue]");
 		//设置队列运行状态为PAUSE
 		state = TGQueueState.PAUSE;
-		
+
 		//依次暂停任务
 		TGTask task = null;
 		for(int i = 0; i < runningTaskList.size(); i++)
@@ -193,16 +192,16 @@ public class TGTaskQueue extends AbsTaskQueue
 			}
 		}
 	}
-	
+
 	/**
 	 * 该方法的作用: 暂停某个指定任务
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 */
 	public synchronized boolean pauseTask(int taskId)
 	{
-		LogTools.d(LOG_TAG, "[Method:ppauseTask] taskId --> " + taskId);
-		
+		LogTools.d(LOG_TAG, "[Method:pauseTask] taskId --> " + taskId);
+
 		//将当前运行任务的Clone对象放入队列中
 		TGTask task = getTaskArray().get(taskId);
 		if(null != task)
@@ -214,10 +213,10 @@ public class TGTaskQueue extends AbsTaskQueue
 			//从队列中移除原有任务
 			return this.removeTask((Integer)task.getTaskID());
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * 克隆任务并插入队列
 	 * @param task
@@ -234,17 +233,17 @@ public class TGTaskQueue extends AbsTaskQueue
 		{
 			LogTools.e(LOG_TAG, e.getMessage(), e);
 		}
-		
+
 		if(null != cloneTask)
 		{
 			//克隆一个对象，加入到队列中
 			this.addLast(cloneTask);
 		}
 	}
-	
+
 	/**
 	 * 该方法的作用: 重启任务队列
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 */
 	public synchronized void restart()
@@ -256,7 +255,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		//执行下一个任务
 		executeNextTask();
 	}
-	
+
 	/**
 	 * 取消某个任务
 	 * @param taskId
@@ -270,10 +269,10 @@ public class TGTaskQueue extends AbsTaskQueue
 			task.cancel();
 			return TGTaskQueue.this.removeTask((Integer)taskId);
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 取消所有任务
@@ -285,7 +284,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		//修改队列状态
 		state = TGQueueState.WAITING;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取任务状态
@@ -343,7 +342,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		}
 		return taskListener;
 	}
-	
+
 	/**
 	 * 设置任务监听器
 	 * @param listener
@@ -352,7 +351,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	{
 		this.taskListener = listener;
 	}
-	
+
 	/**
 	 * 获取最大并发线程数
 	 * @return
@@ -403,7 +402,7 @@ public class TGTaskQueue extends AbsTaskQueue
 			switch (code)
 			{
 				case TaskError.LOCK_DISPATER_CODE:
-					
+
 					//若当前状态不为暂停状态，则立即暂停所有任务
 					if(state != TGQueueState.PAUSE)
 					{
@@ -415,13 +414,13 @@ public class TGTaskQueue extends AbsTaskQueue
 							{
 								TGTaskQueue.this.pauseTaskQueue();
 							}
-							
+
 							@Override
 							public void onLockFailed()
 							{
 							}
 						});
-						
+
 						//执行解锁操作
 						TGTaskQueue.this.unLock(new onUnLockListener()
 						{
@@ -431,7 +430,7 @@ public class TGTaskQueue extends AbsTaskQueue
 								TGTaskQueue.this.setState(TGQueueState.WAITING);
 								TGTaskQueue.this.executeNextTask();
 							}
-							
+
 							@Override
 							public void onUnLockFailed()
 							{
@@ -443,7 +442,7 @@ public class TGTaskQueue extends AbsTaskQueue
 						//当前队列为暂停状态，暂停当前任务
 						TGTaskQueue.this.pauseTask(taskId);
 					}
-					
+
 					break;
 
 				default:
@@ -456,11 +455,11 @@ public class TGTaskQueue extends AbsTaskQueue
 		public synchronized void onTaskCancel(int taskId)
 		{
 		}
-		
+
 		@Override
 		public synchronized void onTaskPause(int taskId)
 		{
-			
+
 		}
 	}
 }
