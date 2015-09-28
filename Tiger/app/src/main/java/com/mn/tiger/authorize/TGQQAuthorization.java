@@ -13,7 +13,7 @@ import org.json.JSONObject;
 /**
  * QQ登录认证类
  */
-public class TGQQAuthorizer extends AbsAuthorizer
+public class TGQQAuthorization extends AbsAuthorization
 {
 	/**
 	 * 认证范围
@@ -35,7 +35,7 @@ public class TGQQAuthorizer extends AbsAuthorizer
 	 */
 	private IAuthorizeCallback callback;
 	
-	public TGQQAuthorizer(Activity activity, String appID)
+	public TGQQAuthorization(Activity activity, String appID)
 	{
 		super(activity, appID);
 		tencent = Tencent.createInstance(appID, activity);

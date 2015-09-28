@@ -6,7 +6,7 @@ import android.content.Intent;
 /**
  * 认证类
  */
-public abstract class AbsAuthorizer
+public abstract class AbsAuthorization
 {
 	/**
 	 * 启动认证的Activity
@@ -22,7 +22,7 @@ public abstract class AbsAuthorizer
 	 * @param activity 启动认证的Activity
 	 * @param appID 第三方认证的appID（独立认证系统由业务而定）
 	 */
-	public AbsAuthorizer(Activity activity, String appID)
+	public AbsAuthorization(Activity activity, String appID)
 	{
 		this.activity = activity;
 		this.appID = appID;

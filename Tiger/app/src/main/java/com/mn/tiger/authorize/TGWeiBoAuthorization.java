@@ -17,7 +17,7 @@ import com.sina.weibo.sdk.utils.LogUtil;
 /**
  * 新浪微博认证类
  */
-public class TGWeiBoAuthorizer extends AbsAuthorizer
+public class TGWeiBoAuthorization extends AbsAuthorization
 {
 	/**
 	 * 登录认证地址
@@ -62,7 +62,7 @@ public class TGWeiBoAuthorizer extends AbsAuthorizer
 	 */
 	private IAuthorizeCallback callback;
 	
-	public TGWeiBoAuthorizer(Activity activity, String appID)
+	public TGWeiBoAuthorization(Activity activity, String appID)
 	{
 		super(activity, appID);
 		AuthInfo authInfo = new AuthInfo(activity, appID, REDIRECT_URL, SCOPE);
@@ -137,7 +137,7 @@ public class TGWeiBoAuthorizer extends AbsAuthorizer
 				Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(response);
 				if(accessToken.isSessionValid())
 				{
-					TGWeiBoAuthorizer.accessToken = accessToken;
+					TGWeiBoAuthorization.accessToken = accessToken;
 					TGAuthorizeResult loginResult = new TGAuthorizeResult();
 					loginResult.setUID(accessToken.getUid());
 					loginResult.setAccessToken(accessToken.getToken());

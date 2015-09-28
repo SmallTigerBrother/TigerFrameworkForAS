@@ -11,7 +11,7 @@ import com.mn.tiger.core.cache.TGCache;
 /**
  * 登录认证类
  */
-public abstract class TGAuthorizer extends AbsAuthorizer
+public abstract class TGAuthorization extends AbsAuthorization
 {
 	/**
 	 * 缓存用户信息的键值
@@ -63,7 +63,7 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 	 * @param account 手机号（用户名）
 	 * @param password 密码
 	 */
-	public TGAuthorizer(Activity activity,String account, String password)
+	public TGAuthorization(Activity activity, String account, String password)
 	{
 		super(activity, null);
 
@@ -148,7 +148,7 @@ public abstract class TGAuthorizer extends AbsAuthorizer
 	 */
 	public static void saveUserInfo(Context context, Serializable userInfo)
 	{
-		TGAuthorizer.userInfo = userInfo;
+		TGAuthorization.userInfo = userInfo;
 		if(null != userInfo)
 		{
 			TGCache.saveCache(context, USER_INFO_CACHE_KEY, userInfo);
