@@ -9,48 +9,33 @@ import android.content.Intent;
 public abstract class AbsAuthorization
 {
 	/**
-	 * 启动认证的Activity
-	 */
-	private Activity activity;
-	
-	/**
 	 * 第三方认证的appID（独立认证系统由业务而定）
 	 */
 	private String appID;
-	
+
 	/**
-	 * @param activity 启动认证的Activity
 	 * @param appID 第三方认证的appID（独立认证系统由业务而定）
 	 */
-	public AbsAuthorization(Activity activity, String appID)
+	public AbsAuthorization(String appID)
 	{
-		this.activity = activity;
 		this.appID = appID;
 	}
-	
+
 	/**
 	 * 启动认证（在主线程调用）
+	 * @param activity
 	 * @param callback 认证结果回调接口
 	 */
-	public abstract void authorize(IAuthorizeCallback callback);
-	
+	public abstract void authorize(Activity activity, IAuthorizeCallback callback);
+
 	/**
 	 * 认证注销
 	 */
-	public abstract void logout(ILogoutCallback callback);
-	
-	public abstract void register(String account, String password, 
-			IRegisterCallback callback, Object... args);
-	
-	/**
-	 * 获取启动认证的Activity
-	 * @return
-	 */
-	protected Activity getActivity()
-	{
-		return activity;
-	}
-	
+	public abstract void logout(Activity activity, ILogoutCallback callback);
+
+	public abstract void register(Activity activity, String account, String password,
+								  IRegisterCallback callback, Object... args);
+
 	/**
 	 * 获取第三方认证的appID（独立认证系统由业务而定）
 	 * @return
@@ -59,7 +44,7 @@ public abstract class AbsAuthorization
 	{
 		return appID;
 	}
-	
+
 	/**
 	 * 处理认证界面返回的结果
 	 * @param requestCode

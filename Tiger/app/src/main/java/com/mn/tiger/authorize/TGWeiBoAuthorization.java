@@ -62,23 +62,24 @@ public class TGWeiBoAuthorization extends AbsAuthorization
 	 */
 	private IAuthorizeCallback callback;
 	
-	public TGWeiBoAuthorization(Activity activity, String appID)
+	public TGWeiBoAuthorization(String appID)
 	{
-		super(activity, appID);
-		AuthInfo authInfo = new AuthInfo(activity, appID, REDIRECT_URL, SCOPE);
-		ssoHandler = new SsoHandler(activity, authInfo);
+		super(appID);
+
 		authListener = new AuthorListener();
 	}
 
 	@Override
-	public void authorize(IAuthorizeCallback callback)
+	public void authorize(Activity activity, IAuthorizeCallback callback)
 	{
+		AuthInfo authInfo = new AuthInfo(activity, getAppID(), REDIRECT_URL, SCOPE);
+		ssoHandler = new SsoHandler(activity, authInfo);
 		this.callback = callback;
 		ssoHandler.authorize(authListener);
 	}
 	
 	@Override
-	public void logout(final ILogoutCallback logoutCallback)
+	public void logout(Activity activity, final ILogoutCallback logoutCallback)
 	{
 		if (null == accessToken)
 		{
@@ -88,7 +89,7 @@ public class TGWeiBoAuthorization extends AbsAuthorization
 
 		WeiboParameters parameters = new WeiboParameters(getAppID());
 		parameters.put(KEY_ACCESS_TOKEN, accessToken.getToken());
-		new AsyncWeiboRunner(getActivity()).requestAsync(REVOKE_OAUTH_URL, parameters, 
+		new AsyncWeiboRunner(activity).requestAsync(REVOKE_OAUTH_URL, parameters,
 				"post", new RequestListener()
 				{
 					@Override
@@ -106,7 +107,7 @@ public class TGWeiBoAuthorization extends AbsAuthorization
 	}
 	
 	@Override
-	public void register(String account, String password, IRegisterCallback callback,
+	public void register(Activity activity, String account, String password, IRegisterCallback callback,
 			Object... args)
 	{
 		throw new UnsupportedOperationException("a weibo account can not be registered in this way");

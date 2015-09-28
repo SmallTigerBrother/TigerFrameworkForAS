@@ -35,11 +35,9 @@ public class TGQQAuthorization extends AbsAuthorization
 	 */
 	private IAuthorizeCallback callback;
 	
-	public TGQQAuthorization(Activity activity, String appID)
+	public TGQQAuthorization(String appID)
 	{
-		super(activity, appID);
-		tencent = Tencent.createInstance(appID, activity);
-		
+		super(appID);
 		uiListener = new IUiListener()
 		{
 			@Override
@@ -75,21 +73,22 @@ public class TGQQAuthorization extends AbsAuthorization
 	}
 	
 	@Override
-	public void authorize(IAuthorizeCallback callback)
+	public void authorize(Activity activity, IAuthorizeCallback callback)
 	{
+		tencent = Tencent.createInstance(getAppID(), activity);
 		this.callback = callback;
-		tencent.login(getActivity(), SCOPE_ALL, uiListener);
+		tencent.login(activity, SCOPE_ALL, uiListener);
 	}
 	
 	@Override
-	public void logout(ILogoutCallback logoutCallback)
+	public void logout(Activity activity, ILogoutCallback logoutCallback)
 	{
-		tencent.logout(getActivity());
+		tencent.logout(activity);
 		logoutCallback.onSuccess();
 	}
 	
 	@Override
-	public void register(String account, String password, IRegisterCallback callback,
+	public void register(Activity activity, String account, String password, IRegisterCallback callback,
 			Object... args)
 	{
 		throw new UnsupportedOperationException("a qq account can not be registered in this way");
