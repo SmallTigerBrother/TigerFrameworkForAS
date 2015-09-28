@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.task.TGScheduleTaskList;
 import com.mn.tiger.task.TGTask;
+import com.mn.tiger.task.TaskType;
 import com.mn.tiger.task.queue.TGScheduleTaskQueue;
 import com.mn.tiger.task.queue.TGTaskQueue;
 
@@ -122,19 +123,19 @@ public class TGDispatcher
 			
 			switch (taskType)
 			{
-				case TGTask.TASK_TYPE_HTTP:
+				case TaskType.TASK_TYPE_HTTP:
 					taskQueue = new TGTaskQueue(256);
 					break;
 					
-				case TGTask.TASK_TYPE_UPLOAD:
+				case TaskType.TASK_TYPE_UPLOAD:
 					taskQueue = new TGTaskQueue(3);
 					break;
 					
-				case TGTask.TASK_TYPE_DOWNLOAD:
+				case TaskType.TASK_TYPE_DOWNLOAD:
 					taskQueue = new TGTaskQueue(5);
 					break;
 					
-				case TGTask.TASK_TYPE_OTHER:
+				case TaskType.TASK_TYPE_OTHER:
 					taskQueue = new TGTaskQueue(256);
 					break;
 				default:

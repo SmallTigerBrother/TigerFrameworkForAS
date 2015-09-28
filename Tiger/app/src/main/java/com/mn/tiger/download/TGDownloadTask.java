@@ -2,9 +2,10 @@ package com.mn.tiger.download;
 
 import android.os.Bundle;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.task.TGTask;
+import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.NetworkUtils;
 
 /**
@@ -15,6 +16,8 @@ import com.mn.tiger.utility.NetworkUtils;
  */
 public class TGDownloadTask extends TGTask
 {
+	private static final Logger LOG = Logger.getLogger(TGDownloadTask.class);
+
 	/**
 	 * 下载信息
 	 */
@@ -39,7 +42,7 @@ public class TGDownloadTask extends TGTask
 	public TGDownloadTask()
 	{
 		super();
-		this.setType(TASK_TYPE_DOWNLOAD);
+		this.setType(TaskType.TASK_TYPE_DOWNLOAD);
 	}
 	
 	/**
@@ -88,7 +91,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	protected void downloadInBackground()
 	{
-		LogTools.p(LOG_TAG, "[Metohd:downloadInBackground]" + "; taskid: " + this.getTaskID());
+		LOG.d("[Metohd:downloadInBackground]" + "; taskid: " + this.getTaskID());
 		mDownloadParams = getDownloadParams();
 		
 		executeDownload();
@@ -120,7 +123,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	protected void executeDownload()
 	{
-		LogTools.p(LOG_TAG, "[Method:executeDownload]");
+		LOG.d("[Method:executeDownload]");
 		if(NetworkUtils.isConnectivityAvailable(getContext()))
 		{
 			// 获取下载参数
@@ -151,7 +154,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadStart(TGDownloader downloader) 
 	{
-		LogTools.p(LOG_TAG, "[Method:downloadStart]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LOG.d("[Method:downloadStart]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 	}
 	
@@ -161,7 +164,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadSuccess(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Method:downloadSucceed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LOG.d("[Method:downloadSucceed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 		onTaskFinished();
 	}
@@ -176,7 +179,7 @@ public class TGDownloadTask extends TGTask
 		int currentProgress = (int) (downloader.getCompleteSize() * 100 / downloader.getFileSize());
 		if (currentProgress != progress)
 		{
-			LogTools.d(LOG_TAG, "[Method:downloadProgress]" + "; taskid: " + TGDownloadTask.this.getTaskID() +
+			LOG.d("[Method:downloadProgress]" + "; taskid: " + TGDownloadTask.this.getTaskID() +
 					" ; progress : " + currentProgress);
 			
 			progress = currentProgress;
@@ -190,7 +193,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadFailed(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Method:downloadFailed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LOG.d("[Method:downloadFailed]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 		onTaskError((downloader).getErrorCode(), (downloader).getErrorMsg());
 	}
@@ -201,7 +204,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadPause(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Method:downloadPause]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LOG.d("[Method:downloadPause]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 	}
 	
@@ -211,7 +214,7 @@ public class TGDownloadTask extends TGTask
 	 */
 	void onDownloadCancel(TGDownloader downloader)
 	{
-		LogTools.p(LOG_TAG, "[Method:downloadCanceled]" + "; taskid: " + TGDownloadTask.this.getTaskID());
+		LOG.d("[Method:downloadCanceled]" + "; taskid: " + TGDownloadTask.this.getTaskID());
 		sendTaskResult(downloader);
 	}
 }

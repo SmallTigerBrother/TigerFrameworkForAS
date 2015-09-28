@@ -21,6 +21,7 @@ import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TGTaskParams;
+import com.mn.tiger.task.TaskType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -351,7 +352,7 @@ public class TGHttpLoader<T> implements IRequestParser
 
 		TGTaskParams taskParams = TGTaskManager.createTaskParams(data,
 				getTaskClsName(requestType), initHttpResultHandler());
-		taskParams.setTaskType(TGTask.TASK_TYPE_HTTP);
+		taskParams.setTaskType(TaskType.TASK_TYPE_HTTP);
 
 		return taskParams;
 	}
@@ -425,7 +426,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	public void cancel()
 	{
 		this.isCancel = true;
-		TGTaskManager.getInstance().cancelTask(taskID, TGTask.TASK_TYPE_HTTP);
+		TGTaskManager.getInstance().cancelTask(taskID, TaskType.TASK_TYPE_HTTP);
 		if(null != loadCallback)
 		{
 			this.loadCallback.onLoadOver();

@@ -2,8 +2,9 @@ package com.mn.tiger.upload;
 
 import android.os.Bundle;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGTask;
+import com.mn.tiger.task.TaskType;
 import com.mn.tiger.upload.observe.TGUploadObserveController;
 
 /**
@@ -14,11 +15,7 @@ import com.mn.tiger.upload.observe.TGUploadObserveController;
  */
 public class TGUploadTask extends TGTask
 {
-	/**
-	 * 日志标签
-	 */
-	protected static final String LOG_TAG = TGUploadTask.class.getSimpleName();
-
+	private static final Logger LOG = Logger.getLogger(TGUploadTask.class);
 	/**
 	 * 上传信息
 	 */
@@ -36,7 +33,7 @@ public class TGUploadTask extends TGTask
 	public TGUploadTask()
 	{
 		super();
-		this.setType(TASK_TYPE_UPLOAD);
+		this.setType(TaskType.TASK_TYPE_UPLOAD);
 	}
 
 	/**
@@ -62,7 +59,7 @@ public class TGUploadTask extends TGTask
 	 */
 	protected void uploadInBackground()
 	{
-		LogTools.p(LOG_TAG, "[Method:uploadInBackground]" + "; taskid: " + this.getTaskID());
+		LOG.d("[Method:uploadInBackground]" + "; taskid: " + this.getTaskID());
 		uploadParams = getUploadParams();
 
 		executeUpload();
@@ -89,14 +86,13 @@ public class TGUploadTask extends TGTask
 	 */
 	protected TGUploader getUploader(TGUploadParams uploadParams)
 	{
-		TGUploader uploader = null;
-		uploader = TGUploadDBHelper.getInstance(getContext()).getUploader(uploadParams.getFileParams());
+		TGUploader uploader = TGUploadDBHelper.getInstance(getContext()).getUploader(uploadParams.getFileParams());
 
 		if(uploader == null)
 		{
 			uploader = createNewUploader(uploadParams);
 		}
-		uploader.setUploadStatus(TGUploadManager.UPLOAD_STARTING);
+		uploader.setUploadStatus(TGUploadManager.UPLOAD_WAITING);
 
 		return uploader;
 	}
@@ -155,7 +151,7 @@ public class TGUploadTask extends TGTask
 
 	void onUploadStart(TGUploader uploader)
 	{
-		LogTools.p(LOG_TAG, "[Method:onUploadStart]");
+		LOG.d("[Method:onUploadStart]");
 		sendTaskResult(uploader);
 	}
 
@@ -167,8 +163,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploading(TGUploader uploader, int progress)
 	{
-		// 修改上传状态为正在上传
-		uploader.setUploadStatus(TGUploadManager.UPLOAD_UPLOADING);
+		LOG.d("[Method:onUploading] progress == " + progress);
 
 		sendTaskResult(uploader);
 		onTaskChanged(progress);
@@ -182,6 +177,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadFinish(TGUploader uploader)
 	{
+		LOG.d("[Method:onUploadFinish]");
 		sendTaskResult(uploader);
 		onTaskFinished();
 	}
@@ -193,6 +189,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadFailed(TGUploader uploader)
 	{
+		LOG.d("[Method:onUploadFailed]");
 		sendTaskResult(uploader);
 		onTaskFinished();
 	}
@@ -205,6 +202,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadStop(TGUploader uploader)
 	{
+		LOG.d("[Method:onUploadStop]");
 		sendTaskResult(uploader);
 		onTaskFinished();
 	}
@@ -217,6 +215,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadCancel(TGUploader uploader)
 	{
+		LOG.d("[Method:onUploadCancel]");
 		sendTaskResult(uploader);
 	}
 }

@@ -15,6 +15,7 @@ import com.mn.tiger.log.LogTools;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TGTaskParams;
+import com.mn.tiger.task.TaskType;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.utility.FileUtils;
@@ -69,7 +70,7 @@ public class TGDownloadManager
 	 */
 	public void cancel(int taskId)
 	{
-		TGTaskManager.getInstance().cancelTask(taskId, TGTask.TASK_TYPE_DOWNLOAD);
+		TGTaskManager.getInstance().cancelTask(taskId, TaskType.TASK_TYPE_DOWNLOAD);
 	}
 
 	/**
@@ -81,7 +82,7 @@ public class TGDownloadManager
 	 */
 	public void pause(int taskId)
 	{
-		TGTaskManager.getInstance().pauseTask(taskId, TGTask.TASK_TYPE_DOWNLOAD);
+		TGTaskManager.getInstance().pauseTask(taskId, TaskType.TASK_TYPE_DOWNLOAD);
 	}
 
 	/**
@@ -276,7 +277,7 @@ public class TGDownloadManager
 		}
 
 		taskParams.setBundleParams(params);
-		taskParams.setTaskType(TGTask.TASK_TYPE_DOWNLOAD);
+		taskParams.setTaskType(TaskType.TASK_TYPE_DOWNLOAD);
 
 		// 启动任务
 		return TGTaskManager.getInstance().startTask(mContext, taskParams);

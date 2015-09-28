@@ -1,19 +1,19 @@
 package com.mn.tiger.request.task;
 
-import java.util.HashMap;
-
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.IRequestParser;
-import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.TGHttpParams;
+import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.test.mock.HttpMockTester;
 import com.mn.tiger.utility.MD5;
 import com.mn.tiger.utility.NetworkUtils;
+
+import java.util.HashMap;
 
 /**
  * 该类作用及功能说明 Http请求任务类
@@ -22,6 +22,8 @@ import com.mn.tiger.utility.NetworkUtils;
  */
 public abstract class TGHttpTask extends TGTask
 {
+	private static final Logger LOG = Logger.getLogger(TGHttpTask.class);
+
 	/**
 	 * 参数名--url
 	 */
@@ -101,7 +103,7 @@ public abstract class TGHttpTask extends TGTask
 	 */
 	private void sendCachedResult()
 	{
-		LogTools.d(LOG_TAG, "[Method:sendCachedResult]");
+		LOG.d("[Method:sendCachedResult]");
 		
 		if(isCacheable())
 		{
@@ -149,7 +151,7 @@ public abstract class TGHttpTask extends TGTask
 			}
 			catch (Exception e)
 			{
-				LogTools.e(LOG_TAG, e.getMessage(), e);
+				LOG.e(e.getMessage(), e);
 			}
 		}
 		
@@ -167,7 +169,7 @@ public abstract class TGHttpTask extends TGTask
 	{
 		if(isCacheable())
 		{
-			LogTools.d(LOG_TAG, "[Method:save2Cache]");
+			LOG.d("[Method:save2Cache]");
 			//TODO 存入缓存中
 		}
 	}
@@ -178,7 +180,7 @@ public abstract class TGHttpTask extends TGTask
 		//若当前任务仍在运行，返回请求结果
 		if(getTaskState() == TGTaskState.RUNNING)
 		{
-			LogTools.d(LOG_TAG, "[Method:sendTaskResult]");
+			LOG.d("[Method:sendTaskResult]");
 			//发送执行结果
 			super.sendTaskResult(result);
 		}

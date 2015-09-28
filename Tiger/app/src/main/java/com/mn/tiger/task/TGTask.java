@@ -7,6 +7,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 
 import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.task.thread.TGThreadPool;
 
@@ -17,31 +18,8 @@ import com.mn.tiger.task.thread.TGThreadPool;
  */
 public class TGTask implements Cloneable
 {
-	/**
-	 * 日志标签
-	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
-	
-	/**
-	 * 任务类型：Http请求任务
-	 */
-	public static final int TASK_TYPE_HTTP = 101;
-	
-	/**
-	 * 任务类型: 上传任务
-	 */
-	public static final int TASK_TYPE_UPLOAD = 102;
-	
-	/**
-	 * 任务类型: 下载任务
-	 */
-	public static final int TASK_TYPE_DOWNLOAD = 103;
-	
-	/**
-	 * 任务类型: 其他任务
-	 */
-	public static final int TASK_TYPE_OTHER = 104;
-	
+	private static final Logger LOG = Logger.getLogger(TGTask.class);
+
 	/**
 	 * 任务ID
 	 */
@@ -103,7 +81,7 @@ public class TGTask implements Cloneable
 	 */
 	public TGTaskResult executeTask(TGThreadPool threadPool)
 	{
-		LogTools.d(LOG_TAG, "[Method:executeTask]");
+		LOG.d("[Method:executeTask]");
 		
 		// 修改任务状态为正在运行
 		state = TGTaskState.RUNNING;
@@ -239,7 +217,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskStart()
 	{
-		LogTools.d(LOG_TAG, "[Method:onTaskStart]");
+		LOG.d("[Method:onTaskStart]");
 		// 通知任务执行启动
 		if(state == TGTaskState.WAITING)
 		{
@@ -260,7 +238,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskChanged(int progress)
 	{
-		LogTools.d(LOG_TAG, "[Method:onTaskChanged]");
+		LOG.d("[Method:onTaskChanged]");
 		// 若当前任务状态为运行状态，则通知任务队列，任务执行变化
 		if (state == TGTaskState.RUNNING && null != taskListener)
 		{
@@ -277,8 +255,8 @@ public class TGTask implements Cloneable
 	{
 		// 修改任务状态为完成
 		state = TGTaskState.FINISHED;
-		
-		LogTools.d(LOG_TAG, "[Method:onTaskFinished]");
+
+		LOG.d("[Method:onTaskFinished]");
 		// 回调任务完成接口
 		if(null != taskListener)
 		{
@@ -297,8 +275,8 @@ public class TGTask implements Cloneable
 	{
 		// 修改任务状态为异常
 		state = TGTaskState.ERROR;
-				
-		LogTools.d(LOG_TAG, "[Method:onTaskError]" + "-->errorCode-->" + code);
+
+		LOG.d("[Method:onTaskError]" + "-->errorCode-->" + code);
 		// 回调异常接口
 		if(null != taskListener)
 		{
@@ -313,7 +291,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskCancel()
 	{
-		LogTools.d(LOG_TAG, "[Method:onTaskCancel] taskId: " + taskID);
+		LOG.d("[Method:onTaskCancel] taskId: " + taskID);
 		// 回调取消任务接口
 		if(null != taskListener)
 		{
@@ -330,7 +308,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskPause()
 	{
-		LogTools.d(LOG_TAG, "[Method:onTaskPause] taskId: " + taskID);
+		LOG.d("[Method:onTaskPause] taskId: " + taskID);
 		
 		// 回调停止任务接口
 		if(null != taskListener)
@@ -372,7 +350,7 @@ public class TGTask implements Cloneable
 		}
 		catch (Exception e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e(e.getMessage(), e);
 		}
 		
 		return new TGTask();

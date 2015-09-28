@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
+import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
@@ -281,7 +282,7 @@ public class TGActionBarActivity extends Activity
 	{
 		for (Integer taskID : httpTaskIDList)
 		{
-			TGTaskManager.getInstance().cancelTask(taskID, TGTask.TASK_TYPE_HTTP);
+			TGTaskManager.getInstance().cancelTask(taskID, TaskType.TASK_TYPE_HTTP);
 		}
 	}
 

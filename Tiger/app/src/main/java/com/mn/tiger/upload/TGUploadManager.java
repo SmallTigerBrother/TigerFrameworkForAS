@@ -11,6 +11,7 @@ import com.mn.tiger.log.LogTools;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TGTaskParams;
+import com.mn.tiger.task.TaskType;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.upload.observe.TGUploadObserveController;
@@ -59,7 +60,7 @@ public class TGUploadManager
 	 */
 	public void cancel(int taskId)
 	{
-		TGTaskManager.getInstance().cancelTask(taskId, TGTask.TASK_TYPE_UPLOAD);
+		TGTaskManager.getInstance().cancelTask(taskId, TaskType.TASK_TYPE_UPLOAD);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class TGUploadManager
 	 */
 	public void pause(int taskId)
 	{
-		TGTaskManager.getInstance().pauseTask(taskId, TGTask.TASK_TYPE_UPLOAD);
+		TGTaskManager.getInstance().pauseTask(taskId, TaskType.TASK_TYPE_UPLOAD);
 	}
 
 	/**
@@ -228,7 +229,7 @@ public class TGUploadManager
 		}
 
 		taskParams.setBundleParams(params);
-		taskParams.setTaskType(TGTask.TASK_TYPE_UPLOAD);
+		taskParams.setTaskType(TaskType.TASK_TYPE_UPLOAD);
 
 		return TGTaskManager.getInstance().startTask(mContext, taskParams);
 	}
