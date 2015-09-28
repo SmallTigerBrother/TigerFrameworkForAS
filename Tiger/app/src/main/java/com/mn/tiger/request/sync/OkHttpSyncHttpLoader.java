@@ -36,6 +36,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
         okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
         okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
         okHttpClient.setWriteTimeout(120, TimeUnit.SECONDS);
+        okHttpClient.setRetryOnConnectionFailure(true);
     }
 
     public OkHttpSyncHttpLoader(int tag)
