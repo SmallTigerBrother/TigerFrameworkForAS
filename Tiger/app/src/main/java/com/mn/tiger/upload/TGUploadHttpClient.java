@@ -164,7 +164,7 @@ public abstract class TGUploadHttpClient
     }
 
 
-    public void onUploadStart(TGUploader uploader)
+    protected void onUploadStart(TGUploader uploader)
     {
         uploader.setUploadStatus(TGUploadManager.UPLOAD_STARTING);
         uploadTask.onUploadStart(uploader);
@@ -176,7 +176,7 @@ public abstract class TGUploadHttpClient
      * @date 2014年8月19日
      * @param uploader
      */
-    private void onUploading(TGUploader uploader, int progress)
+    protected void onUploading(TGUploader uploader, int progress)
     {
         // 修改上传状态为正在上传
         uploader.setUploadStatus(TGUploadManager.UPLOAD_UPLOADING);
@@ -189,7 +189,7 @@ public abstract class TGUploadHttpClient
      * @date 2014年8月19日
      * @param uploader
      */
-    private void onUploadFinish(TGUploader uploader)
+    protected void onUploadFinish(TGUploader uploader)
     {
         // 删除本地记录
         uploader.setUploadStatus(TGUploadManager.UPLOAD_SUCCEED);
@@ -247,9 +247,9 @@ public abstract class TGUploadHttpClient
         uploadTask.onUploadCancel(uploader);
     }
 
-    public void setPartBOUNDARY(String bOUNDARY)
+    public void setPartBOUNDARY(String BOUNDARY)
     {
-        BOUNDARY = bOUNDARY;
+        BOUNDARY = BOUNDARY;
     }
 
     public String getFileContentDispositionName()
@@ -260,20 +260,5 @@ public abstract class TGUploadHttpClient
     public String getStringContentDispositionName()
     {
         return "tiger_upload_code";
-    }
-
-    public void setUploader(TGUploader uploader)
-    {
-        this.uploader = uploader;
-    }
-
-    public void setUploadTask(TGUploadTask uploadTask)
-    {
-        this.uploadTask = uploadTask;
-    }
-
-    public void setCompleteSize(long completeSize)
-    {
-        this.completeSize = completeSize;
     }
 }
