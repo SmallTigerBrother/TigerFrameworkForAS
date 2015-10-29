@@ -256,19 +256,6 @@ public class FrescoUtils
 
     private static int getViewId(DraweeView draweeView)
     {
-        int id = draweeView.getId();
-        if(id == View.NO_ID)
-        {
-            if(Build.VERSION.SDK_INT < 17)
-            {
-                return R.id.placeholder;
-            }
-            else
-            {
-                id = draweeView.generateViewId();
-                draweeView.setId(id);
-            }
-        }
-        return id;
+        return R.id.placeholder;
     }
 }
