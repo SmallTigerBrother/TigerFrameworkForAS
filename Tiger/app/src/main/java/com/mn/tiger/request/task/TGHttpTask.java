@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 /**
  * 该类作用及功能说明 Http请求任务类
- * 
+ *
  * @date 2014年3月18日
  */
 public abstract class TGHttpTask extends TGTask
@@ -28,48 +28,48 @@ public abstract class TGHttpTask extends TGTask
 	 * 参数名--url
 	 */
 	public static final String PARAM_URL = "url";
-	
+
 	/**
 	 * 参数名--params
 	 */
 	public static final String PARAM_PARAMS = "params";
-	
+
 	/**
 	 * 参数名--properties
 	 */
 	public static final String PARAM_PROPERTIES = "properties";
-	
+
 	/**
 	 * 参数名--parserClsName
 	 */
 	public static final String PARAM_PARSERCLSNAME = "parserClsName";
-	
+
 	/**
 	 * 参数名--resultClsName
 	 */
 	public static final String PARAM_RESLUTCLSNAME = "resultClsName";
-	
+
 	/**
 	 * 参数名--是否支持缓存
 	 */
 	public static final String PARAM_CACHEABLE = "cacheable";
-	
+
 	/**
 	 * 缓存用的Key
 	 */
 	private String cacheKey = "";
-	
+
 	@Override
 	protected TGTaskState executeOnSubThread()
 	{
 		//先返回Cache中的数据
 		sendCachedResult();
-		
+
 		if(NetworkUtils.isConnectivityAvailable(getContext()))
 		{
 			// 执行网络访问（不带异常处理）；异常处理下放到Activity中执行,
 			TGHttpResult result;
-			if(!HttpMockTester.TEST_ABLE)
+			if(!HttpMockTester.TEST_ABLE || !HttpMockTester.isTestAble(getRequestUrl()))
 			{
 				result = executeHttpRequest();
 			}
@@ -77,7 +77,7 @@ public abstract class TGHttpTask extends TGTask
 			{
 				result = HttpMockTester.getMockTestData(getRequestUrl());
 			}
-			
+
 			if (getTaskState() == TGTaskState.RUNNING)
 			{
 				// 返回网络访问结果
@@ -94,7 +94,7 @@ public abstract class TGHttpTask extends TGTask
 
 		//设置任务执行状态
 		setTaskState(TGTaskState.FINISHED);
-		
+
 		return getTaskState();
 	}
 
@@ -104,13 +104,13 @@ public abstract class TGHttpTask extends TGTask
 	private void sendCachedResult()
 	{
 		LOG.d("[Method:sendCachedResult]");
-		
+
 		if(isCacheable())
 		{
 			sendTaskResult(getResultFromCache(getCacheKey()));
 		}
 	}
-	
+
 	/**
 	 * 从缓存中获取结果
 	 * @param cacheKey 缓存Key
@@ -121,15 +121,15 @@ public abstract class TGHttpTask extends TGTask
 		//TODO 
 		return null;
 	}
-	
+
 	/**
 	 * 该方法的作用: 执行Http请求
-	 * 
+	 *
 	 * @date 2014年3月18日
 	 * @return
 	 */
 	protected abstract TGHttpResult executeHttpRequest();
-	
+
 	/**
 	 * 该方法的作用:
 	 * 解析请求结果
@@ -154,13 +154,13 @@ public abstract class TGHttpTask extends TGTask
 				LOG.e(e.getMessage(), e);
 			}
 		}
-		
+
 		//将结果存入缓存中
 		save2Cache(httpResult);
-		
+
 		return httpResult;
 	}
-	
+
 	/**
 	 * 将请求结果存入缓存
 	 * @param httpResult
@@ -185,7 +185,7 @@ public abstract class TGHttpTask extends TGTask
 			super.sendTaskResult(result);
 		}
 	}
-	
+
 	/**
 	 * 获取缓存Key
 	 * @return
@@ -195,14 +195,14 @@ public abstract class TGHttpTask extends TGTask
 		if(TextUtils.isEmpty(cacheKey))
 		{
 			//使用网络请求的全部参数作为缓存Key的特征值
-			String requestFeature = getRequestUrl() + getRequestParamsStr() + getRequestPropertiesStr() + 
+			String requestFeature = getRequestUrl() + getRequestParamsStr() + getRequestPropertiesStr() +
 					getResultClsNameStr() + getParserClsNameStr();
 			cacheKey = MD5.toHexString(requestFeature.getBytes());
 		}
-		
+
 		return cacheKey;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取请求参数
@@ -214,7 +214,7 @@ public abstract class TGHttpTask extends TGTask
 		Bundle httpParams = (Bundle)getParams();
 		return (TGHttpParams) httpParams.getSerializable(PARAM_PARAMS);
 	}
-	
+
 	/**
 	 * 获取请求参数Str
 	 * @return
@@ -226,10 +226,10 @@ public abstract class TGHttpTask extends TGTask
 		{
 			return requestParams.toString();
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取请求Url
@@ -241,7 +241,7 @@ public abstract class TGHttpTask extends TGTask
 		Bundle httpParams = (Bundle)getParams();
 		return httpParams.getString(PARAM_URL);
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取请求header中的Properties
@@ -254,7 +254,7 @@ public abstract class TGHttpTask extends TGTask
 		Bundle httpParams = (Bundle)getParams();
 		return (HashMap<String, String>)httpParams.get(PARAM_PROPERTIES);
 	}
-	
+
 	/**
 	 * 获取请求properties的Str
 	 * @return
@@ -266,10 +266,10 @@ public abstract class TGHttpTask extends TGTask
 		{
 			return "";
 		}
-		
+
 		return requestProperties.toString();
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取解析类的名字
@@ -281,7 +281,7 @@ public abstract class TGHttpTask extends TGTask
 		Bundle httpParams = (Bundle)getParams();
 		return httpParams.getString(PARAM_PARSERCLSNAME);
 	}
-	
+
 	/**
 	 * 获取解析类的类名Str
 	 * @return
@@ -293,10 +293,10 @@ public abstract class TGHttpTask extends TGTask
 		{
 			return parserClsNameStr;
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取解析类的名字
@@ -308,7 +308,7 @@ public abstract class TGHttpTask extends TGTask
 		Bundle httpParams = (Bundle)getParams();
 		return httpParams.getString(PARAM_RESLUTCLSNAME);
 	}
-	
+
 	/**
 	 * 获取结果类名的Str
 	 * @return
@@ -320,10 +320,10 @@ public abstract class TGHttpTask extends TGTask
 		{
 			return resultClsNameStr;
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
 	 * 判断是否支持缓存
 	 * @return

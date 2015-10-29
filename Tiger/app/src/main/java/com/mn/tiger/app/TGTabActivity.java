@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mn.tiger.R;
@@ -31,38 +32,38 @@ import java.util.Arrays;
  * @author Dalang
  */
 public abstract class TGTabActivity extends TGActionBarActivity implements
-OnPageChangeListener, OnTabChangeListener
+        OnPageChangeListener, OnTabChangeListener
 {
     private Logger LOG = Logger.getLogger(TGTabActivity.class);
-    
+
     /**
      * 底部Tab
      */
     private TGTabView tabView;
-    
+
     /**
      * ViewPager
      */
     private TGViewPager viewPager;
-    
+
     /**
      * tab数据
      */
     private TabModel[] tabModels;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setNavigationBarVisible(false);
         setContentView(R.layout.tiger_tab_activity);
-        
+
         tabView = (TGTabView) findViewById(R.id.tiger_tab_bar);
         viewPager = (TGViewPager) findViewById(R.id.tiger_view_pager);
-        
+
         setTabs(onInitTabs());
     }
-    
+
     /**
      * 设置也页面是否可以滑动
      * @param canScroll
@@ -71,7 +72,7 @@ OnPageChangeListener, OnTabChangeListener
     {
         viewPager.setCanScroll(canScroll);
     }
-    
+
     /**
      * 设置Tab和Fragment
      * @param tabModels 所有的tab
@@ -79,22 +80,22 @@ OnPageChangeListener, OnTabChangeListener
     public void setTabs(TabModel[] tabModels)
     {
         this.tabModels = tabModels;
-        
+
         if(null != tabModels && tabModels.length > 0)
         {
             TGFragmentPagerAdapter pagerAdapter = new TGFragmentPagerAdapter(
-                                                                             getFragmentManager(), getFragmentsFromTabs(tabModels));
+                    getFragmentManager(), getFragmentsFromTabs(tabModels));
             viewPager.setAdapter(pagerAdapter);
             viewPager.setOnPageChangeListener(this);
             viewPager.setOffscreenPageLimit(tabModels.length);
-            
+
             tabView.setAdapter(new TGListAdapter<TabModel>(this, Arrays.asList(tabModels),
-                                                           R.layout.tiger_fragment_tab_item, TabViewHolder.class));
+                    R.layout.tiger_fragment_tab_item, TabViewHolder.class));
             tabView.setOnTabChangeListener(this);
             tabView.setSelection(0);
         }
     }
-    
+
     /**
      * 从tabmodels读取Fragment数组
      * @param tabModels
@@ -109,34 +110,34 @@ OnPageChangeListener, OnTabChangeListener
         }
         return fragments;
     }
-    
+
     /**
      * 初始化tabs
      * @return
      */
     protected abstract TabModel[] onInitTabs();
-    
+
     public TabModel[] getTabModels()
     {
         return tabModels;
     }
-    
+
     @Override
     public void onTabChanged(TGTabView tabView, int lastTabIndex, int currentTabIndex)
     {
         //高亮显示当前Tab
         highLightCurrentTab(tabView, currentTabIndex);
-        
+
         //重置上一个选中的tab，如果从来没有设置过选中项，lastTabIndex== -1
         if(lastTabIndex >= 0)
         {
             resetLastTab(tabView, lastTabIndex);
         }
-        
+
         //设置ViewPager显示的页面
         viewPager.setCurrentItem(currentTabIndex, false);
     }
-    
+
     /**
      * 重置上一个tab的资源
      * @param tabView
@@ -151,7 +152,7 @@ OnPageChangeListener, OnTabChangeListener
         holder.getTextView().setTextColor(tabModel.getDefaultTextColor());
         holder.getTextView().setTextSize(tabModel.getDefaultTextSize());
     }
-    
+
     /**
      * 高亮当前选中的的tab
      * @param tabView
@@ -166,7 +167,7 @@ OnPageChangeListener, OnTabChangeListener
         holder.getTextView().setTextColor(tabModel.getHighlightTextColor());
         holder.getTextView().setTextSize(tabModel.getHighlightTextSize());
     }
-    
+
     /**
      * 获取tabView
      * @return
@@ -175,7 +176,7 @@ OnPageChangeListener, OnTabChangeListener
     {
         return tabView;
     }
-    
+
     /**
      * 获取当前选中的tab的索引
      * @return
@@ -184,7 +185,7 @@ OnPageChangeListener, OnTabChangeListener
     {
         return tabView.getCurrentTab();
     }
-    
+
     /**
      * 获取ViewPager
      * @return
@@ -193,24 +194,24 @@ OnPageChangeListener, OnTabChangeListener
     {
         return viewPager;
     }
-    
+
     @Override
     public void onPageSelected(int page)
     {
         //页码切换时，修改tab选中项
         tabView.setSelection(page);
     }
-    
+
     @Override
     public void onPageScrollStateChanged(int state)
     {
     }
-    
+
     @Override
     public void onPageScrolled(int page, float arg1, int arg2)
     {
     }
-    
+
     /**
      * 显示徽标
      * @param tabIndex tab索引
@@ -220,12 +221,12 @@ OnPageChangeListener, OnTabChangeListener
     {
         LOG.d("showBadge(int,string)   tabIndex:"+tabIndex);
         TGBadgeView badgeView =
-        ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView();
-        
+                ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView();
+
         badgeView.setText(text);
         badgeView.show();
     }
-    
+
     /**
      * 显示徽标
      * @param tabIndex tab索引
@@ -235,7 +236,7 @@ OnPageChangeListener, OnTabChangeListener
         LOG.d("showBadge(int)   tabIndex:"+tabIndex);
         ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().show();
     }
-    
+
     /**
      * 隐藏徽标
      * @param tabIndex tab索引
@@ -245,7 +246,7 @@ OnPageChangeListener, OnTabChangeListener
         LOG.d("hideBadge(int)   tabIndex:"+tabIndex);
         ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().hide();
     }
-    
+
     /**
      * 自定义的TabViewHolder
      * @author Dalang
@@ -253,33 +254,41 @@ OnPageChangeListener, OnTabChangeListener
     public static class TabViewHolder extends TGViewHolder<TabModel>
     {
         private ImageView imageView;
-        
+
         private TextView textView;
-        
+
         private TGBadgeView badgeView;
-        
+
         @Override
         public View initView(ViewGroup parent, int viewType)
         {
             View view = super.initView(parent, viewType);
             //设置tab均分
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
-                                                         LayoutParams.WRAP_CONTENT, 1);
+                    LayoutParams.WRAP_CONTENT, 1);
             view.setLayoutParams(layoutParams);
-            
+
             imageView = (ImageView) view.findViewById(R.id.tab_item_image);
+
             textView = (TextView) view.findViewById(R.id.tab_item_name);
             badgeView = new TGBadgeView(getContext(), imageView);
             badgeView.setBadgePosition(TGBadgeView.POSITION_TOP_RIGHT);
             badgeView.setBadgeMargin(0, 1, 1, 0);
-            
+
             return view;
         }
-        
+
         @Override
         public void fillData(ViewGroup parent, View convertView, TabModel itemData, int position, int viewType)
         {
             TGTabView.displayImage(itemData.getDefaultResName(), imageView);
+
+            ViewGroup.MarginLayoutParams imageLayoutParams = (ViewGroup.MarginLayoutParams)imageView.getLayoutParams();
+            imageLayoutParams.width = itemData.getImageWidth();
+            imageLayoutParams.height = itemData.getImageHeight();
+            imageLayoutParams.bottomMargin = itemData.getImageMarginText();
+            imageView.setLayoutParams(imageLayoutParams);
+
             if(TextUtils.isEmpty(itemData.getTabName()))
             {
                 textView.setVisibility(View.GONE);
@@ -292,29 +301,29 @@ OnPageChangeListener, OnTabChangeListener
                 textView.setTextSize(itemData.getDefaultTextSize());
                 textView.setTypeface(Typeface.defaultFromStyle(itemData.getDefaultTypeface()));
             }
-            
+
             if(itemData.getBadgeBackgroundResId() != 0)
             {
                 badgeView.setImageResource(itemData.getBadgeBackgroundResId());
             }
         }
-        
+
         public ImageView getImageView()
         {
             return imageView;
         }
-        
+
         public TextView getTextView()
         {
             return textView;
         }
-        
+
         public TGBadgeView getBadgeView()
         {
             return badgeView;
         }
     }
-    
+
     /**
      * 底部Tab数据模型
      * @author Dalang
@@ -325,170 +334,215 @@ OnPageChangeListener, OnTabChangeListener
          * 默认图片资源
          */
         private String defaultResName;
-        
+
         /**
          * 高亮图片资源
          */
         private String highlightResName;
-        
+
         /**
          * tab名称
          */
         private String tabName;
-        
+
         /**
          * 默认的文本颜色
          */
         private int defaultTextColor = Color.BLACK;
-        
+
         /**
          * 选中时高亮显示的文本颜色
          */
         private int highlightTextColor = Color.BLACK;
-        
+
         /**
          * 默认的文字大小
          */
         private float defaultTextSize = 16f;
-        
+
         /**
          * 选中时的文字大小
          */
         private float highlightTextSize = 16f;
-        
+
         /**
          * 徽标背景资源
          */
         private int badgeBackgroundResId = 0;
-        
+
         /**
          * 默认文字样式
          */
         private int defaultTypeface = Typeface.NORMAL;
-        
+
         /**
          * 高亮文字样式
          */
         private int highlightTypeface = Typeface.NORMAL;
-        
+
+        /**
+         * 图片和文字之间的间距
+         */
+        private int imageMarginText = 0;
+
+        /**
+         * 图片高度
+         */
+        private int imageHeight = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        /**
+         * 图片宽度
+         */
+        private int imageWidth = LinearLayout.LayoutParams.WRAP_CONTENT;
+
         /**
          * tab对应的Fragmengt
          */
         private Fragment fragment;
-        
+
         public TabModel()
         {
         }
-        
+
         public String getDefaultResName()
         {
             return defaultResName;
         }
-        
+
         public void setDefaultResName(String defaultResName)
         {
             this.defaultResName = defaultResName;
         }
-        
+
         public String getTabName()
         {
             return tabName;
         }
-        
+
         public void setTabName(String tabName)
         {
             this.tabName = tabName;
         }
-        
+
         public String getHighlightResName()
         {
             return highlightResName;
         }
-        
+
         public void setHighlightResName(String highlightResName)
         {
             this.highlightResName = highlightResName;
         }
-        
+
         public int getDefaultTextColor()
         {
             return defaultTextColor;
         }
-        
+
         public void setDefaultTextColor(int defaultTextColor)
         {
             this.defaultTextColor = defaultTextColor;
         }
-        
+
         public int getHighlightTextColor()
         {
             return highlightTextColor;
         }
-        
+
         public void setHighlightTextColor(int highlightTextColor)
         {
             this.highlightTextColor = highlightTextColor;
         }
-        
+
         public float getDefaultTextSize()
         {
             return defaultTextSize;
         }
-        
+
         public void setDefaultTextSize(float defaultTextSize)
         {
             this.defaultTextSize = defaultTextSize;
         }
-        
+
         public float getHighlightTextSize()
         {
             return highlightTextSize;
         }
-        
+
         public void setHighlightTextSize(float highlightTextSize)
         {
             this.highlightTextSize = highlightTextSize;
         }
-        
+
         public void setBadgeBackgroundResId(int badgeBackgroundResId)
         {
             this.badgeBackgroundResId = badgeBackgroundResId;
         }
-        
+
         public int getBadgeBackgroundResId()
         {
             return badgeBackgroundResId;
         }
-        
+
         public void setDefaultTypeface(int defaultTypeface)
         {
             this.defaultTypeface = defaultTypeface;
         }
-        
+
         public int getDefaultTypeface()
         {
             return defaultTypeface;
         }
-        
+
         public void setHighlightTypeface(int highlightTypeface)
         {
             this.highlightTypeface = highlightTypeface;
         }
-        
+
         public int getHighlightTypeface()
         {
             return highlightTypeface;
         }
-        
+
+        public void setImageMarginText(int imageMarginText)
+        {
+            this.imageMarginText = imageMarginText;
+        }
+
+        public int getImageMarginText()
+        {
+            return imageMarginText;
+        }
+
+        public void setImageHeight(int imageHeight)
+        {
+            this.imageHeight = imageHeight;
+        }
+
+        public int getImageHeight()
+        {
+            return imageHeight;
+        }
+
+        public void setImageWidth(int imageWidth)
+        {
+            this.imageWidth = imageWidth;
+        }
+
+        public int getImageWidth()
+        {
+            return imageWidth;
+        }
+
         public void bindFragment(Fragment fragment)
         {
             this.fragment = fragment;
         }
-        
+
         public Fragment getFragment()
         {
             return fragment;
         }
     }
-    
+
 }

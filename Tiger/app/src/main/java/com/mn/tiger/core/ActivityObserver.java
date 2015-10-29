@@ -12,7 +12,7 @@ public interface ActivityObserver
 
     void onDestroy();
 
-    void onBackPressed();
+    boolean onBackPressed();
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 }

@@ -14,14 +14,14 @@ import com.mn.tiger.push.data.TGPushUnReadCount;
 public abstract class JPushMessageManager
 {
 	public static final String PUSH_MESSAGE_DB_NAME = "tiger_jpush_messages";
-	
+
 	/**
 	 * 未读消息个数缓存key
 	 */
 	private static final String UNREAD_COUNT_CACHE_KEY = "push_msg_unread_count_map";
-	
+
 	private static final Logger LOG = Logger.getLogger(JPushMessageManager.class);
-	
+
 	/**
 	 * 未读消息个数
 	 */
@@ -31,7 +31,7 @@ public abstract class JPushMessageManager
 	 * 未读消息数量类
 	 */
 	private Class<?> pushUnReadCountClazz;
-	
+
 	/**
 	 * 获取本地缓存的消息数据库
 	 * @param context
@@ -41,11 +41,11 @@ public abstract class JPushMessageManager
 	{
 		return TGDBManager.create(context, PUSH_MESSAGE_DB_NAME, 1, null);
 	}
-	
+
 	protected JPushMessageManager()
 	{
 	}
-	
+
 	/**
 	 * 设置未读消息数类
 	 * @param pushUnReadCountClazz
@@ -54,7 +54,7 @@ public abstract class JPushMessageManager
 	{
 		this.pushUnReadCountClazz = pushUnReadCountClazz;
 	}
-	
+
 	/**
 	 * 保存推送消息
 	 * @param context
@@ -95,7 +95,7 @@ public abstract class JPushMessageManager
 		pushUnReadCount = unReadCount;
 		TGCache.saveCache(context, UNREAD_COUNT_CACHE_KEY, unReadCount);
 	}
-	
+
 	/**
 	 * 获取未读消息数
 	 * @param context
@@ -129,10 +129,10 @@ public abstract class JPushMessageManager
 				}
 			}
 		}
-		
+
 		return pushUnReadCount;
 	}
-	
+
 	/**
 	 * 获取所有未读消息数
 	 * @param context
@@ -143,13 +143,13 @@ public abstract class JPushMessageManager
 		TGPushUnReadCount pushUnReadCount = getCachedPushUnReadCount(context);
 		return pushUnReadCount.getAllUnReadCount();
 	}
-	
+
 	/**
 	 * 打开消息推送的开关
 	 * @param context
 	 */
 	public abstract void turnOnPushSwitch(final Context context);
-	
+
 	/**
 	 * 关闭消息推送的开关
 	 * @param context

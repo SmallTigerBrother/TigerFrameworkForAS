@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -416,14 +417,20 @@ public class TGActionBarActivity extends Activity
 	@Override
 	public void onBackPressed()
 	{
-		super.onBackPressed();
+		boolean canBack = true;
 		if(null != observers)
 		{
 			Iterator<ActivityObserver> iterator = observers.iterator();
 			while (iterator.hasNext())
 			{
-				iterator.next().onBackPressed();
+				boolean canBackFromObserver = iterator.next().onBackPressed();
+				canBack = canBack ? canBackFromObserver : false;
 			}
+		}
+
+		if(canBack)
+		{
+			super.onBackPressed();
 		}
 	}
 

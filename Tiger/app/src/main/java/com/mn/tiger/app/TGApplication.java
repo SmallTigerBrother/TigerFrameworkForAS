@@ -7,11 +7,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Build;
+import android.view.WindowManager;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.system.AppConfigs;
 import com.mn.tiger.system.SystemConfigs;
+import com.mn.tiger.utility.FrescoUtils;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -53,6 +56,11 @@ public class TGApplication extends Application
     private ImageLoader imageLoader;
 
     /**
+     * 屏幕大小
+     */
+    private Point screenSize;
+
+    /**
      * 资源图片加载参数
      */
     private DisplayImageOptions resourceDisplayImageOptions;
@@ -69,6 +77,8 @@ public class TGApplication extends Application
         initLogger();
 
         initSharePluginManager();
+
+        initFresco();
     }
 
     /** 得到 Application实例 */
@@ -94,6 +104,14 @@ public class TGApplication extends Application
     }
 
     /**
+     * 初始化Fresco图片加载库
+     */
+    protected void initFresco()
+    {
+        FrescoUtils.initialize(this);
+    }
+
+    /**
      * 获取ImageLoader
      * @return
      */
@@ -111,23 +129,28 @@ public class TGApplication extends Application
      */
     protected ImageLoader initImageLoader()
     {
+        screenSize = new Point();
+        ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(screenSize);
+        int screenWidth = screenSize.x;
+
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(getDefaultImageLoaderConfigurationBuilder().build());
+        imageLoader.init(getDefaultImageLoaderConfigurationBuilder(screenWidth).build());
         return imageLoader;
     }
 
     /**
      * 获取默认的ImageLoaderConfiguration.Builder
+     * @param screenWidth
      * @return
      */
-    protected ImageLoaderConfiguration.Builder getDefaultImageLoaderConfigurationBuilder()
+    protected ImageLoaderConfiguration.Builder getDefaultImageLoaderConfigurationBuilder(int screenWidth)
     {
         //设置缓存大小，最大缓存文件个数
         ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(this)
                 .memoryCacheSizePercentage(20)
                 .diskCacheSize(80 * 1024 * 1024)
                 .diskCacheFileCount(1024)
-                .defaultDisplayImageOptions(getDefaultDisplayImageOptionsBuilder().build());
+                .defaultDisplayImageOptions(getDefaultDisplayImageOptionsBuilder(screenWidth).build());
 
         //屏幕分辨率小于640时，屏蔽内存缓存多尺寸图片;
         if(Runtime.getRuntime().maxMemory() < 70 * 1024 * 1024)
@@ -141,9 +164,10 @@ public class TGApplication extends Application
 
     /**
      * 获取默认的DisplayImageOptions.Builder
+     * @param screenWidth
      * @return
      */
-    protected DisplayImageOptions.Builder getDefaultDisplayImageOptionsBuilder()
+    protected DisplayImageOptions.Builder getDefaultDisplayImageOptionsBuilder(int screenWidth)
     {
         //启用内存缓存、磁盘缓存
         DisplayImageOptions.Builder builder =  new DisplayImageOptions.Builder()
@@ -274,6 +298,11 @@ public class TGApplication extends Application
     protected void handleUncaughtException(Thread thread, Throwable ex)
     {
 
+    }
+
+    public Point getScreenSize()
+    {
+        return screenSize;
     }
 
     /**

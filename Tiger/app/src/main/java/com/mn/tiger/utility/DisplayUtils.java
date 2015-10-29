@@ -167,14 +167,20 @@ public class DisplayUtils
 		}
 		adjustHeight = (int) (currentFitWidth / ratio);
 
-		if(currentFitWidth != view.getMeasuredWidth() || adjustHeight != view.getMeasuredHeight())
+		if(null != lp)
 		{
-			if (lp != null)
+			if(lp.width <= 0 || lp.height <= 0 ||
+					currentFitWidth != view.getMeasuredWidth() ||
+					adjustHeight != view.getMeasuredHeight())
 			{
 				lp.height = adjustHeight;
 				lp.width = currentFitWidth;
 				view.setLayoutParams(lp);
 			}
+		}
+		else
+		{
+			LogTools.e(LOG_TAG,"[Method:adjustViewSizeByWidth] the LayoutParams of View is null, please check your code");
 		}
 	}
 
@@ -230,14 +236,20 @@ public class DisplayUtils
 
 		adjustWidth = (int) (currentFitHeight * ratio);
 
-		if(adjustWidth != view.getMeasuredWidth() || currentFitHeight != view.getMeasuredHeight())
+		if(null != lp)
 		{
-			if (lp != null)
+			if(lp.width <= 0 || lp.height <= 0 ||
+					adjustWidth != view.getMeasuredWidth() ||
+					currentFitHeight != view.getMeasuredHeight())
 			{
 				lp.height = currentFitHeight;
 				lp.width = adjustWidth;
 				view.setLayoutParams(lp);
 			}
+		}
+		else
+		{
+			LogTools.e(LOG_TAG,"[Method:adjustViewSizeByHeight] the LayoutParams of View is null, please check your code");
 		}
 	}
 

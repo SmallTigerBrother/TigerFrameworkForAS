@@ -13,16 +13,16 @@ import java.util.HashMap;
 public class HttpMockTester
 {
 	private static final Logger LOG = Logger.getLogger(HttpMockTester.class);
-	
+
 	public static boolean TEST_ABLE = false;
-	
+
 	public static HashMap<String, String> dataMap = null;
-	
+
 	public static void setMockTestData(HashMap<String, String> dataMap)
 	{
 		HttpMockTester.dataMap = dataMap;
 	}
-	
+
 	public static TGHttpResult getMockTestData(String url)
 	{
 		TGHttpResult httpResult = null;
@@ -31,7 +31,7 @@ public class HttpMockTester
 
 		if(dataKey.startsWith("http://") || dataKey.startsWith("https://"))
 		{
-			httpResult = new OkHttpSyncHttpLoader(-1).loadByGetSync(
+			httpResult = new OkHttpSyncHttpLoader(0).loadByGetSync(
 					TGApplication.getInstance(), dataKey, null, null);
 		}
 		else

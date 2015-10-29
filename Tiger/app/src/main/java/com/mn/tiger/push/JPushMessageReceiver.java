@@ -18,7 +18,7 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 		String action = intent.getAction();
 		Bundle extras = intent.getExtras();
 		String title = extras.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE, "");
-		String alert = extras.getString(JPushInterface.EXTRA_ALERT,"");
+		String alert = extras.getString(JPushInterface.EXTRA_ALERT, "");
 		String pushMsgExtra = extras.getString(JPushInterface.EXTRA_EXTRA, "");
 
 		//根据当前接收的事件类型，调用不同的处理方法

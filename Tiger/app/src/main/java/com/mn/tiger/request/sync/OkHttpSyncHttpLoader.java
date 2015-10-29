@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.HttpType;
-import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.TGHttpParams;
+import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
@@ -52,7 +52,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             Request request = buildRequest(HttpType.REQUEST_GET, requestUrl, parameters, properties);
             TGHttpResult httpResult = execute(context, request);
             LOG.d("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
-                    "\n  result : " + httpResult.getResult());
+                    "result : " + httpResult.getResult());
             return httpResult;
         }
         catch (Exception e)
@@ -71,7 +71,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             Request request = buildRequest(HttpType.REQUEST_POST, requestUrl, parameters, properties);
             TGHttpResult httpResult = execute(context,request);
             LOG.d("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
-                    "\n  result : " + httpResult.getResult());
+                    "result : " + httpResult.getResult());
             return httpResult;
         }
         catch (Exception e)
