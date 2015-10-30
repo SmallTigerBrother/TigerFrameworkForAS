@@ -36,7 +36,7 @@ public abstract class TGMultiViewTypeRecyclerViewHolder extends TGRecyclerViewHo
     @Override
     public void fillData(ViewGroup parent, View convertView, Object itemData, int position, int viewType)
     {
-        internalViewHolder.updateViewDimension(parent, convertView, itemData, position, viewType);
+        internalViewHolder.fillData(parent, convertView, itemData, position, viewType);
     }
 
     protected TGRecyclerViewHolder<Object> getCurrentViewHolder()
