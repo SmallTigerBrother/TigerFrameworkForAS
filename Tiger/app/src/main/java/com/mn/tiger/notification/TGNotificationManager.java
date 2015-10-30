@@ -55,9 +55,9 @@ public abstract class TGNotificationManager
 		notificationManager.cancel(type);
 	}
 	
-	public void recieveNotification(Intent intent)
+	public void receiveNotification(Intent intent)
 	{
-		onRecieveNotification(intent, intent.getIntExtra(TGNotificationBuilder.NOTIFICATION_TYPE, 0));
+		onReceiveNotification(intent, intent.getIntExtra(TGNotificationBuilder.NOTIFICATION_TYPE, 0));
 	}
 
 	/**
@@ -66,6 +66,6 @@ public abstract class TGNotificationManager
 	 * @param intent
 	 *            通知携带的intent
 	 */
-	protected abstract void onRecieveNotification(Intent intent, int notificationType);
+	protected abstract void onReceiveNotification(Intent intent, int notificationType);
 
 }

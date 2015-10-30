@@ -254,6 +254,36 @@ public class FrescoUtils
                 .build());
     }
 
+    /**
+     * 加载本地的图片资源
+     * @param resourceId
+     * @param imageView
+     */
+    public static void displayResourceImage(int resourceId, DraweeView imageView)
+    {
+        int id = getViewId(imageView);
+        if (null == imageView.getTag(id))
+        {
+            GenericDraweeHierarchyBuilder draweeHierarchyBuilder = new GenericDraweeHierarchyBuilder(imageView.getResources());
+            draweeHierarchyBuilder.setFadeDuration(0);
+            imageView.setHierarchy(draweeHierarchyBuilder.build());
+            imageView.setTag(id, true);
+        }
+
+        ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse("res:///" + resourceId))
+                .setAutoRotateEnabled(true)
+                .setResizeOptions(resizeOptions)
+                .build();
+
+        imageView.setController(Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse("res:///" + resourceId))
+                .setTapToRetryEnabled(true)
+                .setOldController(imageView.getController())
+                .setImageRequest(imageRequest)
+                .build());
+    }
+
     private static int getViewId(DraweeView draweeView)
     {
         return R.id.placeholder;
