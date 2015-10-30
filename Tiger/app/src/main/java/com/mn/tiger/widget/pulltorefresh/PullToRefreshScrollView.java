@@ -18,8 +18,6 @@ package com.mn.tiger.widget.pulltorefresh;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-
 public class PullToRefreshScrollView extends BGARefreshLayout implements IPullToRefreshView
 {
 	public PullToRefreshScrollView(Context context)

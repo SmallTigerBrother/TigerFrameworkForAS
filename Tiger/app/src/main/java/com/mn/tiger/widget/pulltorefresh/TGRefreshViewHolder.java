@@ -9,13 +9,13 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import com.mn.tiger.R;
+import com.norbsoft.typefacehelper.TypefaceHelper;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 
 /**
  * Created by peng on 15/9/15.
  */
-public class DefaultRefreshViewHolder extends BGARefreshViewHolder
+public class TGRefreshViewHolder extends BGARefreshViewHolder
 {
     private ImageView mHeaderArrowIv;
     private ImageView mHeaderChrysanthemumIv;
@@ -26,7 +26,7 @@ public class DefaultRefreshViewHolder extends BGARefreshViewHolder
     /**
      * @param context
      */
-    public DefaultRefreshViewHolder(Context context)
+    public TGRefreshViewHolder(Context context)
     {
         super(context, true);
         setLoadingMoreText(context.getString(R.string.tiger_ptr_loading));
@@ -48,7 +48,7 @@ public class DefaultRefreshViewHolder extends BGARefreshViewHolder
     {
         if (mRefreshHeaderView == null)
         {
-            mRefreshHeaderView = View.inflate(mContext, R.layout.tiger_refresh_header, null);
+            mRefreshHeaderView = View.inflate(mContext, R.layout.default_refresh_header, null);
             mRefreshHeaderView.setBackgroundColor(Color.TRANSPARENT);
             if (mRefreshViewBackgroundColorRes != -1)
             {
@@ -62,6 +62,8 @@ public class DefaultRefreshViewHolder extends BGARefreshViewHolder
             mHeaderChrysanthemumIv = (ImageView) mRefreshHeaderView.findViewById(R.id.iv_default_refresh_header_chrysanthemum);
             mHeaderChrysanthemumAd = (AnimationDrawable) mHeaderChrysanthemumIv.getDrawable();
         }
+
+        TypefaceHelper.typeface(mRefreshHeaderView);
 
         return mRefreshHeaderView;
     }

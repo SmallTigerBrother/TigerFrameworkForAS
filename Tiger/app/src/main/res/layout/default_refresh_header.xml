@@ -16,7 +16,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center"
-            android:src="@drawable/tiger_ptr_flip" />
+            android:src="@drawable/ptr_flip" />
 
         <ImageView
             android:id="@+id/iv_default_refresh_header_chrysanthemum"

@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import com.mn.tiger.widget.recyclerview.StaggeredGridView;
 import com.mn.tiger.widget.recyclerview.TGRecyclerView;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
-
 /**
  * Created by Dalang on 2015/9/10.
  */

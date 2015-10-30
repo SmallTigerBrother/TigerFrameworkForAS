@@ -7,9 +7,6 @@ import com.mn.tiger.log.Logger;
 
 import java.lang.reflect.Field;
 
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
-
 /**
  * Created by Dalang on 2015/9/11.
  */
