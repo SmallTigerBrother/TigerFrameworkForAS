@@ -21,6 +21,7 @@ import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
+import com.mn.tiger.widget.dialog.LoadingAnimationDialog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -349,7 +350,7 @@ public class TGActionBarActivity extends Activity
 	 */
 	protected DialogFragment initLoadingDialog()
 	{
-		return null;
+		return new LoadingAnimationDialog();
 	}
 
 	/**
