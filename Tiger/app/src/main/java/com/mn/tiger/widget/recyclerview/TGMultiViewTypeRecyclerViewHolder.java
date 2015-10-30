@@ -18,7 +18,6 @@ public abstract class TGMultiViewTypeRecyclerViewHolder extends TGRecyclerViewHo
 
         internalViewHolder.setContext(getContext());
         internalViewHolder.setAdapter(getAdapter());
-        internalViewHolder.setLayoutId(getLayoutId());
         internalViewHolder.setOnItemClickListener(getOnItemClickListener());
         internalViewHolder.setRecyclerView((RecyclerView) parent);
 
