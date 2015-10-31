@@ -13,7 +13,7 @@ import org.json.JSONObject;
 /**
  * QQ登录认证类
  */
-public class TGQQAuthorization extends AbsAuthorization
+public class QQAuthorization extends AbsAuthorization
 {
 	/**
 	 * 认证范围
@@ -35,7 +35,7 @@ public class TGQQAuthorization extends AbsAuthorization
 	 */
 	private IAuthorizeCallback callback;
 	
-	public TGQQAuthorization(String appID)
+	public QQAuthorization(String appID)
 	{
 		super(appID);
 		uiListener = new IUiListener()
