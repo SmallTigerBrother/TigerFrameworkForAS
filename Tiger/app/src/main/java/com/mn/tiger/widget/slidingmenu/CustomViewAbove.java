@@ -1,8 +1,5 @@
 package com.mn.tiger.widget.slidingmenu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -13,7 +10,6 @@ import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
@@ -29,6 +25,9 @@ import android.widget.Scroller;
 import com.mn.tiger.widget.slidingmenu.SlidingMenu.OnCloseListener;
 import com.mn.tiger.widget.slidingmenu.SlidingMenu.OnOpenListener;
 import com.mn.tiger.widget.slidingmenu.SlidingMenu.SlideTouchMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class CustomViewAbove.
@@ -143,7 +142,6 @@ public class CustomViewAbove extends ViewGroup
 	/**
 	 * Callback interface for responding to changing state of the selected page.
 	 * 
-	 * @see OnPageChangeEvent
 	 */
 	public interface OnPageChangeListener
 	{
@@ -181,7 +179,6 @@ public class CustomViewAbove extends ViewGroup
 	 * stub implementations of each method. Extend this if you do not intend to
 	 * override every method of {@link OnPageChangeListener}.
 	 * 
-	 * @see SimpleOnPageChangeEvent
 	 */
 	public static class SimpleOnPageChangeListener implements OnPageChangeListener
 	{
@@ -456,7 +453,7 @@ public class CustomViewAbove extends ViewGroup
 	{
 		f -= 0.5f; // center the values about 0.
 		f *= 0.3f * Math.PI / 2.0f;
-		return (float) FloatMath.sin(f);
+		return (float) Math.sin(f);
 	}
 
 	/**
