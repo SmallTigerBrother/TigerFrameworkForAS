@@ -1,7 +1,5 @@
 package com.mn.tiger.download;
 
-import org.apache.http.HttpResponse;
-
 /**
  * 下载文件校验类
  */
