@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.TGWeiboShareResult;
+import com.mn.tiger.share.result.WeiboShareResult;
 import com.sina.weibo.sdk.api.share.BaseResponse;
 import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
@@ -13,9 +13,9 @@ import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 /**
  * 微博分享回调Activity
  */
-public class TGWeiBoEntryActivity extends Activity implements IWeiboHandler.Response
+public class WeiBoEntryActivity extends Activity implements IWeiboHandler.Response
 {
-	private static final Logger LOG = Logger.getLogger(TGWeiBoEntryActivity.class);
+	private static final Logger LOG = Logger.getLogger(WeiBoEntryActivity.class);
 	
 	private IWeiboShareAPI weiboShareAPI;
 	
@@ -39,7 +39,7 @@ public class TGWeiBoEntryActivity extends Activity implements IWeiboHandler.Resp
 	
 	protected IWeiboShareAPI getWeiboShareAPI()
 	{
-		TGWeiBoSharePlugin plugin = (TGWeiBoSharePlugin) TGSharePluginManager.getInstance().getPlugin(
+		WeiBoSharePlugin plugin = (WeiBoSharePlugin) TGSharePluginManager.getInstance().getPlugin(
 				TGSharePluginManager.TAG_WEI_BO);
 		return plugin.getWeiboShareAPI();
 	}
@@ -62,6 +62,6 @@ public class TGWeiBoEntryActivity extends Activity implements IWeiboHandler.Resp
 	public void onResponse(BaseResponse response)
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_BO, 
-				new TGWeiboShareResult(response));
+				new WeiboShareResult(response));
 	}
 }

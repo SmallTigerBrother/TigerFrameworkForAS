@@ -8,9 +8,9 @@ import com.tencent.mm.sdk.openapi.SendMessageToWX.Req;
 /**
  * 微信朋友圈分享插件
  */
-public class TGWeChatTimeLineSharePlugin extends TGWeChatSharePlugin
+public class WeChatTimeLineSharePlugin extends WeChatSharePlugin
 {
-	public TGWeChatTimeLineSharePlugin(Context context, String appID)
+	public WeChatTimeLineSharePlugin(Context context, String appID)
 	{
 		super(context, appID);
 	}

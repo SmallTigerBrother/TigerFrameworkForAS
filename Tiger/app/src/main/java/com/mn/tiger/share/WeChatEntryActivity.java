@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.TGWeChatShareResult;
+import com.mn.tiger.share.result.WeChatShareResult;
 import com.tencent.mm.sdk.openapi.BaseReq;
 import com.tencent.mm.sdk.openapi.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -14,11 +14,11 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 /**
  *微信分享回调Activity
  */
-public class TGWeChatEntryActivity extends Activity implements IWXAPIEventHandler
+public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 {
-	private static final Logger LOG = Logger.getLogger(TGWeChatEntryActivity.class);
+	private static final Logger LOG = Logger.getLogger(WeChatEntryActivity.class);
 	
-	private TGWeChatSharePlugin sharePlugin;
+	private WeChatSharePlugin sharePlugin;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -40,11 +40,11 @@ public class TGWeChatEntryActivity extends Activity implements IWXAPIEventHandle
 			return;
 		}
 		
-		sharePlugin = (TGWeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
+		sharePlugin = (WeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
 				TGSharePluginManager.TAG_WEI_CHAT);
 		if(null == sharePlugin)
 		{
-			sharePlugin = (TGWeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
+			sharePlugin = (WeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
 					TGSharePluginManager.TAG_WEI_CHAT_TIME_LINE);
 		}
 		
@@ -56,7 +56,7 @@ public class TGWeChatEntryActivity extends Activity implements IWXAPIEventHandle
 	
 	protected IWXAPI getIWXAPI()
 	{
-		TGWeChatSharePlugin plugin = (TGWeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
+		WeChatSharePlugin plugin = (WeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
 				TGSharePluginManager.TAG_WEI_CHAT);
 		return plugin.getIWXApi();
 	}
@@ -75,7 +75,7 @@ public class TGWeChatEntryActivity extends Activity implements IWXAPIEventHandle
 	@Override
 	public void onReq(BaseReq req)
 	{
-		TGWeChatShareResult shareResult = new TGWeChatShareResult(req);
+		WeChatShareResult shareResult = new WeChatShareResult(req);
 		
 		boolean postResult = TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT, 
 				shareResult);
@@ -89,7 +89,7 @@ public class TGWeChatEntryActivity extends Activity implements IWXAPIEventHandle
 	@Override
 	public void onResp(BaseResp req)
 	{
-		TGWeChatShareResult shareResult = new TGWeChatShareResult(req);
+		WeChatShareResult shareResult = new WeChatShareResult(req);
 		
 		boolean postResult = TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT, 
 				shareResult);

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TGSharePluginManager
 {
-	private static final Logger LOG = Logger.getLogger(TGWeChatEntryActivity.class);
+	private static final Logger LOG = Logger.getLogger(WeChatEntryActivity.class);
 	
 	/**
 	 * TAG —— 微信分享

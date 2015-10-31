@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.TGQQShareResult;
+import com.mn.tiger.share.result.QQShareResult;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -16,9 +16,9 @@ import org.json.JSONObject;
 /**
  * QQ分享启动/回调Activity
  */
-public class TGQQEntryActivity extends Activity implements IUiListener
+public class QQEntryActivity extends Activity implements IUiListener
 {
-	private static final Logger LOG = Logger.getLogger(TGQQEntryActivity.class);
+	private static final Logger LOG = Logger.getLogger(QQEntryActivity.class);
 	
 	/**
 	 * tencent接口
@@ -28,7 +28,7 @@ public class TGQQEntryActivity extends Activity implements IUiListener
 	/**
 	 * 分享插件
 	 */
-	private TGQQSharePlugin plugin;
+	private QQSharePlugin plugin;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -58,9 +58,9 @@ public class TGQQEntryActivity extends Activity implements IUiListener
 		shareToQQ();
 	}
 	
-	public TGQQSharePlugin getPlugin()
+	public QQSharePlugin getPlugin()
 	{
-		return (TGQQSharePlugin) TGSharePluginManager.getInstance().getPlugin(
+		return (QQSharePlugin) TGSharePluginManager.getInstance().getPlugin(
 				TGSharePluginManager.TAG_QQ);
 	}
 	
@@ -96,7 +96,7 @@ public class TGQQEntryActivity extends Activity implements IUiListener
 		JSONObject response = new JSONObject();
 		try
 		{
-			response.put("ret", TGQQShareResult.USER_CANCEL);
+			response.put("ret", QQShareResult.USER_CANCEL);
 		}
 		catch (JSONException e)
 		{
@@ -104,20 +104,20 @@ public class TGQQEntryActivity extends Activity implements IUiListener
 		}
 		
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ,
-				new TGQQShareResult(response));
+				new QQShareResult(response));
 	}
 
 	@Override
 	public void onError(UiError error)
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ,
-				new TGQQShareResult(error));
+				new QQShareResult(error));
 	}
 
 	@Override
 	public void onComplete(Object response)
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ,
-				new TGQQShareResult((JSONObject)response));
+				new QQShareResult((JSONObject)response));
 	}
 }

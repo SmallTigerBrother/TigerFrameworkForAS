@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.mn.tiger.share.result.TGWeChatShareResult;
+import com.mn.tiger.share.result.WeChatShareResult;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -16,7 +16,7 @@ import com.tencent.mm.sdk.openapi.WXWebpageObject;
 /**
  * 微信分享插件
  */
-public class TGWeChatSharePlugin extends TGSharePlugin<WXMediaMessage, TGWeChatShareResult>
+public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShareResult>
 {
 	/**
 	 * 微信API
@@ -28,7 +28,7 @@ public class TGWeChatSharePlugin extends TGSharePlugin<WXMediaMessage, TGWeChatS
 	 */
 	private SendMessageToWX.Req req;
 	
-	public TGWeChatSharePlugin(Context context, String appID)
+	public WeChatSharePlugin(Context context, String appID)
 	{
 		super(context, appID);
 	}
@@ -66,19 +66,19 @@ public class TGWeChatSharePlugin extends TGSharePlugin<WXMediaMessage, TGWeChatS
 	}
 
 	@Override
-	public void onShareSuccess(TGWeChatShareResult result)
+	public void onShareSuccess(WeChatShareResult result)
 	{
 		
 	}
 
 	@Override
-	public void onShareFailed(TGWeChatShareResult result)
+	public void onShareFailed(WeChatShareResult result)
 	{
 		
 	}
 
 	@Override
-	public void onShareOver(TGWeChatShareResult result)
+	public void onShareOver(WeChatShareResult result)
 	{
 		
 	}
@@ -99,7 +99,7 @@ public class TGWeChatSharePlugin extends TGSharePlugin<WXMediaMessage, TGWeChatS
 	}
 	
 	@Override
-	protected String getMsgIndicator(TGWeChatShareResult shareResult)
+	protected String getMsgIndicator(WeChatShareResult shareResult)
 	{
 		return shareResult.getTransaction();
 	}

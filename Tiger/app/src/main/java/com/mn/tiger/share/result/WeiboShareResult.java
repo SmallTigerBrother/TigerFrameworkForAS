@@ -6,7 +6,7 @@ import com.sina.weibo.sdk.constant.WBConstants;
 /**
  * 微博分享结果
  */
-public class TGWeiboShareResult extends TGShareResult
+public class WeiboShareResult extends TGShareResult
 {
 	/**
 	 * 错误码 —— 分享成功
@@ -43,7 +43,7 @@ public class TGWeiboShareResult extends TGShareResult
 	 */
 	private String errorMsg = "";
 	
-	public TGWeiboShareResult(BaseResponse response)
+	public WeiboShareResult(BaseResponse response)
 	{
 		this.transaction = response.transaction;
 		this.resultCode = response.errCode;

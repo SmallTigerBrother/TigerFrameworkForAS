@@ -1,7 +1,7 @@
 package com.mn.tiger.share;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.TGQQShareResult;
+import com.mn.tiger.share.result.QQShareResult;
 import com.tencent.tauth.UiError;
 
 import org.json.JSONException;
@@ -10,14 +10,14 @@ import org.json.JSONObject;
 /**
  * QQZone分享启动/回调Activity
  */
-public class TGQQZoneEntryActivity extends TGQQEntryActivity
+public class QQZoneEntryActivity extends QQEntryActivity
 {
-	private static final Logger LOG = Logger.getLogger(TGQQEntryActivity.class);
+	private static final Logger LOG = Logger.getLogger(QQEntryActivity.class);
 	
 	@Override
-	public TGQQSharePlugin getPlugin()
+	public QQSharePlugin getPlugin()
 	{
-		return (TGQQZoneSharePlugin) TGSharePluginManager.getInstance().getPlugin(
+		return (QQZoneSharePlugin) TGSharePluginManager.getInstance().getPlugin(
 				TGSharePluginManager.TAG_QQ_ZONE);
 	}
 	
@@ -27,7 +27,7 @@ public class TGQQZoneEntryActivity extends TGQQEntryActivity
 		JSONObject response = new JSONObject();
 		try
 		{
-			response.put("ret", TGQQShareResult.USER_CANCEL);
+			response.put("ret", QQShareResult.USER_CANCEL);
 		}
 		catch (JSONException e)
 		{
@@ -35,20 +35,20 @@ public class TGQQZoneEntryActivity extends TGQQEntryActivity
 		}
 		
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE, 
-				new TGQQShareResult(response));
+				new QQShareResult(response));
 	}
 
 	@Override
 	public void onError(UiError error)
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE, 
-				new TGQQShareResult(error));
+				new QQShareResult(error));
 	}
 
 	@Override
 	public void onComplete(Object response)
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE, 
-				new TGQQShareResult((JSONObject)response));
+				new QQShareResult((JSONObject)response));
 	}
 }

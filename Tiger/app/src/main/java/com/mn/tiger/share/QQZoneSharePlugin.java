@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.mn.tiger.share.result.TGQQShareResult;
+import com.mn.tiger.share.result.QQShareResult;
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.tauth.IUiListener;
 
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 /**
  * QQ空间分享插件
  */
-public class TGQQZoneSharePlugin extends TGQQSharePlugin
+public class QQZoneSharePlugin extends QQSharePlugin
 {
-	public TGQQZoneSharePlugin(Context context, String appID)
+	public QQZoneSharePlugin(Context context, String appID)
 	{
 		super(context, appID);
 	}
@@ -30,7 +30,7 @@ public class TGQQZoneSharePlugin extends TGQQSharePlugin
 		setActivity(activity);
 		/*QQ分享必须到指定的Activity执行，因此在这里启动TGQQZoneEntryActivity，
 		在TGQQZoneEntryActivity中会调用share2QQ()方法执行分享功能*/
-		Intent intent = new Intent(getContext(), TGQQZoneEntryActivity.class);
+		Intent intent = new Intent(getContext(), QQZoneEntryActivity.class);
 		activity.startActivity(intent);
 	}
 	
@@ -48,7 +48,7 @@ public class TGQQZoneSharePlugin extends TGQQSharePlugin
 	}
 	
 	@Override
-	protected boolean hasSendMessage(TGQQShareResult result)
+	protected boolean hasSendMessage(QQShareResult result)
 	{
 		return true;
 	}

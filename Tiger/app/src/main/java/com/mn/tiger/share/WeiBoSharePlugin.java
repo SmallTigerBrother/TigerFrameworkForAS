@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.mn.tiger.share.result.TGWeiboShareResult;
+import com.mn.tiger.share.result.WeiboShareResult;
 import com.mn.tiger.utility.BitmapUtils;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
@@ -18,7 +18,7 @@ import com.sina.weibo.sdk.utils.Utility;
 /**
  * 微博分享插件
  */
-public class TGWeiBoSharePlugin extends TGSharePlugin<WeiboMultiMessage, TGWeiboShareResult>
+public class WeiBoSharePlugin extends TGSharePlugin<WeiboMultiMessage, WeiboShareResult>
 {
 	/**
 	 * 微博分享API
@@ -30,7 +30,7 @@ public class TGWeiBoSharePlugin extends TGSharePlugin<WeiboMultiMessage, TGWeibo
 	 */
 	private SendMultiMessageToWeiboRequest request;
 	
-	public TGWeiBoSharePlugin(Context context, String appID)
+	public WeiBoSharePlugin(Context context, String appID)
 	{
 		super(context, appID);
 	}
@@ -61,25 +61,25 @@ public class TGWeiBoSharePlugin extends TGSharePlugin<WeiboMultiMessage, TGWeibo
 	}
 
 	@Override
-	protected String getMsgIndicator(TGWeiboShareResult shareResult)
+	protected String getMsgIndicator(WeiboShareResult shareResult)
 	{
 		return shareResult.getTransaction();
 	}
 
 	@Override
-	public void onShareSuccess(TGWeiboShareResult result)
+	public void onShareSuccess(WeiboShareResult result)
 	{
 		
 	}
 
 	@Override
-	public void onShareFailed(TGWeiboShareResult result)
+	public void onShareFailed(WeiboShareResult result)
 	{
 		
 	}
 
 	@Override
-	public void onShareOver(TGWeiboShareResult result)
+	public void onShareOver(WeiboShareResult result)
 	{
 		
 	}

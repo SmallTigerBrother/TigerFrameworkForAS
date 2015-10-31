@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.mn.tiger.share.result.TGQQShareResult;
+import com.mn.tiger.share.result.QQShareResult;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -14,7 +14,7 @@ import com.tencent.tauth.Tencent;
 /**
  * QQ分享插件
  */
-public class TGQQSharePlugin extends TGSharePlugin<Bundle, TGQQShareResult>
+public class QQSharePlugin extends TGSharePlugin<Bundle, QQShareResult>
 {
 	/**
 	 * 默认的分享信息键值（QQ的分享结果不能区分多个信息）
@@ -31,7 +31,7 @@ public class TGQQSharePlugin extends TGSharePlugin<Bundle, TGQQShareResult>
 	 */
 	private Activity activity;
 	
-	public TGQQSharePlugin(Context context, String appID)
+	public QQSharePlugin(Context context, String appID)
 	{
 		super(context, appID);
 	}
@@ -49,7 +49,7 @@ public class TGQQSharePlugin extends TGSharePlugin<Bundle, TGQQShareResult>
 		
 		setActivity(activity);
 		//QQ分享必须到指定的Activity执行，因此在这里启动TGQQEntryActivity，在TGQQEntryActivity中会调用share2QQ()方法执行分享功能
-		Intent intent = new Intent(getContext(), TGQQEntryActivity.class);
+		Intent intent = new Intent(getContext(), QQEntryActivity.class);
 		activity.startActivity(intent);
 	}
 	
@@ -75,7 +75,7 @@ public class TGQQSharePlugin extends TGSharePlugin<Bundle, TGQQShareResult>
 	}
 
 	@Override
-	protected String getMsgIndicator(TGQQShareResult shareResult)
+	protected String getMsgIndicator(QQShareResult shareResult)
 	{
 		return indicatorKey;
 	}
@@ -100,31 +100,31 @@ public class TGQQSharePlugin extends TGSharePlugin<Bundle, TGQQShareResult>
 	}
 
 	@Override
-	public void onShareSuccess(TGQQShareResult result)
+	public void onShareSuccess(QQShareResult result)
 	{
 		
 	}
 
 	@Override
-	public void onShareFailed(TGQQShareResult result)
+	public void onShareFailed(QQShareResult result)
 	{
 		
 	}
 
 	@Override
-	public void onShareOver(TGQQShareResult result)
+	public void onShareOver(QQShareResult result)
 	{
 		
 	}
 	
 	@Override
-	protected void onRemoveResultHandler(TGQQShareResult result)
+	protected void onRemoveResultHandler(QQShareResult result)
 	{
 		//QQ不支持多任务，不移除handler
 	}
 	
 	@Override
-	protected boolean hasSendMessage(TGQQShareResult result)
+	protected boolean hasSendMessage(QQShareResult result)
 	{
 		return true;
 	}

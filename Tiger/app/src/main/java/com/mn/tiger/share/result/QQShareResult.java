@@ -9,9 +9,9 @@ import org.json.JSONObject;
 /**
  * QQ/QQZone分享结果类
  */
-public class TGQQShareResult extends TGShareResult
+public class QQShareResult extends TGShareResult
 {
-	private static final Logger LOG = Logger.getLogger(TGQQShareResult.class);
+	private static final Logger LOG = Logger.getLogger(QQShareResult.class);
 	
 	// 返回码参考文档，0表示成功
 	// http://wiki.connect.qq.com/com-tencent-tauth-tencent-sharetoqq
@@ -63,7 +63,7 @@ public class TGQQShareResult extends TGShareResult
 	 */
 	private UiError uiError;
 
-	public TGQQShareResult(JSONObject response)
+	public QQShareResult(JSONObject response)
 	{
 		this.reponse = response;
 		if (response != null)
@@ -79,7 +79,7 @@ public class TGQQShareResult extends TGShareResult
 		}
 	}
 	
-	public TGQQShareResult (UiError error)
+	public QQShareResult(UiError error)
 	{
 		this.uiError = error;
 	}
