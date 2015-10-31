@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 本地收藏管理类
  */
-public class LocalCollectionManager<T extends ICollectable> implements ICollectionManager<T>
+public class LocalCollectionManager<T extends ICollectable>
 {
 	private static final Logger LOG = Logger.getLogger(LocalCollectionManager.class);
 
@@ -75,7 +75,6 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		this.orderColumnName = orderColumnName;
 	}
 	
-	@Override
 	public void insertCollection(Context context, T collectInfo,
 			OnInsertCallback callback)
 	{
@@ -97,7 +96,6 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		}
 	}
 
-	@Override
 	public void insertCollection(Context context, T[] collectInfos,
 			OnInsertCallback callback)
 	{
@@ -119,8 +117,7 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		}
 	}
 	
-	@Override
-	public void removeCollection(Context context, Object value, 
+	public void removeCollection(Context context, Object value,
 			OnRemoveCallback callback)
 	{
 		try
@@ -142,13 +139,11 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		}
 	}
 	
-	@Override
 	public boolean isCollected(Context context, T collectInfo)
 	{
 		return null != findLocalCollection(context, collectInfo.getCollectId());
 	}
 
-	@Override
 	public void getCollections(Context context, int pageNo, int pageSize,
 			OnQueryCallback<List<T>> callback)
 	{
@@ -179,12 +174,6 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		{
 			callback.onQuerySuccess(allProductInfos.subList(startIndex, endIndex));
 		}
-	}
-
-	@Override
-	public <E> void getCollections(Context context, Object lastCollectionId, int pageSize, OnQueryCallback<E> callback)
-	{
-
 	}
 
 	/**
@@ -263,5 +252,33 @@ public class LocalCollectionManager<T extends ICollectable> implements ICollecti
 		{
 			LOG.e("[Method:clearLocalCollections] " + e.getMessage());
 		}
+	}
+
+	interface OnInsertCallback
+	{
+		void onInsertSuccess();
+
+		void onInsertError(int code, String message);
+	}
+
+	interface OnRemoveCallback
+	{
+		void onRemoveSuccess();
+
+		void onRemoveError(int code, String message);
+	}
+
+	/**
+	 * 查询收藏回调接口
+	 */
+	interface OnQueryCallback<E>
+	{
+		/**
+		 * 成功回调方法
+		 * @param collectInfos 查询结果
+		 */
+		void onQuerySuccess(E collectInfos);
+
+		void onQueryError(int code, String message);
 	}
 }
