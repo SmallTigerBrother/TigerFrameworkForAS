@@ -1,4 +1,4 @@
-package com.mn.tiger.share.result;
+package com.mn.tiger.share;
 
 /**
  * 分享结果基类

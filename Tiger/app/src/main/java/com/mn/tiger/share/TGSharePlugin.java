@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.TGShareResult;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -13,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 分享插件
  * @param <T> 分享数据类型
+ * @param <H> 分享结果数据类型
  */
 public abstract class TGSharePlugin<T, H extends TGShareResult>
 {

@@ -1,11 +1,11 @@
-package com.mn.tiger.share;
+package com.mn.tiger.share.qq;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.QQShareResult;
+import com.mn.tiger.share.TGSharePluginManager;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;

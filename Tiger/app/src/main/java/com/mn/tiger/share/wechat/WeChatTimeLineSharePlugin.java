@@ -1,4 +1,4 @@
-package com.mn.tiger.share;
+package com.mn.tiger.share.wechat;
 
 import android.content.Context;
 

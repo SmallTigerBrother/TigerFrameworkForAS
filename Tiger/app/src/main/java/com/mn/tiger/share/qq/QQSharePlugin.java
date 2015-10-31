@@ -1,4 +1,4 @@
-package com.mn.tiger.share;
+package com.mn.tiger.share.qq;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.mn.tiger.share.result.QQShareResult;
+import com.mn.tiger.share.TGSharePlugin;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;

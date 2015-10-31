@@ -1,7 +1,7 @@
 package com.mn.tiger.share;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.TGShareResult;
+import com.mn.tiger.share.wechat.WeChatEntryActivity;
 
 import java.util.concurrent.ConcurrentHashMap;
 

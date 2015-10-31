@@ -1,10 +1,11 @@
-package com.mn.tiger.share;
+package com.mn.tiger.share.wechat;
 
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.mn.tiger.share.result.WeChatShareResult;
+import com.mn.tiger.share.TGSharePlugin;
+import com.mn.tiger.share.wechat.WeChatShareResult;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;

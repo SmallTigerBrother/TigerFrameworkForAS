@@ -1,5 +1,6 @@
-package com.mn.tiger.share.result;
+package com.mn.tiger.share.weibo;
 
+import com.mn.tiger.share.TGShareResult;
 import com.sina.weibo.sdk.api.share.BaseResponse;
 import com.sina.weibo.sdk.constant.WBConstants;
 

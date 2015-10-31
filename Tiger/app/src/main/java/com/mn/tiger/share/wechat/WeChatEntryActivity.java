@@ -1,11 +1,11 @@
-package com.mn.tiger.share;
+package com.mn.tiger.share.wechat;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.WeChatShareResult;
+import com.mn.tiger.share.TGSharePluginManager;
 import com.tencent.mm.sdk.openapi.BaseReq;
 import com.tencent.mm.sdk.openapi.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;

@@ -1,6 +1,7 @@
-package com.mn.tiger.share.result;
+package com.mn.tiger.share.qq;
 
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.share.TGShareResult;
 import com.tencent.tauth.UiError;
 
 import org.json.JSONException;

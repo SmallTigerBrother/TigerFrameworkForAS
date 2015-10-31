@@ -1,7 +1,5 @@
 package com.mn.tiger.share;
 
-import com.mn.tiger.share.result.TGShareResult;
-
 /**
  * 分享结果回调接口
  * @param <T> 分享结果

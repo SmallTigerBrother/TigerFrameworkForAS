@@ -1,11 +1,11 @@
-package com.mn.tiger.share;
+package com.mn.tiger.share.weibo;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.result.WeiboShareResult;
+import com.mn.tiger.share.TGSharePluginManager;
 import com.sina.weibo.sdk.api.share.BaseResponse;
 import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
