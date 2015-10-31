@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class TGNotificationBuilder
 {
 	/**
-	 * 广播启动Action
+	 * 接收通知点击事件的Action
 	 */
 	public static final String NOTIFICATION_CLICK_ACTION = "com.mn.tiger.notification.click";
 	
