@@ -49,6 +49,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     private SparseArray<TGRecyclerViewHolder<T>> viewHolders;
 
+    private TGRecyclerViewHolder<T> internalViewHolder;
+
     public TGRecyclerViewAdapter(Context context, List<T> items, int convertViewLayoutId,
                                  Class<? extends TGRecyclerViewHolder<T>> viewHolderClass)
     {
@@ -63,6 +65,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
 
         this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
+        internalViewHolder = initViewHolder();
         this.setHasStableIds(true);
     }
 
@@ -73,7 +76,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         TGRecyclerViewHolder<T> viewHolder = initViewHolder();
         viewHolder.setOnItemClickListener(onItemClickListener);
         viewHolder.setRecyclerView((RecyclerView) parent);
-        InternalRecyclerViewHolder<T> internalRecyclerViewHolder = new InternalRecyclerViewHolder<T>(viewHolder.initView(parent,viewType));
+
+        View view = viewHolder.initView(parent,viewType);
+        viewHolder.attachOnItemClickListener(view);
+
+        InternalRecyclerViewHolder<T> internalRecyclerViewHolder = new InternalRecyclerViewHolder<T>(view);
         internalRecyclerViewHolder.setTGRecyclerViewHolder(viewHolder);
         return internalRecyclerViewHolder;
     }
@@ -114,7 +121,14 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     @Override
     public int getItemViewType(int position)
     {
-        return super.getItemViewType(position);
+        if(null != internalViewHolder)
+        {
+            return internalViewHolder.getItemViewType(position);
+        }
+        else
+        {
+            return super.getItemViewType(position);
+        }
     }
 
     /**
@@ -222,10 +236,12 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             if(this.items != data)
             {
+                T dataItem = null;
+                int position = -1;
                 for (int i = 0; i < data.size(); i++)
                 {
-                    T dataItem = data.get(i);
-                    int position = this.items.indexOf(dataItem);
+                    dataItem = data.get(i);
+                    position = this.items.indexOf(dataItem);
                     if(position > -1)
                     {
                         this.items.set(position, dataItem);
@@ -248,10 +264,12 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         if (null != data)
         {
+            T dataItem = null;
+            int position = -1;
             for (int i = 0; i < data.length; i++)
             {
-                T dataItem = data[i];
-                int position = this.items.indexOf(dataItem);
+                dataItem = data[i];
+                position = this.items.indexOf(dataItem);
                 if(position > -1)
                 {
                     this.items.set(position, dataItem);
@@ -334,7 +352,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     public void insertData(int position, T data)
     {
-        if(null != data && position >= 0 && position < this.items.size())
+        if(null != data && position >= 0 && position <= this.items.size())
         {
             this.items.add(position, data);
             notifyItemInserted(position);
@@ -353,9 +371,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (items.size() > position && position >= 0)
         {
             items.remove(position);
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
+//            notifyItemRemoved(position);
 
-            notifyItemRangeChanged(position, this.items.size() - position);
+//            notifyItemRangeChanged(position, this.items.size() - position);
         }
         else
         {
@@ -374,9 +393,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (position > -1)
         {
             items.remove(item);
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
+//            notifyItemRemoved(position);
 
-            notifyItemRangeChanged(position, this.items.size() - position);
+//            notifyItemRangeChanged(position, this.items.size() - position);
         }
         else
         {

@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mn.tiger.utility.DisplayUtils;
+
 import butterknife.ButterKnife;
 
 /**
@@ -46,11 +48,16 @@ public abstract class TGRecyclerViewHolder<T>
     {
         View convertView = LayoutInflater.from(getContext()).inflate(layoutId, parent, false);
         ButterKnife.bind(this, convertView);
+
+        return convertView;
+    }
+
+    void attachOnItemClickListener(View convertView)
+    {
         if(null != internalOnClickListener)
         {
             convertView.setOnClickListener(internalOnClickListener);
         }
-        return convertView;
     }
 
     /**
@@ -66,7 +73,7 @@ public abstract class TGRecyclerViewHolder<T>
      * 设置匹配的Adapter
      * @param adapter
      */
-    void setAdapter(TGRecyclerViewAdapter<T> adapter)
+    public void setAdapter(TGRecyclerViewAdapter<T> adapter)
     {
         this.adapter = adapter;
     }
@@ -76,7 +83,7 @@ public abstract class TGRecyclerViewHolder<T>
      * @param itemData
      * @param position
      */
-    protected void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position, int viewType)
+    public void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position, int viewType)
     {
 
     }
@@ -88,17 +95,27 @@ public abstract class TGRecyclerViewHolder<T>
      */
     public abstract void fillData(ViewGroup parent, View convertView, T itemData, int position, int viewType);
 
+    /**
+     * 获取列表行ViewType
+     * @param position
+     * @return
+     */
+    public int getItemViewType(int position)
+    {
+        return 0;
+    }
+
     protected Context getContext()
     {
         return context;
     }
 
-    void setContext(Context context)
+    public void setContext(Context context)
     {
         this.context = context;
     }
 
-    void setLayoutId(int layoutId)
+    public void setLayoutId(int layoutId)
     {
         this.layoutId = layoutId;
     }
@@ -108,7 +125,7 @@ public abstract class TGRecyclerViewHolder<T>
         return layoutId;
     }
 
-    void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
+    public void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
     {
         this.onItemClickListener = onItemClickListener;
         if(null != onItemClickListener)
@@ -122,7 +139,7 @@ public abstract class TGRecyclerViewHolder<T>
         return onItemClickListener;
     }
 
-    void setRecyclerView(RecyclerView recyclerView)
+    public void setRecyclerView(RecyclerView recyclerView)
     {
         this.recyclerView = recyclerView;
     }
@@ -155,6 +172,11 @@ public abstract class TGRecyclerViewHolder<T>
     protected int getDimensionPixelSize(int resId)
     {
         return getContext().getResources().getDimensionPixelSize(resId);
+    }
+
+    public int getTextSize(int resId)
+    {
+        return DisplayUtils.px2sp(getContext(), getDimensionPixelSize(resId));
     }
 
     private class InternalOnClickListener implements View.OnClickListener
