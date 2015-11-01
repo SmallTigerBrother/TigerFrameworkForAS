@@ -19,7 +19,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 	 */
 	private static final String USER_INFO_CACHE_KEY = "Tiger_UserInfo";
 
-	public static final String AUTHORIZER_DATA = "authorizer_data";
+	public static final String AUTHORIZATION_DATA = "authorizer_data";
 
 	private static final String ACCESS_TOKEN_KEY = "access_token";
 
@@ -86,7 +86,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 		{
 			if(null != callback)
 			{
-				callback.onError(AUTHORIZE_ERROR_ACCOUNT_PASSWORD_NULL, "", "");
+				callback.onAuthorizeError(AUTHORIZE_ERROR_ACCOUNT_PASSWORD_NULL, "", "");
 			}
 
 			return;
@@ -104,7 +104,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 		{
 			if(null != callback)
 			{
-				callback.onError(LOGOUT_ERROR_NEVER_AUTHORIZED, "", "");
+				callback.onLogoutError(LOGOUT_ERROR_NEVER_AUTHORIZED, "", "");
 			}
 			return;
 		}
@@ -173,11 +173,11 @@ public abstract class TGAuthorization extends AbsAuthorization
 	{
 		if (!TextUtils.isEmpty(token))
 		{
-			Preferences.save(context, AUTHORIZER_DATA, ACCESS_TOKEN_KEY, token);
+			Preferences.save(context, AUTHORIZATION_DATA, ACCESS_TOKEN_KEY, token);
 		}
 		else
 		{
-			Preferences.save(context, AUTHORIZER_DATA, ACCESS_TOKEN_KEY, "");
+			Preferences.save(context, AUTHORIZATION_DATA, ACCESS_TOKEN_KEY, "");
 		}
 	}
 
@@ -186,7 +186,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 	 */
 	public static String getAccessToken(Context context)
 	{
-		String token = Preferences.read(context, AUTHORIZER_DATA, ACCESS_TOKEN_KEY, "");
+		String token = Preferences.read(context, AUTHORIZATION_DATA, ACCESS_TOKEN_KEY, "");
 		if (!TextUtils.isEmpty(token))
 		{
 			return token;

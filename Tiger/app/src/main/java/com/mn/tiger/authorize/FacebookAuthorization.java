@@ -115,7 +115,7 @@ public class FacebookAuthorization extends TGAuthorization
                 TGAuthorizeResult authorizeResult = new TGAuthorizeResult();
                 authorizeResult.setAccessToken(loginResult.getAccessToken().getToken());
                 authorizeResult.setUID(loginResult.getAccessToken().getUserId());
-                authorizeCallback.onSuccess(authorizeResult);
+                authorizeCallback.onAuthorizeSuccess(authorizeResult);
             }
         }
 
@@ -123,12 +123,20 @@ public class FacebookAuthorization extends TGAuthorization
         public void onCancel()
         {
             LOG.d("[Method:facebookCallback:onCancel] facebook authorize has canceled");
+            if(null != authorizeCallback)
+            {
+                authorizeCallback.onAuthorizeCancel();
+            }
         }
 
         @Override
         public void onError(FacebookException exception)
         {
-            LOG.e("[Method:facebookCallback:onCancel] facebook authorize has error");
+            if(null != authorizeCallback)
+            {
+                authorizeCallback.onAuthorizeError(0, exception.getMessage(), exception.getLocalizedMessage());
+            }
+            LOG.e("[Method:facebookCallback:onCancel] facebook authorize has error " + exception.getMessage());
             exception.printStackTrace();
         }
     };
@@ -136,10 +144,10 @@ public class FacebookAuthorization extends TGAuthorization
     /**
      * 请求facebook用户信息
      * @param activity
-     * @param callback
+     * @param userInfoCallback
      * @param paramFields 指定请求用户信息的Fields
      */
-    public void requestFacebookUserInfo(final Activity activity, final IFacebookUserInfoCallback callback, String... paramFields)
+    public void requestFacebookUserInfo(final Activity activity, final IFacebookUserInfoCallback userInfoCallback, String... paramFields)
     {
         Bundle parameters = new Bundle();
         if(null != paramFields && paramFields.length > 0)
@@ -165,9 +173,9 @@ public class FacebookAuthorization extends TGAuthorization
                 if (TextUtils.isEmpty(graphResponse.getRawResponse()))
                 {
                     LoginManager.getInstance().logOut();
-                    if(null != callback)
+                    if(null != userInfoCallback)
                     {
-                        callback.onRequestUserInfoError(graphResponse.getError().getErrorCode(),
+                        userInfoCallback.onRequestUserInfoError(graphResponse.getError().getErrorCode(),
                                 graphResponse.getError().getErrorMessage());
                     }
                 }
@@ -180,9 +188,9 @@ public class FacebookAuthorization extends TGAuthorization
                         @Override
                         public void run()
                         {
-                            if(null != callback)
+                            if(null != userInfoCallback)
                             {
-                                callback.onRequestUserInfoSuccess(facebookUserInfo, graphResponse.getRawResponse());
+                                userInfoCallback.onRequestUserInfoSuccess(facebookUserInfo, graphResponse.getRawResponse());
                             }
                         }
                     });

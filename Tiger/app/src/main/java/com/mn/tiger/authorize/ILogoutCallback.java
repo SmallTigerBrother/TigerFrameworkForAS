@@ -5,7 +5,7 @@ public interface ILogoutCallback
 	/**
 	 * 注销成功
 	 */
-	void onSuccess();
+	void onLogoutSuccess();
 	
 	/**
 	 * 注销出错
@@ -13,10 +13,10 @@ public interface ILogoutCallback
 	 * @param message
 	 * @param detail
 	 */
-	void onError(int code, String message, String detail);
+	void onLogoutError(int code, String message, String detail);
 	
 	/**
 	 * 注销取消
 	 */
-	void onCancel();
+	void onLogoutCancel();
 }

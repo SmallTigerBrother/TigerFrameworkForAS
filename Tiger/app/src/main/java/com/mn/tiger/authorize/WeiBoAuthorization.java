@@ -60,7 +60,7 @@ public class WeiBoAuthorization extends AbsAuthorization
 	/**
 	 * 认证结果回调接口
 	 */
-	private IAuthorizeCallback callback;
+	private IAuthorizeCallback authorizeCallback;
 	
 	public WeiBoAuthorization(String appID)
 	{
@@ -74,7 +74,7 @@ public class WeiBoAuthorization extends AbsAuthorization
 	{
 		AuthInfo authInfo = new AuthInfo(activity, getAppID(), REDIRECT_URL, SCOPE);
 		ssoHandler = new SsoHandler(activity, authInfo);
-		this.callback = callback;
+		this.authorizeCallback = callback;
 		ssoHandler.authorize(authListener);
 	}
 	
@@ -95,13 +95,13 @@ public class WeiBoAuthorization extends AbsAuthorization
 					@Override
 					public void onWeiboException(WeiboException exception)
 					{
-						logoutCallback.onError(-1, exception.getMessage(), "");
+						logoutCallback.onLogoutError(-1, exception.getMessage(), "");
 					}
 					
 					@Override
 					public void onComplete(String arg0)
 					{
-						logoutCallback.onSuccess();
+						logoutCallback.onLogoutSuccess();
 					}
 				});
 	}
@@ -124,16 +124,16 @@ public class WeiBoAuthorization extends AbsAuthorization
 		@Override
 		public void onCancel()
 		{
-			if(null != callback)
+			if(null != authorizeCallback)
 			{
-				callback.onCancel();
+				authorizeCallback.onAuthorizeCancel();
 			}
 		}
 
 		@Override
 		public void onComplete(Bundle response)
 		{
-			if(null != callback)
+			if(null != authorizeCallback)
 			{
 				Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(response);
 				if(accessToken.isSessionValid())
@@ -142,13 +142,13 @@ public class WeiBoAuthorization extends AbsAuthorization
 					TGAuthorizeResult loginResult = new TGAuthorizeResult();
 					loginResult.setUID(accessToken.getUid());
 					loginResult.setAccessToken(accessToken.getToken());
-					callback.onSuccess(loginResult);
+					authorizeCallback.onAuthorizeSuccess(loginResult);
 				}
 				else
 				{
-					callback.onError(Integer.valueOf(response.getString("code")), "授权失败！",
+					authorizeCallback.onAuthorizeError(Integer.valueOf(response.getString("code")), "授权失败！",
 							"// 以下几种情况，您会收到 Code：\n" + "// 1. 当您未在平台上注册的应用程序的包名与签名时；\n" +
-					    "// 2. 当您注册的应用程序包名与签名不正确时；" + "// 3. 当您在平台上注册的包名和签名与您当前测试的应用的包名和签名不匹配时。");
+									"// 2. 当您注册的应用程序包名与签名不正确时；" + "// 3. 当您在平台上注册的包名和签名与您当前测试的应用的包名和签名不匹配时。");
 				}
 			}
 		}
@@ -156,9 +156,9 @@ public class WeiBoAuthorization extends AbsAuthorization
 		@Override
 		public void onWeiboException(WeiboException exception)
 		{
-			if(null != callback)
+			if(null != authorizeCallback)
 			{
-				callback.onError(0, exception.getMessage(), exception.getMessage());
+				authorizeCallback.onAuthorizeError(0, exception.getMessage(), exception.getMessage());
 			}
 		}
 	}

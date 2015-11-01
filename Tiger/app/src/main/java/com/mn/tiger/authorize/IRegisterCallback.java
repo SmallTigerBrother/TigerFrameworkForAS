@@ -8,12 +8,12 @@ public interface IRegisterCallback
 	/**
 	 * 注册成功
 	 */
-	void onSuccess();
-	
+	void onRegisterSuccess(TGAuthorizeResult authorizeResult);
+
 	/**
 	 * 注册出错
 	 * @param code
 	 * @param message
 	 */
-	void onError(int code, String message);
+	void onRegisterError(int code, String message);
 }

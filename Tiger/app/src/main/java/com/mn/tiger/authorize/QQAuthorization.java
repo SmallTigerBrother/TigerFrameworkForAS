@@ -33,7 +33,7 @@ public class QQAuthorization extends AbsAuthorization
 	/**
 	 * 认证结果回调接口
 	 */
-	private IAuthorizeCallback callback;
+	private IAuthorizeCallback authorizeCallback;
 	
 	public QQAuthorization(String appID)
 	{
@@ -43,7 +43,7 @@ public class QQAuthorization extends AbsAuthorization
 			@Override
 			public void onError(UiError uiError)
 			{
-				callback.onError(uiError.errorCode, uiError.errorMessage, uiError.errorDetail);
+				authorizeCallback.onAuthorizeError(uiError.errorCode, uiError.errorMessage, uiError.errorDetail);
 			}
 			
 			@Override
@@ -55,19 +55,19 @@ public class QQAuthorization extends AbsAuthorization
 					TGAuthorizeResult loginResult = new TGAuthorizeResult();
 					loginResult.setUID(((JSONObject)reponse).getString("openid"));
 					loginResult.setAccessToken(((JSONObject)reponse).getString("access_token"));
-					callback.onSuccess(loginResult);
+					authorizeCallback.onAuthorizeSuccess(loginResult);
 				}
 				catch (JSONException e)
 				{
 					//数据解析出错，登录失败
-					callback.onError(0, "认证失败！", "认证失败！");
+					authorizeCallback.onAuthorizeError(0, "认证失败！", "认证失败！");
 				}
 			}
 			
 			@Override
 			public void onCancel()
 			{
-				callback.onCancel();
+				authorizeCallback.onAuthorizeCancel();
 			}
 		};
 	}
@@ -76,7 +76,7 @@ public class QQAuthorization extends AbsAuthorization
 	public void authorize(Activity activity, IAuthorizeCallback callback)
 	{
 		tencent = Tencent.createInstance(getAppID(), activity);
-		this.callback = callback;
+		this.authorizeCallback = callback;
 		tencent.login(activity, SCOPE_ALL, uiListener);
 	}
 	
@@ -84,7 +84,7 @@ public class QQAuthorization extends AbsAuthorization
 	public void logout(Activity activity, ILogoutCallback logoutCallback)
 	{
 		tencent.logout(activity);
-		logoutCallback.onSuccess();
+		logoutCallback.onLogoutSuccess();
 	}
 	
 	@Override
