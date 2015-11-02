@@ -348,6 +348,15 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 		}
 	}
 
+	/**
+	 * 设置预加载的页面数量
+	 * @param limit
+	 */
+	public void setOffscreenPageLimit(int limit)
+	{
+		bannerViewPager.setOffscreenPageLimit(limit);
+	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onTabChanged(TGTabView tabView, int lastSelectedIndex, int curSelectedIndex)
