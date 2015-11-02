@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.mn.tiger.log.Logger;
+
 import cn.jpush.android.api.JPushInterface;
 
 /**
@@ -12,6 +14,8 @@ import cn.jpush.android.api.JPushInterface;
  */
 public abstract class JPushMessageReceiver extends BroadcastReceiver
 {
+	private static final Logger LOG = Logger.getLogger(JPushMessageReceiver.class);
+
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
@@ -20,19 +24,31 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 		String title = extras.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE, "");
 		String alert = extras.getString(JPushInterface.EXTRA_ALERT, "");
 		String pushMsgExtra = extras.getString(JPushInterface.EXTRA_EXTRA, "");
+		String registrationId = extras.getString(JPushInterface.EXTRA_REGISTRATION_ID, "");
 
 		//根据当前接收的事件类型，调用不同的处理方法
 		if(JPushInterface.ACTION_MESSAGE_RECEIVED.equals(action))
 		{
+			LOG.d("[Method:onReceive] ACTION_MESSAGE_RECEIVED");
 			onPushMessageReceived(context, title, alert, pushMsgExtra);
 		}
 		else if(JPushInterface.ACTION_NOTIFICATION_OPENED.equals(action))
 		{
+			LOG.d("[Method:onReceive] ACTION_NOTIFICATION_OPENED");
 			onPushNotificationOpened(context, title, alert, pushMsgExtra);
 		}
 		else if(JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(action))
 		{
+			LOG.d("[Method:onReceive] ACTION_NOTIFICATION_RECEIVED");
 			onPushNotificationReceived(context, title, alert, pushMsgExtra);
+		}
+		else if(JPushInterface.ACTION_REGISTRATION_ID.equals(action))
+		{
+			LOG.d("[Method:onReceive] ACTION_REGISTRATION_ID registrationId == " + registrationId);
+		}
+		else
+		{
+			LOG.d("[Method:onReceive] ");
 		}
 	}
 
