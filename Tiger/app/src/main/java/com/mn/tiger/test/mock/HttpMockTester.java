@@ -9,6 +9,7 @@ import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
 import com.mn.tiger.utility.FileUtils;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class HttpMockTester
 {
@@ -26,10 +27,7 @@ public class HttpMockTester
 	 */
 	public static void addMockTestData(String url, HashMap<String, String> params, String mockFileName)
 	{
-		if(null != params)
-		{
-			url = url + "?" + params.toString();
-		}
+		url = urlAppendParamKeys(url, params);
 		dataMap.put(url, mockFileName);
 	}
 
@@ -43,10 +41,7 @@ public class HttpMockTester
 	{
 		TGHttpResult httpResult = null;
 
-		if(null != params)
-		{
-			url = url + "?" + params.toString();
-		}
+		url = urlAppendParamKeys(url, params);
 
 		String dataKey = dataMap.get(url);
 
@@ -77,10 +72,7 @@ public class HttpMockTester
 	{
 		if(null != dataMap && TEST_ABLE)
 		{
-			if(null != params)
-			{
-				url = url + "?" + params.toString();
-			}
+			url = urlAppendParamKeys(url, params);
 
 			String dataKey = dataMap.get(url);
 			return !TextUtils.isEmpty(dataKey);
@@ -89,4 +81,19 @@ public class HttpMockTester
 		return false;
 	}
 
+	private static String urlAppendParamKeys(String url, HashMap<String, String> params)
+	{
+		if(null != params)
+		{
+			StringBuilder builder = new StringBuilder(url);
+			Iterator<String> iterator = params.keySet().iterator();
+			while (iterator.hasNext())
+			{
+				builder.append("&");
+				builder.append(iterator.next());
+			}
+			return builder.toString();
+		}
+		return url;
+	}
 }
