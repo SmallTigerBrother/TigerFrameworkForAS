@@ -7,6 +7,11 @@ import android.content.res.Resources;
 
 public class CR
 {
+	public static int getMipmapId(Context context, String name)
+	{
+		Resources resources = context.getResources();
+		return resources.getIdentifier(name, "mipmap", context.getPackageName());
+	}
 
 	public static int getDrawableId(Context context, String name)
 	{

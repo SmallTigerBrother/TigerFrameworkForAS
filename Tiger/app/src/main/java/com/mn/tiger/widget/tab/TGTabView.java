@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ImageLoaderUtils;
 
 /**
@@ -314,15 +315,22 @@ public class TGTabView extends LinearLayout
 			else
 			{
 				//其他默认为资源文件，直接填充
-				int resId = imageView.getContext().getResources().getIdentifier(imageName, 
-						"drawable", imageView.getContext().getPackageName());
+				int resId = CR.getDrawableId(imageView.getContext(),imageName);
 				if(resId != 0)
 				{
 					imageView.setImageResource(resId);
 				}
 				else
 				{
-					LOG.e("[Method:diplayImage] no resource found of name " + imageName);
+					resId = CR.getMipmapId(imageView.getContext(), imageName);
+					if(resId != 0)
+					{
+						imageView.setImageResource(resId);
+					}
+					else
+					{
+						LOG.e("[Method:diplayImage] no resource found of name " + imageName);
+					}
 				}
 			}
 		}
