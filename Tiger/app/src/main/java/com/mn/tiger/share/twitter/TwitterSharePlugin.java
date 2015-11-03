@@ -26,34 +26,4 @@ public class TwitterSharePlugin extends TGSharePlugin<Object, TwitterShareResult
     {
 
     }
-
-    @Override
-    protected String getMsgIndicator(Object shareMsg)
-    {
-        return null;
-    }
-
-    @Override
-    protected String getMsgIndicator(TwitterShareResult shareResult)
-    {
-        return null;
-    }
-
-    @Override
-    public void onShareSuccess(TwitterShareResult result)
-    {
-
-    }
-
-    @Override
-    public void onShareFailed(TwitterShareResult result)
-    {
-
-    }
-
-    @Override
-    public void onShareOver(TwitterShareResult result)
-    {
-
-    }
 }

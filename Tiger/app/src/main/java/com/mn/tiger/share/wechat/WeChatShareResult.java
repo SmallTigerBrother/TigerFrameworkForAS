@@ -99,7 +99,13 @@ public class WeChatShareResult extends TGShareResult
 	{
 		return resultCode == SUCCESS;
 	}
-	
+
+	@Override
+	public boolean isCanceled()
+	{
+		return resultCode == USER_CANCEL;
+	}
+
 	@Override
 	public String toString()
 	{

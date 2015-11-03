@@ -57,7 +57,13 @@ public class WeiboShareResult extends TGShareResult
 	{
 		return resultCode == SUCCESS;
 	}
-	
+
+	@Override
+	public boolean isCanceled()
+	{
+		return resultCode == USER_CANCEL;
+	}
+
 	/**
 	 * 获取错误信息
 	 * @return

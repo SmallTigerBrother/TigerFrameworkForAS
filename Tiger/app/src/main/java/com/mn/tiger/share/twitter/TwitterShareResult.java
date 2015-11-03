@@ -12,4 +12,10 @@ public class TwitterShareResult extends TGShareResult
     {
         return false;
     }
+
+    @Override
+    public boolean isCanceled()
+    {
+        return false;
+    }
 }

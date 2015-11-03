@@ -2,6 +2,7 @@ package com.mn.tiger.share;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
 import com.mn.tiger.log.Logger;
 
@@ -17,7 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class TGSharePlugin<T, H extends TGShareResult>
 {
 	protected final Logger LOG = Logger.getLogger(this.getClass());
-	
+
+	private static final String INDICATOR = "indicator";
+
 	/**
 	 * 分享信息建造者
 	 */
@@ -76,8 +79,9 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 		LOG.d("[Method:share]");
 		
 		this.msgBuilder = msgBuilder;
+		this.shareMsg = getShareMsg();
 
-		sendShareMsg(activity, getShareMsg());
+		sendShareMsg(activity, shareMsg);
 
 		// 绑定分享信息与其分享类型
 		shareTypeMap.put(getMsgIndicator(getShareMsg()), msgBuilder.getShareType());
@@ -110,24 +114,30 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	}
 	
 	/**
-	 * 获取分享信息唯一标示
+	 * 获取分享信息唯一标示，同一条分享信息的内容、结果的标识必需完全一致，这样才能定向匹配对应的handler和type
 	 * @param shareMsg 分享信息
 	 * @return
 	 */
-	protected abstract String getMsgIndicator(T shareMsg);
+	protected String getMsgIndicator(T shareMsg)
+    {
+        return INDICATOR;
+    }
 	
 	/**
-	 * 获取分享信息唯一标示
+	 * 获取分享结果唯一标示，同一条分享信息的内容、结果的标识必需完全一致，这样才能定向匹配对应的handler和type
 	 * @param shareResult 分享结果
 	 * @return
 	 */
-	protected abstract String getMsgIndicator(H shareResult);
+	protected String getResultIndicator(H shareResult)
+    {
+        return INDICATOR;
+    }
 
 	/**
 	 * 接收分享结果
 	 * @param result 分享结果
 	 */
-	protected final boolean handleShareResult(H result)
+    final boolean handleShareResult(H result)
 	{
 		LOG.d("[Method:handleShareResult] result == " + result.toString());
 		
@@ -138,24 +148,37 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 		}
 		
 		//设置信息分享类型
-		result.setShareType(shareTypeMap.get(getMsgIndicator(result)));
+		result.setShareType(shareTypeMap.get(getResultIndicator(result)));
 		//获取分享结果回调接口
-		IShareResultHandler<H> handler = resultHandlerMap.get(getMsgIndicator(result));
-		if(null != handler)
-		{
-			handler.handleShareResult(result);
-		}
-		
-		//执行成功、失败方法，仅适用于与界面无关的功能
-		if(result.isSuccess())
-		{
-			onShareSuccess(result);
-		}
-		else
-		{
-			onShareFailed(result);
-		}
-		
+		IShareResultHandler<H> handler = resultHandlerMap.get(getResultIndicator(result));
+
+        if(result.isCanceled())
+        {
+            if(null != handler)
+            {
+                handler.onShareCancel(result);
+            }
+            onShareCanceled(result);
+        }
+        else if(result.isSuccess())
+        {
+            if(null != handler)
+            {
+                handler.onShareSuccess(result);
+            }
+            //执行分享成功方法，仅适用于与界面无关的功能
+            onShareSuccess(result);
+        }
+        else
+        {
+            if(null != handler)
+            {
+                handler.onShareFailed(result);
+            }
+            //执行分享失败方法，仅适用于与界面无关的功能
+            onShareFailed(result);
+        }
+
 		onShareOver(result);
 		
 		//移除结果回调接口，防止内存泄露
@@ -168,18 +191,36 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 分享成功回调（不可添加操作界面相关的代码）
 	 * @param result 分享结果
 	 */
-	public abstract void onShareSuccess(H result);
+	public void onShareSuccess(H result)
+    {
+
+    }
 	
 	/**
 	 * 分享失败回调（不可添加操作界面相关的代码）
 	 * @param result 分享结果
 	 */
-	public abstract void onShareFailed(H result);
+	public void onShareFailed(H result)
+    {
+
+    }
 	
 	/**
 	 * 分享完成，不论分享成功或失败都会回调
 	 */
-	public abstract void onShareOver(H result);
+	public void onShareOver(H result)
+    {
+
+    }
+
+    /**
+     * 分享取消（不可添加操作界面相关的代码）
+     * @param result
+     */
+    public void onShareCanceled(H result)
+    {
+
+    }
 	
 	/**
 	 * 移除结果回调接口，防止内存泄露
@@ -188,12 +229,12 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	protected void onRemoveResultHandler(H result)
 	{
 		//删除handler
-		resultHandlerMap.remove(getMsgIndicator(result));
+		resultHandlerMap.remove(getResultIndicator(result));
 	}
 	
 	protected boolean hasSendMessage(H result)
 	{
-		if(null != shareTypeMap.get(getMsgIndicator(result)))
+		if(null != shareTypeMap.get(getResultIndicator(result)))
 		{
 			return true;
 		}
@@ -231,6 +272,11 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	protected String getAppID()
 	{
 		return appID;
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+
 	}
 	
 	/**

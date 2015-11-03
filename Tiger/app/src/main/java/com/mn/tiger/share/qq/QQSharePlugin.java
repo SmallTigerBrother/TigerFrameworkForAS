@@ -75,7 +75,7 @@ public class QQSharePlugin extends TGSharePlugin<Bundle, QQShareResult>
 	}
 
 	@Override
-	protected String getMsgIndicator(QQShareResult shareResult)
+	protected String getResultIndicator(QQShareResult shareResult)
 	{
 		return indicatorKey;
 	}
@@ -97,36 +97,6 @@ public class QQSharePlugin extends TGSharePlugin<Bundle, QQShareResult>
 	protected Activity getActivity()
 	{
 		return activity;
-	}
-
-	@Override
-	public void onShareSuccess(QQShareResult result)
-	{
-		
-	}
-
-	@Override
-	public void onShareFailed(QQShareResult result)
-	{
-		
-	}
-
-	@Override
-	public void onShareOver(QQShareResult result)
-	{
-		
-	}
-	
-	@Override
-	protected void onRemoveResultHandler(QQShareResult result)
-	{
-		//QQ不支持多任务，不移除handler
-	}
-	
-	@Override
-	protected boolean hasSendMessage(QQShareResult result)
-	{
-		return true;
 	}
 
 	/**

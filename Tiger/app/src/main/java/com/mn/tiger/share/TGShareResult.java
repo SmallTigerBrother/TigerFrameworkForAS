@@ -25,4 +25,6 @@ public abstract class TGShareResult
 	 * @return
 	 */
 	public abstract boolean isSuccess();
+
+	public abstract boolean isCanceled();
 }

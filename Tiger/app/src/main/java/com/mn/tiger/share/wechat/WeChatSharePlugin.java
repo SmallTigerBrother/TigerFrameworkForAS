@@ -66,24 +66,6 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 		return req;
 	}
 
-	@Override
-	public void onShareSuccess(WeChatShareResult result)
-	{
-		
-	}
-
-	@Override
-	public void onShareFailed(WeChatShareResult result)
-	{
-		
-	}
-
-	@Override
-	public void onShareOver(WeChatShareResult result)
-	{
-		
-	}
-	
 	/**
 	 * 获取微信分享API
 	 * @return
@@ -100,7 +82,7 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 	}
 	
 	@Override
-	protected String getMsgIndicator(WeChatShareResult shareResult)
+	protected String getResultIndicator(WeChatShareResult shareResult)
 	{
 		return shareResult.getTransaction();
 	}

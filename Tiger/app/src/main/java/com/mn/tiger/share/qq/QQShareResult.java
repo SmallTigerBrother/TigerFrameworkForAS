@@ -57,7 +57,7 @@ public class QQShareResult extends TGShareResult
 	/**
 	 * 分享结果信息
 	 */
-	private JSONObject reponse;
+	private JSONObject response;
 
 	/**
 	 * UI异常
@@ -66,7 +66,7 @@ public class QQShareResult extends TGShareResult
 
 	public QQShareResult(JSONObject response)
 	{
-		this.reponse = response;
+		this.response = response;
 		if (response != null)
 		{
 			try
@@ -104,9 +104,9 @@ public class QQShareResult extends TGShareResult
 	 * 获取结果信息
 	 * @return
 	 */
-	public JSONObject getReponse()
+	public JSONObject getResponse()
 	{
-		return reponse;
+		return response;
 	}
 
 	/**
@@ -117,14 +117,20 @@ public class QQShareResult extends TGShareResult
 	{
 		return uiError;
 	}
-	
+
+	@Override
+	public boolean isCanceled()
+	{
+		return resultCode == USER_CANCEL;
+	}
+
 	@Override
 	public String toString()
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		if(null != stringBuilder)
 		{
-			stringBuilder.append("reponse == " + reponse + " ; ");
+			stringBuilder.append("response == " + response + " ; ");
 		}
 		
 		if(null != uiError)

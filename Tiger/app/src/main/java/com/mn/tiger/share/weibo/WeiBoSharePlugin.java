@@ -62,29 +62,11 @@ public class WeiBoSharePlugin extends TGSharePlugin<WeiboMultiMessage, WeiboShar
 	}
 
 	@Override
-	protected String getMsgIndicator(WeiboShareResult shareResult)
+	protected String getResultIndicator(WeiboShareResult shareResult)
 	{
 		return shareResult.getTransaction();
 	}
 
-	@Override
-	public void onShareSuccess(WeiboShareResult result)
-	{
-		
-	}
-
-	@Override
-	public void onShareFailed(WeiboShareResult result)
-	{
-		
-	}
-
-	@Override
-	public void onShareOver(WeiboShareResult result)
-	{
-		
-	}
-	
 	/**
 	 * 获取微博分享API
 	 * @return
