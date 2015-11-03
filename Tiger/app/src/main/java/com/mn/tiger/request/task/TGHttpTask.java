@@ -69,13 +69,13 @@ public abstract class TGHttpTask extends TGTask
 		{
 			// 执行网络访问（不带异常处理）；异常处理下放到Activity中执行,
 			TGHttpResult result;
-			if(!HttpMockTester.TEST_ABLE || !HttpMockTester.isTestAble(getRequestUrl()))
+			if(!HttpMockTester.TEST_ABLE || !HttpMockTester.isTestAble(getRequestUrl(), getRequestParams().getStringParams()))
 			{
 				result = executeHttpRequest();
 			}
 			else
 			{
-				result = HttpMockTester.getMockTestData(getRequestUrl());
+				result = HttpMockTester.getMockTestData(getRequestUrl(), getRequestParams().getStringParams());
 			}
 
 			if (getTaskState() == TGTaskState.RUNNING)

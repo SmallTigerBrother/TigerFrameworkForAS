@@ -16,16 +16,37 @@ public class HttpMockTester
 
 	public static boolean TEST_ABLE = false;
 
-	public static HashMap<String, String> dataMap = null;
+	public static HashMap<String, String> dataMap = new HashMap<String, String>();
 
-	public static void setMockTestData(HashMap<String, String> dataMap)
+	/**
+	 * 添加mock测试数据
+	 * @param url
+	 * @param params
+	 * @param mockFileName
+	 */
+	public static void addMockTestData(String url, HashMap<String, String> params, String mockFileName)
 	{
-		HttpMockTester.dataMap = dataMap;
+		if(null != params)
+		{
+			url = url + "?" + params.toString();
+		}
+		dataMap.put(url, mockFileName);
 	}
 
-	public static TGHttpResult getMockTestData(String url)
+	/**
+	 * 根据url、params获取测试数据
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static TGHttpResult getMockTestData(String url, HashMap<String, String> params)
 	{
 		TGHttpResult httpResult = null;
+
+		if(null != params)
+		{
+			url = url + "?" + params.toString();
+		}
 
 		String dataKey = dataMap.get(url);
 
@@ -37,7 +58,7 @@ public class HttpMockTester
 		else
 		{
 			httpResult = new TGHttpResult();
-			String data = FileUtils.readStringFromAsset(TGApplication.getInstance(), dataKey + ".json");
+			String data = FileUtils.readStringFromAsset(TGApplication.getInstance(), dataKey);
 			httpResult.setResponseCode(200);
 			httpResult.setResult(data);
 		}
@@ -46,10 +67,21 @@ public class HttpMockTester
 		return httpResult;
 	}
 
-	public static boolean isTestAble(String url)
+	/**
+	 * 判断某个接口是不是支持mock测试
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static boolean isTestAble(String url, HashMap<String, String> params)
 	{
 		if(null != dataMap && TEST_ABLE)
 		{
+			if(null != params)
+			{
+				url = url + "?" + params.toString();
+			}
+
 			String dataKey = dataMap.get(url);
 			return !TextUtils.isEmpty(dataKey);
 		}
