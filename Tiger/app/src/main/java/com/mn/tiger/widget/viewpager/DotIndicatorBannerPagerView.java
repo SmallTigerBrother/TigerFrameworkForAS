@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * 带底部圆点导航的自动滚动Banner
- * 
+ *
  * @param <T>
  */
 public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements OnTabChangeListener,
@@ -77,6 +77,11 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 	 */
 	private boolean circleable = true;
 
+	/**
+	 * 自动滚动
+	 */
+	private boolean autoScroll = false;
+
 	private DotTabAdapter dotTabAdapter;
 
 	private BannerPagerAdapter bannerPagerAdapter;
@@ -124,7 +129,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 填充数据
-	 * 
+	 *
 	 * @param data
 	 *            分页图片数据
 	 */
@@ -155,25 +160,34 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 		// 设置导航圆点显示模式
 		switch (indicatorShowMode)
 		{
-		case HIDE_ALWAYS:
-			tabView.setVisibility(View.GONE);
-			break;
-
-		case SHOW_AUTO:
-			if (dataList.size() == 1)
-			{
+			case HIDE_ALWAYS:
 				tabView.setVisibility(View.GONE);
-			}
-			else
-			{
-				tabView.setVisibility(View.VISIBLE);
-			}
-			break;
+				break;
 
-		default:
-			tabView.setVisibility(View.VISIBLE);
-			break;
+			case SHOW_AUTO:
+				if (dataList.size() == 1)
+				{
+					tabView.setVisibility(View.GONE);
+				}
+				else
+				{
+					tabView.setVisibility(View.VISIBLE);
+				}
+				break;
+
+			default:
+				tabView.setVisibility(View.VISIBLE);
+				break;
 		}
+	}
+
+	/**
+	 * 设置是否支持自动滚动
+	 * @param autoScroll
+	 */
+	public void setAutoScroll(boolean autoScroll)
+	{
+		this.autoScroll = autoScroll;
 	}
 
 	/**
@@ -195,7 +209,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 设置图片资源填充接口
-	 * 
+	 *
 	 * @param viewPagerHolder
 	 */
 	public void setViewPagerHolder(ViewPagerHolder<T> viewPagerHolder)
@@ -205,7 +219,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 设置背景资源
-	 * 
+	 *
 	 * @param defaultRes
 	 *            默认资源
 	 * @param selectedRes
@@ -219,7 +233,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 设置是否支持循环
-	 * 
+	 *
 	 * @param circleable
 	 */
 	public void setCircleable(boolean circleable)
@@ -251,12 +265,22 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 设置导航圆点显示模式
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void setIndicatorShowMode(IndicatorShowMode mode)
 	{
 		this.indicatorShowMode = mode;
+	}
+
+	@Override
+	protected void onAttachedToWindow()
+	{
+		if(autoScroll)
+		{
+			bannerViewPager.startScroll();
+		}
+		super.onAttachedToWindow();
 	}
 
 	@Override
@@ -269,7 +293,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 设置界面切换监听接口
-	 * 
+	 *
 	 * @param onPageChangeListener
 	 */
 	public void setOnPageChangeListener(OnPageChangeListener onPageChangeListener)
@@ -316,7 +340,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 获取实际页数
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
@@ -327,7 +351,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * 获取当前页码
-	 * 
+	 *
 	 * @return
 	 */
 	public int getCurrentPage()
@@ -474,7 +498,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 	/**
 	 * ImageView填充接口类
-	 * 
+	 *
 	 * @param <T>
 	 */
 	public static abstract class ViewPagerHolder<T>
@@ -506,7 +530,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 	/**
 	 * 底部导航圆点显示模式
 	 */
-	public static enum IndicatorShowMode
+	public enum IndicatorShowMode
 	{
 		/**
 		 * 自动控制，当只有一页时，自动隐藏
@@ -519,6 +543,6 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 		/**
 		 * 一直不显示
 		 */
-		HIDE_ALWAYS;
+		HIDE_ALWAYS
 	}
 }
