@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,6 +17,8 @@ import java.util.List;
  */
 public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerViewAdapter.InternalRecyclerViewHolder<T>>
 {
+    public static final int NONE_VIEW_TYPE = 0;
+
     /**
      * 运行环境
      */
@@ -47,9 +51,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     /**
      * 保存position - viewHolder的数组
      */
-    private SparseArray<TGRecyclerViewHolder<T>> viewHolders;
+    private HashMap<Integer,TGRecyclerViewHolder<T>> viewHolders;
 
     private TGRecyclerViewHolder<T> internalViewHolder;
+
+    private TGViewTypeBinder viewTypeBinder;
 
     public TGRecyclerViewAdapter(Context context, List<T> items, int convertViewLayoutId,
                                  Class<? extends TGRecyclerViewHolder<T>> viewHolderClass)
@@ -61,21 +67,36 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             this.items.addAll(items);
         }
 
-        this.viewHolders = new SparseArray<TGRecyclerViewHolder<T>>();
+        this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
 
         this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
-        internalViewHolder = initViewHolder();
+        internalViewHolder = initViewHolder(NONE_VIEW_TYPE);
         this.setHasStableIds(true);
+    }
+
+    public TGRecyclerViewAdapter(Context context, List<T> items,
+                                 Class<? extends TGRecyclerViewHolder>... viewHolderClasses)
+    {
+        this.context = context;
+        this.items = new ArrayList<T>();
+        if (null != items)
+        {
+            this.items.addAll(items);
+        }
+
+        this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
+        this.setHasStableIds(true);
+
+        viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
     }
 
     @Override
     public InternalRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         this.parent = parent;
-        TGRecyclerViewHolder<T> viewHolder = initViewHolder();
-        viewHolder.setOnItemClickListener(onItemClickListener);
-        viewHolder.setRecyclerView((RecyclerView) parent);
+        TGRecyclerViewHolder<T> viewHolder = initViewHolder(viewType);
+
 
         View view = viewHolder.initView(parent,viewType);
         viewHolder.attachOnItemClickListener(view);
@@ -88,8 +109,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     @Override
     public void onBindViewHolder(InternalRecyclerViewHolder<T> holder, int position)
     {
-        holder.getTGRecyclerViewHolder().updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
-        holder.getTGRecyclerViewHolder().fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+        TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
+        tgRecyclerViewHolder.setPosition(position);
+        tgRecyclerViewHolder.updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+        tgRecyclerViewHolder.fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
     }
 
     @Override
@@ -105,7 +128,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         super.onViewDetachedFromWindow(holder);
         //移除ViewHolder
-        viewHolders.remove(holder.getAdapterPosition());
+        if(holder.getTGRecyclerViewHolder().recycleAble())
+        {
+            viewHolders.remove(holder.getAdapterPosition());
+        }
     }
 
     /**
@@ -121,13 +147,17 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     @Override
     public int getItemViewType(int position)
     {
-        if(null != internalViewHolder)
+        if(null != viewTypeBinder)
+        {
+            return viewTypeBinder.getItemViewType(position);
+        }
+        else if(null != internalViewHolder)
         {
             return internalViewHolder.getItemViewType(position);
         }
         else
         {
-            return super.getItemViewType(position);
+            return NONE_VIEW_TYPE;
         }
     }
 
@@ -136,19 +166,32 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @return
      */
-    protected TGRecyclerViewHolder<T> initViewHolder()
+    protected final TGRecyclerViewHolder<T> initViewHolder(int viewType)
     {
         TGRecyclerViewHolder<T> viewHolder = null;
-        try
+        if(null != viewTypeBinder)
         {
-            viewHolder = viewHolderClass.newInstance();
+            viewHolder = viewTypeBinder.initViewHolderByType(viewType);
+        }
+        else
+        {
+            try
+            {
+                viewHolder = viewHolderClass.newInstance();
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(null != viewHolder)
+        {
             viewHolder.setContext(context);
             viewHolder.setAdapter(this);
             viewHolder.setLayoutId(convertViewLayoutId);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
+            viewHolder.setOnItemClickListener(onItemClickListener);
+            viewHolder.setRecyclerView((RecyclerView) parent);
         }
 
         return viewHolder;
@@ -179,6 +222,24 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
     {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    protected List<TGRecyclerViewHolder> getViewHolderByDataType(Class<?> clazz)
+    {
+        List<TGRecyclerViewHolder> targetViewHolders = new ArrayList<TGRecyclerViewHolder>();
+
+        Iterator<TGRecyclerViewHolder<T>> iterator = viewHolders.values().iterator();
+        TGRecyclerViewHolder viewHolder = null;
+        while (iterator.hasNext())
+        {
+            viewHolder = iterator.next();
+            if(null != viewTypeBinder && viewTypeBinder.isSameDataType(viewHolder, clazz))
+            {
+                targetViewHolders.add(viewHolder);
+            }
+        }
+
+        return targetViewHolders;
     }
 
     /**
