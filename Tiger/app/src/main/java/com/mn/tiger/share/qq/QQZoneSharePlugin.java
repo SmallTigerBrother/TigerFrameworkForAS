@@ -42,14 +42,8 @@ public class QQZoneSharePlugin extends QQSharePlugin
 		LOG.d("[Method:share2QQZone]");
 		
 		getTencent().shareToQzone(getActivity(), getShareMsg(), uiListener);
-		//清空actvity，避免内存泄露
+		//清空activity，避免内存泄露
 		setActivity(null);
-	}
-	
-	@Override
-	protected boolean hasSendMessage(QQShareResult result)
-	{
-		return true;
 	}
 	
 	/**
