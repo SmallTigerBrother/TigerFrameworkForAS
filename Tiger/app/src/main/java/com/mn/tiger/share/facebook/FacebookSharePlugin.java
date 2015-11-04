@@ -57,8 +57,7 @@ public class FacebookSharePlugin extends TGSharePlugin<ShareContent, FacebookSha
                 FacebookShareResult shareResult = new FacebookShareResult();
                 shareResult.setPostId(result.getPostId());
                 shareResult.setSuccess(true);
-
-                TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_FACEBOOK, shareResult);
+                FacebookSharePlugin.this.handleShareResult(shareResult);
             }
 
             @Override
@@ -67,7 +66,7 @@ public class FacebookSharePlugin extends TGSharePlugin<ShareContent, FacebookSha
                 FacebookShareResult shareResult = new FacebookShareResult();
                 shareResult.setSuccess(false);
                 shareResult.setErrorMsg("canceled");
-                TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_FACEBOOK, shareResult);
+                FacebookSharePlugin.this.handleShareResult(shareResult);
             }
 
             @Override
@@ -76,8 +75,7 @@ public class FacebookSharePlugin extends TGSharePlugin<ShareContent, FacebookSha
                 FacebookShareResult shareResult = new FacebookShareResult();
                 shareResult.setSuccess(false);
                 shareResult.setErrorMsg(error.getMessage());
-
-                TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_FACEBOOK, shareResult);
+                FacebookSharePlugin.this.handleShareResult(shareResult);
             }
         });
 

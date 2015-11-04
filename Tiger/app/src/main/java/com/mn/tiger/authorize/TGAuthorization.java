@@ -131,7 +131,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 	 */
 	public boolean checkHasAuthorized(Context context)
 	{
-		return null != getUserInfo(context);
+		return null != getUserInfo(context) && null != getAccessToken(context);
 	}
 
 	/**

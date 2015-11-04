@@ -14,10 +14,16 @@ import com.mn.tiger.log.LogTools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 public class Commons
@@ -162,12 +168,8 @@ public class Commons
 	 */
 	public static boolean checkContextIsValid(Context context)
 	{
-		if (context != null && (context instanceof Activity)
-				&& !((Activity) context).isFinishing())
-		{
-			return true;
-		}
-		return false;
+		return context != null && (context instanceof Activity)
+				&& !((Activity) context).isFinishing();
 	}
 
 	/**
@@ -367,5 +369,113 @@ public class Commons
 			return longArray;
 		}
 		return null;
+	}
+
+	/**
+	 * 向数组中插入数据
+	 * @param array
+	 * @param data
+	 * @param index
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T[] insertData2Array(T[] array, T data, int index)
+	{
+		ArrayList<T> list = new ArrayList<T>(Arrays.asList((array)));
+		list.add(index, data);
+		T[] result = (T[])Array.newInstance(data.getClass(), list.size());
+		list.toArray(result);
+		return result;
+	}
+
+	/**
+	 * 从数组中删除数据
+	 * @param array
+	 * @param data
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T[] removeDataFromArray(T[] array, T data)
+	{
+		ArrayList<T> list = new ArrayList<T>(Arrays.asList((array)));
+		list.remove(data);
+		T[] result = (T[])Array.newInstance(data.getClass(), list.size());
+		list.toArray(result);
+		return result;
+	}
+
+	public static Class getClassOfGenericType(final Class clazz, final int index)
+	{
+		Type genType = clazz.getGenericSuperclass();
+		if (!(genType instanceof ParameterizedType))
+		{
+			return Object.class;
+		}
+
+		Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+		if (index >= params.length || index < 0)
+		{
+			return Object.class;
+		}
+
+		String className = params[index].toString();
+
+		try
+		{
+			if(className.indexOf("class ") > -1)
+			{
+				//若为类，去除“class ”(注意class后面有一个空格)
+				className = className.replace("class ", "").trim();
+				return Class.forName(className);
+			}
+			else if (className.indexOf("[]") > -1)
+			{
+				//若为数组类型，去除“[]”符号
+				className = className.replace("[]", "");
+				return Array.newInstance(Class.forName(className), 0).getClass();
+			}
+		}
+		catch (ClassNotFoundException e)
+		{
+			LogTools.e(LOG_TAG, e);
+		}
+
+		return Object.class;
+
+	}
+
+	public static String getClassNameOfGenericType(final Class clazz, final int index)
+	{
+		Type genType = clazz.getGenericSuperclass();
+		if (!(genType instanceof ParameterizedType))
+		{
+			return Object.class.getName();
+		}
+
+		Type[] types = clazz.getGenericInterfaces();
+
+		Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+		if (index >= params.length || index < 0)
+		{
+			return Object.class.getName();
+		}
+
+		String className = params[index].toString();
+		//若为数组类型，去除“[]”符号
+		if(className.indexOf("class ") > -1)
+		{
+			//若为类，去除“class ”(注意class后面有一个空格)
+			className = className.replace("class ", "").replace("$",".").trim();
+			return className;
+		}
+		else if(className.indexOf("<") > -1 && className.indexOf(">") > -1)
+		{
+			className = className.substring(0, className.indexOf("<"));
+			return className;
+		}
+		else
+		{
+			return className;
+		}
 	}
 }

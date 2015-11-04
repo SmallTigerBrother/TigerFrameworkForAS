@@ -137,7 +137,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 接收分享结果
 	 * @param result 分享结果
 	 */
-    final boolean handleShareResult(H result)
+    public final boolean handleShareResult(H result)
 	{
 		LOG.d("[Method:handleShareResult] result == " + result.toString());
 		
@@ -226,13 +226,13 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 移除结果回调接口，防止内存泄露
 	 * @param result 分享结果
 	 */
-	protected void onRemoveResultHandler(H result)
+	protected final void onRemoveResultHandler(H result)
 	{
 		//删除handler
 		resultHandlerMap.remove(getResultIndicator(result));
 	}
 	
-	protected boolean hasSendMessage(H result)
+	protected final boolean hasSendMessage(H result)
 	{
 		if(null != shareTypeMap.get(getResultIndicator(result)))
 		{
@@ -246,7 +246,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 移除结果回调接口
 	 * @param resultHandler
 	 */
-	protected void removeResultHandler(IShareResultHandler<H> resultHandler)
+	protected final void removeResultHandler(IShareResultHandler<H> resultHandler)
 	{
 		Iterator<Entry<String, IShareResultHandler<H>>> iterator =
 				resultHandlerMap.entrySet().iterator();

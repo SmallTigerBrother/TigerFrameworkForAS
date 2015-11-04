@@ -28,10 +28,15 @@ public abstract class TGRecyclerViewHolder<T>
      */
     private TGRecyclerViewAdapter<T> adapter;
 
+    private int position;
+
     private RecyclerView recyclerView;
 
     private TGRecyclerViewAdapter.InternalRecyclerViewHolder<T> holder;
 
+    /**
+     * 列表行点击事件
+     */
     private TGRecyclerView.OnItemClickListener onItemClickListener;
 
     private InternalOnClickListener internalOnClickListener;
@@ -102,7 +107,7 @@ public abstract class TGRecyclerViewHolder<T>
      */
     public int getItemViewType(int position)
     {
-        return 0;
+        return TGRecyclerViewAdapter.NONE_VIEW_TYPE;
     }
 
     protected Context getContext()
@@ -177,6 +182,29 @@ public abstract class TGRecyclerViewHolder<T>
     public int getTextSize(int resId)
     {
         return DisplayUtils.px2sp(getContext(), getDimensionPixelSize(resId));
+    }
+
+    /**
+     * 获取当前填充的列表行的位置
+     * @return
+     */
+    public int getPosition()
+    {
+        return position;
+    }
+
+    /**
+     * 设置当前填充的列表行的位置
+     * @param position
+     */
+    void setPosition(int position)
+    {
+        this.position = position;
+    }
+
+    public boolean recycleAble()
+    {
+        return true;
     }
 
     private class InternalOnClickListener implements View.OnClickListener
