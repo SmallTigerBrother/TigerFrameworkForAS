@@ -17,6 +17,9 @@ import java.util.List;
  */
 public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerViewAdapter.InternalRecyclerViewHolder<T>>
 {
+    /**
+     * 不区分ViewType
+     */
     public static final int NONE_VIEW_TYPE = 0;
 
     /**
@@ -30,17 +33,18 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     private List<T> items = null;
 
     /**
-     * 列表行视图layoutId
-     */
-    private int convertViewLayoutId;
-
-    /**
      * viewholder类，用于视图重用，初始化列表行和填充列表行数据
      */
     private Class<? extends TGRecyclerViewHolder<T>> viewHolderClass;
 
+    /**
+     * 列表行点击事件
+     */
     private TGRecyclerView.OnItemClickListener onItemClickListener;
 
+    /**
+     * 使用Adapter的RecyclerView
+     */
     private ViewGroup parent;
 
     /**
@@ -53,11 +57,23 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     private HashMap<Integer,TGRecyclerViewHolder<T>> viewHolders;
 
+    /**
+     * 用来处理内部ViewType的类
+     */
     private TGRecyclerViewHolder<T> internalViewHolder;
 
+    /**
+     * 多种ViewType时，处理Data、ViewHoler、ViewType绑定的管理类
+     */
     private TGViewTypeBinder viewTypeBinder;
 
-    public TGRecyclerViewAdapter(Context context, List<T> items, int convertViewLayoutId,
+    /**
+     * 支持一种数据类型的构造函数
+     * @param context
+     * @param items
+     * @param viewHolderClass
+     */
+    public TGRecyclerViewAdapter(Context context, List<T> items,
                                  Class<? extends TGRecyclerViewHolder<T>> viewHolderClass)
     {
         this.context = context;
@@ -69,12 +85,19 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
 
         this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
 
-        this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
         internalViewHolder = initViewHolder(NONE_VIEW_TYPE);
         this.setHasStableIds(true);
     }
 
+    /**
+     * 支持多种数据类型的构造函数
+     * （数据类型不支持泛型，例如不支持List<Abc>，如果要使用泛型，请自行写一个类extends ArrayList<Abc>）
+     * 使用该构造方法时，请 extends TGRecyclerViewAdapter<Object> 防止出现数据冲突
+     * @param context
+     * @param items
+     * @param viewHolderClasses 多种数据类型的ViewHolder，请注意每种ViewHolder的泛型参数必需都不同，否则无法正常使用
+     */
     public TGRecyclerViewAdapter(Context context, List<T> items,
                                  Class<? extends TGRecyclerViewHolder>... viewHolderClasses)
     {
@@ -96,7 +119,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         this.parent = parent;
         TGRecyclerViewHolder<T> viewHolder = initViewHolder(viewType);
-
 
         View view = viewHolder.initView(parent,viewType);
         viewHolder.attachOnItemClickListener(view);
@@ -127,7 +149,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public void onViewDetachedFromWindow(InternalRecyclerViewHolder<T> holder)
     {
         super.onViewDetachedFromWindow(holder);
-        //移除ViewHolder
+        //移除ViewHolder，仅移除支持重用的ViewHolder
         if(holder.getTGRecyclerViewHolder().recycleAble())
         {
             viewHolders.remove(holder.getAdapterPosition());
@@ -135,18 +157,20 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     }
 
     /**
-     * 获取指定位置的ViewHolder
+     * 获取指定位置的ViewHolder，如果ViewHolder不在可视范围内，并且属于可重用的ViewHolder，返回值为null，
+     * 若想始终拿到ViewHolder，请在ViewHolder的recycleAble()方法中返回false
      * @param position
      * @return
      */
-    public TGRecyclerViewHolder<T> getViewHolderAtPosition(int position)
+    public final TGRecyclerViewHolder<T> getViewHolderAtPosition(int position)
     {
         return viewHolders.get(position);
     }
 
     @Override
-    public int getItemViewType(int position)
+    public  int getItemViewType(int position)
     {
+        //如果支持自动的多类型控制，通过viewTypeBinder获取ViewType
         if(null != viewTypeBinder)
         {
             return viewTypeBinder.getItemViewType(position);
@@ -171,7 +195,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         TGRecyclerViewHolder<T> viewHolder = null;
         if(null != viewTypeBinder)
         {
-            viewHolder = viewTypeBinder.initViewHolderByType(viewType);
+            viewHolder = viewTypeBinder.newViewHolderByType(viewType);
         }
         else
         {
@@ -189,7 +213,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             viewHolder.setContext(context);
             viewHolder.setAdapter(this);
-            viewHolder.setLayoutId(convertViewLayoutId);
             viewHolder.setOnItemClickListener(onItemClickListener);
             viewHolder.setRecyclerView((RecyclerView) parent);
         }
@@ -197,34 +220,52 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         return viewHolder;
     }
 
-    public T getItem(int position)
+    /**
+     * 获取指定位置的数据
+     * @param position
+     * @return
+     */
+    public final T getItem(int position)
     {
         return items.get(position);
     }
 
     @Override
-    public int getItemCount()
+    public final int getItemCount()
     {
         return items.size();
     }
 
-    public int getCount()
+    /**
+     * 获取数据总个数
+     * @return
+     */
+    public final int getCount()
     {
         return getItemCount();
     }
 
     @Override
-    public long getItemId(int position)
+    public final long getItemId(int position)
     {
         return position;
     }
 
-    void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
+    /**
+     * 设置列表行点击事件
+     * @param onItemClickListener
+     */
+    final void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
     {
         this.onItemClickListener = onItemClickListener;
     }
 
-    protected List<TGRecyclerViewHolder> getViewHolderByDataType(Class<?> clazz)
+    /**
+     * 根据数据类型获取可见区域的所有ViewHolder
+     * @param clazz
+     * @return
+     */
+    protected final List<TGRecyclerViewHolder> getViewHolderByDataType(Class<?> clazz)
     {
         List<TGRecyclerViewHolder> targetViewHolders = new ArrayList<TGRecyclerViewHolder>();
 
@@ -247,7 +288,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @param position
      * @param data
      */
-    public void updateData(int position, T data)
+    public final void updateData(int position, T data)
     {
         this.items.set(position, data);
         notifyItemChanged(position);
@@ -259,7 +300,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @param data 列表数据
      * @date 2013-1-17
      */
-    public void updateData(List<T> data)
+    public final void updateData(List<T> data)
     {
         if (null != data)
         {
@@ -277,7 +318,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @param data
      */
-    public void updateData(T[] data)
+    public final void updateData(T[] data)
     {
         if (null != data)
         {
@@ -291,7 +332,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 局部刷新，data必需是列表中数据的一部分
      * @param data
      */
-    public void updatePartData(List<T> data)
+    public final void updatePartData(List<T> data)
     {
         if (null != data)
         {
@@ -321,7 +362,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 局部刷新，data必需是列表中数据的一部分
      * @param data
      */
-    public void updatePartData(T[] data)
+    public final void updatePartData(T[] data)
     {
         if (null != data)
         {
@@ -348,7 +389,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 局部刷新，data必需是列表中数据的一个
      * @param data
      */
-    public void updatePartData(T data)
+    public final void updatePartData(T data)
     {
         if (null != data)
         {
@@ -370,7 +411,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @param data
      */
-    public void appendData(List<T> data)
+    public final void appendData(List<T> data)
     {
         if (null != data)
         {
@@ -384,7 +425,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @param data
      */
-    public void appendData(T[] data)
+    public final void appendData(T[] data)
     {
         if (null != data)
         {
@@ -397,7 +438,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 向列表行追加数据
      * @param data
      */
-    public void appendData(T data)
+    public final void appendData(T data)
     {
         if (null != data)
         {
@@ -411,7 +452,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @param position
      * @param data
      */
-    public void insertData(int position, T data)
+    public final void insertData(int position, T data)
     {
         if(null != data && position >= 0 && position <= this.items.size())
         {
@@ -427,7 +468,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @param position 列表行位置
      */
-    public void removeItem(int position)
+    public final void removeItem(int position)
     {
         if (items.size() > position && position >= 0)
         {
@@ -448,7 +489,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @param item 列表行数据
      */
-    public void removeItem(T item)
+    public final void removeItem(T item)
     {
         int position = items.indexOf(item);
         if (position > -1)
@@ -469,7 +510,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 删除多行数据
      * @param data
      */
-    public void removeItems(T[] data)
+    public final void removeItems(T[] data)
     {
         if(null != data && data.length > 0)
         {
@@ -494,7 +535,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 删除多行数据
      * @param data
      */
-    public void removeItems(List<T> data)
+    public final void removeItems(List<T> data)
     {
         if(null != data && data.size() > 0)
         {
@@ -518,7 +559,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     /**
      * 清除所有数据
      */
-    public void removeAll()
+    public final void removeAll()
     {
         items.clear();
         notifyDataSetChanged();
@@ -531,7 +572,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @return
      * @date 2014年2月10日
      */
-    public List<T> getListItems()
+    public final List<T> getListItems()
     {
         return this.items;
     }
@@ -541,7 +582,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @return 若列表无数据，返回null
      */
-    public T getFirstItem()
+    public final T getFirstItem()
     {
         if (!items.isEmpty())
         {
@@ -555,7 +596,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @return 若列表无数据，返回null
      */
-    public T getLastItem()
+    public final T getLastItem()
     {
         if (!items.isEmpty())
         {
@@ -564,7 +605,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         return null;
     }
 
-    public Context getContext()
+    public final Context getContext()
     {
         return context;
     }
@@ -575,7 +616,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @param key
      * @param extra
      */
-    public void putExtra(int key, Object extra)
+    public final void putExtra(int key, Object extra)
     {
         if (null == extras)
         {
@@ -590,7 +631,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @param key
      * @return
      */
-    public Object getExtra(int key)
+    public final Object getExtra(int key)
     {
         if (null == extras)
         {
@@ -599,7 +640,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         return extras.get(key);
     }
 
-    static class InternalRecyclerViewHolder<T> extends RecyclerView.ViewHolder
+    final static class InternalRecyclerViewHolder<T> extends RecyclerView.ViewHolder
     {
         private TGRecyclerViewHolder<T> tgRecyclerViewHolder;
 
