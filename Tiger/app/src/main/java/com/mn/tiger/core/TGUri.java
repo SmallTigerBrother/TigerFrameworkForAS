@@ -14,6 +14,8 @@ public class TGUri
 {
     public static final Logger LOG = Logger.getLogger(TGUri.class);
 
+    private String string;
+
     private String scheme;
 
     private String host;
@@ -27,6 +29,7 @@ public class TGUri
         if(string.indexOf("://") > -1)
         {
             TGUri leKuUri = new TGUri();
+            leKuUri.string = string;
             //解析scheme
             String[] segments = string.split("://");
             leKuUri.scheme = segments[0];
@@ -47,10 +50,21 @@ public class TGUri
                     leKuUri.params = new HashMap<String, String>();
                     String[] keyValues = leKuUri.paramString.split("&");
                     int count = keyValues.length;
+                    String[] keyAndValue;
                     for (int i = 0; i < count; i++)
                     {
-                        String[] keyAndValue = keyValues[i].split("=");
-                        leKuUri.params.put(keyAndValue[0], keyAndValue[1]);
+                        if (keyValues[i].indexOf("=") > -1)
+                        {
+                            keyAndValue = keyValues[i].split("=");
+                            if(keyAndValue.length > 1)
+                            {
+                                leKuUri.params.put(keyAndValue[0], keyAndValue[1]);
+                            }
+                            else
+                            {
+                                leKuUri.params.put(keyAndValue[0], "");
+                            }
+                        }
                     }
                 }
             }
@@ -103,5 +117,11 @@ public class TGUri
         }
 
         return null;
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.string;
     }
 }
