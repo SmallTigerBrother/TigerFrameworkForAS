@@ -14,63 +14,70 @@ public class TGUri
 {
     public static final Logger LOG = Logger.getLogger(TGUri.class);
 
-    private String string;
+    public static final TGUri URI_HTTP = TGUri.parse("http://");
 
-    private String scheme;
+    public static final TGUri URI_HTTPS =TGUri.parse("https://");
 
-    private String host;
+    private String string = "";
 
-    private String paramString;
+    private String scheme = "";
+
+    private String host = "";
+
+    private String paramString = "";
 
     private HashMap<String,String> params;
 
     public static TGUri parse(String string)
     {
-        if(string.indexOf("://") > -1)
+        int indexOfSeparator = string.indexOf("://");
+        int indexOfQuestionMark = string.indexOf("?");
+
+        if(indexOfSeparator > -1)
         {
             TGUri leKuUri = new TGUri();
             leKuUri.string = string;
             //解析scheme
-            String[] segments = string.split("://");
-            leKuUri.scheme = segments[0];
+            leKuUri.scheme = string.substring(0, indexOfSeparator);
 
-            //解析host
-            if(segments[1].indexOf("?") > -1)
+            if(indexOfSeparator < string.length())
             {
-                String[] hostAndParams = segments[1].split("\\?");
-                leKuUri.host = hostAndParams[0];
-                if(hostAndParams.length > 1)
+                //解析host
+                if(indexOfQuestionMark > -1)
                 {
-                    leKuUri.paramString = hostAndParams[1];
-                }
-
-                //解析params键值对
-                if(!TextUtils.isEmpty(leKuUri.paramString))
-                {
-                    leKuUri.params = new HashMap<String, String>();
-                    String[] keyValues = leKuUri.paramString.split("&");
-                    int count = keyValues.length;
-                    String[] keyAndValue;
-                    for (int i = 0; i < count; i++)
+                    leKuUri.host = string.substring(indexOfSeparator + 3, indexOfQuestionMark);
+                    if(indexOfQuestionMark < string.length())
                     {
-                        if (keyValues[i].indexOf("=") > -1)
+                        leKuUri.paramString = string.substring(indexOfQuestionMark + 1);
+                        //解析params键值对
+                        if(!TextUtils.isEmpty(leKuUri.paramString))
                         {
-                            keyAndValue = keyValues[i].split("=");
-                            if(keyAndValue.length > 1)
+                            leKuUri.params = new HashMap<String, String>();
+                            String[] keyValues = leKuUri.paramString.split("&");
+                            int count = keyValues.length;
+                            String[] keyAndValue;
+                            for (int i = 0; i < count; i++)
                             {
-                                leKuUri.params.put(keyAndValue[0], keyAndValue[1]);
-                            }
-                            else
-                            {
-                                leKuUri.params.put(keyAndValue[0], "");
+                                if (keyValues[i].indexOf("=") > -1)
+                                {
+                                    keyAndValue = keyValues[i].split("=");
+                                    if(keyAndValue.length > 1)
+                                    {
+                                        leKuUri.params.put(keyAndValue[0], keyAndValue[1]);
+                                    }
+                                    else
+                                    {
+                                        leKuUri.params.put(keyAndValue[0], "");
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                leKuUri.host = segments[1];
+                else
+                {
+                    leKuUri.host = string.substring(indexOfSeparator + 2);
+                }
             }
 
             return leKuUri;
