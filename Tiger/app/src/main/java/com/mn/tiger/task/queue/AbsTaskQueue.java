@@ -9,9 +9,9 @@ import com.mn.tiger.task.queue.TGLock.onLockListener;
 import com.mn.tiger.task.queue.TGLock.onUnLockListener;
 
 /**
- * 
+ *
  * 该类作用及功能说明: 任务队列
- * 
+ *
  * @date 2014年6月25日
  */
 public abstract class AbsTaskQueue extends LinkedList<Integer>
@@ -20,22 +20,22 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 * 日志标签
 	 */
 	protected final String LOG_TAG = this.getClass().getSimpleName();
-	
+
 	/**
 	 * @date 2014年6月25日
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 任务容器
 	 */
 	private SparseArray<TGTask> taskArray;
-	
+
 	/**
 	 * 任务分发管理锁
 	 */
 	private TGLock lock;
-	
+
 	/**
 	 * 构造函数
 	 * @date 2014年6月25日
@@ -46,39 +46,42 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 排序队列中的任务
 	 * @date 2014年6月25日
 	 */
 	protected abstract void sortTaskQueue();
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 执行下一个任务
 	 * @date 2014年6月25日
 	 */
 	public abstract void executeNextTask();
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 移除任务
 	 * @date 2014年6月25日
 	 */
 	@Override
 	public synchronized boolean remove(Object object)
 	{
-		// 从队列中移除任务
-		getTaskArray().remove((Integer) object);
-		return super.remove(object);
+		synchronized (this)
+		{
+			// 从队列中移除任务
+			getTaskArray().remove((Integer) object);
+			return super.remove(object);
+		}
 	}
-	
+
 	/**
 	 * 取消某个任务
 	 * @param taskId
 	 * @return
 	 */
 	public abstract boolean cancelTask(int taskId);
-	
+
 	/**
 	 * 该方法的作用:
 	 * 将任务添加到队列中
@@ -90,21 +93,27 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 		this.addLast(task.getTaskID());
 		getTaskArray().put(task.getTaskID(), task);
 	}
-	
+
 	/**
 	 * 该方法的作用: 暂停任务队列
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 */
-	public abstract void pauseTaskQueue();
-	
+	public void pauseTaskQueue()
+	{
+
+	}
+
 	/**
 	 * 该方法的作用: 重启任务队列
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 */
-	public abstract void restart();
-	
+	public void restart()
+	{
+
+	}
+
 	/**
 	 * 该方法的作用:
 	 * 取消所有任务
@@ -118,21 +127,21 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 			this.getTask(this.getFirst()).cancel();
 		}
 	}
-	
+
 	/**
 	 * 该方法的作用: 暂停某个指定任务
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 */
 	public abstract boolean pauseTask(int taskId);
-	
+
 	@Override
 	public void clear()
 	{
 		super.clear();
 		getTaskArray().clear();
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 根据ID获取任务
@@ -144,7 +153,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	{
 		return getTaskArray().get(taskId);
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取任务列表
@@ -161,8 +170,19 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	}
 
 	/**
+	 * 该方法的作用:
+	 * 设置任务列表
+	 * @date 2014年8月22日
+	 * @param taskArray
+	 */
+	public void setTaskArray(SparseArray<TGTask> taskArray)
+	{
+		this.taskArray = taskArray;
+	}
+
+	/**
 	 * 该方法的作用: 对分发器加锁，暂停所有已派发任务
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 * @return
 	 */
@@ -178,7 +198,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 					onLockListener.onLockSuccess();
 				}
 			}
-			
+
 			@Override
 			public void onLockFailed()
 			{
@@ -192,7 +212,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 
 	/**
 	 * 该方法的作用: 对分发器解锁
-	 * 
+	 *
 	 * @date 2014年3月17日
 	 * @return
 	 */
@@ -208,7 +228,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 					onUnLockListener.onUnLockSuccess();
 				}
 			}
-			
+
 			@Override
 			public void onUnLockFailed()
 			{

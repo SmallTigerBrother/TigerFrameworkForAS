@@ -44,7 +44,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 任务监听
 	 */
-	protected ITaskListener taskListener;
+	protected volatile ITaskListener taskListener;
 
 	/**
 	 * 执行该队列任务的线程池
@@ -134,17 +134,20 @@ public class TGTaskQueue extends AbsTaskQueue
 	}
 
 	@Override
-	public synchronized void addLast(TGTask task)
+	public void addLast(TGTask task)
 	{
-		task.setTaskListener(getTaskListener());
-		super.addLast(task);
+		synchronized (this)
+		{
+			task.setTaskListener(getTaskListener());
+			super.addLast(task);
+		}
 	}
 
 	/**
 	 * 该方法的作用: 移除任务
 	 * @date 2014年6月25日
 	 */
-	protected synchronized boolean removeTask(Integer taskId)
+	protected boolean removeTask(Integer taskId)
 	{
 		// 获取被移除任务
 		TGTask task = getTaskArray().get(taskId.intValue());
@@ -153,7 +156,10 @@ public class TGTaskQueue extends AbsTaskQueue
 			// 如果是正在运行的任务，队列中正在运行任务减1
 			if(runningTaskList.size() > 0 && runningTaskList.contains(taskId))
 			{
-				runningTaskList.remove(taskId);
+				synchronized (this)
+				{
+					runningTaskList.remove(taskId);
+				}
 			}
 			//销毁任务
 			task = null;
@@ -211,7 +217,7 @@ public class TGTaskQueue extends AbsTaskQueue
 			// 将当前运行的任务暂停
 			task.pause();
 			//从队列中移除原有任务
-			return this.removeTask((Integer)task.getTaskID());
+			return this.removeTask(task.getTaskID());
 		}
 
 		return false;
@@ -263,11 +269,13 @@ public class TGTaskQueue extends AbsTaskQueue
 	 */
 	public synchronized boolean cancelTask(int taskId)
 	{
+		LogTools.d(LOG_TAG, "[Method:cancelTask] taskId == " + taskId + "  ThreadId == " + Thread.currentThread().getId());
+
 		TGTask task = getTaskArray().get(taskId);
 		if(null != task)
 		{
 			task.cancel();
-			return TGTaskQueue.this.removeTask((Integer)taskId);
+			return TGTaskQueue.this.removeTask(taskId);
 		}
 
 		return false;
@@ -338,7 +346,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	{
 		if(taskListener == null)
 		{
-			return taskListener = new DefaultTaskListener();
+			taskListener = new DefaultTaskListener();
 		}
 		return taskListener;
 	}
@@ -377,26 +385,26 @@ public class TGTaskQueue extends AbsTaskQueue
 	public class DefaultTaskListener implements ITaskListener
 	{
 		@Override
-		public synchronized void onTaskStart()
+		public void onTaskStart()
 		{
 			LogTools.d(LOG_TAG, "[Method:DefaultTaskListener->onTaskStart]");
 		}
 
 		@Override
-		public synchronized void onTaskChanged(int progress)
+		public void onTaskChanged(int progress)
 		{
 			LogTools.d(LOG_TAG, "[Method:DefaultTaskListener->onTaskChanged] progress: " + progress);
 		}
 
 		@Override
-		public synchronized void onTaskFinished(int taskId)
+		public void onTaskFinished(int taskId)
 		{
 			LogTools.d(LOG_TAG, "[Method:DefaultTaskListener->onTaskFinished] taskId: " + taskId);
-			TGTaskQueue.this.removeTask((Integer)taskId);
+			TGTaskQueue.this.removeTask(taskId);
 		}
 
 		@Override
-		public synchronized void onTaskError(int taskId, int code, Object msg)
+		public void onTaskError(int taskId, int code, Object msg)
 		{
 			LogTools.p(LOG_TAG, "[Method:DefaultTaskListener->onTaskError] taskId: " + taskId + "; errorCode: " + code);
 			switch (code)
@@ -446,18 +454,18 @@ public class TGTaskQueue extends AbsTaskQueue
 					break;
 
 				default:
-					TGTaskQueue.this.removeTask((Integer)taskId);
+					TGTaskQueue.this.removeTask(taskId);
 					break;
 			}
 		}
 
 		@Override
-		public synchronized void onTaskCancel(int taskId)
+		public void onTaskCancel(int taskId)
 		{
 		}
 
 		@Override
-		public synchronized void onTaskPause(int taskId)
+		public void onTaskPause(int taskId)
 		{
 
 		}

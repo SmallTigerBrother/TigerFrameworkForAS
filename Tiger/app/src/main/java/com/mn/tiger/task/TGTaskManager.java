@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.mn.tiger.log.LogTools;
 import com.mn.tiger.task.dispatch.TGDispatcher;
 import com.mn.tiger.task.result.TGTaskResultHandler;
+import com.mn.tiger.task.thread.TGHttpDaemonThread;
 import com.mn.tiger.task.utils.TGTaskIDCreator;
 
 import java.util.HashMap;
@@ -127,13 +128,15 @@ public class TGTaskManager
 
 		LogTools.d(LOG_TAG, "[Method:cancelTask]" + "  taskID-->" + taskId);
 
-		TGTaskParams taskParams = new TGTaskParams();
-		taskParams.setTaskID(taskId);
-		taskParams.setTaskType(taskType);
-		taskParams.setTaskMode(TASK_CANCEL_MODE);
-		// 结束任务并删除
-		TGDispatcher.getInstance().cancelTask(taskParams.getTaskID(),
-				taskParams.getTaskType());
+		if(taskType != TaskType.TASK_TYPE_HTTP)
+		{
+			// 结束任务并删除
+			TGDispatcher.getInstance().cancelTask(taskId, taskType);
+		}
+		else
+		{
+			TGHttpDaemonThread.getInstance().cancelTask(taskId);
+		}
 	}
 
 	/**
