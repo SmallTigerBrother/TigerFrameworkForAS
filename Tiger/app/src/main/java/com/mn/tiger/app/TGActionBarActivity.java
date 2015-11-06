@@ -21,7 +21,6 @@ import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
-import com.mn.tiger.widget.dialog.LoadingAnimationDialog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -278,6 +277,15 @@ public class TGActionBarActivity extends Activity
 	}
 
 	/**
+	 * 取消注册HttpLoader
+	 * @param taskID
+	 */
+	public void unRegisterHttpLoader(int taskID)
+	{
+		httpTaskIDList.remove(Integer.valueOf(taskID));
+	}
+
+	/**
 	 * 取消Http请求
 	 */
 	protected void onCancelHttpLoader()
@@ -350,7 +358,7 @@ public class TGActionBarActivity extends Activity
 	 */
 	protected DialogFragment initLoadingDialog()
 	{
-		return new LoadingAnimationDialog();
+		return null;
 	}
 
 	/**

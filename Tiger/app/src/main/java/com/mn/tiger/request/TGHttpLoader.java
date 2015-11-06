@@ -404,6 +404,12 @@ public class TGHttpLoader<T> implements IRequestParser
 			@Override
 			protected void onRequestOver()
 			{
+				//请求完毕时，取消注册
+				if(context instanceof TGActionBarActivity)
+				{
+					((TGActionBarActivity)context).unRegisterHttpLoader(taskID);
+				}
+
 				if(null != loadCallback)
 				{
 					loadCallback.onLoadOver();
@@ -673,7 +679,7 @@ public class TGHttpLoader<T> implements IRequestParser
 		/**
 		 * 启动加载时回调
 		 */
-		public void onLoadStart();
+		void onLoadStart();
 
 		/**
 		 * 请求成功时回调
