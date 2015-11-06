@@ -76,7 +76,7 @@ public class TGUri
                 }
                 else
                 {
-                    leKuUri.host = string.substring(indexOfSeparator + 2);
+                    leKuUri.host = string.substring(indexOfSeparator + 3);
                 }
             }
 
