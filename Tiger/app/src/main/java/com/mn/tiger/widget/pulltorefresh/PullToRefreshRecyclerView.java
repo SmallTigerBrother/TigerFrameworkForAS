@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import com.mn.tiger.widget.recyclerview.TGRecyclerView;
+import com.mn.tiger.widget.recyclerview.TGRecyclerViewItemDecoration;
+
 
 /**
  * 拖动刷新列表
@@ -99,6 +101,16 @@ public class PullToRefreshRecyclerView extends BGARefreshLayout implements IPull
     {
         pullToRefreshViewImp.setOnRefreshListener(listener);
     }
+
+    /**
+     * 设置不同的Item之间的间隔
+     * @param itemDecoration
+     */
+    public void addItemDecoration(TGRecyclerViewItemDecoration itemDecoration)
+    {
+        recyclerView.addItemDecoration(itemDecoration);
+    }
+
 
     @Override
     public void onRefreshComplete()
