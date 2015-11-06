@@ -1,7 +1,5 @@
 package com.mn.tiger.widget.tab;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,7 +13,8 @@ import android.widget.LinearLayout;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
-import com.mn.tiger.utility.ImageLoaderUtils;
+
+import java.util.ArrayList;
 
 /**
  * 自定义Tab视图
@@ -298,12 +297,7 @@ public class TGTabView extends LinearLayout
 	{
 		if(!TextUtils.isEmpty(imageName))
 		{
-			if(imageName.startsWith("http"))
-			{
-				//如果是在线文件，使用ImageLoader加载
-				ImageLoaderUtils.displayImage(imageName, imageView);
-			}
-			else if(imageName.startsWith("file"))
+			if(imageName.startsWith("file"))
 			{
 				//如果是本地存储中的文件，直接加载
 				Drawable drawable = BitmapDrawable.createFromPath(imageName);

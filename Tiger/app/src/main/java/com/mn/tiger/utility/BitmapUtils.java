@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.mn.tiger.log.LogTools;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -665,87 +664,6 @@ public class BitmapUtils
             bitmap = null;
         }
         return sourceBitmap;
-    }
-
-    /**
-     * 显示图片资源
-     *
-     * @param imageName image的名称，支持http，file，和资源文件名称
-     * @param imageView
-     */
-    public static void displayImage(String imageName, ImageView imageView)
-    {
-        if (!TextUtils.isEmpty(imageName))
-        {
-            if (imageName.startsWith("http"))
-            {
-                //如果是在线文件，使用ImageLoader加载
-                ImageLoaderUtils.displayImage(imageName, imageView);
-            }
-            else if (imageName.startsWith("file"))
-            {
-                //如果是本地存储中的文件，直接加载
-                Drawable drawable = BitmapDrawable.createFromPath(imageName);
-                if (null != drawable)
-                {
-                    imageView.setImageDrawable(drawable);
-                }
-            }
-            else
-            {
-                //其他默认为资源文件，直接填充
-                int resId = imageView.getContext().getResources().getIdentifier(imageName,
-                        "drawable", imageView.getContext().getPackageName());
-                if (resId != 0)
-                {
-                    imageView.setImageResource(resId);
-                }
-                else
-                {
-                    LogTools.e("", "[Method:diplayImage] no resource found of name " + imageName);
-                }
-            }
-        }
-    }
-
-    /**
-     * 显示图片资源
-     *
-     * @param imageName image的名称，支持http，file，和资源文件名称
-     */
-    public static void displayImage(Context context, String imageName, ImageAware imageAware)
-    {
-        if (!TextUtils.isEmpty(imageName))
-        {
-            if (imageName.startsWith("http"))
-            {
-                //如果是在线文件，使用ImageLoader加载
-                ImageLoaderUtils.displayImage(imageName, imageAware);
-            }
-            else if (imageName.startsWith("file"))
-            {
-                //如果是本地存储中的文件，直接加载
-                Drawable drawable = BitmapDrawable.createFromPath(imageName);
-                if (null != drawable)
-                {
-                    imageAware.setImageDrawable(drawable);
-                }
-            }
-            else
-            {
-                //其他默认为资源文件，直接填充
-                int resId = context.getResources().getIdentifier(imageName,
-                        "drawable", context.getPackageName());
-                if (resId != 0)
-                {
-                    imageAware.setImageDrawable(context.getResources().getDrawable(resId));
-                }
-                else
-                {
-                    LogTools.e("", "[Method:diplayImage] no resource found of name " + imageName);
-                }
-            }
-        }
     }
 
     /**
