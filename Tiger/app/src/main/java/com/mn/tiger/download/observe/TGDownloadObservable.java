@@ -3,21 +3,18 @@ package com.mn.tiger.download.observe;
 import android.database.Observable;
 
 import com.mn.tiger.download.TGDownloader;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 /**
- * 
+ *
  * 该类作用及功能说明：用一个key的观察者，（取消）注册观察者到arraylist
- * 
+ *
  * @date 2014年3月31日
  */
 public class TGDownloadObservable extends Observable<TGDownloadObserver>
 {
-	/**
-	 * log tag
-	 */
-	public static final String TAG = TGDownloadObservable.class.getSimpleName();
-	
+	private static final Logger LOG = Logger.getLogger(TGDownloadObservable.class);
+
 	/**
 	 * 取消注册
 	 */
@@ -46,9 +43,9 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 通知观察者
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 */
 	public void notifyChange(Object result)
@@ -57,7 +54,7 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 		switch(downloader.getDownloadStatus())
 		{
 			case TGDownloader.DOWNLOAD_FAILED:
-				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_FAILED ;" + "observer size: " + mObservers.size());
+				LOG.i("[Method:notifyChange], Status:DOWNLOAD_FAILED ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -68,7 +65,7 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				unregisterAll();
 				break;
 			case TGDownloader.DOWNLOAD_SUCCEED:
-				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_SUCCEED ;" + "observer size: " + mObservers.size());
+				LOG.i("[Method:notifyChange], Status:DOWNLOAD_SUCCEED ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -79,19 +76,19 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				unregisterAll();
 				break;
 			case TGDownloader.DOWNLOAD_DOWNLOADING:
-				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_DOWNLOADING ;" + "observer size: " + mObservers.size());
+				LOG.i("[Method:notifyChange], Status:DOWNLOAD_DOWNLOADING ;" + "observer size: " + mObservers.size());
 				int progress = 0;
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null && downloader.getFileSize() > 0)
 					{
 						progress = (int) (downloader.getCompleteSize() * 100 / downloader.getFileSize());
-    					observer.onProgress(downloader, progress);
+						observer.onProgress(downloader, progress);
 					}
 				}
 				break;
 			case TGDownloader.DOWNLOAD_PAUSE:
-				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_STOP ;" + "observer size: " + mObservers.size());
+				LOG.i("[Method:notifyChange], Status:DOWNLOAD_STOP ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -102,7 +99,7 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				unregisterAll();
 				break;
 			case TGDownloader.DOWNLOAD_STARTING:
-				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_STARTING ;" + "observer size: " + mObservers.size());
+				LOG.i("[Method:notifyChange], Status:DOWNLOAD_STARTING ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -111,9 +108,9 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 					}
 				}
 				break;
-				
+
 			case TGDownloader.DOWNLOAD_CANCEL:
-				LogTools.i(TAG,"[Method:notifyChange], Status:DOWNLOAD_CANCEL ;" + "observer size: " + mObservers.size());
+				LOG.i("[Method:notifyChange], Status:DOWNLOAD_CANCEL ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -128,9 +125,9 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 判断该observer是否已经注册过，已经注册返回true，否则返回false
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param observer
 	 * @return
@@ -154,30 +151,30 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 	private OnObserverChangeListener mOnObserverChangeListener;
 
 	/**
-	 * 
+	 *
 	 * 该类作用及功能说明:
 	 * 观察者集合是否被清空监听，当mObservers被清空时，回调onObserverClear方法，把该集合从观察者控制类中移除
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 */
 	public interface OnObserverChangeListener
 	{
 
 		/**
-		 * 
+		 *
 		 * 该方法的作用: 清空观察者集合回调方法.
-		 * 
+		 *
 		 * @date 2014年3月31日
-		 * @param uri
+		 * @param key
 		 *            观察者对应key
 		 */
 		void onObserverClear(String key);
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 设置观察者变化监听
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param l
 	 */

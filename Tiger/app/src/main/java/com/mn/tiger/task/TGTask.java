@@ -6,7 +6,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 
-import com.mn.tiger.log.LogTools;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.task.thread.TGThreadPool;
@@ -34,32 +33,32 @@ public class TGTask implements Cloneable
 	 * 任务回调启动者的messenger
 	 */
 	private Messenger messenger;
-	
+
 	/**
 	 * 任务执行参数
 	 */
 	private Object params;
-	
+
 	/**
 	 * 任务类型
 	 */
 	private int type;
-	
+
 	/**
 	 * 上下文信息
 	 */
 	private Context context;
-	
+
 	/**
 	 * 任务队列变化监听器
 	 */
 	protected ITaskListener taskListener;
-	
+
 	/**
 	 * 错误码
 	 */
 	private int errorCode = TaskError.UNKNOWN_ERROR_CODE;
-	
+
 	/**
 	 * 错误信息
 	 */
@@ -82,10 +81,10 @@ public class TGTask implements Cloneable
 	public TGTaskResult executeTask(TGThreadPool threadPool)
 	{
 		LOG.d("[Method:executeTask]");
-		
+
 		// 修改任务状态为正在运行
 		state = TGTaskState.RUNNING;
-		
+
 		// 执行线程
 		Runnable taskRunnable = new Runnable()
 		{
@@ -95,12 +94,12 @@ public class TGTask implements Cloneable
 				TGTask.this.run();
 			}
 		};
-		
+
 		threadPool.execute(taskRunnable);
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 任务执行方法
@@ -141,7 +140,7 @@ public class TGTask implements Cloneable
 			default:
 				break;
 		}
-		
+
 		//销毁所有属性
 		onDestroy();
 	}
@@ -165,8 +164,10 @@ public class TGTask implements Cloneable
 	 */
 	protected void sendTaskResult(Object result)
 	{
+		LOG.d("[Method:sendTaskResult]");
 		if (messenger == null)
 		{
+			LOG.w("[Method:sendTaskResult] the messenger is null");
 			return;
 		}
 		Message msg = Message.obtain();
@@ -183,7 +184,7 @@ public class TGTask implements Cloneable
 		}
 		catch (RemoteException e)
 		{
-			LogTools.e(e);
+			LOG.e("[Method:sendTaskResult]", e);
 		}
 	}
 
@@ -198,7 +199,7 @@ public class TGTask implements Cloneable
 		state = TGTaskState.PAUSE;
 		onTaskPause();
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 取消任务
@@ -209,7 +210,7 @@ public class TGTask implements Cloneable
 		state = TGTaskState.CANCEL;
 		onTaskCancel();
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 任务开始方法
@@ -238,7 +239,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskChanged(int progress)
 	{
-		LOG.d("[Method:onTaskChanged]");
+		LOG.d("[Method:onTaskChanged] progress == " + progress);
 		// 若当前任务状态为运行状态，则通知任务队列，任务执行变化
 		if (state == TGTaskState.RUNNING && null != taskListener)
 		{
@@ -253,10 +254,11 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskFinished()
 	{
+		LOG.d("[Method:onTaskFinished]");
+
 		// 修改任务状态为完成
 		state = TGTaskState.FINISHED;
 
-		LOG.d("[Method:onTaskFinished]");
 		// 回调任务完成接口
 		if(null != taskListener)
 		{
@@ -273,10 +275,10 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskError(int code, Object msg)
 	{
+		LOG.d("[Method:onTaskError] code == " + code);
 		// 修改任务状态为异常
 		state = TGTaskState.ERROR;
 
-		LOG.d("[Method:onTaskError]" + "-->errorCode-->" + code);
 		// 回调异常接口
 		if(null != taskListener)
 		{
@@ -291,47 +293,49 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskCancel()
 	{
-		LOG.d("[Method:onTaskCancel] taskId: " + taskID);
+		LOG.d("[Method:onTaskCancel] taskId == " + taskID);
 		// 回调取消任务接口
 		if(null != taskListener)
 		{
 			taskListener.onTaskCancel(this.getTaskID());
 		}
-		
+
 		onDestroy();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 暂停任务
 	 * @date 2014年8月15日
 	 */
 	protected void onTaskPause()
 	{
-		LOG.d("[Method:onTaskPause] taskId: " + taskID);
-		
+		LOG.d("[Method:onTaskPause] taskId == " + taskID);
+
 		// 回调停止任务接口
 		if(null != taskListener)
 		{
 			taskListener.onTaskPause(this.getTaskID());
 		}
-		
+
 		onDestroy();
 	}
-	
+
 	/**
 	 * 该方法的作用: 清空回调接口，清空属性，销毁任务
 	 * @date 2014年8月15日
 	 */
 	protected void onDestroy()
 	{
+		LOG.d("[Method:onDestroy] taskId == " + taskID);
+
 		messenger = null;
 		taskListener = null;
-		
+
 		context = null;
 		params = null;
 	}
-	
+
 	@Override
 	public Object clone() throws CloneNotSupportedException
 	{
@@ -345,17 +349,17 @@ public class TGTask implements Cloneable
 			task.setParams(params);
 			task.setMessenger(messenger);
 			task.setTaskListener(taskListener);
-			
+
 			return task;
 		}
 		catch (Exception e)
 		{
-			LOG.e(e.getMessage(), e);
+			LOG.e("[Method:clone]", e);
 		}
-		
+
 		return new TGTask();
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 是否正在执行中
@@ -366,7 +370,7 @@ public class TGTask implements Cloneable
 	{
 		return state == TGTaskState.RUNNING;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取任务状态
@@ -410,7 +414,7 @@ public class TGTask implements Cloneable
 	{
 		return taskID;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取Messenger
@@ -459,12 +463,12 @@ public class TGTask implements Cloneable
 	{
 		return context;
 	}
-	
+
 	public void setContext(Context context)
 	{
 		this.context = context;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取类型
@@ -486,7 +490,7 @@ public class TGTask implements Cloneable
 	{
 		this.type = type;
 	}
-	
+
 	/**
 	 * 该方法的作用:
 	 * 获取任务变化监听器
@@ -521,7 +525,7 @@ public class TGTask implements Cloneable
 		this.errorCode = errorCode;
 		this.errorMsg = errorMsg;
 	}
-	
+
 	/**
 	 * 该类作用及功能说明
 	 * 任务错误
@@ -533,37 +537,37 @@ public class TGTask implements Cloneable
 		 * 请求超时错误
 		 */
 		public static final int SOCKET_TIMEOUT_CODE = 0x00000011;
-		
+
 		/**
 		 * 派发器锁定错误
 		 */
 		public static final int LOCK_DISPATER_CODE = 0x00000013;
-		
+
 		/**
 		 * Messenger为null的错误
 		 */
-		public static final int MESSENGER_NULLPOINTER_ERROR_CODE = 0x00000014; 
-		
+		public static final int MESSENGER_NULLPOINTER_ERROR_CODE = 0x00000014;
+
 		/**
 		 * 远程调用异常
 		 */
 		public static final int REMOTEEXCEPTION_CODE = 0x00000015;
-		
+
 		/**
 		 * 未知异常
 		 */
 		public static final int UNKNOWN_ERROR_CODE = 0x00000017;
-		
+
 		/**
 		 * 网络连接不可用异常
 		 */
 		public static final int NETWORK_UNAVAILABLE_CODE = 0x00000018;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该类作用及功能说明 任务状态
-	 * 
+	 *
 	 * @date 2014年7月28日
 	 */
 	public enum TGTaskState
@@ -588,7 +592,7 @@ public class TGTask implements Cloneable
 		 * 出错
 		 */
 		ERROR,
-		
+
 		/**
 		 * 取消
 		 */

@@ -2,7 +2,7 @@ package com.mn.tiger.task.dispatch;
 
 import android.util.SparseArray;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGScheduleTaskList;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TaskType;
@@ -16,10 +16,7 @@ import com.mn.tiger.task.queue.TGTaskQueue;
  */
 public class TGDispatcher
 {
-	/**
-	 * 日志标签
-	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGDispatcher.class);
 
 	/**
 	 * 任务队列数组
@@ -75,7 +72,7 @@ public class TGDispatcher
 	 */
 	public void dispatchTask(TGTask task)
 	{
-		LogTools.p(LOG_TAG, "[Method:dispatchTask]");
+		LOG.d("[Method:dispatchTask] taskId == " + task.getTaskID());
 
 		// 缓存中查找该任务应该加入的队列
 		TGTaskQueue taskQueue = getTaskQueue(task.getType());
@@ -97,6 +94,7 @@ public class TGDispatcher
 	 */
 	public void dispatchScheduleTaskList(TGScheduleTaskList taskList)
 	{
+		LOG.d("[Method:dispatchScheduleTaskList] size == " + taskList.size());
 		TGScheduleTaskQueue taskQueue = getScheduleTaskQueue(taskList.getTaskListId());
 		taskQueue.setTaskList(taskList);
 		taskQueue.executeNextTask();
@@ -202,7 +200,7 @@ public class TGDispatcher
 	 */
 	public void executeAllTaskQueues()
 	{
-		LogTools.p(LOG_TAG, "[Method:executeAllTaskQueues]");
+		LOG.d("[Method:executeAllTaskQueues]");
 		TGTaskQueue taskQueue = null;
 		for (int i = 0; i < getTaskQueues().size(); i++)
 		{
@@ -221,9 +219,10 @@ public class TGDispatcher
 	 */
 	public boolean pauseTask(int taskId, int taskType)
 	{
+		LOG.d("[Method:pauseTask] taskId == " + taskId + " taskType == " + taskType);
 		if(taskId < 0 || taskType < 0)
 		{
-			LogTools.p(LOG_TAG, "[Method:pauseTask] task info is error.");
+			LOG.w("[Method:pauseTask] task id or taskType is invalid");
 			return false;
 		}
 
@@ -238,7 +237,7 @@ public class TGDispatcher
 	 */
 	public void pauseAllTaskQueues()
 	{
-		LogTools.p(LOG_TAG, "[Method:pauseAllTaskQueues]");
+		LOG.d("[Method:pauseAllTaskQueues]");
 		TGTaskQueue taskQueue = null;
 		for (int i = 0; i < getTaskQueues().size(); i++)
 		{
@@ -255,7 +254,7 @@ public class TGDispatcher
 	 */
 	public void pauseTaskQueue(int taskType)
 	{
-		LogTools.p(LOG_TAG, "[Method:pauseTaskQueue]");
+		LOG.d("[Method:pauseTaskQueue] taskType == " + taskType);
 		TGTaskQueue taskQueue = getTaskQueues().get(taskType);
 
 		if(null != taskQueue)
@@ -270,7 +269,7 @@ public class TGDispatcher
 	 */
 	public void cancelAllTasks()
 	{
-		LogTools.p(LOG_TAG, "[Method:cancelAllTasks]");
+		LOG.d("[Method:cancelAllTasks]");
 		TGTaskQueue taskQueue = null;
 		for (int i = 0; i < getTaskQueues().size(); i++)
 		{
@@ -301,9 +300,10 @@ public class TGDispatcher
 	 */
 	public boolean cancelTask(int taskId, int taskType)
 	{
+		LOG.d("[Method:cancelTask] taskId == " + taskId + " taskType == " + taskType);
 		if(taskId < 0 || taskType < 0)
 		{
-			LogTools.p(LOG_TAG, "[Method:cancelTask] task info is error.");
+			LOG.w("[Method:cancelTask] taskId or taskType is invalid");
 			return false;
 		}
 

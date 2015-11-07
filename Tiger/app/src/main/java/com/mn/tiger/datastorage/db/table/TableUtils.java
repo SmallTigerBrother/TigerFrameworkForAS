@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.mn.tiger.datastorage.db.annotation.Id;
 import com.mn.tiger.datastorage.db.annotation.Table;
 import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TableUtils
 {
+	private static final Logger LOG = Logger.getLogger(TableUtils.class);
 
 	private TableUtils()
 	{
@@ -64,7 +65,7 @@ public class TableUtils
 	}
 
 	private static void addColumns2Map(Class<?> entityType, String primaryKeyFieldName,
-			HashMap<String, Column> columnMap)
+									   HashMap<String, Column> columnMap)
 	{
 		if (Object.class.equals(entityType))
 			return;
@@ -116,7 +117,7 @@ public class TableUtils
 		}
 		catch (Throwable e)
 		{
-			LogTools.e(e.getMessage(), e);
+			LOG.e("[Method:addColumns2Map]", e);
 		}
 	}
 

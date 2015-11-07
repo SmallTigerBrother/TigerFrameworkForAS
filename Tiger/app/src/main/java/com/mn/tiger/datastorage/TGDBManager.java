@@ -1,11 +1,5 @@
 package com.mn.tiger.datastorage;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,12 +9,12 @@ import android.text.TextUtils;
 import com.mn.tiger.datastorage.db.DaoConfig;
 import com.mn.tiger.datastorage.db.FindTempCache;
 import com.mn.tiger.datastorage.db.exception.DbException;
-import com.mn.tiger.datastorage.db.observe.TGDatasetObserveController;
+import com.mn.tiger.datastorage.db.observe.TGDataSetObserveController;
 import com.mn.tiger.datastorage.db.sqlite.CursorUtils;
-import com.mn.tiger.datastorage.db.sqlite.TGModelSelector;
 import com.mn.tiger.datastorage.db.sqlite.Selector;
 import com.mn.tiger.datastorage.db.sqlite.SqlInfo;
 import com.mn.tiger.datastorage.db.sqlite.SqlInfoBuilder;
+import com.mn.tiger.datastorage.db.sqlite.TGModelSelector;
 import com.mn.tiger.datastorage.db.sqlite.WhereBuilder;
 import com.mn.tiger.datastorage.db.table.DbModel;
 import com.mn.tiger.datastorage.db.table.Id;
@@ -31,15 +25,23 @@ import com.mn.tiger.datastorage.db.upgrade.AbsDbUpgrade;
 import com.mn.tiger.datastorage.db.upgrade.DatabaseObject;
 import com.mn.tiger.datastorage.db.upgrade.TigerTables;
 import com.mn.tiger.datastorage.db.util.IOUtils;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * 数据库操作接口，提供数据库升级、创建等方法 实现对象的增删改查
- * 
+ *
  */
 public class TGDBManager
 {
+	private static final Logger LOG = Logger.getLogger(TGDBManager.class);
+
 	/**
 	 * 数据库集合。key: dbName
 	 */
@@ -55,12 +57,11 @@ public class TGDBManager
 	 */
 	private SQLiteDatabase database;
 	private DaoConfig daoConfig;
-	private boolean debug = false;
 	private boolean allowTransaction = false;
 
 	/**
 	 * 构造方法
-	 * 
+	 *
 	 * @param config
 	 */
 	private TGDBManager(DaoConfig config)
@@ -79,7 +80,7 @@ public class TGDBManager
 
 	/**
 	 * 数据库升级方法
-	 * 
+	 *
 	 * @param context
 	 * @param dbDir
 	 * @param dbName
@@ -87,9 +88,10 @@ public class TGDBManager
 	 * @param dbUpgrade
 	 *            void
 	 */
-	public static void UpgradeDb(final Context context, final String dbDir, final String dbName, final int dbVersion,
-			final AbsDbUpgrade dbUpgrade)
+	public static void upgradeDb(final Context context, final String dbDir, final String dbName, final int dbVersion,
+								 final AbsDbUpgrade dbUpgrade)
 	{
+		LOG.i("[Method:upgradeDb] dbName == " + dbName + " dbVersion == " + dbVersion);
 		new Thread(new Runnable()
 		{
 			@Override
@@ -102,7 +104,7 @@ public class TGDBManager
 
 	/**
 	 * 获取数据库管理类实例
-	 * 
+	 *
 	 * @param daoConfig
 	 *            数据库设置
 	 * @return MPDbManager
@@ -128,7 +130,7 @@ public class TGDBManager
 		}
 		catch (DbException e)
 		{
-			LogTools.e(e.getMessage(), e);
+			LOG.e("[Method:getInstance]", e);
 		}
 
 		// 检查是否有数据库升级策略，如果有，执行升级流程
@@ -156,11 +158,11 @@ public class TGDBManager
 
 	/**
 	 * 根据自定义名称，创建数据库 根据传入版本号，更新数据库
-	 * 
 	 * @param context
-	 * @param dbDir
 	 * @param dbName
-	 * @return MPDbManager
+	 * @param dbVersion
+	 * @param dbUpgrade
+	 * @return
 	 */
 	public static TGDBManager create(Context context, String dbName, int dbVersion, AbsDbUpgrade dbUpgrade)
 	{
@@ -173,7 +175,7 @@ public class TGDBManager
 
 	/**
 	 * 创建数据库
-	 * 
+	 *
 	 * @param context
 	 *            应用上下文信息
 	 * @param dbDir
@@ -198,7 +200,7 @@ public class TGDBManager
 
 	/**
 	 * 根据传入配置，创建数据库
-	 * 
+	 *
 	 * @param daoConfig
 	 * @return MPDbManager
 	 */
@@ -208,9 +210,9 @@ public class TGDBManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 关闭DB, 并移除出缓存
-	 * 
+	 *
 	 * @date 2014年8月29日
 	 * @param dbFilePath
 	 *            db文件全路径
@@ -226,9 +228,9 @@ public class TGDBManager
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 关闭DB, 并移除出缓存
-	 * 
+	 *
 	 * @date 2014年8月29日
 	 */
 	public static void closeAllDB()
@@ -249,20 +251,8 @@ public class TGDBManager
 	}
 
 	/**
-	 * 是否加入sql打印日志
-	 * 
-	 * @param debug
-	 * @return MPDbManager
-	 */
-	public TGDBManager configDebug(boolean debug)
-	{
-		this.debug = debug;
-		return this;
-	}
-
-	/**
 	 * 是否支持事务
-	 * 
+	 *
 	 * @param allowTransaction
 	 * @return MPDbManager
 	 */
@@ -274,7 +264,7 @@ public class TGDBManager
 
 	/**
 	 * 获取数据库信息
-	 * 
+	 *
 	 * @return SQLiteDatabase
 	 */
 	public SQLiteDatabase getDatabase()
@@ -284,7 +274,7 @@ public class TGDBManager
 
 	/**
 	 * 获取数据库配置信息
-	 * 
+	 *
 	 * @return DaoConfig
 	 */
 	public DaoConfig getDaoConfig()
@@ -294,7 +284,7 @@ public class TGDBManager
 
 	/**
 	 * 根据传入entity，做新增或更新表操作
-	 * 
+	 *
 	 * @param entity
 	 * @throws DbException
 	 *             void
@@ -310,7 +300,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -320,8 +310,8 @@ public class TGDBManager
 
 	/**
 	 * 根据传入entity集合，全部做新增或更新表操作
-	 * 
-	 * @param entity
+	 *
+	 * @param entities
 	 * @throws DbException
 	 *             void
 	 */
@@ -331,7 +321,7 @@ public class TGDBManager
 		{
 			return;
 		}
-			
+
 		try
 		{
 			beginTransaction();
@@ -344,7 +334,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -354,7 +344,7 @@ public class TGDBManager
 
 	/**
 	 * 替换主键相同的entity
-	 * 
+	 *
 	 * @param entity
 	 * @throws DbException
 	 *             void
@@ -371,7 +361,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -381,7 +371,7 @@ public class TGDBManager
 
 	/**
 	 * 替换list队列中主键相同的entity
-	 * 
+	 *
 	 * @param entities
 	 * @throws DbException
 	 *             void
@@ -393,7 +383,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -406,7 +396,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -416,7 +406,7 @@ public class TGDBManager
 
 	/**
 	 * 保存相关entity对象信息
-	 * 
+	 *
 	 * @param entity
 	 * @throws DbException
 	 *             void
@@ -432,7 +422,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -442,7 +432,7 @@ public class TGDBManager
 
 	/**
 	 * 保存列表中所有entity对象
-	 * 
+	 *
 	 * @param entities
 	 * @throws DbException
 	 *             void
@@ -453,7 +443,7 @@ public class TGDBManager
 		{
 			return;
 		}
-			
+
 		try
 		{
 			beginTransaction();
@@ -466,7 +456,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -476,7 +466,7 @@ public class TGDBManager
 
 	/**
 	 * 保存对象关联数据库生成的id
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 * @throws DbException
@@ -494,7 +484,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -505,7 +495,7 @@ public class TGDBManager
 
 	/**
 	 * 保存集合中所有对象关联数据库生成的id
-	 * 
+	 *
 	 * @param entities
 	 * @throws DbException
 	 *             void
@@ -516,7 +506,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -532,7 +522,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -542,7 +532,7 @@ public class TGDBManager
 
 	/**
 	 * 根据id删除数据
-	 * 
+	 *
 	 * @param entityType
 	 * @param idValue
 	 * @throws DbException
@@ -554,7 +544,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -563,7 +553,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entityType);
+			TGDataSetObserveController.getInstance().notifyChange(entityType);
 		}
 		finally
 		{
@@ -573,7 +563,7 @@ public class TGDBManager
 
 	/**
 	 * 删除对象
-	 * 
+	 *
 	 * @param entity
 	 * @throws DbException
 	 *             void
@@ -584,7 +574,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -593,7 +583,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -603,7 +593,7 @@ public class TGDBManager
 
 	/**
 	 * 根据条件删除对象
-	 * 
+	 *
 	 * @param entityType
 	 * @param whereBuilder
 	 * @throws DbException
@@ -615,7 +605,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -624,7 +614,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entityType);
+			TGDataSetObserveController.getInstance().notifyChange(entityType);
 		}
 		finally
 		{
@@ -634,19 +624,19 @@ public class TGDBManager
 
 	/**
 	 * 删除集合中所有对象
-	 * 
+	 *
 	 * @param entities
 	 * @throws DbException
 	 *             void
 	 */
 	public void deleteAll(List<?> entities) throws DbException
 	{
-		if (entities == null || entities.size() == 0 || 
+		if (entities == null || entities.size() == 0 ||
 				!tableIsExist(entities.get(0).getClass()))
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -658,7 +648,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -668,7 +658,7 @@ public class TGDBManager
 
 	/**
 	 * 删除对象对应的表中所有数据
-	 * 
+	 *
 	 * @param entityType
 	 * @throws DbException
 	 *             void
@@ -680,7 +670,7 @@ public class TGDBManager
 
 	/**
 	 * 修改选择列的数据
-	 * 
+	 *
 	 * @param entity
 	 * @param updateColumnNames
 	 * @throws DbException
@@ -692,7 +682,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -701,7 +691,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -711,7 +701,7 @@ public class TGDBManager
 
 	/**
 	 * 根据条件修改选择列的数据
-	 * 
+	 *
 	 * @param entity
 	 * @param whereBuilder
 	 * @param updateColumnNames
@@ -724,7 +714,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -733,7 +723,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entity.getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entity.getClass());
 		}
 		finally
 		{
@@ -743,8 +733,8 @@ public class TGDBManager
 
 	/**
 	 * 修改集合中选择列的数据
-	 * 
-	 * @param entity
+	 *
+	 * @param entities
 	 * @param updateColumnNames
 	 * @throws DbException
 	 *             void
@@ -755,7 +745,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -767,7 +757,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -777,7 +767,7 @@ public class TGDBManager
 
 	/**
 	 * 根据条件修改集合中选择列的数据
-	 * @param entity
+	 * @param entities
 	 * @param whereBuilder
 	 * @param updateColumnNames
 	 * @throws DbException
@@ -789,7 +779,7 @@ public class TGDBManager
 		{
 			return;
 		}
-		
+
 		try
 		{
 			beginTransaction();
@@ -801,7 +791,7 @@ public class TGDBManager
 
 			setTransactionSuccessful();
 
-			TGDatasetObserveController.getInstance().notifyChange(entities.get(0).getClass());
+			TGDataSetObserveController.getInstance().notifyChange(entities.get(0).getClass());
 		}
 		finally
 		{
@@ -811,7 +801,7 @@ public class TGDBManager
 
 	/**
 	 * 根据id,查找对象
-	 * 
+	 *
 	 * @param entityType
 	 * @param idValue
 	 * @return
@@ -843,7 +833,7 @@ public class TGDBManager
 		{
 			if (cursor.moveToNext())
 			{
-				T entity = (T) CursorUtils.getEntity(this, cursor, entityType, seq);
+				T entity = CursorUtils.getEntity(this, cursor, entityType, seq);
 				findTempCache.put(sql, entity);
 				return entity;
 			}
@@ -857,7 +847,7 @@ public class TGDBManager
 
 	/**
 	 * 查找表中第一个对象
-	 * 
+	 *
 	 * @param selector
 	 * @return
 	 * @throws DbException
@@ -899,7 +889,7 @@ public class TGDBManager
 
 	/**
 	 * 查找表中第一个对象
-	 * 
+	 *
 	 * @param entityType
 	 * @return
 	 * @throws DbException
@@ -913,7 +903,7 @@ public class TGDBManager
 
 	/**
 	 * 根据条件查找表中第一个对象
-	 * 
+	 *
 	 * @param entityType
 	 * @param whereBuilder
 	 * @return
@@ -928,7 +918,7 @@ public class TGDBManager
 
 	/**
 	 * 查找表中第一个对象
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 * @throws DbException
@@ -963,7 +953,7 @@ public class TGDBManager
 
 	/**
 	 * 根据Selector条件查询
-	 * 
+	 *
 	 * @param selector
 	 * @return
 	 * @throws DbException
@@ -1006,8 +996,8 @@ public class TGDBManager
 
 	/**
 	 * 根据对象类型查询
-	 * 
-	 * @param selector
+	 *
+	 * @param entityType
 	 * @return
 	 * @throws DbException
 	 *             List<T>
@@ -1019,8 +1009,9 @@ public class TGDBManager
 
 	/**
 	 * 根据条件查询
-	 * 
-	 * @param selector
+	 *
+	 * @param entityType
+	 * @param whereBuilder
 	 * @return
 	 * @throws DbException
 	 *             List<T>
@@ -1032,8 +1023,8 @@ public class TGDBManager
 
 	/**
 	 * 根据对象查询
-	 * 
-	 * @param selector
+	 *
+	 * @param entity
 	 * @return
 	 * @throws DbException
 	 *             List<T>
@@ -1066,12 +1057,12 @@ public class TGDBManager
 
 	/**
 	 * 根据sql语句查询第一条数据
-	 * 
+	 *
 	 * @param sqlInfo
 	 *            查询sql语句
 	 * @return DbModel 查询结果键值对对象
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public DbModel findDbModelFirst(SqlInfo sqlInfo) throws DbException
 	{
@@ -1092,12 +1083,12 @@ public class TGDBManager
 
 	/**
 	 * 根据DbModelSelector条件查询第一条数据
-	 * 
+	 *
 	 * @param selector
 	 *            查询条件
 	 * @return DbModel 查询结果键值对对象
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public DbModel findDbModelFirst(TGModelSelector selector) throws DbException
 	{
@@ -1123,12 +1114,12 @@ public class TGDBManager
 
 	/**
 	 * 根据sql条件查询
-	 * 
+	 *
 	 * @param sqlInfo
 	 *            查询sql语句
 	 * @return List<DbModel> 查询结果键值对对象集合
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public List<DbModel> findDbModelAll(SqlInfo sqlInfo) throws DbException
 	{
@@ -1150,12 +1141,12 @@ public class TGDBManager
 
 	/**
 	 * 根据DbModelSelector条件查询
-	 * 
+	 *
 	 * @param selector
 	 *            查询条件
 	 * @return List<DbModel> 查询结果键值对对象集合
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public List<DbModel> findDbModelAll(TGModelSelector selector) throws DbException
 	{
@@ -1182,7 +1173,7 @@ public class TGDBManager
 
 	/**
 	 * 根据Selector查询数据条数
-	 * 
+	 *
 	 * @param selector
 	 * @return long
 	 * @throws DbException
@@ -1195,18 +1186,18 @@ public class TGDBManager
 			return 0;
 		}
 
-		TGModelSelector dmSelector = selector.select("count(" + 
-		    TableUtils.getId(entityType).getColumnName() + ") as count");
+		TGModelSelector dmSelector = selector.select("count(" +
+				TableUtils.getId(entityType).getColumnName() + ") as count");
 		return findDbModelFirst(dmSelector).getLong("count");
 	}
 
 	/**
 	 * 根据对象类型查询数据条数
-	 * 
+	 *
 	 * @param entityType
 	 * @return long
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public long count(Class<?> entityType) throws DbException
 	{
@@ -1215,7 +1206,7 @@ public class TGDBManager
 
 	/**
 	 * 根据条件和对象类型查询数据条数
-	 * 
+	 *
 	 * @param entityType
 	 *            表对应的entity类
 	 * @param whereBuilder
@@ -1230,12 +1221,12 @@ public class TGDBManager
 
 	/**
 	 * 根据对象查询数据条数
-	 * 
+	 *
 	 * @param entity
 	 *            查询对象参数
 	 * @return long 返回满足查询对象条件的记录条数
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public long count(Object entity) throws DbException
 	{
@@ -1265,7 +1256,7 @@ public class TGDBManager
 
 	/**
 	 * 创建数据库
-	 * 
+	 *
 	 * @param config
 	 * @return SQLiteDatabase
 	 */
@@ -1306,7 +1297,7 @@ public class TGDBManager
 	// *****************************
 	/**
 	 * 根据对象，构造新增或修改sql语句，并执行新增或修改操作
-	 * 
+	 *
 	 * @param entity
 	 * @throws DbException
 	 *             void
@@ -1333,11 +1324,11 @@ public class TGDBManager
 
 	/**
 	 * 根据对象，构造新增或修改sql语句，并执行新增或修改操作;如果id为自增长列，设置增长数据。
-	 * 
+	 *
 	 * @param entity
 	 * @return boolean
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	private boolean saveBindingIdWithoutTransaction(Object entity) throws DbException
 	{
@@ -1373,7 +1364,7 @@ public class TGDBManager
 
 	/**
 	 * 把键值对集合数据设置到contentValue中
-	 * 
+	 *
 	 * @param contentValues
 	 * @param list
 	 *            void
@@ -1394,13 +1385,13 @@ public class TGDBManager
 		}
 		else
 		{
-			LogTools.w("List<KeyValue> is empty or ContentValues is empty!");
+			LOG.w("[Method:fillContentValues]","List<KeyValue> is empty or ContentValues is empty!");
 		}
 	}
 
 	/**
 	 * 检查表是否存在，如果不存在，根据entity创建新表
-	 * 
+	 *
 	 * @param entityType
 	 * @throws DbException
 	 *             void
@@ -1423,9 +1414,9 @@ public class TGDBManager
 
 	/**
 	 * 把新加的业务表表名和对应的entity路径添加到tiger系统表
-	 * 
+	 *
 	 * void
-	 * 
+	 *
 	 * @throws DbException
 	 */
 	private void addTGTable(Class<?> entityType) throws DbException
@@ -1446,11 +1437,11 @@ public class TGDBManager
 
 	/**
 	 * 根据entity类型，检查其对应的表是否存在
-	 * 
+	 *
 	 * @param entityType
 	 * @return boolean
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public boolean tableIsExist(Class<?> entityType) throws DbException
 	{
@@ -1485,7 +1476,7 @@ public class TGDBManager
 
 	/**
 	 * 删除数据库中所有表
-	 * 
+	 *
 	 * @throws DbException
 	 *             void
 	 */
@@ -1507,7 +1498,7 @@ public class TGDBManager
 					}
 					catch (Throwable e)
 					{
-						LogTools.e(e.getMessage(), e);
+						LOG.e("[Method:dropDb]", e);
 					}
 				}
 			}
@@ -1520,7 +1511,7 @@ public class TGDBManager
 
 	/**
 	 * 根据entity类型，删除对应的表
-	 * 
+	 *
 	 * @param entityType
 	 * @throws DbException
 	 *             void
@@ -1531,7 +1522,7 @@ public class TGDBManager
 		{
 			return;
 		}
-			
+
 		String tableName = TableUtils.getTableName(entityType);
 		execNonQuery("DROP TABLE " + tableName);
 		Table.remove(this, entityType);
@@ -1541,10 +1532,7 @@ public class TGDBManager
 	// /////////////////////////////////////////////////////
 	private void debugSql(String sql)
 	{
-		if (debug)
-		{
-			LogTools.d(sql);
-		}
+		LOG.d(sql);
 	}
 
 	private void beginTransaction()
@@ -1573,7 +1561,7 @@ public class TGDBManager
 
 	/**
 	 * 根据sql语句和参数，执行非查询操作
-	 * 
+	 *
 	 * @param sqlInfo
 	 * @throws DbException
 	 *             void
@@ -1600,7 +1588,7 @@ public class TGDBManager
 
 	/**
 	 * 根据sql语句，执行非查询操作
-	 * 
+	 *
 	 * @param sql
 	 * @throws DbException
 	 *             void
@@ -1620,11 +1608,11 @@ public class TGDBManager
 
 	/**
 	 * 根据sql语句和参数，执行查询操作
-	 * 
+	 *
 	 * @param sqlInfo
 	 * @return Cursor
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public Cursor execQuery(SqlInfo sqlInfo) throws DbException
 	{
@@ -1641,11 +1629,11 @@ public class TGDBManager
 
 	/**
 	 * 根据sql语句，执行查询操作
-	 * 
+	 *
 	 * @param sql
 	 * @return Cursor
 	 * @throws DbException
-	 * 
+	 *
 	 */
 	public Cursor execQuery(String sql) throws DbException
 	{
@@ -1662,7 +1650,7 @@ public class TGDBManager
 
 	/**
 	 * 获取数据库中所有的表名称集合
-	 * 
+	 *
 	 * @return
 	 * @throws DbException
 	 *             List<String>
@@ -1686,7 +1674,7 @@ public class TGDBManager
 					}
 					catch (Throwable e)
 					{
-						LogTools.e(e.getMessage(), e);
+						LOG.e("[Method:getAllTableFromDb]", e);
 					}
 				}
 			}
@@ -1701,7 +1689,7 @@ public class TGDBManager
 
 	/**
 	 * 获取数据库中所有的非表 对象名称集合
-	 * 
+	 *
 	 * @return
 	 * @throws DbException
 	 *             List<String>
@@ -1728,7 +1716,7 @@ public class TGDBManager
 					}
 					catch (Throwable e)
 					{
-						LogTools.e(e.getMessage(), e);
+						LOG.e("[Method:getAllOtherFromDb]", e);
 					}
 				}
 			}

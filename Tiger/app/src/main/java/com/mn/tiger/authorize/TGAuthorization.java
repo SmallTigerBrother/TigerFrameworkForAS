@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.mn.tiger.core.cache.TGCache;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.Preferences;
 
 import java.io.Serializable;
@@ -14,12 +15,13 @@ import java.io.Serializable;
  */
 public abstract class TGAuthorization extends AbsAuthorization
 {
+	private static final Logger LOG = Logger.getLogger(TGAuthorization.class);
 	/**
 	 * 缓存用户信息的键值
 	 */
 	private static final String USER_INFO_CACHE_KEY = "Tiger_UserInfo";
 
-	public static final String AUTHORIZATION_DATA = "authorizer_data";
+	public static final String AUTHORIZER_DATA = "authorizer_data";
 
 	private static final String ACCESS_TOKEN_KEY = "access_token";
 
@@ -32,11 +34,6 @@ public abstract class TGAuthorization extends AbsAuthorization
 	 * 用户密码加密错误的异常
 	 */
 	public static final int AUTHORIZE_ERROR_PASSWORD_ENCRYPT = -2;
-
-	/**
-	 * 未登录调用注销方法的异常
-	 */
-	public static final int LOGOUT_ERROR_NEVER_AUTHORIZED = -10;
 
 	/**
 	 * 验证码异常————手机号不正确
@@ -81,9 +78,11 @@ public abstract class TGAuthorization extends AbsAuthorization
 	@Override
 	public void authorize(Activity activity, final IAuthorizeCallback callback)
 	{
+		LOG.i("[Method:authorize]");
 		//检查账号、密码
 		if(TextUtils.isEmpty(account) || TextUtils.isEmpty(password))
 		{
+			LOG.e("[Method:authorize] account and password can not be null, please check your code");
 			if(null != callback)
 			{
 				callback.onAuthorizeError(AUTHORIZE_ERROR_ACCOUNT_PASSWORD_NULL, "", "");
@@ -99,17 +98,20 @@ public abstract class TGAuthorization extends AbsAuthorization
 	@Override
 	public void logout(Activity activity, ILogoutCallback callback)
 	{
+		LOG.i("[Method:logout]");
 		//检查是否已登录
 		if(!checkHasAuthorized(activity))
 		{
+			LOG.w("[Method:logout] you have not authorized ever");
 			if(null != callback)
 			{
-				callback.onLogoutError(LOGOUT_ERROR_NEVER_AUTHORIZED, "", "");
+				callback.onLogoutSuccess();
 			}
-			return;
 		}
-
-		executeLogout(activity, callback);
+		else
+		{
+			executeLogout(activity, callback);
+		}
 
 		//将缓存数据置为null
 		saveUserInfo(activity, null);
@@ -131,7 +133,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 	 */
 	public boolean checkHasAuthorized(Context context)
 	{
-		return null != getUserInfo(context) && null != getAccessToken(context);
+		return null != getUserInfo(context) && !TextUtils.isEmpty(getAccessToken(context));
 	}
 
 	/**
@@ -173,11 +175,11 @@ public abstract class TGAuthorization extends AbsAuthorization
 	{
 		if (!TextUtils.isEmpty(token))
 		{
-			Preferences.save(context, AUTHORIZATION_DATA, ACCESS_TOKEN_KEY, token);
+			Preferences.save(context, AUTHORIZER_DATA, ACCESS_TOKEN_KEY, token);
 		}
 		else
 		{
-			Preferences.save(context, AUTHORIZATION_DATA, ACCESS_TOKEN_KEY, "");
+			Preferences.save(context, AUTHORIZER_DATA, ACCESS_TOKEN_KEY, "");
 		}
 	}
 
@@ -186,7 +188,7 @@ public abstract class TGAuthorization extends AbsAuthorization
 	 */
 	public static String getAccessToken(Context context)
 	{
-		String token = Preferences.read(context, AUTHORIZATION_DATA, ACCESS_TOKEN_KEY, "");
+		String token = Preferences.read(context, AUTHORIZER_DATA, ACCESS_TOKEN_KEY, "");
 		if (!TextUtils.isEmpty(token))
 		{
 			return token;

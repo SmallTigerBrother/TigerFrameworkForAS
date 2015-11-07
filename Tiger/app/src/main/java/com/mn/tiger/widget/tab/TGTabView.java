@@ -178,7 +178,7 @@ public class TGTabView extends LinearLayout
 		}
 		catch (Exception e)
 		{
-			LOG.e(e);
+			LOG.e("[Method:setAdapter]", e);
 		}
 
 		this.adapter = adapter;

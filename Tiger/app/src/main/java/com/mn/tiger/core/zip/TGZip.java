@@ -2,8 +2,10 @@ package com.mn.tiger.core.zip;
 
 /**
  * @date 2013-2-22
- * 
+ *
  */
+
+import com.mn.tiger.log.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,19 +14,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.mn.tiger.log.LogTools;
 
 /**
  * 该类作用及功能说明---解压、压缩文本工具类
- * 
- * @version V2.0
- * @see JDK1.6,android-8
+ *
  */
 public class TGZip
 {
+	private static final Logger LOG = Logger.getLogger(TGZip.class);
+
 	/**
 	 * gzip 解压
-	 * 
+	 *
 	 * @param compressed
 	 *            已压缩的文本
 	 * @return 原文
@@ -59,7 +60,7 @@ public class TGZip
 		catch (IOException e)
 		{
 			decompressed = null;
-			LogTools.e(e);
+			LOG.e("[Method:gzipDecompress]", e);
 		}
 		finally
 		{
@@ -71,7 +72,7 @@ public class TGZip
 				}
 				catch (IOException e)
 				{
-					LogTools.e(e);
+					LOG.e("[Method:gzipDecompress]", e);
 				}
 			}
 			if (in != null)
@@ -82,7 +83,7 @@ public class TGZip
 				}
 				catch (IOException e)
 				{
-					LogTools.e(e);
+					LOG.e("[Method:gzipDecompress]", e);
 				}
 			}
 			if (out != null)
@@ -93,7 +94,7 @@ public class TGZip
 				}
 				catch (IOException e)
 				{
-					LogTools.e(e);
+					LOG.e("[Method:gzipDecompress]", e);
 				}
 			}
 		}
@@ -102,13 +103,13 @@ public class TGZip
 
 	/**
 	 * gzip压缩
-	 * 
+	 *
 	 * @param str
 	 *            原文
 	 * @return gzip压缩后的文本
 	 * @throws UnsupportedEncodingException
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public static byte[] gzipCompress(String str) throws UnsupportedEncodingException
 	{
@@ -133,7 +134,7 @@ public class TGZip
 		}
 		catch (IOException e)
 		{
-			LogTools.e(e);
+			LOG.e("[Method:gzipCompress]", e);
 			compressed = null;
 		}
 		finally
@@ -146,7 +147,7 @@ public class TGZip
 				}
 				catch (IOException e)
 				{
-					LogTools.e(e);
+					LOG.e("[Method:gzipCompress]", e);
 				}
 			}
 			if (out != null)
@@ -157,7 +158,7 @@ public class TGZip
 				}
 				catch (IOException e)
 				{
-					LogTools.e(e);
+					LOG.e("[Method:gzipCompress]", e);
 				}
 			}
 		}

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 
-import com.mn.tiger.log.LogTools;
+
+import com.mn.tiger.log.Logger;
 
 import java.io.IOException;
 
@@ -18,7 +20,7 @@ import java.io.IOException;
  */
 public class DisplayUtils
 {
-	private static final String LOG_TAG = DisplayUtils.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(DisplayUtils.class);
 
 	private volatile static int[] resolution;
 
@@ -86,12 +88,12 @@ public class DisplayUtils
 	 */
 	public static int getStatusHeight(Activity activity)
 	{
-		int statusHeihgt = 0;
+		int statusHeight = 0;
 		Rect localRect = new Rect();
 		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(localRect);
-		statusHeihgt = localRect.top;
+		statusHeight = localRect.top;
 
-		if (statusHeihgt == 0)
+		if (statusHeight == 0)
 		{
 			Class<?> localClass;
 			try
@@ -100,14 +102,14 @@ public class DisplayUtils
 				Object localObject = localClass.newInstance();
 				int statusBar_Id = Integer.parseInt(localClass.getField("status_bar_height")
 						.get(localObject).toString());
-				statusHeihgt = activity.getResources().getDimensionPixelSize(statusBar_Id);
+				statusHeight = activity.getResources().getDimensionPixelSize(statusBar_Id);
 			}
 			catch (Exception e)
 			{
-				LogTools.e(LOG_TAG,"", e);
+				LOG.e("[Method:getStatusHeight]", e);
 			}
 		}
-		return statusHeihgt;
+		return statusHeight;
 	}
 
 	/**
@@ -180,7 +182,7 @@ public class DisplayUtils
 		}
 		else
 		{
-			LogTools.e(LOG_TAG,"[Method:adjustViewSizeByWidth] the LayoutParams of View is null, please check your code");
+			LOG.e("[Method:adjustViewSizeByWidth] the LayoutParams of View is null, please check your code");
 		}
 	}
 
@@ -249,7 +251,7 @@ public class DisplayUtils
 		}
 		else
 		{
-			LogTools.e(LOG_TAG,"[Method:adjustViewSizeByHeight] the LayoutParams of View is null, please check your code");
+			LOG.e("[Method:adjustViewSizeByHeight] the LayoutParams of View is null, please check your code");
 		}
 	}
 

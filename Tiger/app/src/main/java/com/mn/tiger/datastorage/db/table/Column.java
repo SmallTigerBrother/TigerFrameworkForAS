@@ -1,16 +1,17 @@
 package com.mn.tiger.datastorage.db.table;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import android.database.Cursor;
 
 import com.mn.tiger.datastorage.db.converter.ColumnConverter;
 import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class Column
 {
+	private static final Logger LOG = Logger.getLogger(Column.class);
 
 	protected final String columnName;
 	private final Object defaultValue;
@@ -55,7 +56,7 @@ public class Column
 			}
 			catch (Throwable e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method:setValue2Entity]", e);
 			}
 		}
 		else
@@ -67,7 +68,7 @@ public class Column
 			}
 			catch (Throwable e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method:setValue2Entity]", e);
 			}
 		}
 	}
@@ -92,7 +93,7 @@ public class Column
 				}
 				catch (Throwable e)
 				{
-					LogTools.e(e.getMessage(), e);
+					LOG.e("[Method:getFieldValue]", e);
 				}
 			}
 			else
@@ -104,7 +105,7 @@ public class Column
 				}
 				catch (Throwable e)
 				{
-					LogTools.e(e.getMessage(), e);
+					LOG.e("[Method:getFieldValue]", e);
 				}
 			}
 		}

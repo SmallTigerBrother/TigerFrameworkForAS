@@ -7,15 +7,14 @@ import android.net.NetworkInfo.State;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 /**
  * 网络工具类
  */
 public class NetworkUtils
 {
-	private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
-
+	private static final Logger LOG = Logger.getLogger(NetworkUtils.class);
 	/**
 	 * 无网络
 	 */
@@ -33,7 +32,7 @@ public class NetworkUtils
 
 	/**
 	 * 该方法的作用: 获取当前网络状态
-	 * 
+	 *
 	 * @date 2013-8-14
 	 * @param context
 	 * @return
@@ -65,7 +64,7 @@ public class NetworkUtils
 
 	/**
 	 * 该方法的作用:判断网络连接是否可用
-	 * 
+	 *
 	 * @date 2013-3-10
 	 * @param context
 	 * @return
@@ -88,13 +87,13 @@ public class NetworkUtils
 			}
 			else
 			{
-    			for (int i = 0; i < networkInfos.length; i++)
-    			{
-    				if (NetworkInfo.State.CONNECTED == networkInfos[i].getState())
-    				{
-    					return true;
-    				}
-    			}
+				for (int i = 0; i < networkInfos.length; i++)
+				{
+					if (NetworkInfo.State.CONNECTED == networkInfos[i].getState())
+					{
+						return true;
+					}
+				}
 			}
 		}
 
@@ -103,7 +102,7 @@ public class NetworkUtils
 
 	/**
 	 * 该方法的作用: 获取本地WIFI的Mac地址
-	 * 
+	 *
 	 * @date 2013-9-16
 	 * @param context
 	 * @return
@@ -136,7 +135,7 @@ public class NetworkUtils
 
 	/**
 	 * 该方法的作用: 获取Wifi启动时间
-	 * 
+	 *
 	 * @date 2014年1月7日
 	 * @param times
 	 * @param wifi
@@ -158,7 +157,7 @@ public class NetworkUtils
 				}
 				catch (InterruptedException e)
 				{
-					LogTools.e(LOG_TAG, "", e);
+					LOG.e("[Method:getWifiTimes]", e);
 				}
 			}
 			macAddress = wifi.getConnectionInfo().getMacAddress();

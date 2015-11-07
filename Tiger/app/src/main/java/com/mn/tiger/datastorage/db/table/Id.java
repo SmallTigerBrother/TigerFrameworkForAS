@@ -1,13 +1,14 @@
 package com.mn.tiger.datastorage.db.table;
 
+import com.mn.tiger.datastorage.db.annotation.NoAutoIncrement;
+import com.mn.tiger.log.Logger;
+
 import java.lang.reflect.Field;
 import java.util.HashSet;
 
-import com.mn.tiger.datastorage.db.annotation.NoAutoIncrement;
-import com.mn.tiger.log.LogTools;
-
 public class Id extends Column
 {
+	private static final Logger LOG = Logger.getLogger(Id.class);
 
 	protected Id(Class<?> entityType, Field field)
 	{
@@ -46,7 +47,7 @@ public class Id extends Column
 			}
 			catch (Throwable e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method]setAutoIncrementId", e);
 			}
 		}
 		else
@@ -58,7 +59,7 @@ public class Id extends Column
 			}
 			catch (Throwable e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method]setAutoIncrementId", e);
 			}
 		}
 	}

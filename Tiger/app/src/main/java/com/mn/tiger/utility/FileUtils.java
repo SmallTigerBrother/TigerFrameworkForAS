@@ -1,5 +1,13 @@
 package com.mn.tiger.utility;
 
+import android.content.Context;
+import android.os.Environment;
+import android.os.StatFs;
+import android.text.TextUtils;
+
+import com.mn.tiger.core.encode.TGEncode;
+import com.mn.tiger.log.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -16,14 +24,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-import android.os.Environment;
-import android.os.StatFs;
-import android.text.TextUtils;
-
-import com.mn.tiger.core.encode.TGEncode;
-import com.mn.tiger.log.LogTools;
-
 /**
  * 该类作用及功能说明 文件和文件夹相关的操作
  *
@@ -31,10 +31,7 @@ import com.mn.tiger.log.LogTools;
  */
 public class FileUtils
 {
-    /**
-     * 日志标签
-     */
-    protected static final String LOG_TAG = FileUtils.class.getSimpleName();
+    private static final Logger LOG = Logger.getLogger(FileUtils.class);
 
     /**
      * 该方法的作用:获取SD卡路径
@@ -55,12 +52,8 @@ public class FileUtils
      */
     public static boolean isSDCardAvailable()
     {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
-        {
-            return true;
-        }
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
 
-        return false;
     }
 
     /**
@@ -143,17 +136,17 @@ public class FileUtils
         boolean isOK = false;
         if (!StringUtils.isEmptyOrNull(sourcePath) && !StringUtils.isEmptyOrNull(targetPath))
         {
-            File sourcefile = new File(sourcePath);
+            File sourceFile = new File(sourcePath);
             File targetFile = new File(targetPath);
-            if (!sourcefile.exists())
+            if (!sourceFile.exists())
             {
                 return false;
             }
-            if (sourcefile.isDirectory())
+            if (sourceFile.isDirectory())
             {
-                isOK = copyDirectory(sourcefile, targetFile);
+                isOK = copyDirectory(sourceFile, targetFile);
             }
-            else if (sourcefile.isFile())
+            else if (sourceFile.isFile())
             {
                 if (!targetFile.exists())
                 {
@@ -163,7 +156,7 @@ public class FileUtils
                 FileInputStream inputStream = null;
                 try
                 {
-                    inputStream = new FileInputStream(sourcefile);
+                    inputStream = new FileInputStream(sourceFile);
                     outputStream = new FileOutputStream(targetFile);
                     byte[] bs = new byte[1024];
                     int len;
@@ -175,7 +168,7 @@ public class FileUtils
                 }
                 catch (Exception e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:copyFile]", e);
                     isOK = false;
                 }
                 finally
@@ -188,7 +181,7 @@ public class FileUtils
                         }
                         catch (IOException e)
                         {
-                            LogTools.e(LOG_TAG, "", e);
+                            LOG.e("[Method:copyFile]", e);
                         }
                     }
                     if (outputStream != null)
@@ -199,7 +192,7 @@ public class FileUtils
                         }
                         catch (IOException e)
                         {
-                            LogTools.e(LOG_TAG, "", e);
+                            LOG.e("[Method:copyFile]", e);
                         }
                     }
                 }
@@ -235,7 +228,7 @@ public class FileUtils
                 }
                 catch (Exception e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:deleteFile]", e);
                     return false;
                 }
             }
@@ -346,7 +339,7 @@ public class FileUtils
     /**
      * 该方法的作用:删除目录
      *
-     * @param targetDirectory
+     * @param path
      * @return
      * @date 2014-2-12
      */
@@ -420,7 +413,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(LOG_TAG, "", e);
+            LOG.e("[Method:streamWriteFile]", e);
             isSuccessful = false;
         }
         finally
@@ -434,7 +427,7 @@ public class FileUtils
             }
             catch (IOException e)
             {
-                LogTools.e(LOG_TAG, "", e);
+                LOG.e("[Method:streamWriteFile]", e);
             }
         }
         return isSuccessful;
@@ -471,7 +464,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(LOG_TAG, "", e);
+            LOG.e("[Method:chmodFile]", e);
         }
     }
 
@@ -493,7 +486,7 @@ public class FileUtils
             }
             catch (IOException e)
             {
-                LogTools.e(LOG_TAG, "", e);
+                LOG.e("[Method:createFileThroughContent]", e);
             }
         }
 
@@ -508,7 +501,7 @@ public class FileUtils
             }
             catch (IOException e)
             {
-                LogTools.e(LOG_TAG, e);
+                LOG.e("[Method:createFileThroughContent]", e);
             }
             finally
             {
@@ -520,7 +513,7 @@ public class FileUtils
                     }
                     catch (IOException e)
                     {
-                        LogTools.e(LOG_TAG, "", e);
+                        LOG.e("[Method:createFileThroughContent]", e);
                     }
                 }
             }
@@ -549,7 +542,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(LOG_TAG, "", e);
+            LOG.e("[Method:writeObject]", e);
         }
         finally
         {
@@ -561,7 +554,7 @@ public class FileUtils
                 }
                 catch (IOException e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:writeObject]", e);
                 }
             }
             if (out != null)
@@ -572,7 +565,7 @@ public class FileUtils
                 }
                 catch (IOException e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:writeObject]", e);
                 }
             }
         }
@@ -605,7 +598,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(LOG_TAG, "", e);
+            LOG.e("[Method:readObject]", e);
         }
         finally
         {
@@ -617,7 +610,7 @@ public class FileUtils
                 }
                 catch (IOException e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:readObject]", e);
                 }
             }
             if (inputStream != null)
@@ -628,7 +621,7 @@ public class FileUtils
                 }
                 catch (IOException e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:readObject]", e);
                 }
             }
 
@@ -661,7 +654,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(LOG_TAG, "", e);
+            LOG.e("[Method:readFile]", e);
         }
         finally
         {
@@ -673,7 +666,7 @@ public class FileUtils
                 }
                 catch (IOException e)
                 {
-                    LogTools.e(LOG_TAG, "", e);
+                    LOG.e("[Method:readFile]", e);
                 }
             }
         }
@@ -703,7 +696,7 @@ public class FileUtils
         }
         catch (IOException e)
         {
-            LogTools.e(LOG_TAG, e.getMessage(), e);
+            LOG.e("[Method:readStringListByLine]", e);
         }
 
         return list;
@@ -732,7 +725,7 @@ public class FileUtils
         }
         catch (IOException e)
         {
-            LogTools.e(LOG_TAG, e.getMessage(), e);
+            LOG.e("[Method:readStringFromAsset]", e);
         }
 
         return null;
@@ -761,7 +754,7 @@ public class FileUtils
         }
         catch (IOException e)
         {
-            LogTools.e(LOG_TAG, e.getMessage(), e);
+            LOG.e("[Method:readStringListByLineFromAsset]", e);
         }
 
         return list;
@@ -797,7 +790,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(LOG_TAG, "", e);
+            LOG.e("[Method:createFile]", e);
         }
         return desFile;
     }
@@ -851,7 +844,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            LogTools.e(e);
+            LOG.e("[Method:parseUrl2FileName]", e);
         }
         return "";
     }
@@ -945,7 +938,7 @@ public class FileUtils
         }
         else
         {
-            LogTools.d(LOG_TAG, "file is not exist, please check the path of file");
+            LOG.w("[Method:getDirSize] file is not exist, filePath == " + file.getAbsolutePath());
             return 0.0;
         }
     }

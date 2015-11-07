@@ -7,18 +7,16 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.mn.tiger.app.TGActionBarActivity;
-import com.mn.tiger.log.LogTools;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.request.error.TGHttpErrorHandler;
+import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.request.receiver.TGHttpResultHandler;
+import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
 import com.mn.tiger.request.task.TGDeleteTask;
 import com.mn.tiger.request.task.TGGetTask;
 import com.mn.tiger.request.task.TGHttpTask;
 import com.mn.tiger.request.task.TGPostTask;
 import com.mn.tiger.request.task.TGPutTask;
-import com.mn.tiger.request.error.TGHttpErrorHandler;
-import com.mn.tiger.request.receiver.TGHttpResult;
-import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
-import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TGTaskParams;
 import com.mn.tiger.task.TaskType;
@@ -272,7 +270,7 @@ public class TGHttpLoader<T> implements IRequestParser
 
 		if(TextUtils.isEmpty(requestUrl))
 		{
-			LOG.e("[Method:execute] the requestUrl is null, please check your code");
+			LOG.e("[Method:executeLoad] the requestUrl is null, please check your code");
 			return taskID;
 		}
 
@@ -368,7 +366,7 @@ public class TGHttpLoader<T> implements IRequestParser
 			@Override
 			protected void onSuccess(TGHttpResult httpResult)
 			{
-				LogTools.i(LOG_TAG, "[Method:onSuccess]");
+				LOG.i("[Method:resultHandler:onSuccess]");
 				//解析请求结果
 				if(!isCancelled() && null != loadCallback)
 				{
@@ -380,7 +378,7 @@ public class TGHttpLoader<T> implements IRequestParser
 			@Override
 			protected void onError(TGHttpResult httpResult)
 			{
-				LogTools.i(LOG_TAG, "[Method:onError]");
+				LOG.i("[Method:resultHandler:onError]");
 				//解析请求结果
 				if(!isCancelled() && null != loadCallback)
 				{
@@ -392,7 +390,7 @@ public class TGHttpLoader<T> implements IRequestParser
 			@Override
 			protected void onReturnCachedResult(TGHttpResult httpResult)
 			{
-				LogTools.i(LOG_TAG, "[Method:onReturnCachedResult]");
+				LOG.i("[Method:resultHandler:onReturnCachedResult]");
 				//解析请求结果
 				if(!isCancelled() && null != loadCallback)
 				{
@@ -650,7 +648,7 @@ public class TGHttpLoader<T> implements IRequestParser
 				}
 				catch (Exception e)
 				{
-					LOG.e("url : "  + this.requestUrl + "\n params : " +
+					LOG.e("[Method:parseRequestResult] url : "  + this.requestUrl + "\n params : " +
 							stringParams + "\n" + e.getMessage());
 				}
 			}

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import android.util.SparseArray;
 
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.queue.TGLock.onLockListener;
 import com.mn.tiger.task.queue.TGLock.onUnLockListener;
@@ -16,10 +17,7 @@ import com.mn.tiger.task.queue.TGLock.onUnLockListener;
  */
 public abstract class AbsTaskQueue extends LinkedList<Integer>
 {
-	/**
-	 * 日志标签
-	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
+	private static final Logger LOG = Logger.getLogger(AbsTaskQueue.class);
 
 	/**
 	 * @date 2014年6月25日
@@ -65,14 +63,12 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 * @date 2014年6月25日
 	 */
 	@Override
-	public synchronized boolean remove(Object object)
+	public boolean remove(Object object)
 	{
-		synchronized (this)
-		{
-			// 从队列中移除任务
-			getTaskArray().remove((Integer) object);
-			return super.remove(object);
-		}
+		LOG.d("[Method:remove] taskId == " + object.toString());
+		// 从队列中移除任务
+		getTaskArray().remove((Integer) object);
+		return super.remove(object);
 	}
 
 	/**
@@ -88,8 +84,9 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 * @date 2014年5月6日
 	 * @param task
 	 */
-	public synchronized void addLast(TGTask task)
+	public void addLast(TGTask task)
 	{
+		LOG.d("[Method:addLast] taskId == " + task.getTaskID());
 		this.addLast(task.getTaskID());
 		getTaskArray().put(task.getTaskID(), task);
 	}
@@ -121,6 +118,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 */
 	public void cancelAllTasks()
 	{
+		LOG.d("[Method:cancelAllTasks]");
 		//删除所有任务
 		while (this.size() > 0)
 		{
@@ -138,8 +136,12 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	@Override
 	public void clear()
 	{
-		super.clear();
-		getTaskArray().clear();
+		LOG.d("[Method:clear]");
+		synchronized (this)
+		{
+			super.clear();
+			getTaskArray().clear();
+		}
 	}
 
 	/**
@@ -188,11 +190,13 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 */
 	public void lock(final onLockListener onLockListener)
 	{
+		LOG.d("[Method:lock]");
 		getLock().lock(new onLockListener()
 		{
 			@Override
 			public void onLockSuccess()
 			{
+				LOG.i("[Method:lock:onLockSuccess]");
 				if(null != onLockListener)
 				{
 					onLockListener.onLockSuccess();
@@ -202,6 +206,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 			@Override
 			public void onLockFailed()
 			{
+				LOG.i("[Method:lock:onLockFailed]");
 				if(null != onLockListener)
 				{
 					onLockListener.onLockSuccess();
@@ -218,11 +223,13 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 	 */
 	public void unLock(final onUnLockListener onUnLockListener)
 	{
+		LOG.d("[Method:unLock]");
 		getLock().unLock(new onUnLockListener()
 		{
 			@Override
 			public void onUnLockSuccess()
 			{
+				LOG.d("[Method:lock]onUnLockSuccess");
 				if(null != onUnLockListener)
 				{
 					onUnLockListener.onUnLockSuccess();
@@ -232,6 +239,7 @@ public abstract class AbsTaskQueue extends LinkedList<Integer>
 			@Override
 			public void onUnLockFailed()
 			{
+				LOG.d("[Method:lock]onUnLockFailed");
 				if(null != onUnLockListener)
 				{
 					onUnLockListener.onUnLockFailed();

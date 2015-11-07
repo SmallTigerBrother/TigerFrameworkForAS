@@ -1,30 +1,27 @@
 package com.mn.tiger.datastorage.db.observe;
 
+import android.database.Observable;
+
+import com.mn.tiger.datastorage.db.observe.TGDatasetObservable.OnObserverChangeListener;
+import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mn.tiger.datastorage.db.observe.TGDatasetObservable.OnObserverChangeListener;
-import com.mn.tiger.log.LogTools;
-import com.mn.tiger.utility.StringUtils;
-
-import android.database.Observable;
-
 
 /**
- * 
+ *
  * 该类作用及功能说明: Observer控制器，负责注册、分发观察者
- * 
+ *
  * @date 2014年3月31日
  */
-public class TGDatasetObserveController
+public class TGDataSetObserveController
 {
-	/**
-	 * log tag
-	 */
-	public static final String TAG = TGDatasetObserveController.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGDataSetObserveController.class);
 
 	/** instance */
-	private static TGDatasetObserveController instance = new TGDatasetObserveController();
+	private static TGDataSetObserveController instance = new TGDataSetObserveController();
 
 	/** observer container */
 	private Map<String, Observable<TGDataSetObserver>> observerMap = null;
@@ -32,7 +29,7 @@ public class TGDatasetObserveController
 	/**
 	 * ObserveControll structure function.
 	 */
-	private TGDatasetObserveController()
+	private TGDataSetObserveController()
 	{
 		if (observerMap == null)
 		{
@@ -41,25 +38,25 @@ public class TGDatasetObserveController
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 获取控制器实例
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @return ObserveControll
 	 */
-	public static synchronized TGDatasetObserveController getInstance()
+	public static synchronized TGDataSetObserveController getInstance()
 	{
 		if (instance == null)
 		{
-			instance = new TGDatasetObserveController();
+			instance = new TGDataSetObserveController();
 		}
 		return instance;
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 根据传入的url(实体bean对应的绝对路径，含包名)，注册数据观察者
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param entityType
 	 * @param observer
@@ -74,14 +71,14 @@ public class TGDatasetObserveController
 		String uri = entityType.getName();
 		if (StringUtils.isEmptyOrNull(uri))
 		{
-			LogTools.e(TAG, "register observer fail, uri is empty.");
+			LOG.e("[Method:registerDataSetObserver] register observer fail, uri is empty.");
 			return;
 		}
 
 		observer.setUri(uri);
 		if (observerMap == null)
 		{
-			LogTools.e(TAG, "register observer fail, container map is null.");
+			LOG.e("[Method:registerDataSetObserver] register observer fail, container map is null.");
 			return;
 		}
 
@@ -105,15 +102,15 @@ public class TGDatasetObserveController
 		}
 		else
 		{
-			LogTools.e(TAG, "this observer is registered already.");
+			LOG.e("[Method:registerDataSetObserver] this observer is registered already.");
 		}
 
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 取消注册observer
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param observer
 	 */
@@ -122,13 +119,13 @@ public class TGDatasetObserveController
 		String uri = observer.getUri();
 		if (StringUtils.isEmptyOrNull(uri))
 		{
-			LogTools.e(TAG, "unregister observer fail, uri is empty.");
+			LOG.e("[Method:unregisterObserver] unregister observer fail, uri is empty.");
 			return;
 		}
 
 		if (observerMap == null)
 		{
-			LogTools.e(TAG, "unregister observer fail, container map is null.");
+			LOG.e("[Method:unregisterObserver] unregister observer fail, container map is null.");
 			return;
 		}
 
@@ -139,9 +136,9 @@ public class TGDatasetObserveController
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 通知uri对应的所有观察者，数据发生改变
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param entityType
 	 */

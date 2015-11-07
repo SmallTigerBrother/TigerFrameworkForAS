@@ -1,14 +1,10 @@
 package com.mn.tiger.upload;
 
-import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.mn.tiger.log.LogTools;
-import com.mn.tiger.task.TGTask;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TGTaskParams;
 import com.mn.tiger.task.TaskType;
@@ -17,12 +13,15 @@ import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.upload.observe.TGUploadObserveController;
 import com.mn.tiger.upload.observe.TGUploadObserver;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * 上传管理器
  */
 public class TGUploadManager
 {
-	protected final String LOG_TAG = this.getClass().getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGUploadManager.class);
 
 	public static final int UPLOAD_WAITING = -2;
 
@@ -78,6 +77,7 @@ public class TGUploadManager
 	 */
 	public void startAll(String type)
 	{
+		LOG.i("[Method:startAll] type == " + type);
 		List<TGUploader> uploaders = TGUploadDBHelper.getInstance(mContext).getUploaderByType(type);
 
 		if (null != uploaders)
@@ -100,7 +100,7 @@ public class TGUploadManager
 			}
 			catch (Exception e)
 			{
-				LogTools.e(LOG_TAG, e.getMessage(), e);
+				LOG.e("[Method:startAll]", e);
 			}
 		}
 	}
@@ -111,6 +111,7 @@ public class TGUploadManager
 	 */
 	public void cancelAll(String type)
 	{
+		LOG.i("[Method:cancelAll] type == " + type);
 		List<TGUploader> uploaders = TGUploadDBHelper.getInstance(mContext).getUploaderByType(type);
 
 		if (null != uploaders)
@@ -128,6 +129,7 @@ public class TGUploadManager
 	 */
 	public void pauseAll(String type)
 	{
+		LOG.i("[Method:pauseAll] type == " + type);
 		List<TGUploader> uploaders = TGUploadDBHelper.getInstance(mContext).getUploaderByType(type);
 
 		if (null != uploaders)
@@ -144,6 +146,7 @@ public class TGUploadManager
 	 */
 	public void startAll()
 	{
+		LOG.i("[Method:startAll]");
 		List<TGUploader> uploaders = TGUploadDBHelper.getInstance(mContext).getAllUploader();
 
 		if (null != uploaders)
@@ -167,7 +170,7 @@ public class TGUploadManager
 			}
 			catch (Exception e)
 			{
-				LogTools.e(LOG_TAG, e.getMessage(), e);
+				LOG.e("[Method:startAll]", e);
 			}
 		}
 	}
@@ -177,6 +180,7 @@ public class TGUploadManager
 	 */
 	public void cancelAll()
 	{
+		LOG.i("[Method:cancelAll]");
 		List<TGUploader> uploaders = TGUploadDBHelper.getInstance(mContext).getAllUploader();
 		if (null != uploaders)
 		{
@@ -192,6 +196,7 @@ public class TGUploadManager
 	 */
 	public void pauseAll()
 	{
+		LOG.i("[Method:pauseAll]");
 		List<TGUploader> uploaders = TGUploadDBHelper.getInstance(mContext).getAllUploader();
 
 		if (null != uploaders)
@@ -210,7 +215,7 @@ public class TGUploadManager
 	 */
 	private int enqueue(TGUploadParams uploadParams)
 	{
-		LogTools.p(LOG_TAG, "[Method:enqueue] start");
+		LOG.i("[Method:enqueue] url == " + uploadParams.getServiceURL());
 
 		final Bundle params = new Bundle();
 		params.putSerializable("uploadParams", uploadParams);
@@ -256,7 +261,7 @@ public class TGUploadManager
 
 	/**
 	 * 根据上传文件的地址获取上传信息实体类
-	 * @param filePath
+	 * @param fileParams
 	 * @return
 	 */
 	public TGUploader getUploadInfo(HashMap<String, String> fileParams)

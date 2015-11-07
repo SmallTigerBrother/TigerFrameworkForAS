@@ -58,7 +58,7 @@ public class HttpMockTester
 			httpResult.setResult(data);
 		}
 
-		LOG.d("[Method:getMockTestData] url : " + url + "\n" + "result : " + httpResult.getResult());
+		LOG.i("[Method:getMockTestData] url : " + url + "\n" + "result : " + httpResult.getResult());
 		return httpResult;
 	}
 

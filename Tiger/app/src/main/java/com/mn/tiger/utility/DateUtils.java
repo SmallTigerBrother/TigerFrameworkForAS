@@ -3,28 +3,25 @@ package com.mn.tiger.utility;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import com.mn.tiger.R;
+import com.mn.tiger.log.Logger;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.mn.tiger.R;
-import com.mn.tiger.log.LogTools;
-
 /**
- * 
+ *
  * 该类作用及功能说明:与日期相关的操作
- * 
+ *
  * @date 2014-2-11
  */
 public class DateUtils
 {
-	/**
-	 * 日志标签
-	 */
-	protected static final String LOG_TAG = DateUtils.class.getSimpleName();
-	
+	private static final Logger LOG = Logger.getLogger(DateUtils.class);
+
 	public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	public final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 	public final static SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -32,7 +29,7 @@ public class DateUtils
 	public final static int ONE_MINUTES = 1000 * 60;
 	public final static int ONE_HOURS = ONE_MINUTES * 60;
 	public final static int ONE_DAY = ONE_HOURS * 24;
-	
+
 	/**
 	 * 通过传入的format格式将时间转换为字符串
 	 * @param milliseconds
@@ -62,10 +59,10 @@ public class DateUtils
 		}
 		return "";
 	}
-	
+
 	/**
 	 * 该方法的作用:通过传入的format格式将日期转换为字符串
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param date
 	 * @param format
@@ -81,10 +78,10 @@ public class DateUtils
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 该方法的作用:通过传入的format格式将日期转换为字符串
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param date
 	 * @param format
@@ -120,7 +117,7 @@ public class DateUtils
 			}
 			catch (ParseException e)
 			{
-				LogTools.e(LOG_TAG,"", e);
+				LOG.e("[Method:string2Date]", e);
 			}
 			return date;
 		}
@@ -129,7 +126,7 @@ public class DateUtils
 
 	/**
 	 * 该方法的作用:使用compareTo方法比较日期大小
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param date1
 	 * @param date2
@@ -146,7 +143,7 @@ public class DateUtils
 
 	/**
 	 * 该方法的作用:该方法的作用:使用compareTo方法比较日期大小
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param string1
 	 * @param format1
@@ -180,7 +177,7 @@ public class DateUtils
 	 * @param date
 	 * @return -1为获取失败 0为周日 1为周一 ....6为周六
 	 */
-	public static int getWeekofDate(Date date)
+	public static int getWeekOfDate(Date date)
 	{
 		if (date != null)
 		{
@@ -203,7 +200,7 @@ public class DateUtils
 	 * @param format
 	 * @return -1为获取失败 0为周日 1为周一 ....6为周六
 	 */
-	public static int getWeekofString(String dateString, String format)
+	public static int getWeekOfString(String dateString, String format)
 	{
 		if (!StringUtils.isEmptyOrNull(dateString) && !StringUtils.isEmptyOrNull(format))
 		{
@@ -212,15 +209,15 @@ public class DateUtils
 			{
 				return -1;
 			}
-			int day = getWeekofDate(date);
+			int day = getWeekOfDate(date);
 			return day;
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * 如果是一天内的，显示为"XX小时/分钟 前"，超过一天的，直接显示日期
-	 * 
+	 *
 	 * @param ctx
 	 * @param time
 	 * @return

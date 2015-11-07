@@ -1,5 +1,10 @@
 package com.mn.tiger.core.cache;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.mn.tiger.log.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,20 +15,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import android.content.Context;
-import android.text.TextUtils;
-
-import com.mn.tiger.log.LogTools;
-
 /**
  * 该类作用及功能说明 缓存文件和读取文件工具类
- * 
- * @version V2.0
- * @see JDK1.6,android-8
+ *
  */
 public class TGCache
 {
-	public static final String LOG_TAG = TGCache.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGCache.class);
 
 	public static final String SAVE_NORMAL_TYPE = ".tg";
 
@@ -33,9 +31,9 @@ public class TGCache
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用:保存缓存
-	 * 
+	 *
 	 * @date 2014年5月13日
 	 * @param context
 	 *            上下文
@@ -63,13 +61,13 @@ public class TGCache
 		}
 		else
 		{
-			LogTools.e(LOG_TAG, "save cache normal_file is null!");
+			LOG.e("save cache normal_file is null!");
 		}
 	}
 
 	/**
 	 * 该方法的作用:获取默人文件类型的缓存(默认在cache文件夹下)
-	 * 
+	 *
 	 * @date 2014年3月4日
 	 * @param context
 	 * @param key
@@ -92,7 +90,7 @@ public class TGCache
 
 	/**
 	 * 该方法的作用:获取硬盘缓存内容
-	 * 
+	 *
 	 * @date 2014年3月4日
 	 * @param fileAbsPath
 	 *            文件绝对路径
@@ -118,7 +116,7 @@ public class TGCache
 		}
 		catch (Exception e)
 		{
-			LogTools.e(e);
+			LOG.e("[Method:getDiskCache]",e);
 		}
 		finally
 		{
@@ -131,7 +129,7 @@ public class TGCache
 
 	/**
 	 * 该方法的作用:缓存到硬盘文件
-	 * 
+	 *
 	 * @date 2014年3月4日
 	 * @param fileAbsPath
 	 *            文件绝对路径
@@ -157,7 +155,7 @@ public class TGCache
 		}
 		catch (Exception e)
 		{
-			LogTools.e(e);
+			LOG.e("[Method:saveAsDiskCache]", e);
 		}
 		finally
 		{
@@ -167,9 +165,9 @@ public class TGCache
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用:获取普通类型缓存文件
-	 * 
+	 *
 	 * @date 2014年5月14日
 	 * @param context
 	 * @param key
@@ -182,9 +180,9 @@ public class TGCache
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用:获取缓存的根目录
-	 * 
+	 *
 	 * @date 2014年5月14日
 	 * @param context
 	 * @return
@@ -201,7 +199,7 @@ public class TGCache
 
 	/**
 	 * 该方法的作用: 将object对象写入outFile文件
-	 * 
+	 *
 	 * @date 2013-8-14
 	 * @param outFile
 	 * @param object
@@ -216,7 +214,7 @@ public class TGCache
 
 	/**
 	 * 该方法的作用: 以object的方式读取文件中的内容
-	 * 
+	 *
 	 * @date 2013-8-14
 	 * @param filePath
 	 * @param context
@@ -227,7 +225,7 @@ public class TGCache
 		File file = new File(dir, filePath);
 		return getDiskCache(file.getAbsolutePath());
 	}
-	
+
 	/**
 	 * 移除缓存
 	 * @param context
@@ -244,7 +242,7 @@ public class TGCache
 
 	/**
 	 * 该方法的作用:关闭输出流
-	 * 
+	 *
 	 * @date 2014年5月12日
 	 * @param stream
 	 */
@@ -258,14 +256,14 @@ public class TGCache
 			}
 			catch (Exception e)
 			{
-				LogTools.e(e);
+				LOG.e("[Method:closeOutputStream]", e);
 			}
 		}
 	}
 
 	/**
 	 * 该方法的作用:关闭输入流
-	 * 
+	 *
 	 * @date 2014年5月12日
 	 * @param stream
 	 */
@@ -279,7 +277,7 @@ public class TGCache
 			}
 			catch (Exception e)
 			{
-				LogTools.e(e);
+				LOG.e("[Method:closeInputStream]", e);
 			}
 		}
 	}

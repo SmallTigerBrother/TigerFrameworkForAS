@@ -7,15 +7,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
 
-import com.mn.tiger.log.LogTools;
 
 /**
  * SharedPreferences工具类
  */
 public class Preferences
 {
-	private static final String LOG_TAG = Preferences.class.getSimpleName();
-	
 	/**
 	 * 保存
 	 * @param context
@@ -35,7 +32,6 @@ public class Preferences
 
 			return;
 		}
-		LogTools.e(LOG_TAG, "[Method:save] ——> the context is null");
 	}
 
 	/**
@@ -54,11 +50,9 @@ public class Preferences
 			Editor editer = setting.edit();
 			editer.putInt(key, value);
 			editer.commit();
-			
+
 			return;
 		}
-		
-		LogTools.e(LOG_TAG, "[Method:save] ——> the context is null");
 	}
 
 	/**
@@ -80,12 +74,11 @@ public class Preferences
 
 			return;
 		}
-		LogTools.e(LOG_TAG, "[Method:save] ——> the context is null");
 	}
 
 	/**
 	 * 保存
-	 * @param context 
+	 * @param context
 	 * @param name SharedPreferences名称
 	 * @param key
 	 * @param value
@@ -102,7 +95,6 @@ public class Preferences
 
 			return;
 		}
-		LogTools.e(LOG_TAG, "[Method:save] ——> the context is null");
 	}
 
 	/**
@@ -124,7 +116,6 @@ public class Preferences
 
 			return;
 		}
-		LogTools.e(LOG_TAG, "[Method:save] ——> the context is null");
 	}
 
 	/**
@@ -143,8 +134,7 @@ public class Preferences
 		{
 			return setting.getBoolean(key, defaultValue);
 		}
-		
-		LogTools.e(LOG_TAG, "[Method:read] ——> the context is null");
+
 		return defaultValue;
 	}
 
@@ -164,8 +154,7 @@ public class Preferences
 		{
 			return setting.getInt(key, defaultValue);
 		}
-		
-		LogTools.e(LOG_TAG, "[Method:read] ——> the context is null");
+
 		return defaultValue;
 	}
 
@@ -185,8 +174,7 @@ public class Preferences
 		{
 			return setting.getFloat(key, defaultValue);
 		}
-		
-		LogTools.e(LOG_TAG, "[Method:read] ——> the context is null");
+
 		return defaultValue;
 	}
 
@@ -206,8 +194,7 @@ public class Preferences
 		{
 			return setting.getLong(key, defaultValue);
 		}
-		
-		LogTools.e(LOG_TAG, "[Method:read] ——> the context is null");
+
 		return defaultValue;
 	}
 
@@ -227,11 +214,10 @@ public class Preferences
 		{
 			return setting.getString(key, defaultValue);
 		}
-		
-		LogTools.e(LOG_TAG, "[Method:read] ——> the context is null");
+
 		return defaultValue;
 	}
-	
+
 	/**
 	 * 获取SharedPreferences（3.0以上版本启用多进程读写权限）
 	 * @param context
@@ -249,10 +235,10 @@ public class Preferences
 			}
 			else
 			{
-			    return context.getSharedPreferences(name, Context.MODE_PRIVATE);
+				return context.getSharedPreferences(name, Context.MODE_PRIVATE);
 			}
 		}
-		
+
 		return null;
 	}
 }

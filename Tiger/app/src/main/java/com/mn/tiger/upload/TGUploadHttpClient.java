@@ -71,6 +71,9 @@ public abstract class TGUploadHttpClient
     protected void writeFilePart(OutputStream outputStream, String boundary, File file,
                                  long startPosition, long endPosition) throws IOException
     {
+        LOG.i("[Method:writeFilePart] file == " + file.getAbsolutePath() + " startPosition == "  +
+                startPosition + "  endPositions == " + endPosition);
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("--");
         stringBuilder.append(boundary);
@@ -137,8 +140,10 @@ public abstract class TGUploadHttpClient
      * @throws IOException
      */
     protected void writeStringPart(OutputStream outputStream, String boundary,
-                                   String value) throws UnsupportedEncodingException, IOException
+                                   String value) throws IOException
     {
+        LOG.i("[Method:writeStringPart] value == " + value);
+
         byte[] end_data = ("\r\n--" + boundary + "--\r\n").getBytes(UTF8);// 定义最后数据分隔线
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -164,7 +169,7 @@ public abstract class TGUploadHttpClient
     }
 
 
-    protected void onUploadStart(TGUploader uploader)
+    public void onUploadStart(TGUploader uploader)
     {
         uploader.setUploadStatus(TGUploadManager.UPLOAD_STARTING);
         uploadTask.onUploadStart(uploader);
@@ -176,7 +181,7 @@ public abstract class TGUploadHttpClient
      * @date 2014年8月19日
      * @param uploader
      */
-    protected void onUploading(TGUploader uploader, int progress)
+    private void onUploading(TGUploader uploader, int progress)
     {
         // 修改上传状态为正在上传
         uploader.setUploadStatus(TGUploadManager.UPLOAD_UPLOADING);
@@ -189,7 +194,7 @@ public abstract class TGUploadHttpClient
      * @date 2014年8月19日
      * @param uploader
      */
-    protected void onUploadFinish(TGUploader uploader)
+    private void onUploadFinish(TGUploader uploader)
     {
         // 删除本地记录
         uploader.setUploadStatus(TGUploadManager.UPLOAD_SUCCEED);
@@ -247,9 +252,9 @@ public abstract class TGUploadHttpClient
         uploadTask.onUploadCancel(uploader);
     }
 
-    public void setPartBOUNDARY(String BOUNDARY)
+    public void setPartBOUNDARY(String bOUNDARY)
     {
-        BOUNDARY = BOUNDARY;
+        BOUNDARY = bOUNDARY;
     }
 
     public String getFileContentDispositionName()
@@ -260,5 +265,20 @@ public abstract class TGUploadHttpClient
     public String getStringContentDispositionName()
     {
         return "tiger_upload_code";
+    }
+
+    public void setUploader(TGUploader uploader)
+    {
+        this.uploader = uploader;
+    }
+
+    public void setUploadTask(TGUploadTask uploadTask)
+    {
+        this.uploadTask = uploadTask;
+    }
+
+    public void setCompleteSize(long completeSize)
+    {
+        this.completeSize = completeSize;
     }
 }

@@ -59,19 +59,9 @@ public class TGUploadTask extends TGTask
 	 */
 	protected void uploadInBackground()
 	{
-		LOG.d("[Method:uploadInBackground]" + "; taskid: " + this.getTaskID());
+		LOG.d("[Method:uploadInBackground]" + "; taskId == " + this.getTaskID());
 		uploadParams = getUploadParams();
 
-		executeUpload();
-	}
-
-	/**
-	 *
-	 * 该方法的作用: 执行上传任务
-	 * @date 2014年7月23日
-	 */
-	protected void executeUpload()
-	{
 		//TODO 上传
 		// 获取上传参数
 		uploader = getUploader(uploadParams);
@@ -151,7 +141,7 @@ public class TGUploadTask extends TGTask
 
 	void onUploadStart(TGUploader uploader)
 	{
-		LOG.d("[Method:onUploadStart]");
+		LOG.d("[Method:onUploadStart] taskId == " + uploader.getId());
 		sendTaskResult(uploader);
 	}
 
@@ -163,7 +153,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploading(TGUploader uploader, int progress)
 	{
-		LOG.d("[Method:onUploading] progress == " + progress);
+		LOG.i("[Method:onUploading] taskId == " + uploader.getId() + " progress == " + progress);
 
 		sendTaskResult(uploader);
 		onTaskChanged(progress);
@@ -177,7 +167,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadFinish(TGUploader uploader)
 	{
-		LOG.d("[Method:onUploadFinish]");
+		LOG.i("[Method:onUploadFinish] taskId == " + uploader.getId());
 		sendTaskResult(uploader);
 		onTaskFinished();
 	}
@@ -189,7 +179,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadFailed(TGUploader uploader)
 	{
-		LOG.d("[Method:onUploadFailed]");
+		LOG.i("[Method:onUploadFailed] taskId == " + uploader.getId());
 		sendTaskResult(uploader);
 		onTaskFinished();
 	}
@@ -202,7 +192,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadStop(TGUploader uploader)
 	{
-		LOG.d("[Method:onUploadStop]");
+		LOG.i("[Method:onUploadStop] taskId == " + uploader.getId());
 		sendTaskResult(uploader);
 		onTaskFinished();
 	}
@@ -215,7 +205,7 @@ public class TGUploadTask extends TGTask
 	 */
 	void onUploadCancel(TGUploader uploader)
 	{
-		LOG.d("[Method:onUploadCancel]");
+		LOG.i("[Method:onUploadCancel] taskId == " + uploader.getId());
 		sendTaskResult(uploader);
 	}
 }

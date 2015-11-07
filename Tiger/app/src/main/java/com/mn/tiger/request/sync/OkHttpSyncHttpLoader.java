@@ -7,6 +7,7 @@ import com.mn.tiger.request.HttpType;
 import com.mn.tiger.request.TGHttpParams;
 import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.receiver.TGHttpResult;
+import com.mn.tiger.utility.StringUtils;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
@@ -47,39 +48,51 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
     @Override
     public TGHttpResult loadByGetSync(Context context, String requestUrl, TGHttpParams parameters, Map<String, String> properties)
     {
-        try
+        if(StringUtils.isUrl(requestUrl))
         {
-            Request request = buildRequest(HttpType.REQUEST_GET, requestUrl, parameters, properties);
-            TGHttpResult httpResult = execute(context, request);
-            LOG.d("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
-                    "result : " + httpResult.getResult());
-            return httpResult;
+            try
+            {
+                Request request = buildRequest(HttpType.REQUEST_GET, requestUrl, parameters, properties);
+                TGHttpResult httpResult = execute(context, request);
+                LOG.d("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
+                        "result : " + httpResult.getResult());
+                return httpResult;
+            }
+            catch (Exception e)
+            {
+                LOG.e("[Method:loadByGetSync] tag == " + tag + " : " + e);
+                return getHttpResultWhileIOException(context, requestUrl, e.getMessage());
+            }
         }
-        catch (Exception e)
+        else
         {
-            LOG.e("[Method:loadByGetSync] tag == " + tag + " : " + e);
+            return getHttpResultWhileUrlInvalid(context, requestUrl);
         }
-
-        return getHttpResultWhileUrlIsNULL(context);
     }
 
     @Override
     public TGHttpResult loadByPostSync(Context context, String requestUrl, TGHttpParams parameters, Map<String, String> properties)
     {
-        try
+        if(StringUtils.isUrl(requestUrl))
         {
-            Request request = buildRequest(HttpType.REQUEST_POST, requestUrl, parameters, properties);
-            TGHttpResult httpResult = execute(context,request);
-            LOG.d("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
-                    "result : " + httpResult.getResult());
-            return httpResult;
+            try
+            {
+                Request request = buildRequest(HttpType.REQUEST_POST, requestUrl, parameters, properties);
+                TGHttpResult httpResult = execute(context,request);
+                LOG.d("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
+                        "result : " + httpResult.getResult());
+                return httpResult;
+            }
+            catch (Exception e)
+            {
+                LOG.e("[Method:loadByPostSync] tag == " + tag + " : " + e);
+                return getHttpResultWhileIOException(context, requestUrl, e.getMessage());
+            }
         }
-        catch (Exception e)
+        else
         {
-            LOG.e("[Method:loadByPostSync] tag == " + tag + " : " + e);
+            return getHttpResultWhileUrlInvalid(context, requestUrl);
         }
-
-        return getHttpResultWhileUrlIsNULL(context);
     }
 
     @Override
@@ -100,7 +113,14 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
     public void cancel()
     {
         LOG.d("[Method:cancel] tag == " + tag);
-        okHttpClient.cancel(tag);
+        try
+        {
+            okHttpClient.cancel(tag);
+        }
+        catch (Exception e)
+        {
+            LOG.d("[Method:cancel] tag == " + tag + " ; exception == " + e.getMessage());
+        }
     }
 
     /**

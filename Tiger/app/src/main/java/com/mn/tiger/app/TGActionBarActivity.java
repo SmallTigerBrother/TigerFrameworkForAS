@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.mn.tiger.core.ActivityObserver;
-import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;

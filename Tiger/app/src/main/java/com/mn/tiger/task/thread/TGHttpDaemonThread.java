@@ -64,7 +64,7 @@ public class TGHttpDaemonThread extends Thread
             }
             catch (Exception e)
             {
-                LOG.e(e.getMessage());
+                LOG.e("[Method:run]", e);
             }
         }
     }

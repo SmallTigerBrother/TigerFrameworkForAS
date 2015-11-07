@@ -1,12 +1,14 @@
 package com.mn.tiger.utility;
 
+import com.mn.tiger.log.Logger;
+
 import java.io.InputStream;
 import java.security.MessageDigest;
 
-import com.mn.tiger.log.LogTools;
-
 public class MD5
 {
+	private static final Logger LOG = Logger.getLogger(MD5.class);
+
 	private static final char HEX_DIGITS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
 			'e', 'f' };
 
@@ -37,7 +39,7 @@ public class MD5
 		}
 		catch (Exception e)
 		{
-			LogTools.d("error");
+			LOG.e("[Method:md2sum]", e);
 			return "";
 		}
 		finally

@@ -1,9 +1,8 @@
 package com.mn.tiger.request;
 
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -16,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, String>>
 {
-    private static final String LOG_TAG = TGHttpParams.class.getSimpleName();
+    private static final Logger LOG = Logger.getLogger(TGHttpParams.class);
 
     private static final long serialVersionUID = 1L;
 
-    private static String ENCODING = "UTF-8";
+    private static final String ENCODING = "UTF-8";
 
     private long contentLength = 0;
 
@@ -103,7 +102,7 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
         }
         catch (UnsupportedEncodingException e)
         {
-            LogTools.e(LOG_TAG, e);
+            LOG.e("[Method:appendParams2Url] " + e.getMessage());
         }
 
         if (!TextUtils.isEmpty(paramsString))
@@ -112,9 +111,9 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
             {
                 url = url + "?";
             }
-            url = url + paramsString;;
+            url = url + paramsString;
         }
-        Log.i("url:", url);
+        LOG.d("[Method:appendParams2Url] url:", url);
         return url;
     }
 }

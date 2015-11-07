@@ -9,7 +9,7 @@ import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
 import com.mn.tiger.app.TGApplication;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class Commons
 {
-	private static final String LOG_TAG = Commons.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(Commons.class);
 
 	/**
 	 * 该方法的作用:获取系统语言
@@ -103,7 +103,7 @@ public class Commons
 			}
 			catch (IOException e)
 			{
-				LogTools.e(LOG_TAG, "", e);
+				LOG.e("[Method:closeInputStream]", e);
 			}
 		}
 	}
@@ -124,7 +124,7 @@ public class Commons
 			}
 			catch (IOException e)
 			{
-				LogTools.e(LOG_TAG, "", e);
+				LOG.e("[Method:closeOutputStream]", e);
 			}
 		}
 	}
@@ -437,7 +437,7 @@ public class Commons
 		}
 		catch (ClassNotFoundException e)
 		{
-			LogTools.e(LOG_TAG, e);
+			LOG.e("[Method:getClassOfGenericType]", e);
 		}
 
 		return Object.class;

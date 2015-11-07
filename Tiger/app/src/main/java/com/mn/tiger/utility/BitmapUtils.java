@@ -20,7 +20,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -40,6 +40,8 @@ import java.util.List;
  */
 public class BitmapUtils
 {
+    private static final Logger LOG = Logger.getLogger(BitmapUtils.class);
+
     /**
      * 垂直排布
      */
@@ -204,14 +206,13 @@ public class BitmapUtils
         // 循环切割
         int xValue = 0;
         int yValue = 0;
-        Bitmap bitmap_piece = null;
         for (int i = 0; i < yPiece; i++)
         {
             for (int j = 0; j < xPiece; j++)
             {
                 xValue = j * pieceWidth;
                 yValue = i * pieceHeight;
-                bitmap_piece = Bitmap.createBitmap(bitmap, xValue, yValue, pieceWidth,
+                Bitmap bitmap_piece = Bitmap.createBitmap(bitmap, xValue, yValue, pieceWidth,
                         pieceHeight);
                 pieces.add(bitmap_piece);
             }
@@ -358,7 +359,7 @@ public class BitmapUtils
         }
         catch (Exception e)
         {
-            LogTools.e(e);
+            LOG.e("[Method:compressBitmap]", e);
         }
         finally
         {
@@ -371,7 +372,7 @@ public class BitmapUtils
             }
             catch (Exception e)
             {
-                LogTools.e(e);
+                LOG.e("[Method:compressBitmap]", e);
             }
         }
         return newBM;
@@ -518,12 +519,12 @@ public class BitmapUtils
         }
         catch (OutOfMemoryError err)
         {
-            LogTools.e("inSampleSize" + "-----" + options.inSampleSize + "-------" + err);
+            LOG.e("[Method:getScaledBitmap] inSampleSize == " + options.inSampleSize, err);
             return null;
         }
         catch (FileNotFoundException e)
         {
-            LogTools.e(e);
+            LOG.e("[Method:getScaledBitmap]", e);
         }
         finally
         {
@@ -586,7 +587,7 @@ public class BitmapUtils
             }
             catch (IOException e)
             {
-                LogTools.e(e);
+                LOG.e("[Method:closeInputStream]", e);
             }
         }
     }
@@ -667,6 +668,92 @@ public class BitmapUtils
     }
 
     /**
+     * 显示图片资源
+     *
+     * @param imageName image的名称，支持http，file，和资源文件名称
+     * @param imageView
+     */
+    public static void displayImage(String imageName, ImageView imageView)
+    {
+        if (!TextUtils.isEmpty(imageName))
+        {
+            if (imageName.startsWith("file"))
+            {
+                //如果是本地存储中的文件，直接加载
+                Drawable drawable = BitmapDrawable.createFromPath(imageName);
+                if (null != drawable)
+                {
+                    imageView.setImageDrawable(drawable);
+                }
+            }
+            else
+            {
+                //其他默认为资源文件，直接填充
+                int resId = imageView.getContext().getResources().getIdentifier(imageName,
+                        "drawable", imageView.getContext().getPackageName());
+                if (resId != 0)
+                {
+                    imageView.setImageResource(resId);
+                }
+                else
+                {
+                    LOG.e("[Method:displayImage] no resource found of name " + imageName);
+                }
+            }
+        }
+    }
+
+    /**
+     * 模糊图片: 高斯模糊   与renderscript-v8.jar包一起用, 具说兼容api11, 但看这包感觉兼容api8
+     *
+     * @param context
+     * @param bitmap
+     * @param blur    0 < radius <= 25
+     * @return
+     */
+    public static Bitmap blurBitmap(Context context, Bitmap bitmap, float blur)
+    {
+        return bitmap;
+
+        //m1s 和 sansung某些机器会莫名崩溃和outofmemory
+//        if (Build.VERSION.SDK_INT < 19) {
+//            return FastBlur.blur(bitmap, bitmap.getWidth() > bitmap.getHeight() ? bitmap.getWidth() : bitmap.getHeight(), true);
+//        } else {
+//
+//            //Let's create an empty bitmap with the same size of the bitmap we want to blur
+//            Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+//
+//            //Instantiate a new Renderscript
+//            RenderScript rs = RenderScript.create(context);
+//
+//            //Create an Intrinsic Blur Script using the Renderscript
+//            ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+//
+//            //Create the Allocations (in/out) with the Renderscript and the in/out bitmaps
+//            Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
+//            Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
+//
+//            //Set the radius of the blur
+//            blurScript.setRadius(blur);
+//
+//            //Perform the Renderscript
+//            blurScript.setInput(allIn);
+//            blurScript.forEach(allOut);
+//
+//            //Copy the final bitmap created by the out Allocation to the outBitmap
+//            allOut.copyTo(outBitmap);
+//
+//            //recycle the original bitmap
+//            bitmap.recycle();
+//
+//            //After finishing everything, we destroy the Renderscript.
+//            rs.destroy();
+//            return outBitmap;
+//        }
+    }
+
+
+    /**
      * 获取当前activity的视图
      *
      * @param activity
@@ -698,7 +785,7 @@ public class BitmapUtils
      * @return 2013-8-22
      * @author liananse
      */
-    public static boolean saveBitmapToFile(Bitmap bitmap, String path)
+    public static boolean saveBtimapToFile(Bitmap bitmap, String path)
     {
         boolean result = false;
         BufferedOutputStream bos = null;

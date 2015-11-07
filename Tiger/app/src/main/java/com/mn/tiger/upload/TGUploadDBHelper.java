@@ -1,9 +1,5 @@
 package com.mn.tiger.upload;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -12,8 +8,12 @@ import com.mn.tiger.datastorage.TGDBManager;
 import com.mn.tiger.datastorage.db.exception.DbException;
 import com.mn.tiger.datastorage.db.sqlite.WhereBuilder;
 import com.mn.tiger.datastorage.db.upgrade.AbsDbUpgrade;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.Constant;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 该类作用及功能说明:数据库操作类
@@ -22,10 +22,7 @@ import com.mn.tiger.utility.Constant;
  */
 public class TGUploadDBHelper
 {
-	/**
-	 * 日志标识
-	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGUploadManager.class);
 
 	/**
 	 * instance
@@ -98,24 +95,23 @@ public class TGUploadDBHelper
 					@Override
 					public void upgradeSuccess()
 					{
-						LogTools.p(TAG, "tiger_upload upgrade success");
+						LOG.i("[Method:AbsDbUpgrade:upgradeSuccess]tiger_upload upgrade success");
 					}
 
 					@Override
 					public void upgradeFail()
 					{
-						LogTools.e(TAG, "tiger_upload upgrade success");
+						LOG.e("[Method:AbsDbUpgrade:upgradeFail]tiger_upload upgrade success");
 					}
 
 					@Override
 					public void upgradeNeedless()
 					{
-						LogTools.p(TAG, "tiger_upload upgrade need less.");
+						LOG.i("[Method:AbsDbUpgrade:upgradeNeedless]tiger_upload upgrade need less.");
 					}
 
 				});
 		db.configAllowTransaction(true);
-		db.configDebug(false);
 		return db;
 	}
 
@@ -131,13 +127,11 @@ public class TGUploadDBHelper
 		{
 			uploader = dbManager.findFirst(TGUploader.class,
 					WhereBuilder.b(UPLOADER_COLUMN_FILE_PATH, "=",
-							new Gson().toJson(fileParams, new TypeToken<HashMap<String, String>>()
-							{
-							}.getType())));
+							new Gson().toJson(fileParams, new TypeToken<HashMap<String,String>>(){}.getType())));
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:getUploader]", e);
 		}
 
 		return uploader;
@@ -157,7 +151,7 @@ public class TGUploadDBHelper
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:getAllUploader]", e);
 		}
 
 		return uploaderList;
@@ -178,7 +172,7 @@ public class TGUploadDBHelper
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:getUploaderByType] type == " + type, e);
 		}
 
 		return uploaderList;
@@ -199,7 +193,7 @@ public class TGUploadDBHelper
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:saveUploader] taskId == " + info.getId(), e);
 		}
 	}
 
@@ -223,7 +217,7 @@ public class TGUploadDBHelper
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:updateUploader] taskId == " + info.getId(), e);
 		}
 	}
 
@@ -240,7 +234,7 @@ public class TGUploadDBHelper
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:deleteUploader] taskId == " + info.getId(), e);
 		}
 	}
 
@@ -258,7 +252,7 @@ public class TGUploadDBHelper
 		}
 		catch (DbException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:deleteUploader] filePath == " + filePath, e);
 		}
 	}
 }

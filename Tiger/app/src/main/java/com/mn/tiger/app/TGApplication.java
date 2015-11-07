@@ -23,13 +23,10 @@ import java.util.Map;
 
 /**
  * 该类作用及功能说明 应用App类
- *
- * @version V2.0
- * @see JDK1.6,android-8
  */
 public class TGApplication extends Application
 {
-    protected final Logger LOG = Logger.getLogger(this.getClass());
+    private static final Logger LOG = Logger.getLogger(TGApplication.class);
 
     /** 启动Activity列表 */
     private List<Activity> activities = new LinkedList<Activity>();

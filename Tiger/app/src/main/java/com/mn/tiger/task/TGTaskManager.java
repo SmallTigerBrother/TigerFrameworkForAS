@@ -3,7 +3,7 @@ package com.mn.tiger.task;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.dispatch.TGDispatcher;
 import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.task.thread.TGHttpDaemonThread;
@@ -16,10 +16,7 @@ import java.util.HashMap;
  */
 public class TGTaskManager
 {
-	/**
-	 * 日志标签
-	 */
-	protected static final String LOG_TAG = TGTaskManager.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGTaskManager.class);
 
 	/**
 	 * Manager单例对象
@@ -75,12 +72,13 @@ public class TGTaskManager
 	 */
 	public int startTask(Context context, TGTaskParams taskParams)
 	{
+		LOG.d("[Method:startTask]");
 		if(taskParams == null)
 		{
+			LOG.w("[Method:startTask] the taskParams is null ");
 			return -1;
 		}
 
-		LogTools.d(LOG_TAG, "[Method:startTask]");
 		taskParams.setTaskMode(TASK_START_MODE);
 
 		TGTask task = createTask(context, taskParams);
@@ -102,12 +100,13 @@ public class TGTaskManager
 	 */
 	public int startScheduleTaskList(Context context, TGScheduleTaskList taskList)
 	{
+		LOG.d("[Method:startScheduleTaskList]");
 		if(null == taskList || taskList.isEmpty())
 		{
+			LOG.w("[Method:startScheduleTaskList] the taskList is null or empty");
 			return -1;
 		}
 
-		LogTools.d(LOG_TAG, "[Method:startScheduleTaskList]");
 		taskList.setTaskMode(TASK_START_MODE);
 		TGDispatcher.getInstance().dispatchScheduleTaskList(taskList);
 		return taskList.getTaskListId();
@@ -120,13 +119,12 @@ public class TGTaskManager
 	 */
 	public void cancelTask(int taskId, int taskType)
 	{
+		LOG.d("[Method:cancelTask] taskID == " + taskId + "  taskType == " + taskType);
 		if(taskId < 0)
 		{
-			LogTools.e(LOG_TAG, "[Method:cancelTask] the task is invalid; " + "  taskID-->" + taskId);
+			LOG.w("[Method:cancelTask] invalid taskID == " + taskId + "  taskType == " + taskType);
 			return;
 		}
-
-		LogTools.d(LOG_TAG, "[Method:cancelTask]" + "  taskID-->" + taskId);
 
 		if(taskType != TaskType.TASK_TYPE_HTTP)
 		{
@@ -146,14 +144,15 @@ public class TGTaskManager
 	 */
 	public void cancelScheduleTaskList(Context context, TGScheduleTaskList taskList)
 	{
+		LOG.d("[Method:startScheduleTaskList]");
 		if(null == taskList || taskList.isEmpty())
 		{
+			LOG.w("[Method:startScheduleTaskList] the taskList is null or empty");
 			return;
 		}
 
-		LogTools.d(LOG_TAG, "[Method:startScheduleTaskList]");
 		taskList.setTaskMode(TASK_CANCEL_MODE);
-		// 结束任务并删除
+		// 取消任务并删除
 		TGDispatcher.getInstance().cancelScheduleTaskList(taskList.getTaskListId());
 	}
 
@@ -165,21 +164,15 @@ public class TGTaskManager
 	 */
 	public void pauseTask(int taskId, int taskType)
 	{
+		LOG.d("[Method:pauseTask] taskID == " + taskId + " taskType == " + taskType);
 		if(taskId < 0)
 		{
-			LogTools.e(LOG_TAG, "[Method:pauseTask] the task is invalid; " + "  taskID-->" + taskId);
+			LOG.w("[Method:pauseTask] invalid taskID == " + taskId + " taskType == " + taskType);
 			return;
 		}
 
-		LogTools.d(LOG_TAG, "[Method:pauseTask]" + "  taskID-->" + taskId);
-
-		TGTaskParams taskParams = new TGTaskParams();
-		taskParams.setTaskID(taskId);
-		taskParams.setTaskType(taskType);
-		taskParams.setTaskMode(TASK_PAUSE_MODE);
-		// 结束任务并删除
-		TGDispatcher.getInstance().pauseTask(taskParams.getTaskID(),
-				taskParams.getTaskType());
+		// 暂停任务
+		TGDispatcher.getInstance().pauseTask(taskId, taskType);
 	}
 
 	/**
@@ -190,7 +183,7 @@ public class TGTaskManager
 	 */
 	public static TGTask createTask(Context context, TGTaskParams taskParams)
 	{
-		LogTools.d(LOG_TAG, "[Method:createTask]");
+		LOG.d("[Method:createTask]");
 		TGTask task = null;
 		try
 		{
@@ -204,7 +197,7 @@ public class TGTaskManager
 		}
 		catch (Exception e)
 		{
-			LogTools.e(LOG_TAG, "[method:createTask] create task error.", e);
+			LOG.e("[method:createTask]", e);
 		}
 		return task;
 	}
@@ -244,6 +237,10 @@ public class TGTaskManager
 		{
 			taskParams.setMessenger(taskResultHandler.getMessenger());
 		}
+		else
+		{
+			LOG.w("[Method:createTaskParams] the taskResultHandler is null, taskId == " + taskId);
+		}
 
 		return taskParams;
 	}
@@ -281,6 +278,10 @@ public class TGTaskManager
 		if (null != taskResultHandler)
 		{
 			taskParams.setMessenger(taskResultHandler.getMessenger());
+		}
+		else
+		{
+			LOG.w("[Method:createTaskParams] the taskResultHandler is null, taskId == " + taskId);
 		}
 
 		return taskParams;
@@ -321,6 +322,10 @@ public class TGTaskManager
 		if (null != taskResultHandler)
 		{
 			taskParams.setMessenger(taskResultHandler.getMessenger());
+		}
+		else
+		{
+			LOG.w("[Method:createTaskParams] the taskResultHandler is null, taskId == " + taskId);
 		}
 
 		return taskParams;

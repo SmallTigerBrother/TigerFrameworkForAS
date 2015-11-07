@@ -1,9 +1,6 @@
 package com.mn.tiger.task.queue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.ITaskListener;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TGTask.TGTaskState;
@@ -13,6 +10,9 @@ import com.mn.tiger.task.queue.TGLock.onUnLockListener;
 import com.mn.tiger.task.thread.TGFixedThreadPool;
 import com.mn.tiger.task.thread.TGThreadPool;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * 该类作用及功能说明: 可并行执行多个任务的队列
@@ -21,15 +21,12 @@ import com.mn.tiger.task.thread.TGThreadPool;
  */
 public class TGTaskQueue extends AbsTaskQueue
 {
+	private static final Logger LOG = Logger.getLogger(TGTaskQueue.class);
+
 	/**
 	 * @date 2014年6月25日
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 日志标签
-	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
 
 	/**
 	 * 该队列中正在运行任务个数
@@ -82,7 +79,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		//若当前队列状态为暂停，则直接退出
 		if(state == TGQueueState.PAUSE)
 		{
-			LogTools.p(LOG_TAG, "[Method:executeNextTask] the queue has been paused!");
+			LOG.w("[Method:executeNextTask] the queue has been paused!");
 			return;
 		}
 
@@ -91,8 +88,8 @@ public class TGTaskQueue extends AbsTaskQueue
 
 		// 获取队列中的任务总数
 		int totalTask = getTaskArray().size();
-		LogTools.d(LOG_TAG, "[Method:executeNextTask]" + " totalTaskCount: " + totalTask);
-		LogTools.d(LOG_TAG, "[Method:executeNextTask] runningTaskNum: " + runningTaskList.size());
+		LOG.i("[Method:executeNextTask]" + " totalTaskCount: " + totalTask);
+		LOG.i("[Method:executeNextTask] runningTaskNum: " + runningTaskList.size());
 		// 若已无任务，队列状态改为等待
 		if(totalTask <= 0)
 		{
@@ -114,7 +111,7 @@ public class TGTaskQueue extends AbsTaskQueue
 					runningTaskList.add(runTask.getTaskID());
 					state = TGQueueState.RUNNING;
 
-					LogTools.d(LOG_TAG, "[Method:executeNextTask] runningTaskNum: " + runningTaskList.size());
+					LOG.i("[Method:executeNextTask] runningTaskNum: " + runningTaskList.size());
 				}
 			}
 			else
@@ -165,11 +162,15 @@ public class TGTaskQueue extends AbsTaskQueue
 			task = null;
 		}
 
+		boolean result = false;
 		// 任务移除队列
-		boolean result =  super.remove(taskId);
+		synchronized (this)
+		{
+			result =  super.remove(taskId);
+		}
 
 		// 执行队列中下一个等待任务
-		LogTools.d(LOG_TAG, "[Method:onRemove] queue size : " + TGTaskQueue.this.size());
+		LOG.i("[Method:onRemove] queue size : " + TGTaskQueue.this.size());
 		this.executeNextTask();
 
 		return result;
@@ -180,9 +181,9 @@ public class TGTaskQueue extends AbsTaskQueue
 	 *
 	 * @date 2014年3月17日
 	 */
-	public synchronized void pauseTaskQueue()
+	public void pauseTaskQueue()
 	{
-		LogTools.d(LOG_TAG, "[Method:pauseTaskQueue]");
+		LOG.i("[Method:pauseTaskQueue]");
 		//设置队列运行状态为PAUSE
 		state = TGQueueState.PAUSE;
 
@@ -204,9 +205,9 @@ public class TGTaskQueue extends AbsTaskQueue
 	 *
 	 * @date 2014年3月17日
 	 */
-	public synchronized boolean pauseTask(int taskId)
+	public boolean pauseTask(int taskId)
 	{
-		LogTools.d(LOG_TAG, "[Method:pauseTask] taskId --> " + taskId);
+		LOG.i("[Method:pauseTask] taskId == " + taskId);
 
 		//将当前运行任务的Clone对象放入队列中
 		TGTask task = getTaskArray().get(taskId);
@@ -237,7 +238,7 @@ public class TGTaskQueue extends AbsTaskQueue
 		}
 		catch (CloneNotSupportedException e)
 		{
-			LogTools.e(LOG_TAG, e.getMessage(), e);
+			LOG.e("[Method:cloneTaskEnQueue]", e);
 		}
 
 		if(null != cloneTask)
@@ -252,9 +253,9 @@ public class TGTaskQueue extends AbsTaskQueue
 	 *
 	 * @date 2014年3月17日
 	 */
-	public synchronized void restart()
+	public void restart()
 	{
-		LogTools.d(LOG_TAG, "[Method:restart]");
+		LOG.d("[Method:restart]");
 
 		//设置队列运行状态为WAITING
 		state = TGQueueState.WAITING;
@@ -267,9 +268,9 @@ public class TGTaskQueue extends AbsTaskQueue
 	 * @param taskId
 	 * @return
 	 */
-	public synchronized boolean cancelTask(int taskId)
+	public boolean cancelTask(int taskId)
 	{
-		LogTools.d(LOG_TAG, "[Method:cancelTask] taskId == " + taskId + "  ThreadId == " + Thread.currentThread().getId());
+		LOG.i("[Method:cancelTask] taskId == " + taskId + "  ThreadId == " + Thread.currentThread().getId());
 
 		TGTask task = getTaskArray().get(taskId);
 		if(null != task)
@@ -387,26 +388,26 @@ public class TGTaskQueue extends AbsTaskQueue
 		@Override
 		public void onTaskStart()
 		{
-			LogTools.d(LOG_TAG, "[Method:DefaultTaskListener->onTaskStart]");
+			LOG.d("[Method:DefaultTaskListener:onTaskStart]");
 		}
 
 		@Override
 		public void onTaskChanged(int progress)
 		{
-			LogTools.d(LOG_TAG, "[Method:DefaultTaskListener->onTaskChanged] progress: " + progress);
+			LOG.d("[Method:DefaultTaskListener:onTaskChanged] progress == " + progress);
 		}
 
 		@Override
 		public void onTaskFinished(int taskId)
 		{
-			LogTools.d(LOG_TAG, "[Method:DefaultTaskListener->onTaskFinished] taskId: " + taskId);
+			LOG.d("[Method:DefaultTaskListener:onTaskFinished] taskId == " + taskId);
 			TGTaskQueue.this.removeTask(taskId);
 		}
 
 		@Override
 		public void onTaskError(int taskId, int code, Object msg)
 		{
-			LogTools.p(LOG_TAG, "[Method:DefaultTaskListener->onTaskError] taskId: " + taskId + "; errorCode: " + code);
+			LOG.w("[Method:DefaultTaskListener:onTaskError] taskId == " + taskId + "; errorCode == " + code);
 			switch (code)
 			{
 				case TaskError.LOCK_DISPATER_CODE:
@@ -462,12 +463,13 @@ public class TGTaskQueue extends AbsTaskQueue
 		@Override
 		public void onTaskCancel(int taskId)
 		{
+			LOG.d("[Method:DefaultTaskListener:onTaskCancel] taskId == " + taskId);
 		}
 
 		@Override
 		public void onTaskPause(int taskId)
 		{
-
+			LOG.d("[Method:DefaultTaskListener:onTaskPause] taskId == " + taskId);
 		}
 	}
 }

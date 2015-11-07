@@ -1,15 +1,5 @@
 package com.mn.tiger.datastorage.db.upgrade;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import android.util.Log;
-
 import com.mn.tiger.datastorage.TGDBManager;
 import com.mn.tiger.datastorage.db.DaoConfig;
 import com.mn.tiger.datastorage.db.exception.DbException;
@@ -19,24 +9,28 @@ import com.mn.tiger.datastorage.db.table.Column;
 import com.mn.tiger.datastorage.db.table.DbModel;
 import com.mn.tiger.datastorage.db.table.Table;
 import com.mn.tiger.datastorage.db.table.TableUtils;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.FileUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 数据库升级默认实现类
- * 
+ *
  * @since 2014年2月18日
  */
 public abstract class AbsDbUpgrade
 {
-	/**
-	 * log tag
-	 */
-	public static final String TAG = AbsDbUpgrade.class.getSimpleName();
-
+	private static final Logger LOG = Logger.getLogger(AbsDbUpgrade.class);
 	/**
 	 * 默认实现的数据库升级方法：备份原有数据库，根据当前版本entity新建表，再把备份数据库对应的数据迁移到新表中
-	 * 
+	 *
 	 * @param db
 	 *            数据库管理类
 	 * @param oldVersion
@@ -50,8 +44,7 @@ public abstract class AbsDbUpgrade
 	{
 		try
 		{
-			LogTools.p(TAG, "[Method: onUpgrade]  "
-					+ "start upgrade DB. backup DB, clean old DB data.");
+			LOG.i("[Method: onUpgrade] start upgrade DB. backup DB, clean old DB data.");
 			// 备份原有数据库为临时数据库
 			db.getDatabase().setVersion(newVersion);
 			String oldDbPath = db.getDatabase().getPath();
@@ -82,17 +75,12 @@ public abstract class AbsDbUpgrade
 			List<String> tableNames = tempDb.getAllTableFromDb();
 
 			// 遍历备份库中所有表，检查是否是业务表， 如果是业务表，从临时数据库迁移数据到新数据库
-			LogTools.p(TAG, "[Method: onUpgrade]  "
-					+ "create new table, move data to new table from backup.");
-			TigerTables table = null;
-			Class<?> newClass = null;
-			SqlInfo sqlInfo = null;
-			List<DbModel> dbModelList = null;
+			LOG.i("[Method: onUpgrade] create new table, move data to new table from backup.");
 			for (String tableName : tableNames)
 			{
-				Log.i(TAG, "tableName : " + tableName);
+				LOG.i("[Method:onUpgrade] tableName == " + tableName);
 				// 在备份库记录业务表名得表中查询，判断是否存在该业务表
-				table = tempDb.findFirst(TigerTables.class,
+				TigerTables table = tempDb.findFirst(TigerTables.class,
 						WhereBuilder.b("name", "=", tableName));
 				if (table == null)
 				{
@@ -100,18 +88,18 @@ public abstract class AbsDbUpgrade
 				}
 
 				// 检查新版本中是否还存在该表对应的entity，如不存在，则不需在新库中创建该表
-				newClass = findClassForName(table);
+				Class<?> newClass = findClassForName(table);
 				if (newClass == null)
 				{
 					continue;
 				}
 
 				// 检查该备份库业务表中是否有数据
-				sqlInfo = new SqlInfo();
+				SqlInfo sqlInfo = new SqlInfo();
 				sqlInfo.setSql("SELECT * FROM " + tableName);
-				dbModelList = tempDb.findDbModelAll(sqlInfo);
+				List<DbModel> dbModelList = tempDb.findDbModelAll(sqlInfo);
 				// 如果没有数据，在首次操作该表时，才建表
-				LogTools.p(TAG, "[Method: onUpgrade]  " + tableName + " data size : "
+				LOG.i("[Method: onUpgrade]  " + tableName + " data size : "
 						+ (dbModelList == null ? null : dbModelList.size()));
 				if (dbModelList != null && dbModelList.size() > 0)
 				{
@@ -133,14 +121,14 @@ public abstract class AbsDbUpgrade
 		}
 		catch (DbException e)
 		{
-			LogTools.e(TAG, "", e);
+			LOG.e("[Method:onUpgrade]", e);
 			upgradeFail();
 		}
 	}
 
 	/**
 	 * 根据表信息对应的类全路径，查询对应的entity是否存在
-	 * 
+	 *
 	 * @param tableInfo
 	 * @return Class<?>
 	 */
@@ -154,7 +142,7 @@ public abstract class AbsDbUpgrade
 		catch (ClassNotFoundException e)
 		{
 			// 找不到改类，忽略
-			Log.e(TAG, "tableName : " + e.getMessage());
+			LOG.e("[Method:findClassForName] tableName == " + tableInfo.getName(), e);
 		}
 
 		return newClass;
@@ -162,10 +150,10 @@ public abstract class AbsDbUpgrade
 
 	/**
 	 * 迁移表数据
-	 * 
+	 *
 	 * @param newClass
 	 *            数据库表对应的entity类
-	 * @param tableInfo
+	 * @param dbModelList
 	 *            表名称和对应的entity类信息
 	 * @param dbModelList
 	 *            原有表数据集合 void
@@ -192,14 +180,14 @@ public abstract class AbsDbUpgrade
 		catch (DbException dbe)
 		{
 			// 插入数据失败，删除该表，还原临时表
-			Log.e(TAG, "tableName : " + dbe.getMessage());
+			LOG.e("[Method:moveDataToNewTable]tableName == " + newClass.getSimpleName(), dbe);
 		}
 
 	}
 
 	/**
 	 * 拼装迁移表数据sql语句，并执行数据迁移
-	 * 
+	 *
 	 * @param db
 	 * @param entityType
 	 * @param oldColumns
@@ -209,7 +197,7 @@ public abstract class AbsDbUpgrade
 	 *             SqlInfo
 	 */
 	public SqlInfo buildMoveSqlInfo(TGDBManager db, Class<?> entityType, List<String> oldColumns,
-			DbModel dbModel) throws DbException
+									DbModel dbModel) throws DbException
 	{
 		// 获取现有表所有列
 		Table newTable = Table.get(db, entityType);
@@ -233,17 +221,14 @@ public abstract class AbsDbUpgrade
 			result.addBindArgWithoutConverter("");
 		}
 
-		Map.Entry<String, Column> entry = null;
-		Column column = null;
-		String columnName = null;
 		while (iter.hasNext())
 		{
 			// 判断该列是否在原有数据库中存在，如存在，拷贝数据，如不存在，写入默认数据
-			entry = (Map.Entry<String, Column>) iter.next();
-			column = entry.getValue();
+			Map.Entry<String, Column> entry = iter.next();
+			Column column = entry.getValue();
 
 			sqlBuffer.append(entry.getKey()).append(",");
-			columnName = column.getColumnName();
+			String columnName = column.getColumnName();
 			// TODO String columnType = column.getColumnDbType();
 			if (oldColumns.contains(columnName))
 			{
@@ -260,6 +245,7 @@ public abstract class AbsDbUpgrade
 			{
 				result.addBindArgWithoutConverter(column.getDefaultValue());
 			}
+
 		}
 
 		sqlBuffer.deleteCharAt(sqlBuffer.length() - 1);
@@ -274,14 +260,14 @@ public abstract class AbsDbUpgrade
 
 		result.setSql(sqlBuffer.toString());
 
-		LogTools.p(TAG, "[Method: onUpgrade]  " + "move data sql :　" + result);
+		LOG.i("[Method: buildMoveSqlInfo]  " + "move data sql ==　" + result);
 
 		return result;
 	}
 
 	/**
 	 * 某些特殊的类型变化列，默认方法不支持数据迁移，需要重新改方法手动迁移数据
-	 * 
+	 *
 	 * @param newDb
 	 * @param backupsDb
 	 *            void
@@ -293,21 +279,21 @@ public abstract class AbsDbUpgrade
 
 	/**
 	 * 升级成功方法
-	 * 
+	 *
 	 * void
 	 */
 	public abstract void upgradeSuccess();
 
 	/**
 	 * 升级失败方法
-	 * 
+	 *
 	 * void
 	 */
 	public abstract void upgradeFail();
 
 	/**
 	 * 无需升级方法
-	 * 
+	 *
 	 * void
 	 */
 	public abstract void upgradeNeedless();

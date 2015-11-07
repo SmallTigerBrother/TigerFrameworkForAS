@@ -1,27 +1,24 @@
 package com.mn.tiger.download.observe;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.database.Observable;
 
 import com.mn.tiger.download.observe.TGDownloadObservable.OnObserverChangeListener;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.utility.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * 
+ *
  * 该类作用及功能说明: Observer控制器，负责注册、分发观察者
- * 
+ *
  * @date 2014年3月31日
  */
 public class TGDownloadObserveController
 {
-	/**
-	 * log tag
-	 */
-	public static final String TAG = TGDownloadObserveController.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGDownloadObserveController.class);
 
 	/** instance */
 	private static TGDownloadObserveController instance = new TGDownloadObserveController();
@@ -41,9 +38,9 @@ public class TGDownloadObserveController
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 获取控制器实例
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @return ObserveControll
 	 */
@@ -57,25 +54,25 @@ public class TGDownloadObserveController
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 根据传入的key，注册数据观察者
-	 * 
+	 *
 	 * @date 2014年3月31日
-	 * @param entityType
+	 * @param key
 	 * @param observer
 	 */
 	public void registerDataSetObserver(String key, TGDownloadObserver observer)
 	{
 		if (StringUtils.isEmptyOrNull(key) || observer == null)
 		{
-			LogTools.e(TAG, "register observer fail, key or observer is empty.");
+			LOG.e("[Method:registerDataSetObserver]register observer fail, key or observer is empty.");
 			return;
 		}
 
 		observer.setKey(key);
 		if (observerMap == null)
 		{
-			LogTools.e(TAG, "register observer fail, container map is null.");
+			LOG.e("[Method:registerDataSetObserver]register observer fail, container map is null.");
 			return;
 		}
 
@@ -97,9 +94,9 @@ public class TGDownloadObserveController
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 取消注册observer
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param observer
 	 */
@@ -108,13 +105,13 @@ public class TGDownloadObserveController
 		String key = observer.getKey();
 		if (StringUtils.isEmptyOrNull(key))
 		{
-			LogTools.e(TAG, "unregister observer fail, key is empty.");
+			LOG.e("[Method:unregisterObserver] unregister observer fail, key is empty.");
 			return;
 		}
 
 		if (observerMap == null)
 		{
-			LogTools.e(TAG, "unregister observer fail, container map is null.");
+			LOG.e("[Method:unregisterObserver] unregister observer fail, container map is null.");
 			return;
 		}
 
@@ -125,9 +122,9 @@ public class TGDownloadObserveController
 	}
 
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 取消注册observer
-	 * 
+	 *
 	 * @date 2014年3月31日
 	 * @param key
 	 */
@@ -135,13 +132,13 @@ public class TGDownloadObserveController
 	{
 		if (StringUtils.isEmptyOrNull(key))
 		{
-			LogTools.e(TAG, "unregister observer fail, key is empty.");
+			LOG.e("[Method:unregisterObserverByKey] unregister observer fail, key is empty.");
 			return;
 		}
 
 		if (observerMap == null)
 		{
-			LogTools.e(TAG, "unregister observer fail, container map is null.");
+			LOG.e("[Method:unregisterObserverByKey] unregister observer fail, container map is null.");
 			return;
 		}
 
@@ -150,20 +147,20 @@ public class TGDownloadObserveController
 			observerMap.remove(key);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 该方法的作用: 通知key对应的所有观察者，数据发生改变
-	 * 
+	 *
 	 * @date 2014年3月31日
-	 * @param entityType
+	 * @param result
 	 */
 	public void notifyChange(TGTaskResult result)
 	{
-		LogTools.i(TAG,"[Method:notifyChange]");
-		
+		LOG.d("[Method:notifyChange]");
+
 		int taskId = result.getTaskID();
-		
+
 		Observable<TGDownloadObserver> observable = observerMap.get(String.valueOf(taskId));
 		if(observable !=  null)
 		{

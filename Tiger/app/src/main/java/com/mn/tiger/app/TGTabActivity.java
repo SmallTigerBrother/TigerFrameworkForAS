@@ -219,7 +219,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
      */
     public void showBadge(int tabIndex, String text)
     {
-        LOG.d("showBadge(int,string)   tabIndex:"+tabIndex);
+        LOG.i("[Method:showBadge] tabIndex : " + tabIndex + "  text : " + text);
         TGBadgeView badgeView =
                 ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView();
 
@@ -233,7 +233,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
      */
     public void showBadge(int tabIndex)
     {
-        LOG.d("showBadge(int)   tabIndex:"+tabIndex);
+        LOG.i("[Method:showBadge] tabIndex : " + tabIndex);
         ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().show();
     }
 
@@ -243,7 +243,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
      */
     public void hideBadge(int tabIndex)
     {
-        LOG.d("hideBadge(int)   tabIndex:"+tabIndex);
+        LOG.i("[Method:hideBadge] tabIndex : " + tabIndex);
         ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().hide();
     }
 

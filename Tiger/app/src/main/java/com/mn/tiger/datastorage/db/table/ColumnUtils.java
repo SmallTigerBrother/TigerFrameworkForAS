@@ -1,29 +1,30 @@
 package com.mn.tiger.datastorage.db.table;
 
+import android.annotation.SuppressLint;
+import android.text.TextUtils;
+
+import com.mn.tiger.datastorage.db.annotation.Check;
+import com.mn.tiger.datastorage.db.annotation.Column;
+import com.mn.tiger.datastorage.db.annotation.ColumnObject;
+import com.mn.tiger.datastorage.db.annotation.Foreign;
+import com.mn.tiger.datastorage.db.annotation.Id;
+import com.mn.tiger.datastorage.db.annotation.NotNull;
+import com.mn.tiger.datastorage.db.annotation.Transient;
+import com.mn.tiger.datastorage.db.annotation.Unique;
+import com.mn.tiger.datastorage.db.converter.ColumnConverter;
+import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
+import com.mn.tiger.datastorage.db.sqlite.ForeignLazyLoader;
+import com.mn.tiger.log.Logger;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 import java.util.List;
 
-import android.annotation.SuppressLint;
-import android.text.TextUtils;
-
-import com.mn.tiger.datastorage.db.annotation.Check;
-import com.mn.tiger.datastorage.db.annotation.NotNull;
-import com.mn.tiger.datastorage.db.annotation.ColumnObject;
-import com.mn.tiger.datastorage.db.annotation.Transient;
-import com.mn.tiger.datastorage.db.annotation.Unique;
-import com.mn.tiger.datastorage.db.converter.ColumnConverter;
-import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
-import com.mn.tiger.datastorage.db.sqlite.ForeignLazyLoader;
-import com.mn.tiger.datastorage.db.annotation.Column;
-import com.mn.tiger.datastorage.db.annotation.Foreign;
-import com.mn.tiger.datastorage.db.annotation.Id;
-import com.mn.tiger.log.LogTools;
-
 public class ColumnUtils
 {
+	private static final Logger LOG = Logger.getLogger(ColumnUtils.class);
 
 	private ColumnUtils()
 	{
@@ -69,20 +70,20 @@ public class ColumnUtils
 			}
 			catch (NoSuchMethodException e)
 			{
-				LogTools.d(methodName + " not exist");
+				LOG.e("[Method:getColumnGetMethod]", e);
 			}
-			
+
 			getMethod.setAccessible(true);
 			return getMethod;
 		}
-		
+
 		if (field.getType() == boolean.class)
 		{
 			getMethod = getBooleanColumnGetMethod(entityType, fieldName);
 			getMethod.setAccessible(true);
 			return getMethod;
 		}
-		
+
 		if (getMethod == null)
 		{
 			String methodName = "get" + fieldName.substring(0, 1).toUpperCase()
@@ -94,7 +95,7 @@ public class ColumnUtils
 			}
 			catch (NoSuchMethodException e)
 			{
-				LogTools.d(methodName + " not exist");
+				LOG.e("[Method:getColumnGetMethod]", e);
 			}
 		}
 
@@ -102,7 +103,7 @@ public class ColumnUtils
 		{
 			return getColumnGetMethod(entityType.getSuperclass(), field);
 		}
-		
+
 		return getMethod;
 	}
 
@@ -110,7 +111,7 @@ public class ColumnUtils
 	{
 		String fieldName = field.getName();
 		Method setMethod = null;
-		
+
 		if(field.isAnnotationPresent(ColumnObject.class))
 		{
 			String methodName = "set" + fieldName.substring(0, 1).toUpperCase()
@@ -122,18 +123,18 @@ public class ColumnUtils
 			}
 			catch (NoSuchMethodException e)
 			{
-				LogTools.d(methodName + " not exist");
+				LOG.e("[Method:getColumnSetMethod]", e);
 			}
-			
+
 			return setMethod;
 		}
-		
+
 		if (field.getType() == boolean.class)
 		{
 			setMethod = getBooleanColumnSetMethod(entityType, field);
 			setMethod.setAccessible(true);
 		}
-		
+
 		if (setMethod == null)
 		{
 			String methodName = "set" + fieldName.substring(0, 1).toUpperCase()
@@ -145,7 +146,7 @@ public class ColumnUtils
 			}
 			catch (NoSuchMethodException e)
 			{
-				LogTools.d(methodName + " not exist");
+				LOG.e("[Method:getColumnSetMethod]", e);
 			}
 		}
 
@@ -225,7 +226,7 @@ public class ColumnUtils
 	{
 		return field.getAnnotation(NotNull.class) != null;
 	}
-	
+
 	public static boolean isPropertyObject(Field field)
 	{
 		return null != field.getAnnotation(ColumnObject.class);
@@ -302,7 +303,7 @@ public class ColumnUtils
 		}
 		catch (NoSuchMethodException e)
 		{
-			LogTools.d(methodName + " not exist");
+			LOG.e("[Method:getBooleanColumnGetMethod]", e);
 		}
 		return null;
 	}
@@ -326,7 +327,7 @@ public class ColumnUtils
 		}
 		catch (NoSuchMethodException e)
 		{
-			LogTools.d(methodName + " not exist");
+			LOG.e("[Method:getBooleanColumnSetMethod]", e);
 		}
 		return null;
 	}

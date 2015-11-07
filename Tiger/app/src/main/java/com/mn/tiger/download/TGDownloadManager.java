@@ -1,9 +1,5 @@
 package com.mn.tiger.download;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,14 +7,17 @@ import android.text.TextUtils;
 import com.mn.tiger.datastorage.db.sqlite.Selector;
 import com.mn.tiger.download.observe.TGDownloadObserveController;
 import com.mn.tiger.download.observe.TGDownloadObserver;
-import com.mn.tiger.log.LogTools;
-import com.mn.tiger.task.TGTask;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TGTaskParams;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.task.result.TGTaskResultHandler;
 import com.mn.tiger.utility.FileUtils;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -31,7 +30,7 @@ public class TGDownloadManager
 	/**
 	 * 日志标签
 	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
+	private static final Logger LOG = Logger.getLogger(TGDownloadManager.class);
 
 	/**
 	 * 上下文信息
@@ -58,6 +57,7 @@ public class TGDownloadManager
 	 */
 	public int start(TGDownloadParams downloadParams)
 	{
+		LOG.i("[Method:start] url == " + downloadParams.getUrl());
 		return enqueue(downloadParams);
 	}
 
@@ -70,6 +70,7 @@ public class TGDownloadManager
 	 */
 	public void cancel(int taskId)
 	{
+		LOG.i("[Method:cancel] taskId == " + taskId);
 		TGTaskManager.getInstance().cancelTask(taskId, TaskType.TASK_TYPE_DOWNLOAD);
 	}
 
@@ -82,6 +83,7 @@ public class TGDownloadManager
 	 */
 	public void pause(int taskId)
 	{
+		LOG.i("[Method:pause] taskId == " + taskId);
 		TGTaskManager.getInstance().pauseTask(taskId, TaskType.TASK_TYPE_DOWNLOAD);
 	}
 
@@ -93,6 +95,7 @@ public class TGDownloadManager
 	 */
 	public void startAll(String type)
 	{
+		LOG.i("[Method:startAll] type == " + type);
 		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getDownloader(type);
 
 		if (null != downloaders)
@@ -118,7 +121,7 @@ public class TGDownloadManager
 			}
 			catch(Exception e)
 			{
-				LogTools.e(LOG_TAG, e.getMessage(), e);
+				LOG.e("[Method:startAll] type == " + type, e);
 			}
 		}
 	}
@@ -131,6 +134,7 @@ public class TGDownloadManager
 	 */
 	public void cancelAll(String type)
 	{
+		LOG.i("[Method:cancelAll] type == " + type);
 		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getDownloader(type);
 
 		if (null != downloaders)
@@ -150,6 +154,7 @@ public class TGDownloadManager
 	 */
 	public void pauseAll(String type)
 	{
+		LOG.i("[Method:pauseAll] type == " + type);
 		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getDownloader(type);
 
 		if (null != downloaders)
@@ -169,6 +174,7 @@ public class TGDownloadManager
 	 */
 	public void startAll()
 	{
+		LOG.i("[Method:startAll]");
 		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getAllDownloader();
 
 		if (null != downloaders)
@@ -194,7 +200,7 @@ public class TGDownloadManager
 			}
 			catch(Exception e)
 			{
-				LogTools.e(LOG_TAG, e.getMessage(), e);
+				LOG.e("[Method:startAll]", e);
 			}
 		}
 	}
@@ -207,6 +213,7 @@ public class TGDownloadManager
 	 */
 	public void cancelAll()
 	{
+		LOG.i("[Method:cancelAll]");
 		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getAllDownloader();
 		if (null != downloaders)
 		{
@@ -225,6 +232,7 @@ public class TGDownloadManager
 	 */
 	public void pauseAll()
 	{
+		LOG.i("[Method:pauseAll]");
 		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getAllDownloader();
 
 		if (null != downloaders)
@@ -246,7 +254,7 @@ public class TGDownloadManager
 	 */
 	private int enqueue(TGDownloadParams downloadParams)
 	{
-		LogTools.p(LOG_TAG, "[Method:enqueue] start");
+		LOG.d("[Method:enqueue] start");
 
 		final Bundle params = new Bundle();
 		params.putSerializable("downloadParams", downloadParams);
@@ -301,8 +309,10 @@ public class TGDownloadManager
 	 */
 	private TGDownloader checkLocalDownloader(TGDownloader downloader)
 	{
+		LOG.d("[Method:checkLocalDownloader]");
 		if(downloader == null)
 		{
+			LOG.w("[Method:checkLocalDownloader] the downloader is null");
 			return null;
 		}
 
@@ -311,6 +321,7 @@ public class TGDownloadManager
 		File file = FileUtils.getFile(savePath);
 		if(file == null || !file.exists())
 		{
+			LOG.w("[Method:checkLocalDownloader] can not found the local file with url == " + downloader.getUrl());
 			delDownloader(downloader);
 			return null;
 		}

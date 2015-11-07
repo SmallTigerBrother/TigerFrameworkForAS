@@ -1,8 +1,5 @@
 package com.mn.tiger.datastorage.db.table;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
 import android.database.Cursor;
 
 import com.mn.tiger.datastorage.TGDBManager;
@@ -10,10 +7,15 @@ import com.mn.tiger.datastorage.db.converter.ColumnConverter;
 import com.mn.tiger.datastorage.db.converter.ColumnConverterFactory;
 import com.mn.tiger.datastorage.db.exception.DbException;
 import com.mn.tiger.datastorage.db.sqlite.ForeignLazyLoader;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 public class Foreign extends Column
 {
+	private static final Logger LOG = Logger.getLogger(Foreign.class);
+
 	public TGDBManager db;
 
 	private final String foreignColumnName;
@@ -62,7 +64,7 @@ public class Foreign extends Column
 			}
 			catch (DbException e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method:setValue2Entity]", e);
 			}
 		}
 		else
@@ -73,7 +75,7 @@ public class Foreign extends Column
 			}
 			catch (DbException e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method:setValue2Entity]", e);
 			}
 		}
 
@@ -85,7 +87,7 @@ public class Foreign extends Column
 			}
 			catch (Throwable e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method:setValue2Entity]", e);
 			}
 		}
 		else
@@ -97,7 +99,7 @@ public class Foreign extends Column
 			}
 			catch (Throwable e)
 			{
-				LogTools.e(e.getMessage(), e);
+				LOG.e("[Method:setValue2Entity]", e);
 			}
 		}
 	}
@@ -139,7 +141,7 @@ public class Foreign extends Column
 				}
 				catch (Throwable e)
 				{
-					LogTools.e(e.getMessage(), e);
+					LOG.e("[Method:getColumnValue]", e);
 				}
 			}
 			else
@@ -157,7 +159,7 @@ public class Foreign extends Column
 						}
 						catch (DbException e)
 						{
-							LogTools.e(e.getMessage(), e);
+							LOG.e("[Method:getColumnValue]", e);
 						}
 					}
 
@@ -165,7 +167,7 @@ public class Foreign extends Column
 				}
 				catch (Throwable e)
 				{
-					LogTools.e(e.getMessage(), e);
+					LOG.e("[Method:getColumnValue]", e);
 				}
 			}
 		}
@@ -181,7 +183,7 @@ public class Foreign extends Column
 
 	/**
 	 * It always return null.
-	 * 
+	 *
 	 * @return null
 	 */
 	@Override

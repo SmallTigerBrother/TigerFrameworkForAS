@@ -4,25 +4,25 @@ import android.database.Cursor;
 
 import com.mn.tiger.datastorage.TGDBManager;
 import com.mn.tiger.datastorage.db.table.Column;
+import com.mn.tiger.datastorage.db.table.ColumnObject;
 import com.mn.tiger.datastorage.db.table.DbModel;
 import com.mn.tiger.datastorage.db.table.Foreign;
 import com.mn.tiger.datastorage.db.table.Id;
-import com.mn.tiger.datastorage.db.table.ColumnObject;
 import com.mn.tiger.datastorage.db.table.Table;
 import com.mn.tiger.datastorage.db.util.core.DoubleKeyValueMap;
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
 
 /**
- * 
+ *
  * 游标操作类
- * 
+ *
  */
 public class CursorUtils
 {
-
+	private static final Logger LOG = Logger.getLogger(CursorUtils.class);
 	/**
 	 * 把游标中的数据设置到对应的entity中
-	 * 
+	 *
 	 * @param db
 	 *            数据库管理对象
 	 * @param cursor
@@ -34,7 +34,7 @@ public class CursorUtils
 	 * @return T 包含数据的对象
 	 */
 	public static <T> T getEntity(final TGDBManager db, final Cursor cursor, Class<T> entityType,
-			long findCacheSequence)
+								  long findCacheSequence)
 	{
 		if (db == null || cursor == null)
 			return null;
@@ -76,7 +76,7 @@ public class CursorUtils
 					}
 					else if(column instanceof ColumnObject)
 					{
-						((ColumnObject)column).setValue2Entity(entity, cursor, i);
+						column.setValue2Entity(entity, cursor, i);
 					}
 					else
 					{
@@ -89,7 +89,7 @@ public class CursorUtils
 		}
 		catch (Throwable e)
 		{
-			LogTools.e(e.getMessage(), e);
+			LOG.e("[Method:getEntity]", e);
 		}
 
 		return null;
@@ -97,7 +97,7 @@ public class CursorUtils
 
 	/**
 	 * 把游标中的数据转换为键值对对象
-	 * 
+	 *
 	 * @param cursor
 	 * @return DbModel
 	 */
@@ -117,9 +117,9 @@ public class CursorUtils
 	}
 
 	/**
-	 * 
+	 *
 	 * 缓存序列类
-	 * 
+	 *
 	 */
 	public static class FindCacheSequence
 	{
@@ -140,7 +140,7 @@ public class CursorUtils
 
 	/**
 	 * 对象缓存
-	 * 
+	 *
 	 */
 	private static class EntityTempCache
 	{

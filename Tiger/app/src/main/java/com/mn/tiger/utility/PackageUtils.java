@@ -1,7 +1,5 @@
 package com.mn.tiger.utility;
 
-import java.io.File;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +10,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.mn.tiger.log.LogTools;
+import com.mn.tiger.log.Logger;
+
+import java.io.File;
+
 
 /**
  * 该类作用及功能说明:对包的操作，安装卸载等
@@ -20,14 +21,11 @@ import com.mn.tiger.log.LogTools;
  */
 public class PackageUtils
 {
-	/**
-	 * 日志标签
-	 */
-	protected static final String LOG_TAG = PackageUtils.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(PackageUtils.class);
 
 	/**
 	 * 该方法的作用:安装apk应用
-	 * 
+	 *
 	 * @date 2013-3-1
 	 * @param context
 	 * @param apkFile
@@ -38,9 +36,11 @@ public class PackageUtils
 	{
 		if (apkFile.isFile())
 		{
-			LogTools.d("installApk", "file-------" + apkFile.getName());
+			LOG.i("[Method:installPackage] file == " + apkFile.getAbsolutePath());
 			String fileName = apkFile.getName();
 			String postfix = fileName.substring(fileName.length() - 4, fileName.length());
+			Uri uri = null;
+			Intent intent = null;
 			if (postfix.toLowerCase().equals(".apk"))
 			{
 				String cmd = "chmod 755 " + apkFile.getAbsolutePath();
@@ -50,12 +50,11 @@ public class PackageUtils
 				}
 				catch (Exception e)
 				{
-					LogTools.e(LOG_TAG,"", e);
+					LOG.e("[Method:installPackage]", e);
 				}
 
-				LogTools.d("installApk", "file-------True---" + apkFile.getName());
-				Uri uri = Uri.fromFile(apkFile);
-				Intent intent = new Intent(Intent.ACTION_VIEW);
+				uri = Uri.fromFile(apkFile);
+				intent = new Intent(Intent.ACTION_VIEW);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.setDataAndType(uri, "application/vnd.android.package-archive");
 				context.startActivity(intent);
@@ -63,12 +62,11 @@ public class PackageUtils
 		}
 		else if (apkFile.isDirectory())
 		{
-			LogTools.d("installApk", "directory");
+			LOG.i("[Method:installPackage] directory == " + apkFile.getAbsolutePath());
 			File[] files = apkFile.listFiles();
 			int fileCount = files.length;
 			for (int i = 0; i < fileCount; i++)
 			{
-				LogTools.d("installApk", "file-------" + i + "------" + files[i].getPath());
 				installPackage(context, files[i]);
 			}
 		}
@@ -76,7 +74,7 @@ public class PackageUtils
 
 	/**
 	 * 该方法的作用:安装apk应用
-	 * 
+	 *
 	 * @date 2013-3-1
 	 * @param context
 	 * @param filePath
@@ -90,7 +88,7 @@ public class PackageUtils
 
 	/**
 	 * 该方法的作用:卸载apk文件
-	 * 
+	 *
 	 * @date 2013-3-1
 	 * @param context
 	 * @param packageUri
@@ -103,7 +101,7 @@ public class PackageUtils
 
 	/**
 	 * 该方法的作用：根据包名对应已安装的应用对象
-	 * 
+	 *
 	 * @date 2013-3-1
 	 * @param context
 	 * @param packageName
@@ -122,14 +120,14 @@ public class PackageUtils
 		}
 		catch (NameNotFoundException e)
 		{
-			LogTools.e("EspanceUtils", packageName + " NameNotFoundException");
+			LOG.e("[Method:getApplicationInfoByName] packageName == " + packageName, e);
 			return null;
 		}
 	}
 
 	/**
 	 * 该方法的作用: 通过报名获取包信息
-	 * 
+	 *
 	 * @date 2013-12-3
 	 * @param context
 	 * @param packageName
@@ -148,32 +146,25 @@ public class PackageUtils
 		}
 		catch (NameNotFoundException e)
 		{
-			LogTools.e(LOG_TAG, "",e);
+			LOG.e("[Method:getPackageInfoByName] packageName == " + packageName, e);
 			return null;
 		}
 	}
 
 	/**
 	 * 该方法的作用:判断apk包是否安装
-	 * 
+	 *
 	 * @date 2013-3-10
 	 * @param context
 	 * @param packageName
 	 *            apk包名
 	 * @return
 	 */
-	public static boolean isPackageIntalled(Context context, String packageName)
+	public static boolean isPackageInstalled(Context context, String packageName)
 	{
-		if (null == getApplicationInfoByName(context, packageName))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return null != getApplicationInfoByName(context, packageName);
 	}
-	
+
 	/**
 	 * 获取MetaData
 	 * @param context
@@ -183,7 +174,7 @@ public class PackageUtils
 	public static String getMetaData(Context context, String key)
 	{
 		Bundle metaData = null;
-		String metaDataValue = null;
+		String metaDataValue = "";
 		try
 		{
 			ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
@@ -192,20 +183,17 @@ public class PackageUtils
 			{
 				metaData = applicationInfo.metaData;
 			}
-			
+
 			if (null != metaData)
 			{
-				metaDataValue = metaData.getString(key);
-				if ((null == metaDataValue) || metaDataValue.length() != 24)
-				{
-					metaDataValue = "";
-				}
+				metaDataValue = metaData.getString(key,"");
 			}
 		}
 		catch (NameNotFoundException e)
 		{
-			LogTools.e(LOG_TAG, e);
+			LOG.e("[Method:getMetaData] key == " + key, e);
 		}
+
 		return metaDataValue;
 	}
 }

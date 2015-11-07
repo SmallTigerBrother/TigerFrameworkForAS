@@ -13,11 +13,6 @@ import com.mn.tiger.request.receiver.TGHttpResult;
  */
 public class TGHttpErrorHandler implements IHttpErrorHandler
 {
-	/**
-	 * 日志标签
-	 */
-	protected final String LOG_TAG = this.getClass().getSimpleName();
-
 	private Context context;
 	protected static final int EINFO = 0;
 	protected static final int ECODE = 1;

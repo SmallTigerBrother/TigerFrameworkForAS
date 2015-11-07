@@ -1,13 +1,5 @@
 package com.mn.tiger.utility;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import com.mn.tiger.log.LogTools;
-
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -18,17 +10,22 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.mn.tiger.log.Logger;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * 该类作用及功能说明:获取手机相关的信息
- * 
+ *
  * @date 2014-2-11
  */
 public class PhoneUtils
 {
-	/**
-	 * 日志标签
-	 */
-	protected static final String LOG_TAG = PhoneUtils.class.getSimpleName();
+	private static final Logger LOG = Logger.getLogger(PhoneUtils.class);
 
 	/** 中国移动 */
 	private static final int CHINA_MOBILE = 1;
@@ -41,7 +38,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取手机MAC地址
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -52,7 +49,7 @@ public class PhoneUtils
 		WifiInfo info = manager.getConnectionInfo();
 		return info.getMacAddress();
 	}
-	
+
 	/**
 	 * 获取peerid(mac地址移除符号)
 	 * @param context
@@ -72,7 +69,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取TelephonyManager对象
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -84,7 +81,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取DeviceId
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -96,13 +93,13 @@ public class PhoneUtils
 		{
 			deviceID = getPeerid(context);
 		}
-		
+
 		return deviceID;
 	}
 
 	/**
 	 * 该方法的作用:获取IMSI号
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -114,7 +111,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用: 获取厂商信息
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @return
 	 */
@@ -125,7 +122,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取release版本
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @return
 	 */
@@ -136,7 +133,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取SDK_INT 版本
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @return
 	 */
@@ -147,7 +144,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取手机号码
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -159,7 +156,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取当前运营商
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return 返回0 表示获取失败 1表示为中国移动 2为中国联通 3为中国电信
@@ -188,7 +185,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:通过传入的voiceType获取不同的音量值
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @param voiceType
@@ -203,7 +200,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取当前通话音音量
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -215,7 +212,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取当前提示音音量
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -227,7 +224,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取当前铃声音量
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -239,7 +236,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取当前音乐音量
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -251,7 +248,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取当前系统音量
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @param context
 	 * @return
@@ -263,7 +260,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:获取手机CPU名字
-	 * 
+	 *
 	 * @date 2014-1-23
 	 * @return
 	 */
@@ -282,11 +279,11 @@ public class PhoneUtils
 		}
 		catch (FileNotFoundException e)
 		{
-			LogTools.e(LOG_TAG,"", e);
+			LOG.e("[Method:getCpuName]", e);
 		}
 		catch (IOException e)
 		{
-			LogTools.e(LOG_TAG,"", e);
+			LOG.e("[Method:getCpuName]", e);
 		}
 		finally
 		{
@@ -298,7 +295,7 @@ public class PhoneUtils
 				}
 				catch (IOException e)
 				{
-					LogTools.e(LOG_TAG,"", e);
+					LOG.e("[Method:getCpuName]", e);
 				}
 			}
 			if (fileReader != null)
@@ -309,7 +306,7 @@ public class PhoneUtils
 				}
 				catch (IOException e)
 				{
-					LogTools.e(LOG_TAG,"", e);
+					LOG.e("[Method:getCpuName]", e);
 				}
 			}
 		}
@@ -318,7 +315,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:直接拨打电话
-	 * 
+	 *
 	 * @date 2014年3月19日
 	 * @param context
 	 * @param phoneNum
@@ -336,7 +333,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:跳转到拨号界面
-	 * 
+	 *
 	 * @date 2014年3月19日
 	 * @param context
 	 * @param phoneNum
@@ -351,7 +348,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:跳转到系统的短信编辑界面
-	 * 
+	 *
 	 * @date 2014年3月19日
 	 * @param context
 	 * @param phoneNum
@@ -368,7 +365,7 @@ public class PhoneUtils
 
 	/**
 	 * 该方法的作用:直接发送短信，无界面
-	 * 
+	 *
 	 * @date 2014年3月19日
 	 * @param context
 	 * @param phoneNum
