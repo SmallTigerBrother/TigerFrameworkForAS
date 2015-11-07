@@ -1,7 +1,5 @@
 package com.mn.tiger.widget.viewpager;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -14,17 +12,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mn.tiger.log.Logger;
+
+import java.util.List;
+
 /**
  * 可自动翻页的ViewPager
  */
 public class TGAutoFlipViewPager extends ViewPager
 {
-	protected final String LOG_TAG = this.getClass().getSimpleName();
-	
+	private static final Logger LOG = Logger.getLogger(TGAutoFlipViewPager.class);
 	/**
 	 * 当前显示的页码
 	 */
 	private int currentPageNum = 0;
+
+	private AutoFlipRunnable autoFlipRunnable;
 
 	/**
 	 * 用于接收定时翻页消息的Handler
@@ -35,41 +38,43 @@ public class TGAutoFlipViewPager extends ViewPager
 		public void handleMessage(Message msg)
 		{
 			setCurrentItem(msg.what);
-		};
+		}
 	};
-	
+
 	/**
 	 * 是否继续翻页
 	 */
 	private boolean isContinue = true;
-	
+
 	/**
 	 * 是否正在滚动
 	 */
 	private boolean isSrolling = false;
-	
+
 	/**
 	 * 翻页周期
 	 */
 	private int duration = 4000;
-	
+
 	/**
 	 * 内置的页码改变监听器
 	 */
 	private OnPageChangeListener internalPageChangeListener = null;
-	
+
 	public TGAutoFlipViewPager(Context context)
 	{
 		super(context);
+		autoFlipRunnable = new AutoFlipRunnable();
 		setListeners();
 	}
 
 	public TGAutoFlipViewPager(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
+		autoFlipRunnable = new AutoFlipRunnable();
 		setListeners();
 	}
-	
+
 	/**
 	 * 设置触摸事件监听器
 	 */
@@ -97,7 +102,7 @@ public class TGAutoFlipViewPager extends ViewPager
 				return false;
 			}
 		});
-		
+
 		//设置默认的OnPageChangeListener，记录currentPageNum
 		super.setOnPageChangeListener(new OnPageChangeListener()
 		{
@@ -110,7 +115,7 @@ public class TGAutoFlipViewPager extends ViewPager
 					internalPageChangeListener.onPageSelected(page);
 				}
 			}
-			
+
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2)
 			{
@@ -119,7 +124,7 @@ public class TGAutoFlipViewPager extends ViewPager
 					internalPageChangeListener.onPageScrolled(arg0, arg1, arg2);
 				}
 			}
-			
+
 			@Override
 			public void onPageScrollStateChanged(int arg0)
 			{
@@ -130,7 +135,7 @@ public class TGAutoFlipViewPager extends ViewPager
 			}
 		});
 	}
-	
+
 	@Override
 	public void setAdapter(PagerAdapter adapter)
 	{
@@ -145,46 +150,35 @@ public class TGAutoFlipViewPager extends ViewPager
 			throw new IllegalArgumentException("the parameter \"adapter\" must extends TGAutoFlipViewPager.CirclePagerAdapter");
 		}
 	}
-	
+
 	/**
 	 * 开始滚动
 	 */
 	public void startScroll()
 	{
-		handler.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(isContinue && isSrolling)
-				{
-					//定时重发
-					currentPageNum++;
-					handler.sendEmptyMessage(currentPageNum);
-					handler.postDelayed(this, duration);
-				}
-			}
-		}, duration);
-		
+		LOG.d("[Method:startScroll]");
+		handler.postDelayed(autoFlipRunnable, duration);
+
 		isContinue = true;
 		isSrolling = true;
 	}
-	
+
 	@Override
 	public void setCurrentItem(int item)
 	{
 		currentPageNum = item;
 		super.setCurrentItem(currentPageNum);
 	}
-	
+
 	/**
 	 * 停止自动滚动
 	 */
 	public void stopScroll()
 	{
+		LOG.d("[Method:stopScroll]");
 		isSrolling = false;
 	}
-	
+
 	/**
 	 * 设置滚动周期
 	 * @param duration
@@ -193,7 +187,7 @@ public class TGAutoFlipViewPager extends ViewPager
 	{
 		this.duration = duration;
 	}
-	
+
 	/**
 	 * 重写基类的设置页面切换监听接口
 	 */
@@ -202,14 +196,43 @@ public class TGAutoFlipViewPager extends ViewPager
 	{
 		this.internalPageChangeListener = listener;
 	}
-	
+
+	private final class AutoFlipRunnable implements Runnable
+	{
+		private boolean running = false;
+
+		@Override
+		public void run()
+		{
+			if (isContinue && isSrolling)
+			{
+				running = true;
+				//定时重发
+				currentPageNum++;
+				handler.sendEmptyMessage(currentPageNum);
+				handler.postDelayed(this, duration);
+
+				LOG.d("[Method:AutoFlipRunnable:run] to next page == " + currentPageNum);
+			}
+			else
+			{
+				running = false;
+			}
+		}
+
+		public boolean isRunning()
+		{
+			return running;
+		}
+	}
+
 	/**
 	 * 循环滚动PagerAdapter
 	 */
 	public static class CirclePagerAdapter<T> extends TGRecyclePagerAdapter<T>
 	{
 		public CirclePagerAdapter(Activity activity, List<T> pagerData,
-				Class<? extends TGPagerViewHolder<T>> viewHolderClazz)
+								  Class<? extends TGPagerViewHolder<T>> viewHolderClazz)
 		{
 			super(activity, pagerData, viewHolderClazz);
 		}
@@ -220,7 +243,7 @@ public class TGAutoFlipViewPager extends ViewPager
 			//设置个数为最大值，无限循环
 			return Integer.MAX_VALUE;
 		}
-		
+
 		/**
 		 * 获取真实页数（不循环的页数）
 		 * @return
@@ -229,7 +252,7 @@ public class TGAutoFlipViewPager extends ViewPager
 		{
 			return getPagerData().size();
 		}
-		
+
 		@Override
 		public final Object instantiateItem(ViewGroup container, int position)
 		{
@@ -242,5 +265,5 @@ public class TGAutoFlipViewPager extends ViewPager
 			return super.instantiateItem(container, position % size);
 		}
 	}
-	
+
 }
