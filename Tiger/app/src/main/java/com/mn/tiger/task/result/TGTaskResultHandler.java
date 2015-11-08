@@ -34,7 +34,7 @@ public abstract class TGTaskResultHandler
 		{   @Override
 			public void handleMessage(Message msg)
 			{
-				LOG.i("[Method:mHandler:handleMessage]");
+				LOG.d("[Method:mHandler:handleMessage]");
 				Bundle data = msg.getData();
 				data.setClassLoader(TGTaskResult.class.getClassLoader());
 				TGTaskResult taskResult = data.getParcelable("result");

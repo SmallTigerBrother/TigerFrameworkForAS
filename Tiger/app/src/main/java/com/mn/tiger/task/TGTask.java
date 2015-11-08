@@ -164,7 +164,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void sendTaskResult(Object result)
 	{
-		LOG.d("[Method:sendTaskResult]");
+		LOG.d("[Method:sendTaskResult] taskId == " + taskID);
 		if (messenger == null)
 		{
 			LOG.w("[Method:sendTaskResult] the messenger is null");
@@ -239,7 +239,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskChanged(int progress)
 	{
-		LOG.d("[Method:onTaskChanged] progress == " + progress);
+		LOG.d("[Method:onTaskChanged] taskId == " + taskID + " progress == " + progress);
 		// 若当前任务状态为运行状态，则通知任务队列，任务执行变化
 		if (state == TGTaskState.RUNNING && null != taskListener)
 		{
@@ -254,7 +254,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskFinished()
 	{
-		LOG.d("[Method:onTaskFinished]");
+		LOG.d("[Method:onTaskFinished] taskId == " + taskID);
 
 		// 修改任务状态为完成
 		state = TGTaskState.FINISHED;
@@ -275,7 +275,7 @@ public class TGTask implements Cloneable
 	 */
 	protected void onTaskError(int code, Object msg)
 	{
-		LOG.d("[Method:onTaskError] code == " + code);
+		LOG.d("[Method:onTaskError] taskId == " + taskID + " code == " + code);
 		// 修改任务状态为异常
 		state = TGTaskState.ERROR;
 
