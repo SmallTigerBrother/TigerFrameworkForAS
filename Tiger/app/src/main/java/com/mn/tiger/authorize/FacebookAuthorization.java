@@ -26,14 +26,13 @@ import java.util.List;
 /**
  * Created by peng on 15/10/31.
  */
-public class FacebookAuthorization extends TGAuthorization
+public class FacebookAuthorization extends AbsAuthorization
 {
     private static final Logger LOG = Logger.getLogger(FacebookAuthorization.class);
 
     public static final String PERMISSION_EMAIL = "email";
 
     public static final String PERMISSION_USER_BIRTHDAY = "user_birthday";
-
 
 
     public static final String FIELD_ID = "id";
@@ -49,9 +48,6 @@ public class FacebookAuthorization extends TGAuthorization
     public static final String FIELD_COVER = "cover";
 
 
-
-    private LoginButton loginButton;
-
     private CallbackManager callbackManager;
 
     private List<String> permissions;
@@ -62,8 +58,7 @@ public class FacebookAuthorization extends TGAuthorization
 
     public FacebookAuthorization(LoginButton loginButton, String... permissions)
     {
-        super();
-        this.loginButton = loginButton;
+        super(null);
 
         this.permissions = new ArrayList<String>();
         if(null != permissions && permissions.length > 0)
@@ -83,7 +78,13 @@ public class FacebookAuthorization extends TGAuthorization
     }
 
     @Override
-    protected void executeAuthorize(Activity activity, IAuthorizeCallback callback)
+    public void register(Activity activity, String account, String password, IRegisterCallback callback, Object... args)
+    {
+        throw new UnsupportedOperationException("a facebook account can not be registered by this way");
+    }
+
+    @Override
+    public void authorize(Activity activity, IAuthorizeCallback callback)
     {
         this.authorizeCallback = callback;
         LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
@@ -91,7 +92,7 @@ public class FacebookAuthorization extends TGAuthorization
     }
 
     @Override
-    protected void executeLogout(Activity activity, ILogoutCallback callback)
+    public void logout(Activity activity, ILogoutCallback callback)
     {
         this.logoutCallback = logoutCallback;
         LoginManager.getInstance().logOut();
