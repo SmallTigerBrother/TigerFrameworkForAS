@@ -91,7 +91,7 @@ public class QQAuthorization extends AbsAuthorization
 	public void register(Activity activity, String account, String password, IRegisterCallback callback,
 			Object... args)
 	{
-		throw new UnsupportedOperationException("a qq account can not be registered in this way");
+		throw new UnsupportedOperationException("a qq account can not be registered by this way");
 	}
 	
 	@Override
