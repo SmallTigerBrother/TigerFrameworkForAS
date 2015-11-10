@@ -1,4 +1,4 @@
-package com.mn.tiger.share.facebook;
+package com.mn.tiger.thirdparty.facebook;
 
 import com.facebook.share.Sharer;
 import com.mn.tiger.share.TGShareResult;

@@ -1,4 +1,4 @@
-package com.mn.tiger.authorize;
+package com.mn.tiger.thirdparty.facebook;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,6 +16,11 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
+import com.mn.tiger.authorize.AbsAuthorization;
+import com.mn.tiger.authorize.IAuthorizeCallback;
+import com.mn.tiger.authorize.ILogoutCallback;
+import com.mn.tiger.authorize.IRegisterCallback;
+import com.mn.tiger.authorize.TGAuthorizeResult;
 import com.mn.tiger.log.Logger;
 
 import java.io.Serializable;

@@ -1,14 +1,14 @@
 package com.mn.tiger.share;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.share.facebook.FacebookSharePlugin;
-import com.mn.tiger.share.qq.QQSharePlugin;
-import com.mn.tiger.share.qq.QQZoneSharePlugin;
-import com.mn.tiger.share.twitter.TwitterSharePlugin;
-import com.mn.tiger.share.wechat.WeChatEntryActivity;
-import com.mn.tiger.share.wechat.WeChatSharePlugin;
-import com.mn.tiger.share.wechat.WeChatTimeLineSharePlugin;
-import com.mn.tiger.share.weibo.WeiBoSharePlugin;
+import com.mn.tiger.thirdparty.facebook.FacebookSharePlugin;
+import com.mn.tiger.thirdparty.qq.QQSharePlugin;
+import com.mn.tiger.thirdparty.qq.QQZoneSharePlugin;
+import com.mn.tiger.thirdparty.twitter.TwitterSharePlugin;
+import com.mn.tiger.thirdparty.wechat.WeChatEntryActivity;
+import com.mn.tiger.thirdparty.wechat.WeChatSharePlugin;
+import com.mn.tiger.thirdparty.wechat.WeChatTimeLineSharePlugin;
+import com.mn.tiger.thirdparty.weibo.WeiBoSharePlugin;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -99,6 +99,7 @@ public class TGSharePluginManager
 	public void registerPlugin(TGSharePlugin plugin)
 	{
         int tag = 0;
+
         if(plugin instanceof WeChatTimeLineSharePlugin)
         {
             tag = TAG_WEI_CHAT_TIME_LINE;

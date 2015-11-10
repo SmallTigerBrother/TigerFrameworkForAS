@@ -1,4 +1,4 @@
-package com.mn.tiger.share.weibo;
+package com.mn.tiger.thirdparty.weibo;
 
 import com.mn.tiger.share.TGShareResult;
 import com.sina.weibo.sdk.api.share.BaseResponse;

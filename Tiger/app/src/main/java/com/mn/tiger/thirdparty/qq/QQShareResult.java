@@ -1,4 +1,4 @@
-package com.mn.tiger.share.qq;
+package com.mn.tiger.thirdparty.qq;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.share.TGShareResult;

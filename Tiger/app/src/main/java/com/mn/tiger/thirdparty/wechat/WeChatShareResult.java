@@ -1,4 +1,4 @@
-package com.mn.tiger.share.wechat;
+package com.mn.tiger.thirdparty.wechat;
 
 import com.mn.tiger.share.TGShareResult;
 import com.tencent.mm.sdk.openapi.BaseReq;

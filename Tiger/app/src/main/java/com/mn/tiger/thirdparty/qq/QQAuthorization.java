@@ -1,8 +1,13 @@
-package com.mn.tiger.authorize;
+package com.mn.tiger.thirdparty.qq;
 
 import android.app.Activity;
 import android.content.Intent;
 
+import com.mn.tiger.authorize.AbsAuthorization;
+import com.mn.tiger.authorize.IAuthorizeCallback;
+import com.mn.tiger.authorize.ILogoutCallback;
+import com.mn.tiger.authorize.IRegisterCallback;
+import com.mn.tiger.authorize.TGAuthorizeResult;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;

@@ -1,4 +1,4 @@
-package com.mn.tiger.share.weibo;
+package com.mn.tiger.thirdparty.weibo;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.mn.tiger.share.qq;
+package com.mn.tiger.thirdparty.qq;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,9 +1,14 @@
-package com.mn.tiger.authorize;
+package com.mn.tiger.thirdparty.weibo;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.mn.tiger.authorize.AbsAuthorization;
+import com.mn.tiger.authorize.IAuthorizeCallback;
+import com.mn.tiger.authorize.ILogoutCallback;
+import com.mn.tiger.authorize.IRegisterCallback;
+import com.mn.tiger.authorize.TGAuthorizeResult;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;

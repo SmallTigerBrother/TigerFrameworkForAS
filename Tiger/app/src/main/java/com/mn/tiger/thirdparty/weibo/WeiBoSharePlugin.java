@@ -1,4 +1,4 @@
-package com.mn.tiger.share.weibo;
+package com.mn.tiger.thirdparty.weibo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.mn.tiger.share.TGSharePlugin;
-import com.mn.tiger.share.weibo.WeiboShareResult;
 import com.mn.tiger.utility.BitmapUtils;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;

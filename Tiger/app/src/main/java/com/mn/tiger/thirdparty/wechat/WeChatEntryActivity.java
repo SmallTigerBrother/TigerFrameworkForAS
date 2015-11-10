@@ -1,4 +1,4 @@
-package com.mn.tiger.share.wechat;
+package com.mn.tiger.thirdparty.wechat;
 
 import android.app.Activity;
 import android.content.Intent;

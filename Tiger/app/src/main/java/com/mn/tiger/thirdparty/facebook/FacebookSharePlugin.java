@@ -1,4 +1,4 @@
-package com.mn.tiger.share.facebook;
+package com.mn.tiger.thirdparty.facebook;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,6 @@ import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.mn.tiger.share.TGSharePlugin;
-import com.mn.tiger.share.TGSharePluginManager;
 
 import java.util.ArrayList;
 import java.util.List;

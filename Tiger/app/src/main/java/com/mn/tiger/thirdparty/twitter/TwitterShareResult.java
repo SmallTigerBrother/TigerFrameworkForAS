@@ -1,4 +1,4 @@
-package com.mn.tiger.share.twitter;
+package com.mn.tiger.thirdparty.twitter;
 
 import com.mn.tiger.share.TGShareResult;
 

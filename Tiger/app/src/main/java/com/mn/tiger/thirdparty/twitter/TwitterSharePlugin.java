@@ -1,4 +1,4 @@
-package com.mn.tiger.share.twitter;
+package com.mn.tiger.thirdparty.twitter;
 
 import android.app.Activity;
 import android.content.Context;
