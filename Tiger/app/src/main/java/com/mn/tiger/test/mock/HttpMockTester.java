@@ -28,6 +28,7 @@ public class HttpMockTester
 	public static void addMockTestData(String url, HashMap<String, String> params, String mockFileName)
 	{
 		url = urlAppendParamKeys(url, params);
+        LOG.i("[Method:addMockTestData] url == " + url + " mockFileName == " + mockFileName);
 		dataMap.put(url, mockFileName);
 	}
 
@@ -40,8 +41,9 @@ public class HttpMockTester
 	public static TGHttpResult getMockTestData(String url, HashMap<String, String> params)
 	{
 		TGHttpResult httpResult = null;
-
 		url = urlAppendParamKeys(url, params);
+
+		LOG.i("[Method:getMockTestData] url == " + url);
 
 		String dataKey = dataMap.get(url);
 

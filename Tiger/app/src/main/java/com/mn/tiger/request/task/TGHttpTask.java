@@ -71,10 +71,12 @@ public abstract class TGHttpTask extends TGTask
 			TGHttpResult result;
 			if(!HttpMockTester.TEST_ABLE || !HttpMockTester.isTestAble(getRequestUrl(), getRequestParams().getStringParams()))
 			{
+                LOG.i("[Method:executeOnSubThread] use http request");
 				result = executeHttpRequest();
 			}
 			else
 			{
+                LOG.i("[Method:executeOnSubThread] use mock test");
 				result = HttpMockTester.getMockTestData(getRequestUrl(), getRequestParams().getStringParams());
 			}
 
