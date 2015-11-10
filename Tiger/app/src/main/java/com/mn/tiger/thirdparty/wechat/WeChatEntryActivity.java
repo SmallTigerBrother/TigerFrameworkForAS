@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.share.TGSharePluginManager;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 
@@ -75,6 +78,8 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 	@Override
 	public void onReq(BaseReq req)
 	{
+        LOG.i("[Method:onReq] share over");
+
 		WeChatShareResult shareResult = new WeChatShareResult(req);
 		
 		boolean postResult = TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT, 
@@ -89,14 +94,23 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 	@Override
 	public void onResp(BaseResp req)
 	{
-		WeChatShareResult shareResult = new WeChatShareResult(req);
-		
-		boolean postResult = TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT, 
-				shareResult);
-		if(!postResult)
+		if(req instanceof SendMessageToWX.Resp)
 		{
-			TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT_TIME_LINE, 
+			LOG.i("[Method:onResp] share over");
+			WeChatShareResult shareResult = new WeChatShareResult(req);
+
+			boolean postResult = TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT,
 					shareResult);
+			if(!postResult)
+			{
+				TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT_TIME_LINE,
+						shareResult);
+			}
+		}
+		else if(req instanceof SendAuth.Resp)
+		{
+			LOG.i("[Method:onResp] authorize over");
+            TGApplication.getBus().post((SendAuth.Resp)req);
 		}
 	}
 }

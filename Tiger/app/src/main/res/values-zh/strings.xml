@@ -40,4 +40,7 @@
     <string name="just_now">刚刚</string>
 
     <string name="tiger_ptr_loading">加载中...</string>
+
+    <string name="wechat_auth_user_denied">微信拒绝了您的授权请求</string>
+    <string name="wechat_auth_user_cancel">您已取消微信授权登录</string>
 </resources>
