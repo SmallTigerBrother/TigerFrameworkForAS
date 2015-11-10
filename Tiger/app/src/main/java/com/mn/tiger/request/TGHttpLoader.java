@@ -105,6 +105,15 @@ public class TGHttpLoader<T> implements IRequestParser
 	}
 
 	/**
+	 * 设置请求方式
+	 * @param httpType
+	 */
+	public void setHttpType(int httpType)
+	{
+		this.requestType = httpType;
+	}
+
+	/**
 	 * 执行Http请求，请在调用该方法之前，调用setHttpType方法设置请求方式
 	 * @param context
 	 * @param requestUrl
@@ -143,15 +152,14 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @date 2013-12-1
 	 * @param context
 	 * @param requestUrl
-	 * @param parameters
-	 * @param properties content-type等请求参数
 	 * @return
 	 */
-	public TGHttpResult loadByGetSync(Context context, String requestUrl,
-									  TGHttpParams parameters, Map<String, String> properties)
+	public TGHttpResult loadByGetSync(Context context, String requestUrl)
 	{
-		return new OkHttpSyncHttpLoader(0).loadByGetSync(
-				context, requestUrl, parameters, properties);
+        TGHttpParams httpParams = new TGHttpParams();
+        httpParams.setStringParams(stringParams);
+        httpParams.setFileParams(fileParams);
+		return new OkHttpSyncHttpLoader(0).loadByGetSync(context, requestUrl, httpParams, properties);
 	}
 
 	/**
@@ -171,15 +179,14 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @date 2014年5月23日
 	 * @param context
 	 * @param requestUrl
-	 * @param parameters
-	 * @param properties content-type等请求参数
 	 * @return
 	 */
-	public TGHttpResult loadByPostSync(Context context, String requestUrl,
-									   TGHttpParams parameters, Map<String, String> properties)
+	public TGHttpResult loadByPostSync(Context context, String requestUrl)
 	{
-		return new OkHttpSyncHttpLoader(0).loadByPostSync(
-				context, requestUrl, parameters, properties);
+        TGHttpParams httpParams = new TGHttpParams();
+        httpParams.setStringParams(stringParams);
+        httpParams.setFileParams(fileParams);
+		return new OkHttpSyncHttpLoader(0).loadByPostSync(context, requestUrl, httpParams, properties);
 	}
 
 	/**
@@ -199,15 +206,14 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @date 2014年5月23日
 	 * @param context
 	 * @param requestUrl
-	 * @param parameters
-	 * @param properties content-type等请求参数
 	 * @return
 	 */
-	public TGHttpResult loadByPutSync(Context context, String requestUrl,
-									  TGHttpParams parameters, Map<String, String> properties)
+	public TGHttpResult loadByPutSync(Context context, String requestUrl)
 	{
-		return new OkHttpSyncHttpLoader(0).loadByPutSync(
-				context, requestUrl, parameters, properties);
+        TGHttpParams httpParams = new TGHttpParams();
+        httpParams.setStringParams(stringParams);
+        httpParams.setFileParams(fileParams);
+		return new OkHttpSyncHttpLoader(0).loadByPutSync(context, requestUrl, httpParams, properties);
 	}
 
 	/**
@@ -227,15 +233,14 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @date 2014年5月19日
 	 * @param context
 	 * @param requestUrl
-	 * @param parameters
-	 * @param properties content-type等请求参数
 	 * @return
 	 */
-	public TGHttpResult loadByDeleteSync(Context context, String requestUrl,
-										 TGHttpParams parameters, Map<String, String> properties)
+	public TGHttpResult loadByDeleteSync(Context context, String requestUrl)
 	{
-		return new OkHttpSyncHttpLoader(0).loadByDeleteSync(
-				context, requestUrl, parameters, properties);
+        TGHttpParams httpParams = new TGHttpParams();
+        httpParams.setStringParams(stringParams);
+        httpParams.setFileParams(fileParams);
+		return new OkHttpSyncHttpLoader(0).loadByDeleteSync(context, requestUrl, httpParams, properties);
 	}
 
 	/**
