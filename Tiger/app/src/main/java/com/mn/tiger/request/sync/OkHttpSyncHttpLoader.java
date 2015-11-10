@@ -54,7 +54,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             {
                 Request request = buildRequest(HttpType.REQUEST_GET, requestUrl, parameters, properties);
                 TGHttpResult httpResult = execute(context, request);
-                LOG.d("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
+                LOG.i("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
                         "result : " + httpResult.getResult());
                 return httpResult;
             }
@@ -79,7 +79,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             {
                 Request request = buildRequest(HttpType.REQUEST_POST, requestUrl, parameters, properties);
                 TGHttpResult httpResult = execute(context,request);
-                LOG.d("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
+                LOG.i("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
                         "result : " + httpResult.getResult());
                 return httpResult;
             }
@@ -112,14 +112,14 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
      */
     public void cancel()
     {
-        LOG.d("[Method:cancel] tag == " + tag);
+        LOG.i("[Method:cancel] tag == " + tag);
         try
         {
             okHttpClient.cancel(tag);
         }
         catch (Exception e)
         {
-            LOG.d("[Method:cancel] tag == " + tag + " ; exception == " + e.getMessage());
+            LOG.e("[Method:cancel] tag == " + tag + " ; exception == " + e.getMessage());
         }
     }
 
