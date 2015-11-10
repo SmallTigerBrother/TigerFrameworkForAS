@@ -2,8 +2,8 @@ package com.mn.tiger.thirdparty.wechat;
 
 import android.content.Context;
 
-import com.tencent.mm.sdk.openapi.SendMessageToWX;
-import com.tencent.mm.sdk.openapi.SendMessageToWX.Req;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+
 
 /**
  * 微信朋友圈分享插件
@@ -16,7 +16,7 @@ public class WeChatTimeLineSharePlugin extends WeChatSharePlugin
 	}
 	
 	@Override
-	protected Req initReq()
+	protected SendMessageToWX.Req initReq()
 	{
 		SendMessageToWX.Req req = new SendMessageToWX.Req();
 		req.transaction = String.valueOf(System.currentTimeMillis());

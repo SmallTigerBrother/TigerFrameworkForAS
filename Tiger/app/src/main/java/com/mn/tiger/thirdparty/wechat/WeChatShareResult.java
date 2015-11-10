@@ -1,8 +1,8 @@
 package com.mn.tiger.thirdparty.wechat;
 
 import com.mn.tiger.share.TGShareResult;
-import com.tencent.mm.sdk.openapi.BaseReq;
-import com.tencent.mm.sdk.openapi.BaseResp;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
 
 /**
  * 微信分享结果
