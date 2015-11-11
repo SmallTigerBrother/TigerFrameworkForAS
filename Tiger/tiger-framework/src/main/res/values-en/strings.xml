@@ -1,0 +1,43 @@
+<resources>
+    <string name="tiger_app_name">tiger</string>
+     
+	
+	<!-- request -->
+	<string name="tiger_network_alert">Sorry, link to the network failed, please try
+		later!</string>
+	<string name="tiger_colse">Close</string>
+	<string name="tiger_alertdialog_str_un">Sorry, please try again later!</string>
+	<string name="tiger_alert_dialog_title_network_error">Networking tips</string>
+	<string name="tiger_nodata">No Data Found！</string>
+	
+	<!--提示框消息 -->
+    <string name="tiger_alert_dialog_cancel">Cancel</string>
+    <string name="tiger_alert_dialog_title_warn_error">Tips</string>
+	<string name="tiger_alert_dialog_ok">OK</string>
+	
+	
+    <string name="tiger_hello">hello</string>
+    <string name="tiger_dialog_text_waiting">Loading......</string>
+
+ 
+    <!-- 数据请求 -->
+    <string name="tiger_request_data_error">Request error, please try again later!</string>
+
+    <string name="tiger_not_space" >Insufficient space , download fail!</string>
+    
+    <string name="dialog_sheet_cancel">Cancel</string>
+    
+    <string name="http_error_no_network">No Network</string>
+    <string name="http_error_socket_timeout">Connection timed out, please try again later</string>
+    <string name="http_error_ioexception">Request Error,Please try again later</string>
+    <string name="http_error_unknown_exception">Unknow error</string>
+    
+     <string name="hours_ago">%1$s hour ago</string>
+    <string name="minutes_ago">%1$s minute ago</string>
+    <string name="just_now">just now</string>
+    <string name="tiger_ptr_loading">loading...</string>
+
+    <string name="wechat_auth_user_denied">WeChat refuse your auth request</string>
+    <string name="wechat_auth_user_cancel">You have canceled WeChat auth</string>
+    
+</resources>
