@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.view.View;
 
 import com.facebook.common.internal.Supplier;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -71,7 +69,6 @@ public class FrescoUtils
         }
         ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width, imageView.getLayoutParams().height);
         ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
-                .setAutoRotateEnabled(true)
                 .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();
@@ -111,7 +108,6 @@ public class FrescoUtils
 
         ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width, imageView.getLayoutParams().height);
         ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
-                .setAutoRotateEnabled(true)
                 .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();
@@ -170,7 +166,6 @@ public class FrescoUtils
         ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width,
                 imageView.getLayoutParams().height);
         ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
-                .setAutoRotateEnabled(true)
                 .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();
@@ -204,6 +199,7 @@ public class FrescoUtils
                 imageView.getLayoutParams().height);
         ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse("file://" + filePath))
                 .setAutoRotateEnabled(true)
+                .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();
 
@@ -243,6 +239,7 @@ public class FrescoUtils
         ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width, imageView.getLayoutParams().height);
         ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse("file://" + filePath))
                 .setAutoRotateEnabled(true)
+                .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();
 
@@ -273,6 +270,7 @@ public class FrescoUtils
         ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width, imageView.getLayoutParams().height);
         ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse("res:///" + resourceId))
                 .setAutoRotateEnabled(true)
+                .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();
 
