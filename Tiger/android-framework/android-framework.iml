@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":tiger-framework" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="com.mn.tiger" external.system.module.version="1.5.0" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":android-framework" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="com.mn.tiger" external.system.module.version="1.5.0" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":tiger-framework" />
+        <option name="GRADLE_PROJECT_PATH" value=":android-framework" />
       </configuration>
     </facet>
     <facet type="android" name="Android">
@@ -107,40 +107,40 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
-    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
-    <orderEntry type="library" exported="" name="digits-1.6.0" level="project" />
+    <orderEntry type="library" exported="" name="fresco-0.8.0" level="project" />
+    <orderEntry type="library" exported="" name="imagepipeline-0.8.0" level="project" />
+    <orderEntry type="library" exported="" name="crashlytics-core-2.3.3" level="project" />
+    <orderEntry type="library" exported="" name="answers-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="crashlytics-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="javabase64-1.3.1" level="project" />
+    <orderEntry type="library" exported="" name="mid-sdk-2.10" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
-    <orderEntry type="library" exported="" name="library-0.9.0" level="project" />
-    <orderEntry type="library" exported="" name="libammsdk" level="project" />
+    <orderEntry type="library" exported="" name="tencentqq" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.6.1" level="project" />
-    <orderEntry type="library" exported="" name="okhttp-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="jpush-sdk-release1.8.1" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="fbcore-0.8.0" level="project" />
     <orderEntry type="library" exported="" name="weibosdkcore_v3.0.1" level="project" />
-    <orderEntry type="library" exported="" name="imagepipeline-0.8.0" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-23.1.0" level="project" />
-    <orderEntry type="library" exported="" name="mid-sdk-2.10" level="project" />
-    <orderEntry type="library" exported="" name="fresco-0.8.0" level="project" />
-    <orderEntry type="library" exported="" name="mta-sdk-2.0.0" level="project" />
-    <orderEntry type="library" exported="" name="twitter-1.6.0" level="project" />
-    <orderEntry type="library" exported="" name="otto-1.3.8" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-23.1.0" level="project" />
-    <orderEntry type="library" exported="" name="tencentqq" level="project" />
-    <orderEntry type="library" exported="" name="drawee-0.8.0" level="project" />
-    <orderEntry type="library" exported="" name="bolts-android-1.2.0" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.4" level="project" />
-    <orderEntry type="library" exported="" name="jpush-sdk-release1.8.1" level="project" />
     <orderEntry type="library" exported="" name="fabric-1.3.4" level="project" />
-    <orderEntry type="library" exported="" name="tweet-composer-0.8.0" level="project" />
-    <orderEntry type="library" exported="" name="beta-1.1.3" level="project" />
-    <orderEntry type="library" exported="" name="tweet-ui-1.3.0" level="project" />
-    <orderEntry type="library" exported="" name="crashlytics-core-2.3.3" level="project" />
-    <orderEntry type="library" exported="" name="crashlytics-2.4.0" level="project" />
-    <orderEntry type="library" exported="" name="facebook-android-sdk-4.7.0" level="project" />
     <orderEntry type="library" exported="" name="twitter-core-1.4.0" level="project" />
-    <orderEntry type="library" exported="" name="javabase64-1.3.1" level="project" />
-    <orderEntry type="library" exported="" name="answers-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="facebook-android-sdk-4.7.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.1.0" level="project" />
+    <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
+    <orderEntry type="library" exported="" name="library-0.9.0" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="otto-1.3.8" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-23.1.0" level="project" />
+    <orderEntry type="library" exported="" name="libammsdk" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="tweet-ui-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="mta-sdk-2.0.0" level="project" />
+    <orderEntry type="library" exported="" name="beta-1.1.3" level="project" />
+    <orderEntry type="library" exported="" name="twitter-1.6.0" level="project" />
+    <orderEntry type="library" exported="" name="tweet-composer-0.8.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-23.1.0" level="project" />
+    <orderEntry type="library" exported="" name="digits-1.6.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.4" level="project" />
+    <orderEntry type="library" exported="" name="drawee-0.8.0" level="project" />
   </component>
 </module>

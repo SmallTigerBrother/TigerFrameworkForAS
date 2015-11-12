@@ -137,7 +137,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "tiger-framework"
+        name = "android-framework"
         // #CONFIG# project name in jcenter
         websiteUrl = siteUrl
         vcsUrl = gitUrl
