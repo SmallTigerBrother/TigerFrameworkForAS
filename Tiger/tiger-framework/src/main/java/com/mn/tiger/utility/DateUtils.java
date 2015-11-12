@@ -3,7 +3,6 @@ package com.mn.tiger.utility;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.mn.tiger.R;
 import com.mn.tiger.log.Logger;
 
 import java.text.DateFormat;
@@ -235,16 +234,16 @@ public class DateUtils
 		else if (diff > ONE_HOURS)
 		{
 			int hours = (int) (diff / ONE_HOURS);
-			timeAgo = ctx.getString(R.string.hours_ago, hours);
+			timeAgo = ctx.getString(CR.getStringId(ctx, "hours_ago, hours"));
 		}
 		else if (diff > ONE_MINUTES)
 		{
 			int minutes = (int) (diff / ONE_MINUTES);
-			timeAgo = ctx.getString(R.string.minutes_ago, minutes);
+			timeAgo = ctx.getString(CR.getStringId(ctx, "minutes_ago"), minutes);
 		}
 		else
 		{
-			timeAgo = ctx.getString(R.string.just_now);
+			timeAgo = ctx.getString(CR.getStringId(ctx, "just_now"));
 		}
 
 		return timeAgo;

@@ -17,13 +17,14 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.mn.tiger.R;
 
 /**
  * Created by peng on 15/10/22.
  */
 public class FrescoUtils
 {
+    private static int PLACE_HOLDER_ID = -1;
+
     private static final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
 
     private static final int MAX_MEMORY_CACHE_SIZE = (int) (MAX_HEAP_SIZE * 0.25);
@@ -284,6 +285,10 @@ public class FrescoUtils
 
     private static int getViewId(DraweeView draweeView)
     {
-        return R.id.placeholder;
+        if(PLACE_HOLDER_ID == -1)
+        {
+            PLACE_HOLDER_ID = CR.getViewId(draweeView.getContext(), "placeholder");
+        }
+        return PLACE_HOLDER_ID;
     }
 }

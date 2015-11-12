@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mn.tiger.R;
+import com.mn.tiger.utility.CR;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -198,7 +198,7 @@ public abstract class BGARefreshViewHolder
         }
         if (mLoadMoreFooterView == null)
         {
-            mLoadMoreFooterView = View.inflate(mContext, R.layout.view_normal_refresh_footer, null);
+            mLoadMoreFooterView = View.inflate(mContext, CR.getLayoutId(mContext,"view_normal_refresh_footer"), null);
             mLoadMoreFooterView.setBackgroundColor(Color.TRANSPARENT);
             if (mLoadMoreBackgroundColorRes != -1)
             {
@@ -208,8 +208,8 @@ public abstract class BGARefreshViewHolder
             {
                 mLoadMoreFooterView.setBackgroundResource(mLoadMoreBackgroundDrawableRes);
             }
-            mFooterStatusTv = (TextView) mLoadMoreFooterView.findViewById(R.id.tv_normal_refresh_footer_status);
-            mFooterChrysanthemumIv = (ImageView) mLoadMoreFooterView.findViewById(R.id.iv_normal_refresh_footer_chrysanthemum);
+            mFooterStatusTv = (TextView) mLoadMoreFooterView.findViewById(CR.getViewId(mContext,"tv_normal_refresh_footer_status"));
+            mFooterChrysanthemumIv = (ImageView) mLoadMoreFooterView.findViewById(CR.getViewId(mContext, "iv_normal_refresh_footer_chrysanthemum"));
             mFooterChrysanthemumAd = (AnimationDrawable) mFooterChrysanthemumIv.getDrawable();
             mFooterStatusTv.setText(mLodingMoreText);
         }

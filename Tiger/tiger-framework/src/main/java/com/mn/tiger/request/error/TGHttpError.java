@@ -1,8 +1,8 @@
 package com.mn.tiger.request.error;
 
-import com.mn.tiger.R;
-
 import android.content.Context;
+
+import com.mn.tiger.utility.CR;
 
 public class TGHttpError
 {
@@ -23,22 +23,22 @@ public class TGHttpError
 		switch (errorCode)
 		{
 			case NO_NETWORK:
-				return context.getString(R.string.http_error_no_network);
+				return context.getString(CR.getStringId(context, "http_error_no_network"));
 				
 			case SOCKET_TIMEOUT:
-				return context.getString(R.string.http_error_socket_timeout);
+				return context.getString(CR.getStringId(context, "http_error_socket_timeout"));
 				
 			case IOEXCEPTION:
-				return context.getString(R.string.http_error_ioexception);
+				return context.getString(CR.getStringId(context, "http_error_ioexception"));
 				
 			case UNKNOWN_EXCEPTION:
-				return context.getString(R.string.http_error_unknown_exception);
+				return context.getString(CR.getStringId(context, "http_error_unknown_exception"));
 
 			case ERROR_URL:
 				return "";
 				
 			case MOCK_TEST_ERROR:
-				return context.getString(R.string.mock_test_error);
+				return context.getString(CR.getStringId(context, "string.mock_test_error"));
 				
 			default:
 				break;

@@ -8,15 +8,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.mn.tiger.R;
+import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
 import com.norbsoft.typefacehelper.TypefaceHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class TGWebViewActivity extends TGActionBarActivity
 {
@@ -52,9 +49,9 @@ public class TGWebViewActivity extends TGActionBarActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.webview_activity);
-        mWebView = (WebView)findViewById(R.id.webview);
-        mProgress = (View)findViewById(R.id.progress);
+        setContentView(CR.getLayoutId(this, "webview_activity"));
+        mWebView = (WebView)findViewById(CR.getViewId(this,"webview"));
+        mProgress = (View)findViewById(CR.getViewId(this, "progress"));
 
         TypefaceHelper.typeface(this);
 

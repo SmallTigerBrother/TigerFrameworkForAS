@@ -16,15 +16,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mn.tiger.R;
+import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.DisplayUtils;
 
 
 /**
  * 该类作用及功能说明 搜索视图类
  * 
- * @version V2.0
- * @see JDK1.6,android-8
  */
 public class TGSearchView extends RelativeLayout
 {
@@ -91,9 +89,9 @@ public class TGSearchView extends RelativeLayout
 	{
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
 				Context.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate(R.layout.tiger_searchview, this);
+		inflater.inflate(CR.getLayoutId(getContext(), "tiger_searchview"), this);
 
-		closeIcon = (ImageView) findViewById(R.id.tiger_searchview_closeicon);
+		closeIcon = (ImageView) findViewById(CR.getViewId(getContext(), "tiger_searchview_closeicon"));
 		closeIcon.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -109,7 +107,7 @@ public class TGSearchView extends RelativeLayout
 			}
 		});
 
-		queryEditText = (AutoCompleteTextView) findViewById(R.id.tiger_searchview_query);
+		queryEditText = (AutoCompleteTextView) findViewById(CR.getViewId(getContext(), "tiger_searchview_query"));
 		queryEditText.setOnKeyListener(new OnKeyListener()
 		{
 			@Override
@@ -161,7 +159,7 @@ public class TGSearchView extends RelativeLayout
 		});
 		
 		queryEditText.setAdapter(new ArrayAdapter<CharSequence>(getContext(), 
-				R.layout.tiger_search_pop_list_item));
+				CR.getLayoutId(getContext(), "tiger_search_pop_list_item")));
 		queryEditText.setThreshold(0);
 		queryEditText.setDropDownHorizontalOffset(DisplayUtils.dip2px(getContext(), -8));
 		queryEditText.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener()
@@ -175,7 +173,7 @@ public class TGSearchView extends RelativeLayout
 			}
 		});
 
-		searchIcon = ((TextView) findViewById(R.id.tiger_searchview_submitbutton));
+		searchIcon = ((TextView) findViewById(CR.getViewId(getContext(), "tiger_searchview_submitbutton")));
 		searchIcon.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View view)
@@ -394,7 +392,6 @@ public class TGSearchView extends RelativeLayout
 	 * 该类作用及功能说明 查询内容事件监听器接口，当查询内容发生变化或提交时触发该事件
 	 * 
 	 * @version V2.0
-	 * @see JDK1.6,android-8
 	 */
 	public static interface OnQueryTextListener
 	{
@@ -433,11 +430,6 @@ public class TGSearchView extends RelativeLayout
 		}
 		
 		public LayoutParams(MarginLayoutParams source)
-		{
-			super(source);
-		}
-		
-		public LayoutParams(RelativeLayout.LayoutParams source)
 		{
 			super(source);
 		}

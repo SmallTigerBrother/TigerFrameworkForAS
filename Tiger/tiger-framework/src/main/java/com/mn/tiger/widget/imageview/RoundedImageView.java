@@ -1,7 +1,5 @@
 package com.mn.tiger.widget.imageview;
 
-import com.mn.tiger.R;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -11,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.mn.tiger.utility.CR;
 
 public class RoundedImageView extends ImageView
 {
@@ -53,17 +53,17 @@ public class RoundedImageView extends ImageView
 	{
 		super(context, attrs, defStyle);
 
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView,
+		TypedArray a = context.obtainStyledAttributes(attrs, CR.getResourceDeclareStyleableIntArray(context, "RoundedImageView"),
 				defStyle, 0);
 
-		int index = a.getInt(R.styleable.RoundedImageView_android_scaleType, -1);
+		int index = a.getInt(CR.getStyleableId(context, "RoundedImageView_android_scaleType"), -1);
 		if (index >= 0)
 		{
 			setScaleType(sScaleTypeArray[index]);
 		}
 
-		mCornerRadius = a.getDimensionPixelSize(R.styleable.RoundedImageView_corner_radius, -1);
-		mBorderWidth = a.getDimensionPixelSize(R.styleable.RoundedImageView_border_width, -1);
+		mCornerRadius = a.getDimensionPixelSize(CR.getStyleableId(context, "RoundedImageView_corner_radius"), -1);
+		mBorderWidth = a.getDimensionPixelSize(CR.getStyleableId(context, "RoundedImageView_border_width"), -1);
 
 		// don't allow negative values for radius and border
 		if (mCornerRadius < 0)
@@ -75,14 +75,14 @@ public class RoundedImageView extends ImageView
 			mBorderWidth = DEFAULT_BORDER;
 		}
 
-		mBorderColor = a.getColorStateList(R.styleable.RoundedImageView_border_color);
+		mBorderColor = a.getColorStateList(CR.getStyleableId(context, "RoundedImageView_border_color"));
 		if (mBorderColor == null)
 		{
 			mBorderColor = ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
 		}
 
-		mRoundBackground = a.getBoolean(R.styleable.RoundedImageView_round_background, false);
-		mOval = a.getBoolean(R.styleable.RoundedImageView_is_oval, false);
+		mRoundBackground = a.getBoolean(CR.getStyleableId(context, "RoundedImageView_round_background"), false);
+		mOval = a.getBoolean(CR.getStyleableId(context, "RoundedImageView_is_oval"), false);
 
 		if (mDrawable instanceof RoundedDrawable)
 		{

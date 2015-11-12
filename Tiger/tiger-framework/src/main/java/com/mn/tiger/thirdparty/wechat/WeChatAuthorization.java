@@ -3,7 +3,6 @@ package com.mn.tiger.thirdparty.wechat;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.mn.tiger.R;
 import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.authorize.AbsAuthorization;
@@ -13,6 +12,7 @@ import com.mn.tiger.authorize.IRegisterCallback;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.TGHttpLoader;
 import com.mn.tiger.request.receiver.TGHttpResult;
+import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -112,10 +112,10 @@ public class WeChatAuthorization extends AbsAuthorization
                 requestAccessToken(resp.code);
                 break;
             case SendAuth.Resp.ErrCode.ERR_USER_CANCEL:
-                ToastUtils.showToast(activity, R.string.wechat_auth_user_denied);
+                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_denied"));
                 break;
             case SendAuth.Resp.ErrCode.ERR_AUTH_DENIED:
-                ToastUtils.showToast(activity, R.string.wechat_auth_user_cancel);
+                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_cancel"));
                 break;
             default:
                 break;

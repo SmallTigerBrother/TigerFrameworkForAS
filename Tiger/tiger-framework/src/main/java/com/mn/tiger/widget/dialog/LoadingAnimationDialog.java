@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.mn.tiger.R;
+import com.mn.tiger.utility.CR;
 
 
 /**
@@ -24,16 +24,16 @@ public class LoadingAnimationDialog extends TGDialogFragment
 	{
 		super.onCreate(savedInstanceState);
 
-		int style = DialogFragment.STYLE_NO_TITLE, theme = R.style.LoadingDialogStyle;
+		int style = DialogFragment.STYLE_NO_TITLE, theme = CR.getStyleId(getActivity(), "LoadingDialogStyle");
 		setStyle(style, theme);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.loading_anima_dialog_layout, container, false);
+		View view = inflater.inflate(CR.getLayoutId(getActivity(), "loading_anima_dialog_layout"), container, false);
 
-		ImageView loadingIV = (ImageView) view.findViewById(R.id.loading_iv);
+		ImageView loadingIV = (ImageView) view.findViewById(CR.getViewId(getActivity(), "loading_iv"));
 
 		animaDrawable = (AnimationDrawable) loadingIV.getBackground();
 		animaDrawable.start();

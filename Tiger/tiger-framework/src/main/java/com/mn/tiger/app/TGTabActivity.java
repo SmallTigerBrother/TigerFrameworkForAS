@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mn.tiger.R;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGBadgeView;
 import com.mn.tiger.widget.adpter.TGListAdapter;
 import com.mn.tiger.widget.adpter.TGViewHolder;
@@ -56,10 +56,10 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     {
         super.onCreate(savedInstanceState);
         setNavigationBarVisible(false);
-        setContentView(R.layout.tiger_tab_activity);
+        setContentView(CR.getViewId(this,"layout.tiger_tab_activity"));
 
-        tabView = (TGTabView) findViewById(R.id.tiger_tab_bar);
-        viewPager = (TGViewPager) findViewById(R.id.tiger_view_pager);
+        tabView = (TGTabView) findViewById(CR.getViewId(this, "tiger_tab_bar"));
+        viewPager = (TGViewPager) findViewById(CR.getViewId(this, "tiger_view_pager"));
 
         setTabs(onInitTabs());
     }
@@ -90,7 +90,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             viewPager.setOffscreenPageLimit(tabModels.length);
 
             tabView.setAdapter(new TGListAdapter<TabModel>(this, Arrays.asList(tabModels),
-                    R.layout.tiger_fragment_tab_item, TabViewHolder.class));
+                    CR.getViewId(this,"tiger_fragment_tab_item"), TabViewHolder.class));
             tabView.setOnTabChangeListener(this);
             tabView.setSelection(0);
         }
@@ -268,9 +268,9 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
                     LayoutParams.WRAP_CONTENT, 1);
             view.setLayoutParams(layoutParams);
 
-            imageView = (ImageView) view.findViewById(R.id.tab_item_image);
+            imageView = (ImageView) view.findViewById(CR.getViewId(parent.getContext(), "id.tab_item_image"));
 
-            textView = (TextView) view.findViewById(R.id.tab_item_name);
+            textView = (TextView) view.findViewById(CR.getViewId(parent.getContext(), "tab_item_name"));
             badgeView = new TGBadgeView(getContext(), imageView);
             badgeView.setBadgePosition(TGBadgeView.POSITION_TOP_RIGHT);
             badgeView.setBadgeMargin(0, 1, 1, 0);
