@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Tiger_Tencent.iml" filepath="$PROJECT_DIR$/Tiger_Tencent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-framework-tencent/android-framework-tencent.iml" filepath="$PROJECT_DIR$/android-framework-tencent/android-framework-tencent.iml" />
+    </modules>
+  </component>
+</project>
