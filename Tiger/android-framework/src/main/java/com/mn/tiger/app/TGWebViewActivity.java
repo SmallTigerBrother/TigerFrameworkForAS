@@ -10,7 +10,6 @@ import android.webkit.WebViewClient;
 
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
-import com.norbsoft.typefacehelper.TypefaceHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,8 +51,6 @@ public class TGWebViewActivity extends TGActionBarActivity
         setContentView(CR.getLayoutId(this, "webview_activity"));
         mWebView = (WebView)findViewById(CR.getViewId(this,"webview"));
         mProgress = (View)findViewById(CR.getViewId(this, "progress"));
-
-        TypefaceHelper.typeface(this);
 
         barTitle = getIntent().getStringExtra(WEBVIEW_ACTIVITY_TITLE);
         url = getIntent().getStringExtra(URL);

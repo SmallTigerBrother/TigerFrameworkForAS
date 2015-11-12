@@ -1,8 +1,5 @@
 package com.mn.tiger.download;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -12,6 +9,9 @@ import com.mn.tiger.datastorage.db.annotation.ColumnObject;
 import com.mn.tiger.datastorage.db.annotation.Id;
 import com.mn.tiger.datastorage.db.annotation.Table;
 import com.mn.tiger.datastorage.db.annotation.Transient;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * 

@@ -1,9 +1,9 @@
 package com.mn.tiger.upload;
 
+import com.mn.tiger.request.TGHttpParams;
+
 import java.io.Serializable;
 import java.util.HashMap;
-
-import com.mn.tiger.request.TGHttpParams;
 
 /**
  *

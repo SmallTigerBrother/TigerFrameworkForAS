@@ -1,4 +1,4 @@
-package com.mn.tiger.widget.dialog;
+package com.mn.tiger.widget.wheelview;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +15,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.mn.tiger.utility.CR;
-import com.mn.tiger.widget.wheelview.DateWheel;
+import com.mn.tiger.widget.dialog.TGDialog;
 import com.mn.tiger.widget.wheelview.DateWheel.OnDateChangedListener;
 
 import java.util.Calendar;
@@ -23,8 +23,6 @@ import java.util.Calendar;
 /**
  * 该类作用及功能说明
  * 
- * @version V2.0
- * @see JDK1.6,android-8
  */
 
 public class TGDateWheelDialog extends TGDialog
@@ -70,7 +68,7 @@ public class TGDateWheelDialog extends TGDialog
 		 *            The year that was set.
 		 * @param monthOfYear
 		 *            The month that was set (0-11) for compatibility with
-		 *            {@link java.util.Calendar}.
+		 *            {@link Calendar}.
 		 * @param dayOfMonth
 		 *            The day of the month that was set.
 		 */
@@ -153,7 +151,7 @@ public class TGDateWheelDialog extends TGDialog
 	{
 		mDateWheel = new DateWheel(this.mContext);
 		mDateWheel.init(mInitialYear, mInitialMonth, mInitialDay, dateChangeListener);
-		LinearLayout.LayoutParams bodyParams = new LinearLayout.LayoutParams(
+		LayoutParams bodyParams = new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		bodyParams.gravity = Gravity.CENTER;
 		mDateWheel.setPadding(dip2px(mContext, 12), dip2px(mContext, 12), dip2px(mContext, 12),
@@ -283,7 +281,7 @@ public class TGDateWheelDialog extends TGDialog
 	{
 		if (view != null)
 		{
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+			LayoutParams params = new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			params.gravity = Gravity.CENTER;
 			this.setTitleContentView(view, params);

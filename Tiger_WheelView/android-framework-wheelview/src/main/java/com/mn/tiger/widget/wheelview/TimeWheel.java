@@ -63,7 +63,7 @@ public class TimeWheel extends FrameLayout
 		 *            The year that was set.
 		 * @param monthOfYear
 		 *            The month that was set (0-11) for compatibility with
-		 *            {@link java.util.Calendar}.
+		 *            {@link Calendar}.
 		 * @param dayOfMonth
 		 *            The day of the month that was set.
 		 */
@@ -356,7 +356,7 @@ public class TimeWheel extends FrameLayout
 		}
 
 		@SuppressWarnings("unused")
-		public static final Parcelable.Creator<SavedState> CREATOR = new Creator<SavedState>()
+		public static final Creator<SavedState> CREATOR = new Creator<SavedState>()
 		{
 			public SavedState createFromParcel(Parcel in)
 			{

@@ -1,9 +1,9 @@
 package com.mn.tiger.download;
 
+import com.mn.tiger.request.HttpType;
+
 import java.io.Serializable;
 import java.util.HashMap;
-
-import com.mn.tiger.request.HttpType;
 
 /**
  * 

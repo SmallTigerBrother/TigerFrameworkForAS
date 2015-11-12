@@ -1,12 +1,5 @@
 package com.mn.tiger.download;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-
 import android.content.Context;
 
 import com.mn.tiger.log.Logger;
@@ -14,6 +7,13 @@ import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.task.TGTask.TGTaskState;
 import com.mn.tiger.utility.Commons;
 import com.mn.tiger.utility.FileUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 
 /**
  * 下载文件写入类

@@ -26,7 +26,8 @@ import java.util.List;
 /**
  * Abstract Wheel adapter.
  */
-public abstract class AbstractWheelAdapter implements WheelViewAdapter {
+public abstract class AbstractWheelAdapter implements WheelViewAdapter
+{
     // Observers
     private List<DataSetObserver> datasetObservers;
     

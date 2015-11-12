@@ -1,14 +1,14 @@
 package com.mn.tiger.upload;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mn.tiger.datastorage.db.annotation.Column;
 import com.mn.tiger.datastorage.db.annotation.ColumnObject;
 import com.mn.tiger.datastorage.db.annotation.Id;
 import com.mn.tiger.request.TGHttpParams;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  *

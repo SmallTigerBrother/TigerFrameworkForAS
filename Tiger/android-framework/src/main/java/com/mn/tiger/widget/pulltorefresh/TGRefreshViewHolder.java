@@ -9,7 +9,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import com.mn.tiger.utility.CR;
-import com.norbsoft.typefacehelper.TypefaceHelper;
 
 
 /**
@@ -62,8 +61,6 @@ public class TGRefreshViewHolder extends BGARefreshViewHolder
             mHeaderChrysanthemumIv = (ImageView) mRefreshHeaderView.findViewById(CR.getViewId(mContext, "iv_default_refresh_header_chrysanthemum"));
             mHeaderChrysanthemumAd = (AnimationDrawable) mHeaderChrysanthemumIv.getDrawable();
         }
-
-        TypefaceHelper.typeface(mRefreshHeaderView);
 
         return mRefreshHeaderView;
     }
