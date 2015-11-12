@@ -1,7 +1,6 @@
 package com.mn.tiger.share;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.thirdparty.wechat.WeChatEntryActivity;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TGSharePluginManager
 {
-    private static final Logger LOG = Logger.getLogger(WeChatEntryActivity.class);
+    private static final Logger LOG = Logger.getLogger(TGSharePluginManager.class);
 
     /**
      * TAG —— 微信分享
