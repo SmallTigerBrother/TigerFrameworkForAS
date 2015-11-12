@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Tiger_WeChat.iml" filepath="$PROJECT_DIR$/Tiger_WeChat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-framework-wechat/android-framework-wechat.iml" filepath="$PROJECT_DIR$/android-framework-wechat/android-framework-wechat.iml" />
+    </modules>
+  </component>
+</project>
