@@ -11,12 +11,11 @@
       <entry name="!?*.flex" />
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
-      <entry name="!?*.aj" />
     </wildcardResourcePatterns>
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true">
-        <processorPath useClasspath="false">
-          <entry name="D:/coding/TigerFrameworkForAS-master/Tiger/app/libs/butterknife-7.0.0.jar" />
+        <processorPath useClasspath="true">
+          <entry name="$PROJECT_DIR$/../PocketWish/Tiger2/libs/butterknife-7.0.0.jar" />
         </processorPath>
       </profile>
     </annotationProcessing>

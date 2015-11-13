@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Tiger_Google.iml" filepath="$PROJECT_DIR$/Tiger_Google.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/TigerFrameworkForAS.iml" filepath="$PROJECT_DIR$/.idea/TigerFrameworkForAS.iml" />
     </modules>
   </component>
 </project>
