@@ -268,7 +268,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
                     LayoutParams.WRAP_CONTENT, 1);
             view.setLayoutParams(layoutParams);
 
-            imageView = (ImageView) view.findViewById(CR.getViewId(parent.getContext(), "id.tab_item_image"));
+            imageView = (ImageView) view.findViewById(CR.getViewId(parent.getContext(), "tab_item_image"));
 
             textView = (TextView) view.findViewById(CR.getViewId(parent.getContext(), "tab_item_name"));
             badgeView = new TGBadgeView(getContext(), imageView);
