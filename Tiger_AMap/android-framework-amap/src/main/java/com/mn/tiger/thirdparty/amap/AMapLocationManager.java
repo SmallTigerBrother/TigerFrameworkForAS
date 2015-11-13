@@ -1,5 +1,6 @@
 package com.mn.tiger.thirdparty.amap;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -30,8 +31,8 @@ public class AMapLocationManager implements ILocationManager
         @Override
         public void onLocationChanged(final AMapLocation aMapLocation)
         {
-            LOG.d("[Method:onLocationChanged] Provider == " + aMapLocation.getProvider() + "  lat == " +
-                    aMapLocation.getLatitude() + "  lng == " + aMapLocation.getLongitude());
+            LOG.i("[Method:onLocationChanged] Provider == " + aMapLocation.getProvider() + "  lat == " +
+                    aMapLocation.getLatitude() + "  lng == " + aMapLocation.getLongitude() + " address == " + aMapLocation.getAddress());
 
             final TGLocation tgLocation = convert2TGLocation(aMapLocation);
             tgLocation.setTime(System.currentTimeMillis());
@@ -74,7 +75,7 @@ public class AMapLocationManager implements ILocationManager
     public void requestLocationUpdates()
     {
         locationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, -1 , 50 , locationListener);
-        LOG.d("[Method:requestLocationUpdates]");
+        LOG.i("[Method:requestLocationUpdates]");
     }
 
     @Override
@@ -109,16 +110,23 @@ public class AMapLocationManager implements ILocationManager
             return false;
         }
 
-        if(!location.getCountry().equalsIgnoreCase(TGApplication.getInstance().getResources().getString(
-                CR.getStringId(TGApplication.getInstance(), "china"))))
+        Context context = TGApplication.getInstance();
+        String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
+        String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
+
+        if(!location.getCountry().equalsIgnoreCase(chinaZH) && !location.getCountry().equalsIgnoreCase(chinaEN))
         {
             return false;
         }
 
         return true;
     }
-	
 
+    /**
+     * 转换为TGLocation
+     * @param location
+     * @return
+     */
     public static TGLocation convert2TGLocation(AMapLocation location)
     {
         TGLocation tgLocation = new TGLocation();
