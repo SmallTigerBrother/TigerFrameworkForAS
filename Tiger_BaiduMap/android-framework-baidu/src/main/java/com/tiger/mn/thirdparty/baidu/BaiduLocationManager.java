@@ -5,6 +5,8 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.lbs.location.ILocationManager;
+import com.mn.tiger.lbs.map.TGLocation;
 
 /**
  * Created by Dalang on 2015/7/26.
@@ -24,7 +26,7 @@ public class BaiduLocationManager implements ILocationManager
             //发通知界面处理
             if(null != listener)
             {
-                listener.onReceiveLocation(TGLocation.initWith(bdLocation));
+                listener.onReceiveLocation(convert2TGLocation(bdLocation));
             }
         }
     };
@@ -54,7 +56,7 @@ public class BaiduLocationManager implements ILocationManager
             public void onReceiveLocation(BDLocation bdLocation)
             {
                 locationClient.unRegisterLocationListener(this);
-                TGLocation location = TGLocation.initWith(bdLocation);
+                TGLocation location = convert2TGLocation(bdLocation);
                 location.setTime(System.currentTimeMillis());
                 listener.onReceiveLocation(location);
             }
@@ -111,13 +113,13 @@ public class BaiduLocationManager implements ILocationManager
     static TGLocation convert2TGLocation(BDLocation location)
     {
         TGLocation tgLocation = new TGLocation();
-        tgLocation.latitude = location.getLatitude();
-        tgLocation.longitude = location.getLongitude();
-        tgLocation.city = location.getCity();
-        tgLocation.country = location.getCountry();
-        tgLocation.province = location.getProvince();
-        tgLocation.address = location.getAddrStr();
-        tgLocation.street = location.getStreet();
+        tgLocation.setLatitude(location.getLatitude());
+        tgLocation.setLongitude(location.getLongitude());
+        tgLocation.setCity(location.getCity());
+        tgLocation.setProvince(location.getProvince());
+        tgLocation.setCountry(location.getCountry());
+        tgLocation.setAddress(location.getAddrStr());
+        tgLocation.setStreet(location.getStreet());
         return tgLocation;
     }
 }

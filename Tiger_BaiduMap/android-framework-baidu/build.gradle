@@ -46,7 +46,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.mn.tiger:android-framework:1.5.2'
+    compile 'com.mn.tiger:android-framework:latest.integration@aar'
+    compile files('locSDK_5.3.jar')
 }
 
 install {

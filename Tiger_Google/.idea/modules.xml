@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Tiger_Google.iml" filepath="$PROJECT_DIR$/Tiger_Google.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-framework-google/app.iml" filepath="$PROJECT_DIR$/android-framework-google/app.iml" />
     </modules>
   </component>
 </project>
