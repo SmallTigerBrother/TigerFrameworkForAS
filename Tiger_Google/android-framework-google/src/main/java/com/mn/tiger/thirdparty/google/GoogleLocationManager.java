@@ -12,6 +12,7 @@ import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.map.TGLocation;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.CR;
 
 /**
  * Created by Dalang on 2015/7/26.
@@ -120,7 +121,7 @@ public class GoogleLocationManager implements ILocationManager
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras)
         {
-            LOG.d("[Method:onStatusChanged] provider == " + provider + "status == " + status);
+            LOG.i("[Method:onStatusChanged] provider == " + provider + "status == " + status);
 
             //若GPS定位不可用，则启动网络定位
             if (LocationProvider.OUT_OF_SERVICE == status)
@@ -143,7 +144,7 @@ public class GoogleLocationManager implements ILocationManager
         @Override
         public void onLocationChanged(Location location)
         {
-            LOG.d("[Method:onLocationChanged] provider == " + location.getProvider());
+            LOG.i("[Method:onLocationChanged] provider == " + location.getProvider());
             //判断当前地址和上一次定位的结果哪个更加精确，若当前定位的地址更加精确，通知更新地址
             if (isBetterLocation(location, lastLocation))
             {
@@ -182,7 +183,7 @@ public class GoogleLocationManager implements ILocationManager
         @Override
         public void onLocationChanged(Location location)
         {
-            LOG.d("[Method:onLocationChanged] provider == " + location.getProvider());
+            LOG.i("[Method:onLocationChanged] provider == " + location.getProvider());
             //判断当前地址和上一次定位的结果哪个更加精确，若当前定位的地址更加精确，通知更新地址
             if (isBetterLocation(location, lastLocation))
             {
@@ -203,7 +204,7 @@ public class GoogleLocationManager implements ILocationManager
             @Override
             public void onGeoCodingSuccess(GoogleGeoCodeResult result)
             {
-                LOG.d("[Method:onGeoCodingSuccess]");
+                LOG.i("[Method:onGeoCodingSuccess]");
                 //发通知界面处理
                 if (null != listener)
                 {
@@ -317,6 +318,15 @@ public class GoogleLocationManager implements ILocationManager
             {
                 return false;
             }
+        }
+
+        Context context = TGApplication.getInstance();
+        String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
+        String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
+
+        if(!location.getCountry().equalsIgnoreCase(chinaZH) && !location.getCountry().equalsIgnoreCase(chinaEN))
+        {
+            return false;
         }
 
         return true;

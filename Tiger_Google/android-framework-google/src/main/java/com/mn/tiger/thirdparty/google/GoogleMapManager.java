@@ -65,7 +65,7 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
             @Override
             public void onMapReady(GoogleMap googleMap)
             {
-                LOG.d("[Method:onMapReady] googleMap == " + googleMap);
+                LOG.i("[Method:onMapReady] googleMap == " + googleMap);
                 GoogleMapManager.this.googleMap = googleMap;
                 setUpMap();
             }
@@ -187,7 +187,7 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
     @Override
     public void onLocationChanged(Location location)
     {
-        LOG.d("[Method:LocationSource:onLocationChanged] lat == " + location.getLatitude() + " ; long == " + location.getLongitude());
+        LOG.i("[Method:LocationSource:onLocationChanged] lat == " + location.getLatitude() + " ; long == " + location.getLongitude());
         if(null != onLocationChangedListener)
         {
             onLocationChangedListener.onLocationChanged(location);
@@ -197,7 +197,7 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener)
     {
-        LOG.d("[Method:LocationSource:activate] ");
+        LOG.i("[Method:LocationSource:activate] ");
         this.onLocationChangedListener = onLocationChangedListener;
         if(null != this.onLocationChangedListener)
         {
@@ -217,7 +217,7 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
     @Override
     public void deactivate()
     {
-        LOG.d("[Method:LocationSource:deactivate]");
+        LOG.i("[Method:LocationSource:deactivate]");
         onLocationChangedListener = null;
         if(null != locationManager)
         {
