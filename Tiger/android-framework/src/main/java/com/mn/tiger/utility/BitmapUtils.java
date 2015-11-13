@@ -73,6 +73,7 @@ public class BitmapUtils
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
+        options.inPreferredConfig = Config.RGB_565;
         BitmapFactory.decodeFile(filename, options);
 
         // Calculate inSampleSize
@@ -168,7 +169,7 @@ public class BitmapUtils
             desh = height1 + height2;
         }
 
-        Bitmap newb = Bitmap.createBitmap(desw, desh, Config.ARGB_8888);
+        Bitmap newb = Bitmap.createBitmap(desw, desh, Config.RGB_565);
         Canvas canvas = new Canvas(newb);
         canvas.drawBitmap(src1, 0, 0, null);
 
@@ -296,7 +297,9 @@ public class BitmapUtils
      */
     public static Bitmap compressBitmap(String fromFile, String toFile, int quality)
     {
-        Bitmap bitmap = BitmapFactory.decodeFile(fromFile);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Config.RGB_565;
+        Bitmap bitmap = BitmapFactory.decodeFile(fromFile, options);
         return compressBitmap(bitmap, toFile, quality);
     }
 
@@ -311,7 +314,9 @@ public class BitmapUtils
      */
     public static Bitmap compressBitmap(InputStream inputstream, String toFile, int quality)
     {
-        Bitmap bitmap = BitmapFactory.decodeStream(inputstream);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Config.RGB_565;
+        Bitmap bitmap = BitmapFactory.decodeStream(inputstream, null, options);
         return compressBitmap(bitmap, toFile, quality);
     }
 
@@ -390,7 +395,7 @@ public class BitmapUtils
     {
 
         Bitmap output = Bitmap
-                .createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+                .createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.RGB_565);
         Canvas canvas = new Canvas(output);
 
         final int color = 0xff424242;
@@ -472,6 +477,7 @@ public class BitmapUtils
         options.inJustDecodeBounds = false;
         options.inPurgeable = true;
         options.inInputShareable = true;
+        options.inPreferredConfig = Config.RGB_565;
         options.inDither = true;
         options.inTempStorage = new byte[12 * 1024];
         options.inSampleSize = 1;
@@ -508,6 +514,7 @@ public class BitmapUtils
     public static Bitmap getScaledBitmap(Context context, File imageFile, Options options)
     {
         Bitmap bitmap = null;
+        options.inPreferredConfig = Config.RGB_565;
         // 获取资源图片
         FileInputStream fileInputStream = null;
         InputStream inputStream = null;
