@@ -1,5 +1,7 @@
 package com.tiger.mn.thirdparty.baidu;
 
+import android.content.Context;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -7,6 +9,7 @@ import com.baidu.location.LocationClientOption;
 import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.map.TGLocation;
+import com.mn.tiger.utility.CR;
 
 /**
  * Created by Dalang on 2015/7/26.
@@ -92,6 +95,15 @@ public class BaiduLocationManager implements ILocationManager
             {
                 return false;
             }
+        }
+
+        Context context = TGApplication.getInstance();
+        String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
+        String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
+
+        if(!location.getCountry().equalsIgnoreCase(chinaZH) && !location.getCountry().equalsIgnoreCase(chinaEN))
+        {
+            return false;
         }
 
         return true;
