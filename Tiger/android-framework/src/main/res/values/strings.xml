@@ -74,5 +74,8 @@
 
     <string name="wechat_auth_user_denied">微信拒绝了您的授权请求</string>
     <string name="wechat_auth_user_cancel">您已取消微信授权登录</string>
+
+    <string name="china_zh">中国</string>
+    <string name="china_en">China</string>
     
 </resources>

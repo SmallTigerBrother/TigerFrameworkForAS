@@ -13,15 +13,15 @@ public class TGLocation implements Serializable
 
     private double longitude;
 
-    private String city;
+    private String city = "";
 
-    private String province;
+    private String province = "";
 
-    private String country;
+    private String country = "";
 
-    private String street;
+    private String street = "";
 
-    private String address;
+    private String address = "";
 
     private long time;
 

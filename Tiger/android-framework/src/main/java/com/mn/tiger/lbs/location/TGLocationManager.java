@@ -42,7 +42,7 @@ public class TGLocationManager implements ILocationManager
      */
     public static void init(Provider provider)
     {
-        LOG.d("[Method:init] provider == " + provider.toString());
+        LOG.i("[Method:init] provider == " + provider.toString());
         currentProvider = provider;
     }
 
@@ -75,7 +75,7 @@ public class TGLocationManager implements ILocationManager
      */
     public void initAppropriateLocationManager()
     {
-        LOG.d("[Method:initAppropriateLocationManager]");
+        LOG.i("[Method:initAppropriateLocationManager]");
         //请求一次定位，判断是不是在中国
         curLocationManager.setLocationListener(new ILocationListener()
         {
@@ -85,7 +85,7 @@ public class TGLocationManager implements ILocationManager
                 removeLocationUpdates();
 
                 isLocationInChina = curLocationManager.isLocationInChina(location);
-                LOG.d("[Method:initAppropriateLocationManager] isLocationInChina == " + isLocationInChina);
+                LOG.i("[Method:initAppropriateLocationManager] isLocationInChina == " + isLocationInChina);
                 if (!isLocationInChina)
                 {
                     if (!(isGoogleLocationManager(curLocationManager)))
@@ -93,7 +93,7 @@ public class TGLocationManager implements ILocationManager
                         curLocationManager = newGoogleLocationManager();
                     }
                     currentProvider = Provider.Google;
-                    LOG.d("[Method:initAppropriateLocationManager] use GoogleLocationManager");
+                    LOG.i("[Method:initAppropriateLocationManager] use GoogleLocationManager");
                 }
                 curLocationManager.setLocationListener(listener);
             }
@@ -107,7 +107,7 @@ public class TGLocationManager implements ILocationManager
     {
         if(null != curLocationManager)
         {
-            LOG.d("[Method:requestLocationUpdates] " + currentProvider);
+            LOG.i("[Method:requestLocationUpdates] " + currentProvider);
             curLocationManager.requestLocationUpdates();
         }
     }
@@ -140,7 +140,7 @@ public class TGLocationManager implements ILocationManager
     @Override
     public void removeLocationUpdates()
     {
-        LOG.d("[Method:removeLocationUpdates]");
+        LOG.i("[Method:removeLocationUpdates]");
         curLocationManager.removeLocationUpdates();
     }
 
