@@ -6,10 +6,6 @@ def siteUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS'    // p
 def gitUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS.git' // project git
 group = "com.mn.tiger"
 
-repositories {
-    maven { url 'https://dl.bintray.com/smalltigerbrother/maven' }
-}
-
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
@@ -53,7 +49,7 @@ dependencies {
     compile files('libs/mid-sdk-2.10.jar')
     compile files('libs/mta-sdk-2.0.0.jar')
     compile files('libs/tencentqq.jar')
-    compile 'com.mn.tiger:android-framework:1.5.2+'
+    compile 'com.mn.tiger:android-framework:latest.integration@aar'
 }
 
 
