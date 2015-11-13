@@ -56,7 +56,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     {
         super.onCreate(savedInstanceState);
         setNavigationBarVisible(false);
-        setContentView(CR.getViewId(this,"layout.tiger_tab_activity"));
+        setContentView(CR.getLayoutId(this,"tiger_tab_activity"));
 
         tabView = (TGTabView) findViewById(CR.getViewId(this, "tiger_tab_bar"));
         viewPager = (TGViewPager) findViewById(CR.getViewId(this, "tiger_view_pager"));
@@ -90,7 +90,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             viewPager.setOffscreenPageLimit(tabModels.length);
 
             tabView.setAdapter(new TGListAdapter<TabModel>(this, Arrays.asList(tabModels),
-                    CR.getViewId(this,"tiger_fragment_tab_item"), TabViewHolder.class));
+                    CR.getLayoutId(this,"tiger_fragment_tab_item"), TabViewHolder.class));
             tabView.setOnTabChangeListener(this);
             tabView.setSelection(0);
         }

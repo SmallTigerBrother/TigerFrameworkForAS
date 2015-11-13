@@ -46,7 +46,7 @@ public class TGLocation implements Serializable
         return city;
     }
 
-    void setCity(String city)
+    public void setCity(String city)
     {
         this.city = city;
     }
@@ -56,7 +56,7 @@ public class TGLocation implements Serializable
         return province;
     }
 
-    void setProvince(String province)
+    public void setProvince(String province)
     {
         this.province = province;
     }
@@ -66,7 +66,7 @@ public class TGLocation implements Serializable
         return country;
     }
 
-    void setCountry(String country)
+    public void setCountry(String country)
     {
         this.country = country;
     }
@@ -76,7 +76,7 @@ public class TGLocation implements Serializable
         return street;
     }
 
-    void setStreet(String street)
+    public void setStreet(String street)
     {
         this.street = street;
     }
@@ -86,7 +86,7 @@ public class TGLocation implements Serializable
         return address;
     }
 
-    void setAddress(String address)
+    public void setAddress(String address)
     {
         this.address = address;
     }
@@ -104,5 +104,20 @@ public class TGLocation implements Serializable
     public Location getLocation()
     {
         return location;
+    }
+
+    public void setLatitude(double latitude)
+    {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude)
+    {
+        this.longitude = longitude;
+    }
+
+    public void setLocation(Location location)
+    {
+        this.location = location;
     }
 }
