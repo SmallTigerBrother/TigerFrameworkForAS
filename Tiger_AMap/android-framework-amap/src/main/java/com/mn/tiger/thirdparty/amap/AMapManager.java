@@ -17,11 +17,12 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.mn.tiger.lbs.location.IMapManager;
 
 /**
  * Created by Dalang on 2015/8/23.
  */
-public class AMapManager implements  IMapManager, AMapLocationListener, LocationSource
+public class AMapManager implements IMapManager, AMapLocationListener, LocationSource
 {
     private MapView mapView;
 

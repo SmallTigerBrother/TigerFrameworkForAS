@@ -8,7 +8,10 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.lbs.location.ILocationManager;
+import com.mn.tiger.lbs.map.TGLocation;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.CR;
 
 /**
  * Created by Dalang on 2015/7/26.
@@ -30,7 +33,7 @@ public class AMapLocationManager implements ILocationManager
             LOG.d("[Method:onLocationChanged] Provider == " + aMapLocation.getProvider() + "  lat == " +
                     aMapLocation.getLatitude() + "  lng == " + aMapLocation.getLongitude());
 
-            final TGLocation tgLocation = TGLocation.initWith(aMapLocation);
+            final TGLocation tgLocation = convert2TGLocation(aMapLocation);
             tgLocation.setTime(System.currentTimeMillis());
             listener.onReceiveLocation(tgLocation);
         }
@@ -106,7 +109,8 @@ public class AMapLocationManager implements ILocationManager
             return false;
         }
 
-        if(!location.getCountry().equalsIgnoreCase(TGApplication.getInstance().getResources().getString(R.string.china)))
+        if(!location.getCountry().equalsIgnoreCase(TGApplication.getInstance().getResources().getString(
+                CR.getStringId(TGApplication.getInstance(), "china"))))
         {
             return false;
         }
@@ -118,13 +122,13 @@ public class AMapLocationManager implements ILocationManager
     public static TGLocation convert2TGLocation(AMapLocation location)
     {
         TGLocation tgLocation = new TGLocation();
-        tgLocation.latitude = location.getLatitude();
-        tgLocation.longitude = location.getLongitude();
-        tgLocation.city = location.getCity();
-        tgLocation.country = location.getCountry();
-        tgLocation.province = location.getProvince();
-        tgLocation.address = location.getAddress();
-        tgLocation.street = location.getStreet();
+        tgLocation.setLatitude(location.getLatitude());
+        tgLocation.setLongitude(location.getLongitude());
+        tgLocation.setCity(location.getCity());
+        tgLocation.setCountry(location.getCountry());
+        tgLocation.setProvince(location.getProvince());
+        tgLocation.setAddress(location.getAddress());
+        tgLocation.setAddress(location.getStreet());
         return tgLocation;
     };
 }

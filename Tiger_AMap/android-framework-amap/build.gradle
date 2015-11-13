@@ -46,7 +46,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.mn.tiger:android-framework:1.5.3+'
+    compile 'com.mn.tiger:android-framework:latest.integration@aar'
     compile files('libs/AMap_Services_V2.5.0.jar')
     compile files('libs/MapApiLocation_1.3.3.jar')
 }
