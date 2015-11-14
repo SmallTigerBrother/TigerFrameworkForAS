@@ -1,7 +1,5 @@
 package com.mn.tiger.request.error;
 
-import java.net.HttpURLConnection;
-
 import android.content.Context;
 
 import com.mn.tiger.request.receiver.TGHttpResult;
@@ -14,14 +12,6 @@ import com.mn.tiger.request.receiver.TGHttpResult;
 public class TGHttpErrorHandler implements IHttpErrorHandler
 {
 	private Context context;
-	protected static final int EINFO = 0;
-	protected static final int ECODE = 1;
-	protected static final int POCODE = 7;
-
-	/**
-	 * 无数据的错误码
-	 */
-	protected static final int NODATA = 8;
 
 	public TGHttpErrorHandler(Context dialogContext)
 	{
@@ -37,18 +27,9 @@ public class TGHttpErrorHandler implements IHttpErrorHandler
 	public static boolean hasHttpError(TGHttpResult httpResult)
 	{
 		int code = httpResult.getResponseCode();
-
-		if (code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_NO_CONTENT)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return code < 200 || code >= 300;
 	}
-	
-	
+
 	protected Context getContext()
 	{
 		return context;

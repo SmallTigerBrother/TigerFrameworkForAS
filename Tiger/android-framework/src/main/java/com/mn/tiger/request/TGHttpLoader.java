@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.error.TGHttpErrorHandler;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.request.receiver.TGHttpResultHandler;
 import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
@@ -426,7 +425,8 @@ public class TGHttpLoader<T> implements IRequestParser
 			@Override
 			protected boolean hasError(TGHttpResult result)
 			{
-				return TGHttpLoader.this.hasError(result);
+                int code = result.getResponseCode();
+				return code < 200 || code >= 300 || TGHttpLoader.this.hasError(result);
 			}
 		};
 
@@ -592,7 +592,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	protected boolean hasError(TGHttpResult httpResult)
 	{
-		return TGHttpErrorHandler.hasHttpError(httpResult);
+		return false;
 	}
 
 	/**
