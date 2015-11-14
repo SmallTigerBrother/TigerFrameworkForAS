@@ -344,7 +344,11 @@ public class TGHttpLoader<T> implements IRequestParser
 		// 设置请求参数
 		Bundle data = new Bundle();
 		data.putString(TGHttpTask.PARAM_URL, requestUrl);
-		data.putSerializable(TGHttpTask.PARAM_PROPERTIES, properties);
+		if(null != properties && properties.size() > 0)
+		{
+			data.putSerializable(TGHttpTask.PARAM_PROPERTIES, properties);
+		}
+
 		if(null != params)
 		{
 			data.putSerializable(TGHttpTask.PARAM_PARAMS, params);
@@ -449,10 +453,16 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	public void setProperties(Map<String, String> properties)
 	{
+		if(null == properties)
+		{
+			properties = new HashMap<String, String>();
+		}
+
 		if(this.properties != properties)
 		{
 			this.properties.clear();
 		}
+
 		if(null != properties)
 		{
 			this.properties.putAll(properties);
@@ -466,6 +476,11 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	public void addProperty(String key, String value)
 	{
+        if(null == properties)
+        {
+            properties = new HashMap<String, String>();
+        }
+
 		this.properties.put(key, value);
 	}
 
