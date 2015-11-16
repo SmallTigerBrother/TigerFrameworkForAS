@@ -3,6 +3,7 @@ package com.mn.tiger.test.mock;
 import android.text.TextUtils;
 
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.request.sync.OkHttpSyncHttpLoader;
@@ -50,12 +51,12 @@ public class HttpMockTester
 		if(dataKey.startsWith("http://") || dataKey.startsWith("https://"))
 		{
 			httpResult = new OkHttpSyncHttpLoader(0).loadByGetSync(
-					TGApplication.getInstance(), dataKey, null, null);
+					TGApplicationProxy.getInstance().getApplication(), dataKey, null, null);
 		}
 		else
 		{
 			httpResult = new TGHttpResult();
-			String data = FileUtils.readStringFromAsset(TGApplication.getInstance(), dataKey);
+			String data = FileUtils.readStringFromAsset(TGApplicationProxy.getInstance().getApplication(), dataKey);
 			httpResult.setResponseCode(200);
 			httpResult.setResult(data);
 		}

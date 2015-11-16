@@ -9,6 +9,7 @@ import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
 
 import java.io.IOException;
@@ -134,7 +135,7 @@ public class Commons
 	 */
 	public static void exit()
 	{
-		TGApplication.getInstance().exit();
+		TGApplicationProxy.getInstance().exit();
 	}
 
 	/**

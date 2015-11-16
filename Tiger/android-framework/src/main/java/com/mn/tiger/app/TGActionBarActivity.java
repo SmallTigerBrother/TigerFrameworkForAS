@@ -69,7 +69,7 @@ public class TGActionBarActivity extends Activity
 		initPanelLayout(panelLayout);
 
 		//添加到Application中
-		((TGApplication)getApplication()).addActivityToStack(this);
+		TGApplicationProxy.getInstance().addActivityToStack(this);
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class TGActionBarActivity extends Activity
 	@Override
 	protected void onDestroy()
 	{
-		((TGApplication)getApplication()).removeActivityFromStack(this);
+		TGApplicationProxy.getInstance().removeActivityFromStack(this);
 		if(null != observers)
 		{
 			Iterator<ActivityObserver> iterator = observers.iterator();
