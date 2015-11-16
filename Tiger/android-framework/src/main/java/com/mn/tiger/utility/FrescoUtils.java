@@ -17,12 +17,15 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.mn.tiger.log.Logger;
 
 /**
  * Created by peng on 15/10/22.
  */
 public class FrescoUtils
 {
+    private static final Logger LOG = Logger.getLogger(FrescoUtils.class);
+
     private static int PLACE_HOLDER_ID = -1;
 
     private static final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
@@ -31,26 +34,34 @@ public class FrescoUtils
 
     public static void initialize(Context context)
     {
-        final MemoryCacheParams memoryCacheParams = new MemoryCacheParams(
-                MAX_MEMORY_CACHE_SIZE,
-                Integer.MAX_VALUE,
-                MAX_MEMORY_CACHE_SIZE,
-                Integer.MAX_VALUE,
-                Integer.MAX_VALUE);
-
-        Supplier<MemoryCacheParams> memoryCacheParamsSupplier = new Supplier<MemoryCacheParams>()
+        try
         {
-            @Override
-            public MemoryCacheParams get()
+            Class.forName("com.facebook.drawee.backends.pipeline.Fresco");
+            final MemoryCacheParams memoryCacheParams = new MemoryCacheParams(
+                    MAX_MEMORY_CACHE_SIZE,
+                    Integer.MAX_VALUE,
+                    MAX_MEMORY_CACHE_SIZE,
+                    Integer.MAX_VALUE,
+                    Integer.MAX_VALUE);
+
+            Supplier<MemoryCacheParams> memoryCacheParamsSupplier = new Supplier<MemoryCacheParams>()
             {
-                return memoryCacheParams;
-            }
-        };
+                @Override
+                public MemoryCacheParams get()
+                {
+                    return memoryCacheParams;
+                }
+            };
 
-        ImagePipelineConfig.Builder builder = ImagePipelineConfig.newBuilder(context)
-                .setBitmapMemoryCacheParamsSupplier(memoryCacheParamsSupplier);
+            ImagePipelineConfig.Builder builder = ImagePipelineConfig.newBuilder(context)
+                    .setBitmapMemoryCacheParamsSupplier(memoryCacheParamsSupplier);
 
-        Fresco.initialize(context, builder.build());
+            Fresco.initialize(context, builder.build());
+        }
+        catch (ClassNotFoundException e)
+        {
+            LOG.e("[Method:initialize]", e);
+        }
     }
 
     /**
