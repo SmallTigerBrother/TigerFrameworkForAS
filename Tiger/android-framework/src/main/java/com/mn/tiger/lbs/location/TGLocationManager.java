@@ -1,6 +1,5 @@
 package com.mn.tiger.lbs.location;
 
-import com.mn.tiger.lbs.map.TGLocation;
 import com.mn.tiger.log.Logger;
 
 /**
@@ -91,6 +90,7 @@ public class TGLocationManager implements ILocationManager
                     if (!(isGoogleLocationManager(curLocationManager)))
                     {
                         curLocationManager = newGoogleLocationManager();
+                        initGoogleLocationManager();
                     }
                     currentProvider = Provider.Google;
                     LOG.i("[Method:initAppropriateLocationManager] use GoogleLocationManager");
@@ -100,6 +100,23 @@ public class TGLocationManager implements ILocationManager
         });
 
         requestLocationUpdates();
+    }
+
+    /**
+     * 初始化google位置管理器
+     */
+    private void initGoogleLocationManager()
+    {
+        curLocationManager.setLocationListener(new ILocationListener()
+        {
+            @Override
+            public void onReceiveLocation(TGLocation location)
+            {
+                curLocationManager.removeLocationUpdates();
+            }
+        });
+
+        curLocationManager.requestLocationUpdates();
     }
 
     @Override
@@ -204,5 +221,11 @@ public class TGLocationManager implements ILocationManager
             LOG.e("[Method:newAMapLocationManager]", e);
             return null;
         }
+    }
+
+    @Override
+    public TGLocation getLastLocation()
+    {
+        return curLocationManager.getLastLocation();
     }
 }

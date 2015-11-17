@@ -1,7 +1,5 @@
 package com.mn.tiger.lbs.location;
 
-import com.mn.tiger.lbs.map.TGLocation;
-
 /**
  * Created by Dalang on 2015/7/30.
  */
@@ -14,6 +12,8 @@ public interface ILocationManager
     void destroy();
 
     void setLocationListener(ILocationListener listener);
+
+    TGLocation getLastLocation();
 
     boolean isLocationInChina(TGLocation location);
 

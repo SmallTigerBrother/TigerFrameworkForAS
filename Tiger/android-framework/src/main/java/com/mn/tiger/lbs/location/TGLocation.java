@@ -1,4 +1,4 @@
-package com.mn.tiger.lbs.map;
+package com.mn.tiger.lbs.location;
 
 import android.location.Location;
 
