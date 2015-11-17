@@ -1,7 +1,6 @@
 package com.mn.tiger.request.sync;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.HttpType;
@@ -142,14 +141,8 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
         }
         else
         {
-            if(null != response.body() && !TextUtils.isEmpty(response.body().toString()))
-            {
-                httpResult.setResult(response.body().toString());
-            }
-            else
-            {
-                httpResult.setResult(response.message());
-            }
+            LOG.e("[Method:execute] responseCode == " + response.code() + "  body == " + response.body());
+            httpResult.setResult(response.message());
         }
 
         if(null != response.headers() && response.headers().size() > 0)
