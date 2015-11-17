@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.share.TGSharePluginManager;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -110,7 +111,7 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 		else if(req instanceof SendAuth.Resp)
 		{
 			LOG.i("[Method:onResp] authorize over");
-            TGApplication.getBus().post((SendAuth.Resp)req);
+            TGApplicationProxy.getInstance().getBus().post((SendAuth.Resp)req);
 		}
 	}
 }

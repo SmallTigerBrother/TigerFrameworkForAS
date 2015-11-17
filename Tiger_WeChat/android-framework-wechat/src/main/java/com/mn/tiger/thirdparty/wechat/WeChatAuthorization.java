@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.mn.tiger.app.TGActionBarActivity;
-import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.authorize.AbsAuthorization;
 import com.mn.tiger.authorize.IAuthorizeCallback;
 import com.mn.tiger.authorize.ILogoutCallback;
@@ -63,9 +63,9 @@ public class WeChatAuthorization extends AbsAuthorization
     public WeChatAuthorization(String appID, String secret ,String state)
     {
         super(appID);
-        TGApplication.getBus().register(this);
+        TGApplicationProxy.getInstance().getBus().register(this);
 
-        this.api = WXAPIFactory.createWXAPI(TGApplication.getInstance(), appID);
+        this.api = WXAPIFactory.createWXAPI(TGApplicationProxy.getInstance().getApplication(), appID);
         this.api.registerApp(appID);
 
         this.secret = secret;
@@ -265,6 +265,6 @@ public class WeChatAuthorization extends AbsAuthorization
 
     public void onDestroy()
     {
-        TGApplication.getBus().unregister(this);
+        TGApplicationProxy.getInstance().getBus().unregister(this);
     }
 }
