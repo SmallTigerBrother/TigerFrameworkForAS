@@ -141,7 +141,7 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
         }
         else
         {
-            LOG.e("[Method:execute] responseCode == " + response.code() + "  body == " + response.body());
+            LOG.e("[Method:execute] responseCode == " + response.code() + "  body == " + response.body() + " message == " + response.message());
             httpResult.setResult(response.message());
         }
 
