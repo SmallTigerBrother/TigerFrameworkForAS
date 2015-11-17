@@ -1,6 +1,7 @@
 package com.mn.tiger.thirdparty.google;
 
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.request.TGHttpLoader;
 import com.mn.tiger.request.receiver.TGHttpResult;
 
@@ -22,7 +23,7 @@ public class GoogleGeoCoding
                 + "," + longitude + "&sensor=false";
 
         TGHttpLoader<GoogleGeoCodeResult> httpLoader = new TGHttpLoader<GoogleGeoCodeResult>();
-        httpLoader.loadByGet(TGApplication.getInstance(), url, GoogleGeoCodeResult.class,
+        httpLoader.loadByGet(TGApplicationProxy.getInstance().getApplication(), url, GoogleGeoCodeResult.class,
                 new TGHttpLoader.OnLoadCallback<GoogleGeoCodeResult>()
                 {
                     @Override
