@@ -9,6 +9,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.map.TGLocation;
 import com.mn.tiger.log.Logger;
@@ -65,7 +66,7 @@ public class AMapLocationManager implements ILocationManager
      */
     AMapLocationManager()
     {
-        locationManagerProxy = locationManagerProxy.getInstance(TGApplication.getInstance());
+        locationManagerProxy = locationManagerProxy.getInstance(TGApplicationProxy.getInstance().getApplication());
     }
 
     /**
@@ -110,7 +111,7 @@ public class AMapLocationManager implements ILocationManager
             return false;
         }
 
-        Context context = TGApplication.getInstance();
+        Context context = TGApplicationProxy.getInstance().getApplication();
         String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
         String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
 
