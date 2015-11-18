@@ -18,8 +18,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mn.tiger.lbs.location.ILocationManager;
-import com.mn.tiger.lbs.location.IMapManager;
-import com.mn.tiger.lbs.map.TGLocation;
+import com.mn.tiger.lbs.location.TGLocation;
+import com.mn.tiger.lbs.map.IMapManager;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 

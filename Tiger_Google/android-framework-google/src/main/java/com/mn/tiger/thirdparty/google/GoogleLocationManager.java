@@ -10,7 +10,7 @@ import android.os.Bundle;
 
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.location.ILocationManager;
-import com.mn.tiger.lbs.map.TGLocation;
+import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 
@@ -34,6 +34,8 @@ public class GoogleLocationManager implements ILocationManager
     private LocationManager locationManager;
 
     private ILocationListener listener;
+
+    private TGLocation lastTGLocation;
 
     public GoogleLocationManager()
     {
@@ -215,6 +217,7 @@ public class GoogleLocationManager implements ILocationManager
                         GoogleAddressResult addressResult = result.getResults()[0];
                         tgLocation.setAddress(addressResult.getFormatted_address());
                     }
+                    GoogleLocationManager.this.lastTGLocation = tgLocation;
                     listener.onReceiveLocation(tgLocation);
                 }
             }
@@ -331,13 +334,23 @@ public class GoogleLocationManager implements ILocationManager
 
         return true;
     }
-	
-	 static TGLocation convert2TGLocation(Location location)
+
+    @Override
+    public TGLocation getLastLocation()
     {
-        TGLocation tgLocation = new TGLocation();
-        tgLocation.setLatitude(location.getLatitude());
-        tgLocation.setLongitude(location.getLongitude());
-        tgLocation.setLocation(location);
-        return tgLocation;
+        return lastTGLocation;
+    }
+
+    public static TGLocation convert2TGLocation(Location location)
+    {
+        if(null != location)
+        {
+            TGLocation tgLocation = new TGLocation();
+            tgLocation.setLatitude(location.getLatitude());
+            tgLocation.setLongitude(location.getLongitude());
+            tgLocation.setLocation(location);
+            return tgLocation;
+        }
+        return null;
     }
 }
