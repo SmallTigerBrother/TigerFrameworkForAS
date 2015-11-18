@@ -1,4 +1,4 @@
-package com.mn.tiger.lbs.location;
+package com.mn.tiger.lbs.map;
 
 import android.os.Bundle;
 import android.view.ViewGroup;

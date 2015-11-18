@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 /**
  * Created by Dalang on 2015/10/29.
  */
-public abstract class TGMultiViewTypeRecyclerViewHolder extends TGRecyclerViewHolder<Object>
+public abstract class TGMultiViewTypeRecyclerViewHolder<T> extends TGRecyclerViewHolder<T>
 {
-    private TGRecyclerViewHolder<Object> internalViewHolder;
+    private TGRecyclerViewHolder<T> internalViewHolder;
 
     @Override
     public View initView(ViewGroup parent, int viewType)
@@ -24,21 +24,21 @@ public abstract class TGMultiViewTypeRecyclerViewHolder extends TGRecyclerViewHo
         return internalViewHolder.initView(parent, viewType);
     }
 
-    protected abstract TGRecyclerViewHolder<Object> initViewHolderByViewType(ViewGroup parent, int viewType);
+    protected abstract TGRecyclerViewHolder<T> initViewHolderByViewType(ViewGroup parent, int viewType);
 
     @Override
-    public void updateViewDimension(ViewGroup parent, View convertView, Object itemData, int position, int viewType)
+    public void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position, int viewType)
     {
         internalViewHolder.updateViewDimension(parent, convertView, itemData, position, viewType);
     }
 
     @Override
-    public void fillData(ViewGroup parent, View convertView, Object itemData, int position, int viewType)
+    public void fillData(ViewGroup parent, View convertView, T itemData, int position, int viewType)
     {
         internalViewHolder.fillData(parent, convertView, itemData, position, viewType);
     }
 
-    protected TGRecyclerViewHolder<Object> getCurrentViewHolder()
+    protected TGRecyclerViewHolder<T> getCurrentViewHolder()
     {
         return internalViewHolder;
     }
