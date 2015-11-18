@@ -59,18 +59,25 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
         GoogleMapOptions options = new GoogleMapOptions();
         options.mapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        mapFragment = (MapFragment)activity.getFragmentManager().findFragmentById(CR.getViewId(activity, "google_map_fragment"));
-        mapFragment.getMapAsync(new OnMapReadyCallback()
+        mapFragment = MapFragment.newInstance(options);
+        activity.getFragmentManager().beginTransaction().add(mapContainer.getId(),mapFragment).commitAllowingStateLoss();
+        HANDLER.postDelayed(new Runnable()
         {
             @Override
-            public void onMapReady(GoogleMap googleMap)
+            public void run()
             {
-                LOG.i("[Method:onMapReady] googleMap == " + googleMap);
-                GoogleMapManager.this.googleMap = googleMap;
-                setUpMap();
+                mapFragment.getMapAsync(new OnMapReadyCallback()
+                {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap)
+                    {
+                        LOG.i("[Method:onMapReady] googleMap == " + googleMap);
+                        GoogleMapManager.this.googleMap = googleMap;
+                        setUpMap();
+                    }
+                });
             }
-        });
-
+        }, 300);
     }
 
     /**
@@ -80,10 +87,10 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
     {
         if(null != googleMap)
         {
-            googleMap.setMyLocationEnabled(true);
+            googleMap.setLocationSource(this);
             googleMap.getUiSettings().setAllGesturesEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            googleMap.setLocationSource(this);
+            googleMap.setMyLocationEnabled(true);
 
             startNextTask();
         }
@@ -237,5 +244,47 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
                 iterator.remove();
             }
         }
+    }
+
+    @Override
+    public void setOnMapLongClickListener(final OnMapLongClickListener listener)
+    {
+        if(null != listener)
+        {
+            taskList.add(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (null != googleMap)
+                    {
+                        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener()
+                        {
+                            @Override
+                            public void onMapLongClick(LatLng latLng)
+                            {
+                                listener.onLongClick(latLng.latitude, latLng.longitude);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        else
+        {
+            taskList.add(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (null != googleMap)
+                    {
+                        googleMap.setOnMapLongClickListener(null);
+                    }
+                }
+            });
+        }
+
+        startNextTask();
     }
 }
