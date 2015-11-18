@@ -8,10 +8,9 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
-import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.location.ILocationManager;
-import com.mn.tiger.lbs.map.TGLocation;
+import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 
@@ -123,6 +122,12 @@ public class AMapLocationManager implements ILocationManager
         return true;
     }
 
+    @Override
+    public TGLocation getLastLocation()
+    {
+        return convert2TGLocation(locationManagerProxy.getLastKnownLocation(LocationProviderProxy.AMapNetwork));
+    }
+
     /**
      * 转换为TGLocation
      * @param location
@@ -130,14 +135,19 @@ public class AMapLocationManager implements ILocationManager
      */
     public static TGLocation convert2TGLocation(AMapLocation location)
     {
-        TGLocation tgLocation = new TGLocation();
-        tgLocation.setLatitude(location.getLatitude());
-        tgLocation.setLongitude(location.getLongitude());
-        tgLocation.setCity(location.getCity());
-        tgLocation.setCountry(location.getCountry());
-        tgLocation.setProvince(location.getProvince());
-        tgLocation.setAddress(location.getAddress());
-        tgLocation.setAddress(location.getStreet());
-        return tgLocation;
-    };
+        if(null != location)
+        {
+            TGLocation tgLocation = new TGLocation();
+            tgLocation.setLatitude(location.getLatitude());
+            tgLocation.setLongitude(location.getLongitude());
+            tgLocation.setCity(location.getCity());
+            tgLocation.setCountry(location.getCountry());
+            tgLocation.setProvince(location.getProvince());
+            tgLocation.setAddress(location.getAddress());
+            tgLocation.setAddress(location.getStreet());
+            return tgLocation;
+        }
+
+        return null;
+    }
 }

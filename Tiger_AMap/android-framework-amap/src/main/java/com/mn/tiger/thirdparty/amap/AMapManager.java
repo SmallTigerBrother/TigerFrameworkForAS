@@ -17,7 +17,7 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-import com.mn.tiger.lbs.location.IMapManager;
+import com.mn.tiger.lbs.map.IMapManager;
 
 /**
  * Created by Dalang on 2015/8/23.
