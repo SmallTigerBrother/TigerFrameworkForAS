@@ -43,7 +43,7 @@ public class GoogleGeoCoding implements IGeoCoding
 
                             TGLocation location = addressResult.convert2Location();
                             location.setTime(System.currentTimeMillis());
-                            
+
                             listener.onGeoCodingSuccess(location);
                         }
                     }

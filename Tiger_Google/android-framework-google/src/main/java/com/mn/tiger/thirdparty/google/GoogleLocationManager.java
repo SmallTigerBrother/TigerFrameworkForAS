@@ -9,6 +9,7 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 
 import com.mn.tiger.app.TGApplicationProxy;
+import com.mn.tiger.lbs.geocoding.IGeoCoding;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.log.Logger;
@@ -37,9 +38,12 @@ public class GoogleLocationManager implements ILocationManager
 
     private TGLocation lastTGLocation;
 
+    private GoogleGeoCoding geoCoding;
+
     public GoogleLocationManager()
     {
         locationManager = (LocationManager) TGApplicationProxy.getInstance().getApplication().getSystemService(Context.LOCATION_SERVICE);
+        geoCoding = new GoogleGeoCoding();
     }
 
     /**
@@ -201,24 +205,17 @@ public class GoogleLocationManager implements ILocationManager
     private void updateLocation(final Location location)
     {
         this.lastLocation = location;
-        GoogleGeoCoding.geoCoding(location.getLatitude(), location.getLongitude(), new GoogleGeoCoding.GeoCodeListener()
+        geoCoding.geoCoding(location.getLatitude(), location.getLongitude(), new IGeoCoding.GeoCodeListener()
         {
             @Override
-            public void onGeoCodingSuccess(GoogleGeoCodeResult result)
+            public void onGeoCodingSuccess(TGLocation location)
             {
                 LOG.i("[Method:onGeoCodingSuccess]");
                 //发通知界面处理
                 if (null != listener)
                 {
-                    TGLocation tgLocation = convert2TGLocation(location);
-                    tgLocation.setTime(System.currentTimeMillis());
-                    if(result.getResults().length > 0)
-                    {
-                        GoogleAddressResult addressResult = result.getResults()[0];
-                        tgLocation.setAddress(addressResult.getFormatted_address());
-                    }
-                    GoogleLocationManager.this.lastTGLocation = tgLocation;
-                    listener.onReceiveLocation(tgLocation);
+                    GoogleLocationManager.this.lastTGLocation = location;
+                    listener.onReceiveLocation(location);
                 }
             }
 
@@ -226,9 +223,14 @@ public class GoogleLocationManager implements ILocationManager
             public void onGeoCodingError(int code, String message)
             {
                 LOG.e("[Method:onGeoCodingError]");
+                if (null != listener)
+                {
+                    GoogleLocationManager.this.lastTGLocation = convert2TGLocation(location);
+                    GoogleLocationManager.this.lastTGLocation.setTime(System.currentTimeMillis());
+                    listener.onReceiveLocation(lastTGLocation);
+                }
             }
         });
-
     }
 
     /**
