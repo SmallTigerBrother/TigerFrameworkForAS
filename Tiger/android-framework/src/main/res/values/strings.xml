@@ -77,5 +77,7 @@
 
     <string name="china_zh">中国</string>
     <string name="china_en">China</string>
+
+    <string name="geo_code_error">获取位置信息错误</string>
     
 </resources>

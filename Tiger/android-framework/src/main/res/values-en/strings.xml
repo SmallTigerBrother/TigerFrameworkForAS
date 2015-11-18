@@ -39,5 +39,7 @@
 
     <string name="wechat_auth_user_denied">WeChat refuse your auth request</string>
     <string name="wechat_auth_user_cancel">You have canceled WeChat auth</string>
-    
+
+    <string name="geo_code_error">Sorry,we can not get your address now</string>
+
 </resources>

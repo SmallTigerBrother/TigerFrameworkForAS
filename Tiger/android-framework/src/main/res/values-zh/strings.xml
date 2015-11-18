@@ -43,4 +43,6 @@
 
     <string name="wechat_auth_user_denied">微信拒绝了您的授权请求</string>
     <string name="wechat_auth_user_cancel">您已取消微信授权登录</string>
+
+    <string name="geo_code_error">获取位置信息错误</string>
 </resources>
