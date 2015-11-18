@@ -18,7 +18,7 @@ public class GoogleGeoCodeResult
 		this.results = results;
 	}
 
-	public  boolean isStatusOK()
+	public boolean isStatusOK()
 	{
 		return STATUS_OK.equals(status);
 	}
@@ -26,6 +26,6 @@ public class GoogleGeoCodeResult
 	@Override
 	public String toString()
 	{
-		return "TestResult [results=" + results + ", status=" + status + "]";
+		return "[results=" + results + ", status=" + status + "]";
 	}
 }
