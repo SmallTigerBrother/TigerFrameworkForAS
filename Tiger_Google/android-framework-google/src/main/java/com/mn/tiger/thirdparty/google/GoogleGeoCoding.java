@@ -1,14 +1,15 @@
 package com.mn.tiger.thirdparty.google;
 
-import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.app.TGApplicationProxy;
+import com.mn.tiger.lbs.geocoding.IGeoCoding;
+import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.request.TGHttpLoader;
 import com.mn.tiger.request.receiver.TGHttpResult;
 
 /**
  * Google地址解析功能
  */
-public class GoogleGeoCoding
+public class GoogleGeoCoding implements IGeoCoding
 {
 	/**
 	 * 执行地址解析
@@ -16,7 +17,7 @@ public class GoogleGeoCoding
 	 * @param longitude
 	 * @param listener
 	 */
-	public static void geoCoding(final double latitude, final double longitude,
+	public void geoCoding(final double latitude, final double longitude,
 			final GeoCodeListener listener)
 	{
         String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude
@@ -34,7 +35,17 @@ public class GoogleGeoCoding
                     @Override
                     public void onLoadSuccess(GoogleGeoCodeResult geoCodeResult, TGHttpResult tgHttpResult)
                     {
-                        listener.onGeoCodingSuccess(geoCodeResult);
+                        if(null != geoCodeResult && null != geoCodeResult.getResults() && geoCodeResult.getResults().length > 0)
+                        {
+                            GoogleAddressResult addressResult = geoCodeResult.getResults()[0];
+                            addressResult.setLatitude(latitude);
+                            addressResult.setLongitude(longitude);
+
+                            TGLocation location = addressResult.convert2Location();
+                            location.setTime(System.currentTimeMillis());
+                            
+                            listener.onGeoCodingSuccess(location);
+                        }
                     }
 
                     @Override
@@ -58,23 +69,6 @@ public class GoogleGeoCoding
                 });
 	}
 
-	/**
-	 * 地址回调接口
-	 */
-	public static interface GeoCodeListener
-	{
-		/**
-		 * 地址解析成功
-		 * @param result
-		 */
-		void onGeoCodingSuccess(GoogleGeoCodeResult result);
 
-		/**
-		 * 地址解析失败
-		 * @param code
-		 * @param message
-		 */
-		void onGeoCodingError(int code, String message);
-	}
 
 }
