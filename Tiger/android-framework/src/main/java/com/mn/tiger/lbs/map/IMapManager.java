@@ -61,4 +61,11 @@ public interface IMapManager
      * 清空地图上所有的地物
      */
     void clear();
+
+    void setOnMapLongClickListener(OnMapLongClickListener listener);
+
+    interface OnMapLongClickListener
+    {
+        void onLongClick(double latitude, double longitude);
+    }
 }
