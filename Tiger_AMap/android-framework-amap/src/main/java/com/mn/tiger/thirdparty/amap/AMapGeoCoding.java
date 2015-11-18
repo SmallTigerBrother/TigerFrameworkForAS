@@ -1,5 +1,7 @@
 package com.mn.tiger.thirdparty.amap;
 
+import android.content.Context;
+
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
@@ -9,6 +11,7 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.geocoding.IGeoCoding;
 import com.mn.tiger.lbs.location.TGLocation;
+import com.mn.tiger.utility.CR;
 
 /**
  * Created by peng on 15/11/18.
@@ -24,6 +27,7 @@ public class AMapGeoCoding implements IGeoCoding
             @Override
             public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int code)
             {
+                Context context = TGApplicationProxy.getInstance().getApplication();
                 if(code == 0 && null != regeocodeResult && null != regeocodeResult.getRegeocodeAddress() &&
                     null != regeocodeResult.getRegeocodeAddress().getFormatAddress())
                 {
@@ -37,14 +41,14 @@ public class AMapGeoCoding implements IGeoCoding
                         location.setCity(address.getCity());
                         location.setAddress(address.getFormatAddress());
                         location.setStreet(address.getStreetNumber().getStreet());
-                        location.setCountry(TGApplicationProxy.getInstance().getApplication().getString(R.string.china_zh));
+                        location.setCountry(context.getString(CR.getStringId(context, "china_zh")));
                     }
                 }
                 else
                 {
                     if(null != listener)
                     {
-                        listener.onGeoCodingError(code, TGApplicationProxy.getInstance().getApplication().getString(R.string.geo_code_error));
+                        listener.onGeoCodingError(code, context.getString(CR.getStringId(context, "geo_code_error")));
                     }
                 }
             }
