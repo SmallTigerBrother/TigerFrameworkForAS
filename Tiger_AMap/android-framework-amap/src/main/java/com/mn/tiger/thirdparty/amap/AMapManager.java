@@ -54,10 +54,11 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
 
     private void setUpMap()
     {
-        aMap.setMyLocationEnabled(true);
+        aMap.setLocationSource(this);
+        aMap.getUiSettings().setCompassEnabled(true);
         aMap.getUiSettings().setAllGesturesEnabled(true);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
-        aMap.setLocationSource(this);
+        aMap.setMyLocationEnabled(true);
     }
 
     public void addMarker(double latitude, double langitude, String title)
@@ -172,5 +173,25 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
     public void onProviderDisabled(String provider)
     {
 
+    }
+
+    @Override
+    public void setOnMapLongClickListener(final OnMapLongClickListener listener)
+    {
+        if(null != listener)
+        {
+            aMap.setOnMapLongClickListener(new AMap.OnMapLongClickListener()
+            {
+                @Override
+                public void onMapLongClick(LatLng latLng)
+                {
+                    listener.onLongClick(latLng.latitude, latLng.longitude);
+                }
+            });
+        }
+        else
+        {
+            aMap.setOnMapLongClickListener(null);
+        }
     }
 }
