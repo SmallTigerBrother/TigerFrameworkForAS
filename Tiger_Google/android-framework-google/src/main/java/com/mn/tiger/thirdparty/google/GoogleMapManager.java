@@ -21,7 +21,6 @@ import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.lbs.map.IMapManager;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.utility.CR;
 
 import java.util.ArrayList;
 import java.util.Iterator;
