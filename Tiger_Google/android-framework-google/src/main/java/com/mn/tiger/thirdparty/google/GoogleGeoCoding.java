@@ -3,6 +3,7 @@ package com.mn.tiger.thirdparty.google;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.geocoding.IGeoCoding;
 import com.mn.tiger.lbs.location.TGLocation;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.TGHttpLoader;
 import com.mn.tiger.request.receiver.TGHttpResult;
 
@@ -11,6 +12,8 @@ import com.mn.tiger.request.receiver.TGHttpResult;
  */
 public class GoogleGeoCoding implements IGeoCoding
 {
+    private static final Logger LOG = Logger.getLogger(GoogleGeoCoding.class);
+
 	/**
 	 * 执行地址解析
 	 * @param latitude
@@ -18,8 +21,9 @@ public class GoogleGeoCoding implements IGeoCoding
 	 * @param listener
 	 */
 	public void geoCoding(final double latitude, final double longitude,
-			final GeoCodeListener listener)
+			final IGeoCodeListener listener)
 	{
+        LOG.i("[Method:geoCoding] latitde == " + latitude + " longitude == " + longitude);
         String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude
                 + "," + longitude + "&sensor=false";
 
@@ -35,6 +39,7 @@ public class GoogleGeoCoding implements IGeoCoding
                     @Override
                     public void onLoadSuccess(GoogleGeoCodeResult geoCodeResult, TGHttpResult tgHttpResult)
                     {
+                        LOG.i("[Method:geoCoding:onLoadSuccess] " + geoCodeResult.toString());
                         if(null != geoCodeResult && null != geoCodeResult.getResults() && geoCodeResult.getResults().length > 0)
                         {
                             GoogleAddressResult addressResult = geoCodeResult.getResults()[0];
