@@ -106,7 +106,7 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
                 if(null != googleMap)
                 {
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
-                    googleMap.moveCamera(cameraUpdate);
+                    googleMap.animateCamera(cameraUpdate);
                 }
             }
         });
