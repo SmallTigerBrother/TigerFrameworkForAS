@@ -7,12 +7,12 @@ import com.mn.tiger.lbs.location.TGLocation;
  */
 public interface IGeoCoding
 {
-     void geoCoding(final double latitude, final double longitude, final GeoCodeListener listener);
+     void geoCoding(final double latitude, final double longitude, final IGeoCodeListener listener);
 
     /**
      * 地址回调接口
      */
-    interface GeoCodeListener
+    interface IGeoCodeListener
     {
         /**
          * 地址解析成功
