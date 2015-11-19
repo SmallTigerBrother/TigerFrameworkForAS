@@ -80,7 +80,7 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
     public void centerTo(double latitude, double longitude)
     {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
-        aMap.moveCamera(cameraUpdate);
+        aMap.animateCamera(cameraUpdate);
     }
 
     @Override
