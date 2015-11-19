@@ -1,14 +1,13 @@
 package com.mn.tiger.thirdparty.amap;
 
 import android.app.Activity;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
 import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -30,7 +29,7 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
 
     private Activity activity;
 
-    private LocationManagerProxy locationManager;
+    private AMapLocationClient locationClient;
 
     private OnLocationChangedListener onLocationChangedListener;
 
@@ -106,6 +105,7 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
     public void onDestroy()
     {
         mapView.onDestroy();
+        locationClient.onDestroy();
     }
 
     @Override
@@ -129,9 +129,12 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
       this.onLocationChangedListener = onLocationChangedListener;
        if(null != this.onLocationChangedListener)
        {
-           locationManager = LocationManagerProxy.getInstance(this.activity);
-           locationManager.requestLocationData(LocationProviderProxy.AMapNetwork,
-                   2000, 10, this);
+           locationClient = new AMapLocationClient(activity);
+           AMapLocationClientOption option = new AMapLocationClientOption();
+           option.setOnceLocation(true);
+           option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+           locationClient.setLocationOption(option);
+           locationClient.setLocationListener(this);
        }
    }
 
@@ -139,40 +142,10 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
     public void deactivate()
     {
         onLocationChangedListener = null;
-        if(null != locationManager)
+        if(null != locationClient)
         {
-            locationManager.removeUpdates(this);
-            locationManager.destroy();
+            locationClient.onDestroy();
         }
-        locationManager = null;
-    }
-
-    @Override
-    @Deprecated
-    public void onLocationChanged(Location location)
-    {
-
-    }
-
-    @Override
-    @Deprecated
-    public void onStatusChanged(String provider, int status, Bundle extras)
-    {
-
-    }
-
-    @Override
-    @Deprecated
-    public void onProviderEnabled(String provider)
-    {
-
-    }
-
-    @Override
-    @Deprecated
-    public void onProviderDisabled(String provider)
-    {
-
     }
 
     @Override

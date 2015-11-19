@@ -1,13 +1,11 @@
 package com.mn.tiger.thirdparty.amap;
 
 import android.content.Context;
-import android.location.Location;
-import android.os.Bundle;
 
 import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.location.TGLocation;
@@ -22,7 +20,7 @@ public class AMapLocationManager implements ILocationManager
 {
     private static final Logger LOG = Logger.getLogger(AMapLocationManager.class);
 
-    private LocationManagerProxy locationManagerProxy;
+    private AMapLocationClient locationClient;
 
     private ILocationListener listener;
 
@@ -38,34 +36,18 @@ public class AMapLocationManager implements ILocationManager
             tgLocation.setTime(System.currentTimeMillis());
             listener.onReceiveLocation(tgLocation);
         }
-
-        @Override
-        public void onLocationChanged(Location location)
-        {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras)
-        {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider)
-        {
-        }
-
-        @Override
-        public void onProviderDisabled(String provider)
-        {
-        }
     };
 
     /**
      * 初始化
      */
-    AMapLocationManager()
+    public AMapLocationManager()
     {
-        locationManagerProxy = locationManagerProxy.getInstance(TGApplicationProxy.getInstance().getApplication());
+        locationClient = new AMapLocationClient(TGApplicationProxy.getInstance().getApplication());
+        AMapLocationClientOption option = new AMapLocationClientOption();
+        option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+        locationClient.setLocationOption(option);
+        locationClient.setLocationListener(locationListener);
     }
 
     /**
@@ -74,21 +56,24 @@ public class AMapLocationManager implements ILocationManager
     @Override
     public void requestLocationUpdates()
     {
-        locationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, -1 , 50 , locationListener);
         LOG.i("[Method:requestLocationUpdates]");
+        locationClient.startLocation();
     }
 
     @Override
     public void removeLocationUpdates()
     {
-        locationManagerProxy.removeUpdates(locationListener);
+        LOG.i("[Method:removeLocationUpdates]");
+        locationClient.stopLocation();
     }
 
     @Override
-    public void destroy()
+    public void onDestroy()
     {
-        locationManagerProxy.destroy();
-        locationManagerProxy = null;
+        LOG.i("[Method:onDestroy]");
+        locationClient.unRegisterLocationListener(locationListener);
+        locationClient.stopLocation();
+        locationClient.onDestroy();
     }
 
     @Override
@@ -125,7 +110,7 @@ public class AMapLocationManager implements ILocationManager
     @Override
     public TGLocation getLastLocation()
     {
-        return convert2TGLocation(locationManagerProxy.getLastKnownLocation(LocationProviderProxy.AMapNetwork));
+        return convert2TGLocation(locationClient.getLastKnownLocation());
     }
 
     /**
@@ -144,7 +129,7 @@ public class AMapLocationManager implements ILocationManager
             tgLocation.setCountry(location.getCountry());
             tgLocation.setProvince(location.getProvince());
             tgLocation.setAddress(location.getAddress());
-            tgLocation.setAddress(location.getStreet());
+            tgLocation.setStreet(location.getRoad());
             return tgLocation;
         }
 
