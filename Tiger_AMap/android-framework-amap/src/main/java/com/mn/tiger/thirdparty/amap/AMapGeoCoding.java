@@ -11,6 +11,7 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.geocoding.IGeoCoding;
 import com.mn.tiger.lbs.location.TGLocation;
+import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 
 /**
@@ -18,15 +19,19 @@ import com.mn.tiger.utility.CR;
  */
 public class AMapGeoCoding implements IGeoCoding
 {
+    private static final Logger LOG = Logger.getLogger(AMapGeoCoding.class);
+
     @Override
-    public void geoCoding(final double latitude, final double longitude, final GeoCodeListener listener)
+    public void geoCoding(final double latitude, final double longitude, final IGeoCodeListener listener)
     {
+        LOG.i("[Method:geoCoding] latitude == " + latitude + " longitude == " + longitude);
         GeocodeSearch geocodeSearch = new GeocodeSearch(TGApplicationProxy.getInstance().getApplication());
         geocodeSearch.setOnGeocodeSearchListener(new GeocodeSearch.OnGeocodeSearchListener()
         {
             @Override
             public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int code)
             {
+                LOG.i("[Method:geoCoding:onRegeocodeSearched] code == " + code + " address == " + regeocodeResult.getRegeocodeAddress().getFormatAddress());
                 Context context = TGApplicationProxy.getInstance().getApplication();
                 if(code == 0 && null != regeocodeResult && null != regeocodeResult.getRegeocodeAddress() &&
                     null != regeocodeResult.getRegeocodeAddress().getFormatAddress())
@@ -42,6 +47,7 @@ public class AMapGeoCoding implements IGeoCoding
                         location.setAddress(address.getFormatAddress());
                         location.setStreet(address.getStreetNumber().getStreet());
                         location.setCountry(context.getString(CR.getStringId(context, "china_zh")));
+                        listener.onGeoCodingSuccess(location);
                     }
                 }
                 else
