@@ -110,8 +110,9 @@ public class GoogleLocationManager implements ILocationManager
     }
 
     @Override
-    public void destroy()
+    public void onDestroy()
     {
+
     }
 
     /**
@@ -205,7 +206,7 @@ public class GoogleLocationManager implements ILocationManager
     private void updateLocation(final Location location)
     {
         this.lastLocation = location;
-        geoCoding.geoCoding(location.getLatitude(), location.getLongitude(), new IGeoCoding.GeoCodeListener()
+        geoCoding.geoCoding(location.getLatitude(), location.getLongitude(), new IGeoCoding.IGeoCodeListener()
         {
             @Override
             public void onGeoCodingSuccess(TGLocation location)
