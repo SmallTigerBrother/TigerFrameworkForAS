@@ -151,20 +151,30 @@ public class TGLocationManager implements ILocationManager
     @Override
     public boolean isLocationInChina(TGLocation location)
     {
-        return curLocationManager.isLocationInChina(location);
+        if(null != curLocationManager)
+        {
+            return curLocationManager.isLocationInChina(location);
+        }
+        return false;
     }
 
     @Override
     public void removeLocationUpdates()
     {
         LOG.i("[Method:removeLocationUpdates]");
-        curLocationManager.removeLocationUpdates();
+        if(null != curLocationManager)
+        {
+            curLocationManager.removeLocationUpdates();
+        }
     }
 
     @Override
-    public void destroy()
+    public void onDestroy()
     {
-        curLocationManager.destroy();
+        if(null != curLocationManager)
+        {
+            curLocationManager.onDestroy();
+        }
     }
 
     private boolean isGoogleLocationManager(ILocationManager locationManager)
@@ -226,6 +236,10 @@ public class TGLocationManager implements ILocationManager
     @Override
     public TGLocation getLastLocation()
     {
-        return curLocationManager.getLastLocation();
+        if(null != curLocationManager)
+        {
+            return curLocationManager.getLastLocation();
+        }
+        return null;
     }
 }

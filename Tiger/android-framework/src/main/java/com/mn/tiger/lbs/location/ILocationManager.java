@@ -9,7 +9,7 @@ public interface ILocationManager
 
     void removeLocationUpdates();
 
-    void destroy();
+    void onDestroy();
 
     void setLocationListener(ILocationListener listener);
 
