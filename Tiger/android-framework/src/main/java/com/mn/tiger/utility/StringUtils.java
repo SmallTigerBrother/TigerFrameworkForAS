@@ -274,6 +274,23 @@ public class StringUtils
 	}
 
 	/**
+	 * 方法作用: 通过正则验证身份证号格式
+	 * @param id
+	 * @return
+	 */
+	public static boolean isIdCardNumber(String id)
+	{
+		Pattern pattern = Pattern.compile("/^(\\d{15}$|^\\d{18}$|^\\d{17}(\\d|X|x))$/");
+		Matcher matcher = pattern.matcher(id);
+		if (matcher.find())
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * 修复字符串的换行符
 	 * @param original
 	 * @return
