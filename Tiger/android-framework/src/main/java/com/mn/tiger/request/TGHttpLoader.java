@@ -451,7 +451,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @date 2014年5月23日
 	 * @param properties
 	 */
-	public void setProperties(Map<String, String> properties)
+	public TGHttpLoader<T> setProperties(Map<String, String> properties)
 	{
 		if(null == properties)
 		{
@@ -467,6 +467,8 @@ public class TGHttpLoader<T> implements IRequestParser
 		{
 			this.properties.putAll(properties);
 		}
+
+		return this;
 	}
 
 	/**
@@ -474,7 +476,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param key
 	 * @param value
 	 */
-	public void addProperty(String key, String value)
+	public TGHttpLoader<T> addProperty(String key, String value)
 	{
         if(null == properties)
         {
@@ -482,13 +484,14 @@ public class TGHttpLoader<T> implements IRequestParser
         }
 
 		this.properties.put(key, value);
+		return this;
 	}
 
 	/**
 	 * 设置字符串参数（会清空原有参数）
 	 * @param params
 	 */
-	public void setRequestParams(Map<String, String> params)
+	public TGHttpLoader<T> setRequestParams(Map<String, String> params)
 	{
 		if(this.stringParams != params)
 		{
@@ -499,6 +502,7 @@ public class TGHttpLoader<T> implements IRequestParser
 		{
 			this.stringParams.putAll(params);
 		}
+		return this;
 	}
 
 	/**
@@ -506,7 +510,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param key
 	 * @param value
 	 */
-	public void addRequestParam(String key, String value)
+	public TGHttpLoader<T> addRequestParam(String key, String value)
 	{
 		if(null != key && null != value)
 		{
@@ -516,6 +520,7 @@ public class TGHttpLoader<T> implements IRequestParser
 		{
 			LOG.e("[Method:addRequestParam] IllegalArguments were found key == " + key + " ; value == " + value);
 		}
+		return this;
 	}
 
 	/**
@@ -524,9 +529,10 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param key
 	 * @param value
 	 */
-	public void addRequestParam(String key, int value)
+	public TGHttpLoader<T> addRequestParam(String key, int value)
 	{
 		this.addRequestParam(key, value + "");
+		return this;
 	}
 
 	/**
@@ -535,9 +541,10 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param key
 	 * @param value
 	 */
-	public void addRequestParam(String key, long value)
+	public TGHttpLoader<T> addRequestParam(String key, long value)
 	{
 		this.addRequestParam(key, value + "");
+		return this;
 	}
 
 	/**
@@ -546,9 +553,10 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param key
 	 * @param value
 	 */
-	public void addRequestParam(String key, double value)
+	public TGHttpLoader<T> addRequestParam(String key, double value)
 	{
 		this.addRequestParam(key, value + "");
+		return this;
 	}
 
 	/**
@@ -556,7 +564,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param key
 	 * @param filePath
 	 */
-	public void addFileParam(String key, String filePath)
+	public TGHttpLoader<T> addFileParam(String key, String filePath)
 	{
 		if(null != key && null != filePath)
 		{
@@ -572,6 +580,7 @@ public class TGHttpLoader<T> implements IRequestParser
 		{
 			LOG.e("[Method:addFileParam] IllegalArguments were found key == " + key + " ; filePath == " + filePath);
 		}
+		return this;
 	}
 
 	/**
