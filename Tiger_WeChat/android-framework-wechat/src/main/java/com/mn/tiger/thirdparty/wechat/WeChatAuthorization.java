@@ -104,7 +104,7 @@ public class WeChatAuthorization extends AbsAuthorization
      * @param resp
      */
     @Subscribe
-    final void handleAuthorizeResp(SendAuth.Resp resp)
+    public final void handleAuthorizeResp(SendAuth.Resp resp)
     {
         switch (resp.errCode)
         {
