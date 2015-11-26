@@ -164,7 +164,13 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     public final TGRecyclerViewHolder<T> getViewHolderAtPosition(int position)
     {
-        return viewHolders.get(position);
+        TGRecyclerViewHolder<T> viewHolder = viewHolders.get(position);
+        if(viewHolder instanceof TGMultiViewTypeRecyclerViewHolder)
+        {
+            return ((TGMultiViewTypeRecyclerViewHolder)viewHolder).getCurrentViewHolder();
+        }
+
+        return viewHolder;
     }
 
     @Override

@@ -38,7 +38,7 @@ public abstract class TGMultiViewTypeRecyclerViewHolder<T> extends TGRecyclerVie
         internalViewHolder.fillData(parent, convertView, itemData, position, viewType);
     }
 
-    protected TGRecyclerViewHolder<T> getCurrentViewHolder()
+    public TGRecyclerViewHolder<T> getCurrentViewHolder()
     {
         return internalViewHolder;
     }
