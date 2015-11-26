@@ -22,58 +22,21 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 {
 	private static final Logger LOG = Logger.getLogger(WeChatEntryActivity.class);
 	
-	private WeChatSharePlugin sharePlugin;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		this.setVisible(false);
-		
-		initSharePlugin();
-		if(null != sharePlugin)
-		{
-			sharePlugin.getIWXApi().handleIntent(getIntent(), this);
-		}
+		LOG.i("[Method:onCreate]");
+        WeChatAPI.getInstance().getWXAPI().handleIntent(getIntent(), this);
 	}
-	
-	private void initSharePlugin()
-	{
-		if(null != sharePlugin)
-		{
-			return;
-		}
-		
-		sharePlugin = (WeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
-				TGSharePluginManager.TAG_WEI_CHAT);
-		if(null == sharePlugin)
-		{
-			sharePlugin = (WeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
-					TGSharePluginManager.TAG_WEI_CHAT_TIME_LINE);
-		}
-		
-		if(null == sharePlugin)
-		{
-			LOG.e("You had never register WeChatSharePlugin before");
-		}
-	}
-	
-	protected IWXAPI getIWXAPI()
-	{
-		WeChatSharePlugin plugin = (WeChatSharePlugin) TGSharePluginManager.getInstance().getPlugin(
-				TGSharePluginManager.TAG_WEI_CHAT);
-		return plugin.getIWXApi();
-	}
-	
+
 	@Override
 	protected void onNewIntent(Intent intent)
 	{
+        LOG.i("[Method:onNewIntent]");
 		super.onNewIntent(intent);
-		initSharePlugin();
-		if(null != sharePlugin)
-		{
-			sharePlugin.getIWXApi().handleIntent(getIntent(), this);
-		}
+        WeChatAPI.getInstance().getWXAPI().handleIntent(intent, this);
 	}
 	
 	@Override
@@ -90,11 +53,14 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 			TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_CHAT_TIME_LINE, 
 					shareResult);
 		}
+
+        finish();
 	}
 
 	@Override
 	public void onResp(BaseResp req)
 	{
+		LOG.i("[Method:onReq]");
 		if(req instanceof SendMessageToWX.Resp)
 		{
 			LOG.i("[Method:onResp] share over");
@@ -113,5 +79,7 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 			LOG.i("[Method:onResp] authorize over");
             TGApplicationProxy.getInstance().getBus().post((SendAuth.Resp)req);
 		}
+
+        finish();
 	}
 }

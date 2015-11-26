@@ -19,11 +19,6 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShareResult>
 {
 	/**
-	 * 微信API
-	 */
-	private IWXAPI api;
-	
-	/**
 	 * 信息请求类
 	 */
 	private SendMessageToWX.Req req;
@@ -37,8 +32,7 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 	protected void registerApp()
 	{
 		// 初始化微信api
-		api = WXAPIFactory.createWXAPI(getContext(), getAppID());
-		api.registerApp(getAppID());
+		WeChatAPI.init(getAppID());
 	}
 	
 	@Override
@@ -48,7 +42,7 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 		
 		// 发送媒体消息
 		req = initReq();
-		api.sendReq(req);
+		WeChatAPI.getInstance().getWXAPI().sendReq(req);
 	}
 	
 	/**
@@ -71,7 +65,7 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 	 */
 	protected IWXAPI getIWXApi()
 	{
-		return api;
+		return WeChatAPI.getInstance().getWXAPI();
 	}
 
 	@Override

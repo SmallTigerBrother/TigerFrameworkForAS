@@ -43,8 +43,6 @@ public class WeChatAuthorization extends AbsAuthorization
      */
     private WeChatAuthorizeResult authorizeResult;
 
-    private IWXAPI api;
-
     /**
      * state参数，用户自行设定
      */
@@ -65,8 +63,7 @@ public class WeChatAuthorization extends AbsAuthorization
         super(appID);
         TGApplicationProxy.getInstance().getBus().register(this);
 
-        this.api = WXAPIFactory.createWXAPI(TGApplicationProxy.getInstance().getApplication(), appID);
-        this.api.registerApp(appID);
+        WeChatAPI.init(appID);
 
         this.secret = secret;
         this.state = state;
@@ -75,6 +72,7 @@ public class WeChatAuthorization extends AbsAuthorization
     @Override
     public void authorize(Activity activity, IAuthorizeCallback callback)
     {
+        LOG.i("[Method:authorize]");
         this.activity = activity;
         this.authorizeCallback = callback;
 
@@ -84,7 +82,7 @@ public class WeChatAuthorization extends AbsAuthorization
         {
             req.state = this.state;
         }
-        api.sendReq(req);
+        WeChatAPI.getInstance().getWXAPI().sendReq(req);
     }
 
     @Override
@@ -109,12 +107,15 @@ public class WeChatAuthorization extends AbsAuthorization
         switch (resp.errCode)
         {
             case SendAuth.Resp.ErrCode.ERR_OK:
+                LOG.i("[Method:handleAuthorizeResp] errCode == ERR_OK");
                 requestAccessToken(resp.code);
                 break;
             case SendAuth.Resp.ErrCode.ERR_USER_CANCEL:
+                LOG.i("[Method:handleAuthorizeResp] errCode == ERR_USER_CANCEL");
                 ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_denied"));
                 break;
             case SendAuth.Resp.ErrCode.ERR_AUTH_DENIED:
+                LOG.i("[Method:handleAuthorizeResp] errCode == ERR_AUTH_DENIED");
                 ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_cancel"));
                 break;
             default:
@@ -128,7 +129,6 @@ public class WeChatAuthorization extends AbsAuthorization
      */
     private void requestAccessToken(String code)
     {
-        LOG.i("[Method:requestAccessToken]");
         TGHttpLoader<WeChatAuthorizeResult> httpLoader = new TGHttpLoader<WeChatAuthorizeResult>();
         httpLoader.loadByGet(activity, getRequestAccessTokenUrl(code), WeChatAuthorizeResult.class,
                 new TGHttpLoader.OnLoadCallback<WeChatAuthorizeResult>()
@@ -145,6 +145,7 @@ public class WeChatAuthorization extends AbsAuthorization
             @Override
             public void onLoadSuccess(WeChatAuthorizeResult result, TGHttpResult httpResult)
             {
+                LOG.i("[Method:requestAccessToken:onLoadSuccess]");
                 if(null != result)
                 {
                     if (result.getErrCode() > 0)
@@ -163,6 +164,7 @@ public class WeChatAuthorization extends AbsAuthorization
             @Override
             public void onLoadError(int code, String message, TGHttpResult httpResult)
             {
+                LOG.i("[Method:requestAccessToken:onLoadError]");
                 ToastUtils.showToast(activity, message);
             }
 
@@ -199,7 +201,6 @@ public class WeChatAuthorization extends AbsAuthorization
      */
     private void requestUserInfo(String openId, String accessToken)
     {
-        LOG.i("[Method:requestUserInfo]");
         TGHttpLoader<WeChatAuthorizeResult.WeChatUser> httpLoader = new TGHttpLoader<WeChatAuthorizeResult.WeChatUser>();
         httpLoader.loadByGet(activity, getRequestUserUrl(openId, accessToken), WeChatAuthorizeResult.WeChatUser.class,
                 new TGHttpLoader.OnLoadCallback<WeChatAuthorizeResult.WeChatUser>()
@@ -216,6 +217,7 @@ public class WeChatAuthorization extends AbsAuthorization
                     @Override
                     public void onLoadSuccess(WeChatAuthorizeResult.WeChatUser user, TGHttpResult httpResult)
                     {
+                        LOG.i("[Method:requestUserInfo:onLoadSuccess]");
                         if(null != user)
                         {
                             if (user.getErrCode() > 0)
@@ -234,6 +236,7 @@ public class WeChatAuthorization extends AbsAuthorization
                     @Override
                     public void onLoadError(int code, String message, TGHttpResult httpResult)
                     {
+                        LOG.i("[Method:requestUserInfo:onLoadError]");
                         ToastUtils.showToast(activity, message);
                     }
 
