@@ -20,6 +20,8 @@ public class PullToRefreshRecyclerView extends BGARefreshLayout implements IPull
 
     private PullToRefreshViewImp pullToRefreshViewImp;
 
+    private RecyclerView.LayoutManager layoutManager;
+
     public PullToRefreshRecyclerView(Context context)
     {
         super(context);
@@ -41,7 +43,8 @@ public class PullToRefreshRecyclerView extends BGARefreshLayout implements IPull
     private void initRecyclerView()
     {
         recyclerView = new TGRecyclerView(getContext());
-        recyclerView.setLayoutManager(new InternalLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        layoutManager = new InternalLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.weight = 1;
         this.addView(recyclerView, layoutParams);
@@ -144,6 +147,16 @@ public class PullToRefreshRecyclerView extends BGARefreshLayout implements IPull
     public void scrollToPosition(int position)
     {
         recyclerView.scrollToPosition(position);
+    }
+
+    public void smoothScrollToPosition(int position)
+    {
+        recyclerView.smoothScrollToPosition(position);
+    }
+
+    public RecyclerView.LayoutManager getLayoutManager()
+    {
+        return layoutManager;
     }
 
     /**
