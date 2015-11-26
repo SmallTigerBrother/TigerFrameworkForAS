@@ -17,6 +17,8 @@ public class PullToRefreshStaggeredGridView extends BGARefreshLayout implements 
 
     private PullToRefreshViewImp pullToRefreshViewImp;
 
+    private RecyclerView.LayoutManager layoutManager;
+
     public PullToRefreshStaggeredGridView(Context context)
     {
         super(context);
@@ -38,6 +40,7 @@ public class PullToRefreshStaggeredGridView extends BGARefreshLayout implements 
     private void initRecyclerView()
     {
         recyclerView = new StaggeredGridView(getContext());
+        layoutManager = recyclerView.getLayoutManager();
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.weight = 1;
         this.addView(recyclerView, layoutParams);
@@ -87,6 +90,11 @@ public class PullToRefreshStaggeredGridView extends BGARefreshLayout implements 
     public void addOnScrollListener(RecyclerView.OnScrollListener onScrollListener)
     {
         recyclerView.addOnScrollListener(onScrollListener);
+    }
+
+    public RecyclerView.LayoutManager getLayoutManager()
+    {
+        return layoutManager;
     }
 
     public void postRefreshRunnable(Runnable runnable)
