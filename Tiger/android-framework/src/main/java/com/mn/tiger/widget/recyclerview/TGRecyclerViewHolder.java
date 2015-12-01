@@ -65,7 +65,7 @@ public abstract class TGRecyclerViewHolder<T>
      * 将OnItemClick事件绑定到View上
      * @param convertView
      */
-    void attachOnItemClickListener(View convertView)
+    public void attachOnItemClickListener(View convertView)
     {
         if(null != internalOnClickListener)
         {
@@ -240,6 +240,17 @@ public abstract class TGRecyclerViewHolder<T>
     }
 
     /**
+     * 执行列表行点击事件
+     */
+    protected void performOnItemClick()
+    {
+        if(null != onItemClickListener)
+        {
+            onItemClickListener.onItemClick(getRecyclerView(), holder.itemView, holder.getAdapterPosition(), holder.getItemId());
+        }
+    }
+
+    /**
      * 列表行点击事件
      */
     private final class InternalOnClickListener implements View.OnClickListener
@@ -247,10 +258,7 @@ public abstract class TGRecyclerViewHolder<T>
         @Override
         public void onClick(View v)
         {
-            if(null != onItemClickListener)
-            {
-                onItemClickListener.onItemClick(getRecyclerView(), holder.itemView, holder.getAdapterPosition(), holder.getItemId());
-            }
+            performOnItemClick();
         }
     }
 }
