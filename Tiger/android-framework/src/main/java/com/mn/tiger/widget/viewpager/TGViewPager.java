@@ -30,17 +30,18 @@ public class TGViewPager extends ViewPager
 		}
 		return false;
 	}
-	
+
+
 	@Override
-	public boolean onInterceptHoverEvent(MotionEvent event)
+	public boolean onInterceptTouchEvent(MotionEvent ev)
 	{
 		if(canScroll)
 		{
-			return super.onInterceptHoverEvent(event);
+			return super.onInterceptTouchEvent(ev);
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 设置是否支持滚动
 	 * @param canScroll
