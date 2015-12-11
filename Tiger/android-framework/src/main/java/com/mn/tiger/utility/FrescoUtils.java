@@ -264,6 +264,64 @@ public class FrescoUtils
     }
 
     /**
+     * 显示圆形图片
+     *
+     * @param uri
+     * @param imageView
+     * @param placeHolder
+     */
+    public static void displayLocalImageAsCircle(String uri, DraweeView imageView, Drawable placeHolder)
+    {
+        displayLocalImageAsCircle(uri, imageView, placeHolder, ScalingUtils.ScaleType.CENTER_CROP);
+    }
+
+    /**
+     * 显示圆形图片
+     *
+     * @param uri
+     * @param imageView
+     * @param placeHolder
+     * @param scaleType
+     */
+    public static void displayLocalImageAsCircle(String uri, DraweeView imageView, Drawable placeHolder,
+                                            ScalingUtils.ScaleType scaleType)
+    {
+        int id = getViewId(imageView);
+        if (null == imageView.getTag(id))
+        {
+            GenericDraweeHierarchyBuilder draweeHierarchyBuilder = new GenericDraweeHierarchyBuilder(imageView.getResources());
+            if (null != placeHolder)
+            {
+                draweeHierarchyBuilder.setPlaceholderImage(placeHolder, ScalingUtils.ScaleType.CENTER_INSIDE);
+            }
+
+            RoundingParams roundingParams = new RoundingParams();
+            roundingParams.setRoundAsCircle(true);
+            roundingParams.setBorder(Color.TRANSPARENT, 0);
+            draweeHierarchyBuilder.setRoundingParams(roundingParams).build();
+
+            draweeHierarchyBuilder.setActualImageScaleType(scaleType);
+
+            imageView.setHierarchy(draweeHierarchyBuilder.build());
+            imageView.setTag(id, true);
+        }
+
+        ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width,
+                imageView.getLayoutParams().height);
+        ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
+                .setProgressiveRenderingEnabled(true)
+                .setResizeOptions(resizeOptions)
+                .build();
+
+        imageView.setController(Fresco.newDraweeControllerBuilder()
+                .setUri("file://" + uri)
+                .setTapToRetryEnabled(true)
+                .setOldController(imageView.getController())
+                .setImageRequest(imageRequest)
+                .build());
+    }
+
+    /**
      * 加载本地的图片资源
      * @param resourceId
      * @param imageView
