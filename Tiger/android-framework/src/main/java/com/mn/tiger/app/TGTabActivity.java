@@ -2,7 +2,6 @@ package com.mn.tiger.app;
 
 import android.app.Fragment;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -152,10 +151,6 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         {
             holder.getImageView().setImageResource(tabModel.getDefaultRes());
         }
-        else
-        {
-            TGTabView.displayImage(tabModel.getDefaultResName(), holder.getImageView());
-        }
 
         holder.getTextView().setTextColor(tabModel.getDefaultTextColor());
         holder.getTextView().setTextSize(tabModel.getDefaultTextSize());
@@ -174,10 +169,6 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         if(tabModel.getHighlightRes() != 0)
         {
             holder.getImageView().setImageResource(tabModel.getHighlightRes());
-        }
-        else
-        {
-            TGTabView.displayImage(tabModel.getHighlightResName(), holder.getImageView());
         }
 
         holder.getTextView().setTextColor(tabModel.getHighlightTextColor());
@@ -289,7 +280,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             textView = (TextView) view.findViewById(R.id.tab_item_name);
             badgeView = new TGBadgeView(getContext(), imageView);
             badgeView.setBadgePosition(TGBadgeView.POSITION_TOP_RIGHT);
-            badgeView.setBadgeMargin(0, 1, 1, 0);
+            badgeView.setBadgeMargin(0, 0, 0, 0);
 
             return view;
         }
@@ -297,7 +288,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         @Override
         public void fillData(ViewGroup parent, View convertView, TabModel itemData, int position, int viewType)
         {
-            TGTabView.displayImage(itemData.getDefaultResName(), imageView);
+            imageView.setImageResource(itemData.getDefaultRes());
 
             ViewGroup.MarginLayoutParams imageLayoutParams = (ViewGroup.MarginLayoutParams)imageView.getLayoutParams();
             imageLayoutParams.width = itemData.getImageWidth();
@@ -315,12 +306,13 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
                 textView.setText(itemData.getTabName());
                 textView.setTextColor(itemData.getDefaultTextColor());
                 textView.setTextSize(itemData.getDefaultTextSize());
-                textView.setTypeface(Typeface.defaultFromStyle(itemData.getDefaultTypeface()));
             }
 
             if(itemData.getBadgeBackgroundResId() != 0)
             {
-                badgeView.setImageResource(itemData.getBadgeBackgroundResId());
+                badgeView.setBackgroundResource(itemData.getBadgeBackgroundResId());
+                badgeView.setTextSize(itemData.getBadgeTextSize());
+                badgeView.setTextColor(itemData.getBadgeTextColor());
             }
         }
 
@@ -347,19 +339,9 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     public static class TabModel
     {
         /**
-         * 默认图片资源
-         */
-        private String defaultResName;
-
-        /**
          * 默认图片资源id
          */
         private int defaultRes;
-
-        /**
-         * 高亮图片资源
-         */
-        private String highlightResName;
 
         /**
          *高亮图片资源id
@@ -392,21 +374,6 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         private float highlightTextSize = 16f;
 
         /**
-         * 徽标背景资源
-         */
-        private int badgeBackgroundResId = 0;
-
-        /**
-         * 默认文字样式
-         */
-        private int defaultTypeface = Typeface.NORMAL;
-
-        /**
-         * 高亮文字样式
-         */
-        private int highlightTypeface = Typeface.NORMAL;
-
-        /**
          * 图片和文字之间的间距
          */
         private int imageMarginText = 0;
@@ -422,24 +389,27 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         private int imageWidth = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         /**
+         * 徽标背景资源
+         */
+        private int badgeBackgroundResId = 0;
+
+        /**
+         * 徽标字体大小
+         */
+        private float badgeTextSize = 14f;
+
+        /**
+         * 徽标颜色
+         */
+        private int badgeTextColor =  Color.WHITE;
+
+        /**
          * tab对应的Fragmengt
          */
         private Fragment fragment;
 
         public TabModel()
         {
-        }
-
-        @Deprecated
-        public String getDefaultResName()
-        {
-            return defaultResName;
-        }
-
-        @Deprecated
-        public void setDefaultResName(String defaultResName)
-        {
-            this.defaultResName = defaultResName;
         }
 
         public int getDefaultRes()
@@ -460,18 +430,6 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         public void setTabName(String tabName)
         {
             this.tabName = tabName;
-        }
-
-        @Deprecated
-        public String getHighlightResName()
-        {
-            return highlightResName;
-        }
-
-        @Deprecated
-        public void setHighlightResName(String highlightResName)
-        {
-            this.highlightResName = highlightResName;
         }
 
         public int getHighlightRes()
@@ -534,26 +492,6 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             return badgeBackgroundResId;
         }
 
-        public void setDefaultTypeface(int defaultTypeface)
-        {
-            this.defaultTypeface = defaultTypeface;
-        }
-
-        public int getDefaultTypeface()
-        {
-            return defaultTypeface;
-        }
-
-        public void setHighlightTypeface(int highlightTypeface)
-        {
-            this.highlightTypeface = highlightTypeface;
-        }
-
-        public int getHighlightTypeface()
-        {
-            return highlightTypeface;
-        }
-
         public void setImageMarginText(int imageMarginText)
         {
             this.imageMarginText = imageMarginText;
@@ -592,6 +530,26 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         public Fragment getFragment()
         {
             return fragment;
+        }
+
+        public float getBadgeTextSize()
+        {
+            return badgeTextSize;
+        }
+
+        public int getBadgeTextColor()
+        {
+            return badgeTextColor;
+        }
+
+        public void setBadgeTextColor(int badgeTextColor)
+        {
+            this.badgeTextColor = badgeTextColor;
+        }
+
+        public void setBadgeTextSize(float badgeTextSize)
+        {
+            this.badgeTextSize = badgeTextSize;
         }
     }
 
