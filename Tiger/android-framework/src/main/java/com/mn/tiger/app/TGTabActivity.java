@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mn.tiger.R;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGBadgeView;
 import com.mn.tiger.widget.adpter.TGListAdapter;
 import com.mn.tiger.widget.adpter.TGViewHolder;
@@ -56,10 +56,10 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     {
         super.onCreate(savedInstanceState);
         setNavigationBarVisible(false);
-        setContentView(CR.getLayoutId(this,"tiger_tab_activity"));
+        setContentView(R.layout.tiger_tab_activity);
 
-        tabView = (TGTabView) findViewById(CR.getViewId(this, "tiger_tab_bar"));
-        viewPager = (TGViewPager) findViewById(CR.getViewId(this, "tiger_view_pager"));
+        tabView = (TGTabView) findViewById(R.id.tiger_tab_bar);
+        viewPager = (TGViewPager) findViewById(R.id.tiger_view_pager);
 
         setTabs(onInitTabs());
     }
@@ -90,7 +90,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             viewPager.setOffscreenPageLimit(tabModels.length);
 
             tabView.setAdapter(new TGListAdapter<TabModel>(this, Arrays.asList(tabModels),
-                    CR.getLayoutId(this,"tiger_fragment_tab_item"), TabViewHolder.class));
+                    R.layout.tiger_fragment_tab_item, TabViewHolder.class));
             tabView.setOnTabChangeListener(this);
             tabView.setSelection(0);
         }
@@ -148,7 +148,15 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         LOG.d("resetLastTab(tabview, int)   lastTabIndex:"+lastTabIndex);
         TabViewHolder holder = (TabViewHolder) tabView.getTabItem(lastTabIndex).getConvertView().getTag();
         TabModel tabModel = (TabModel) tabView.getAdapter().getItem(lastTabIndex);
-        TGTabView.displayImage(tabModel.getDefaultResName(), holder.getImageView());
+        if(tabModel.getDefaultRes() != 0)
+        {
+            holder.getImageView().setImageResource(tabModel.getDefaultRes());
+        }
+        else
+        {
+            TGTabView.displayImage(tabModel.getDefaultResName(), holder.getImageView());
+        }
+
         holder.getTextView().setTextColor(tabModel.getDefaultTextColor());
         holder.getTextView().setTextSize(tabModel.getDefaultTextSize());
     }
@@ -163,7 +171,15 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         LOG.d("highLightCurrentTab(tabview,int)   currentTabIndex:"+currentTabIndex);
         TabViewHolder holder = (TabViewHolder) tabView.getTabItem(currentTabIndex).getConvertView().getTag();
         TabModel tabModel = (TabModel) tabView.getAdapter().getItem(currentTabIndex);
-        TGTabView.displayImage(tabModel.getHighlightResName(), holder.getImageView());
+        if(tabModel.getHighlightRes() != 0)
+        {
+            holder.getImageView().setImageResource(tabModel.getHighlightRes());
+        }
+        else
+        {
+            TGTabView.displayImage(tabModel.getHighlightResName(), holder.getImageView());
+        }
+
         holder.getTextView().setTextColor(tabModel.getHighlightTextColor());
         holder.getTextView().setTextSize(tabModel.getHighlightTextSize());
     }
@@ -233,7 +249,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
      */
     public void showBadge(int tabIndex)
     {
-        LOG.i("[Method:showBadge] tabIndex : " + tabIndex);
+        LOG.i("[Method:showBadge] tabIndex : "+tabIndex);
         ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().show();
     }
 
@@ -243,7 +259,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
      */
     public void hideBadge(int tabIndex)
     {
-        LOG.i("[Method:hideBadge] tabIndex : " + tabIndex);
+        LOG.i("[Method:hideBadge] tabIndex : "+tabIndex);
         ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().hide();
     }
 
@@ -268,9 +284,9 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
                     LayoutParams.WRAP_CONTENT, 1);
             view.setLayoutParams(layoutParams);
 
-            imageView = (ImageView) view.findViewById(CR.getViewId(parent.getContext(), "tab_item_image"));
+            imageView = (ImageView) view.findViewById(R.id.tab_item_image);
 
-            textView = (TextView) view.findViewById(CR.getViewId(parent.getContext(), "tab_item_name"));
+            textView = (TextView) view.findViewById(R.id.tab_item_name);
             badgeView = new TGBadgeView(getContext(), imageView);
             badgeView.setBadgePosition(TGBadgeView.POSITION_TOP_RIGHT);
             badgeView.setBadgeMargin(0, 1, 1, 0);
@@ -336,9 +352,19 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         private String defaultResName;
 
         /**
+         * 默认图片资源id
+         */
+        private int defaultRes;
+
+        /**
          * 高亮图片资源
          */
         private String highlightResName;
+
+        /**
+         *高亮图片资源id
+         */
+        private int highlightRes;
 
         /**
          * tab名称
@@ -404,14 +430,26 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         {
         }
 
+        @Deprecated
         public String getDefaultResName()
         {
             return defaultResName;
         }
 
+        @Deprecated
         public void setDefaultResName(String defaultResName)
         {
             this.defaultResName = defaultResName;
+        }
+
+        public int getDefaultRes()
+        {
+            return defaultRes;
+        }
+
+        public void setDefaultRes(int defaultRes)
+        {
+            this.defaultRes = defaultRes;
         }
 
         public String getTabName()
@@ -424,14 +462,26 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             this.tabName = tabName;
         }
 
+        @Deprecated
         public String getHighlightResName()
         {
             return highlightResName;
         }
 
+        @Deprecated
         public void setHighlightResName(String highlightResName)
         {
             this.highlightResName = highlightResName;
+        }
+
+        public int getHighlightRes()
+        {
+            return highlightRes;
+        }
+
+        public void setHighlightRes(int highlightRes)
+        {
+            this.highlightRes = highlightRes;
         }
 
         public int getDefaultTextColor()
