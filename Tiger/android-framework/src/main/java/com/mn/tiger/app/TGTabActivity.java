@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.mn.tiger.R;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.widget.TGBadgeView;
 import com.mn.tiger.widget.adpter.TGListAdapter;
 import com.mn.tiger.widget.adpter.TGViewHolder;
 import com.mn.tiger.widget.tab.TGTabView;
@@ -227,11 +226,11 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     public void showBadge(int tabIndex, String text)
     {
         LOG.i("[Method:showBadge] tabIndex : " + tabIndex + "  text : " + text);
-        TGBadgeView badgeView =
+        TextView badgeView =
                 ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView();
 
         badgeView.setText(text);
-        badgeView.show();
+        badgeView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -241,7 +240,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     public void showBadge(int tabIndex)
     {
         LOG.i("[Method:showBadge] tabIndex : "+tabIndex);
-        ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().show();
+        ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().setVisibility(View.VISIBLE);
     }
 
     /**
@@ -251,7 +250,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
     public void hideBadge(int tabIndex)
     {
         LOG.i("[Method:hideBadge] tabIndex : "+tabIndex);
-        ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().hide();
+        ((TabViewHolder) tabView.getTabItem(tabIndex).getConvertView().getTag()).getBadgeView().setVisibility(View.GONE);
     }
 
     /**
@@ -264,7 +263,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
 
         private TextView textView;
 
-        private TGBadgeView badgeView;
+        private TextView badgeView;
 
         @Override
         public View initView(ViewGroup parent, int viewType)
@@ -276,11 +275,8 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             view.setLayoutParams(layoutParams);
 
             imageView = (ImageView) view.findViewById(R.id.tab_item_image);
-
             textView = (TextView) view.findViewById(R.id.tab_item_name);
-            badgeView = new TGBadgeView(getContext(), imageView);
-            badgeView.setBadgePosition(TGBadgeView.POSITION_TOP_RIGHT);
-            badgeView.setBadgeMargin(0, 0, 0, 0);
+            badgeView = (TextView)view.findViewById(R.id.tab_item_badge);
 
             return view;
         }
@@ -326,7 +322,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             return textView;
         }
 
-        public TGBadgeView getBadgeView()
+        public TextView getBadgeView()
         {
             return badgeView;
         }
