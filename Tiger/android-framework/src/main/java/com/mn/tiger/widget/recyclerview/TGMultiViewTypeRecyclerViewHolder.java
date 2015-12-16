@@ -42,4 +42,10 @@ public abstract class TGMultiViewTypeRecyclerViewHolder<T> extends TGRecyclerVie
     {
         return internalViewHolder;
     }
+
+    @Override
+    public boolean recycleAble()
+    {
+        return internalViewHolder.recycleAble();
+    }
 }
