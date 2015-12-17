@@ -17,6 +17,7 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
 
 /**
@@ -356,7 +357,7 @@ public class FrescoUtils
     {
         if(PLACE_HOLDER_ID == -1)
         {
-            PLACE_HOLDER_ID = CR.getViewId(draweeView.getContext(), "placeholder");
+            PLACE_HOLDER_ID = CR.getViewId(TGApplicationProxy.getInstance().getApplication(), "placeholder");
         }
         return PLACE_HOLDER_ID;
     }
