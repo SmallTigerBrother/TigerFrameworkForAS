@@ -2,6 +2,7 @@ package com.mn.tiger.thirdparty.amap;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 
 import com.amap.api.location.AMapLocation;
@@ -60,15 +61,57 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
         aMap.setMyLocationEnabled(true);
     }
 
-    public void addMarker(double latitude, double langitude, String title)
+    public void addMarker(double latitude, double longitude, String title)
+    {
+        addMarker(latitude, longitude, title, null, null);
+    }
+
+    public void addMarker(double latitude, double longitude, String title,String snippet, Object params)
     {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.draggable(false);
-        markerOptions.position(new LatLng(latitude, langitude));
-        markerOptions.title(title);
-        Marker marker = aMap.addMarker(markerOptions);
+        markerOptions.position(new LatLng(latitude, longitude));
+        boolean canShowInfoWindow = false;
+        if(!TextUtils.isEmpty(title))
+        {
+            markerOptions.title(title);
+            canShowInfoWindow = true;
+        }
 
-        marker.showInfoWindow();
+        if(!TextUtils.isEmpty(snippet))
+        {
+            markerOptions.snippet(snippet);
+            canShowInfoWindow = true;
+        }
+
+        Marker marker = aMap.addMarker(markerOptions);
+        if(null != params)
+        {
+            marker.setObject(params);
+        }
+
+        if(canShowInfoWindow)
+        {
+            marker.showInfoWindow();
+        }
+    }
+
+    /**
+     * 设置MarkerInfoWindow显示适配器
+     * @param infoWindowAdapter
+     */
+    public void setInfoWindowAdapter(AMap.InfoWindowAdapter infoWindowAdapter)
+    {
+        aMap.setInfoWindowAdapter(infoWindowAdapter);
+    }
+
+    /**
+     * 设置MarkerInfoWindow点击事件监听器
+     * @param onInfoWindowClickListener
+     */
+    public void setOnInfoWindowClickListener(AMap.OnInfoWindowClickListener onInfoWindowClickListener)
+    {
+        aMap.setOnInfoWindowClickListener(onInfoWindowClickListener);
     }
 
     public void clear()
