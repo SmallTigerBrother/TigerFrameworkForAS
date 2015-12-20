@@ -7,7 +7,7 @@ package com.medialab.dimension.policy;
  */
 public class CaculatePolicyBaseOnIphone6 extends CaculatePolicy
 {
-	public CaculatePolicyBaseOnIphone6(int inchOfScreen)
+	public CaculatePolicyBaseOnIphone6(double inchOfScreen)
 	{
 		super(inchOfScreen);
 	}
