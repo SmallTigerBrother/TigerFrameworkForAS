@@ -56,13 +56,13 @@ public class QQSharePlugin extends TGSharePlugin<Bundle, QQShareResult>
 	/**
 	 * 分享到QQ
 	 */
-	protected void share2QQ(IUiListener uiListener)
+	protected void share2QQ(Activity entryActivity, IUiListener uiListener)
 	{
 		LOG.d("[Method:share2QQ]");
 		
 		if(null != getShareMsg())
 		{
-			tencent.shareToQQ(activity, getShareMsg(), uiListener);
+			tencent.shareToQQ(entryActivity, getShareMsg(), uiListener);
 		}
 		//清空actvity，避免内存泄露
 		setActivity(null);

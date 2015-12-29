@@ -36,6 +36,7 @@ public class QQZoneEntryActivity extends QQEntryActivity
 		
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE, 
 				new QQShareResult(response));
+		finish();
 	}
 
 	@Override
@@ -43,6 +44,7 @@ public class QQZoneEntryActivity extends QQEntryActivity
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE, 
 				new QQShareResult(error));
+		finish();
 	}
 
 	@Override
@@ -50,5 +52,6 @@ public class QQZoneEntryActivity extends QQEntryActivity
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE, 
 				new QQShareResult((JSONObject)response));
+		finish();
 	}
 }

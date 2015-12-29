@@ -71,7 +71,7 @@ public class QQEntryActivity extends Activity implements IUiListener
 	{
 		if(null != plugin)
 		{
-			plugin.share2QQ(this);
+			plugin.share2QQ(this, this);
 		}
 		else
 		{
@@ -85,7 +85,7 @@ public class QQEntryActivity extends Activity implements IUiListener
 		if(null != tencent)
 		{
 			//处理分享结果
-			tencent.onActivityResult(requestCode, resultCode, data);
+			Tencent.onActivityResultData(requestCode, resultCode,data, this);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -93,18 +93,19 @@ public class QQEntryActivity extends Activity implements IUiListener
 	@Override
 	public void onCancel()
 	{
-		JSONObject response = new JSONObject();
-		try
-		{
-			response.put("ret", QQShareResult.USER_CANCEL);
-		}
-		catch (JSONException e)
-		{
-			LOG.e(e);
-		}
-		
-		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ,
-				new QQShareResult(response));
+        JSONObject response = new JSONObject();
+        try
+        {
+            response.put("ret", QQShareResult.USER_CANCEL);
+        }
+        catch (JSONException e)
+        {
+            LOG.e(e);
+        }
+
+        TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ_ZONE,
+                new QQShareResult(response));
+        finish();
 	}
 
 	@Override
@@ -112,6 +113,7 @@ public class QQEntryActivity extends Activity implements IUiListener
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ,
 				new QQShareResult(error));
+		finish();
 	}
 
 	@Override
@@ -119,5 +121,6 @@ public class QQEntryActivity extends Activity implements IUiListener
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_QQ,
 				new QQShareResult((JSONObject)response));
+		finish();
 	}
 }

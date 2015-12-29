@@ -37,11 +37,11 @@ public class QQZoneSharePlugin extends QQSharePlugin
 	 * 分享到QQ空间
 	 */
 	@Override
-	protected void share2QQ(IUiListener uiListener)
+	protected void share2QQ(Activity entryActivity, IUiListener uiListener)
 	{
 		LOG.d("[Method:share2QQZone]");
 		
-		getTencent().shareToQzone(getActivity(), getShareMsg(), uiListener);
+		getTencent().shareToQzone(entryActivity, getShareMsg(), uiListener);
 		//清空activity，避免内存泄露
 		setActivity(null);
 	}
