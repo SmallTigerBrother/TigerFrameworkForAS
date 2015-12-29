@@ -1,6 +1,17 @@
 package com.mn.tiger.lbs.location;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.*;
+import android.os.Process;
+
+import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.PackageUtils;
 
 /**
  * Created by Dalang on 2015/7/26.
@@ -97,6 +108,18 @@ public class TGLocationManager implements ILocationManager
                 }
                 curLocationManager.setLocationListener(listener);
             }
+
+            @Override
+            public void onLocationPermissionDeny()
+            {
+
+            }
+
+            @Override
+            public void onProviderDisabled(boolean isGPSEnbale, boolean isNetWorkEnable)
+            {
+
+            }
         });
 
         requestLocationUpdates();
@@ -113,6 +136,18 @@ public class TGLocationManager implements ILocationManager
             public void onReceiveLocation(TGLocation location)
             {
                 curLocationManager.removeLocationUpdates();
+            }
+
+            @Override
+            public void onLocationPermissionDeny()
+            {
+
+            }
+
+            @Override
+            public void onProviderDisabled(boolean isGPSEnbale, boolean isNetWorkEnable)
+            {
+
             }
         });
 
@@ -175,6 +210,26 @@ public class TGLocationManager implements ILocationManager
         {
             curLocationManager.onDestroy();
         }
+    }
+
+    public static boolean isLocationPermissionDeny()
+    {
+        PackageManager packageManager = TGApplicationProxy.getInstance().getApplication().getPackageManager();
+        String packageName = TGApplicationProxy.getInstance().getApplication().getPackageName();
+        return PackageManager.PERMISSION_GRANTED != packageManager.checkPermission("android.permission.ACCESS_COARSE_LOCATION", packageName)
+                && PackageManager.PERMISSION_GRANTED != packageManager.checkPermission("android.permission.ACCESS_FINE_LOCATION",packageName);
+    }
+
+    public static boolean isGPSProviderEnabled()
+    {
+        LocationManager locationManager = (LocationManager)TGApplicationProxy.getInstance().getApplication().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public static boolean isNetWorkProviderEnabled()
+    {
+        LocationManager locationManager = (LocationManager)TGApplicationProxy.getInstance().getApplication().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
     private boolean isGoogleLocationManager(ILocationManager locationManager)

@@ -20,6 +20,10 @@ public interface ILocationManager
     interface ILocationListener
     {
         void onReceiveLocation(TGLocation location);
+
+        void onLocationPermissionDeny();
+
+        void onProviderDisabled(boolean isGPSDisabled, boolean isNetWorkDisable);
     }
 
     enum Provider
