@@ -73,25 +73,7 @@ public class FrescoUtils
      */
     public static void displayImage(String uri, DraweeView imageView)
     {
-        int id = getViewId(imageView);
-        if (null == imageView.getTag(id))
-        {
-            imageView.setHierarchy(new GenericDraweeHierarchyBuilder(imageView.getResources())
-                    .build());
-            imageView.setTag(id, true);
-        }
-        ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width, imageView.getLayoutParams().height);
-        ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
-                .setProgressiveRenderingEnabled(true)
-                .setResizeOptions(resizeOptions)
-                .build();
-
-        imageView.setController(Fresco.newDraweeControllerBuilder()
-                .setUri(uri)
-                .setTapToRetryEnabled(true)
-                .setOldController(imageView.getController())
-                .setImageRequest(imageRequest)
-                .build());
+        displayImage(uri, imageView, null, Color.TRANSPARENT);
     }
 
     /**
@@ -105,6 +87,20 @@ public class FrescoUtils
     public static void displayImage(String uri, DraweeView imageView, Drawable placeHolder,
                                     int placeHolderBackgroundColor)
     {
+        displayImage(uri, imageView, placeHolder, placeHolderBackgroundColor, ScalingUtils.ScaleType.CENTER_CROP);
+    }
+
+    /**
+     * 异步加载图片
+     *
+     * @param uri                        图片地址
+     * @param imageView
+     * @param placeHolder                占位符
+     * @param placeHolderBackgroundColor 占位符背景颜色
+     */
+    public static void displayImage(String uri, DraweeView imageView, Drawable placeHolder,
+                                    int placeHolderBackgroundColor, ScalingUtils.ScaleType scaleType)
+    {
         int id = getViewId(imageView);
         if (null == imageView.getTag(id))
         {
@@ -115,6 +111,7 @@ public class FrescoUtils
                 draweeHierarchyBuilder.setPlaceholderImage(placeHolder, ScalingUtils.ScaleType.CENTER_INSIDE);
             }
             draweeHierarchyBuilder.setBackground(new ColorDrawable(placeHolderBackgroundColor));
+            draweeHierarchyBuilder.setActualImageScaleType(scaleType);
             imageView.setHierarchy(draweeHierarchyBuilder.build());
             imageView.setTag(id, true);
         }
@@ -132,6 +129,7 @@ public class FrescoUtils
                 .setImageRequest(imageRequest)
                 .build());
     }
+
 
     /**
      * 显示圆形图片
@@ -199,29 +197,7 @@ public class FrescoUtils
      */
     public static void displayLocalImage(String filePath, DraweeView imageView)
     {
-        int id = getViewId(imageView);
-
-        if (null == imageView.getTag(id))
-        {
-            imageView.setHierarchy(new GenericDraweeHierarchyBuilder(imageView.getResources())
-                    .build());
-            imageView.setTag(id, true);
-        }
-
-        ResizeOptions resizeOptions = new ResizeOptions(imageView.getLayoutParams().width,
-                imageView.getLayoutParams().height);
-        ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse("file://" + filePath))
-                .setAutoRotateEnabled(true)
-                .setProgressiveRenderingEnabled(true)
-                .setResizeOptions(resizeOptions)
-                .build();
-
-        imageView.setController(Fresco.newDraweeControllerBuilder()
-                .setUri("file://" + filePath)
-                .setTapToRetryEnabled(true)
-                .setOldController(imageView.getController())
-                .setImageRequest(imageRequest)
-                .build());
+        displayLocalImage(filePath, imageView, null, Color.TRANSPARENT);
     }
 
     /**
