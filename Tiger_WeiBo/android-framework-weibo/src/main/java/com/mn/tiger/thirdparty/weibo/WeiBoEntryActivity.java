@@ -63,5 +63,6 @@ public class WeiBoEntryActivity extends Activity implements IWeiboHandler.Respon
 	{
 		TGSharePluginManager.getInstance().postShareResult(TGSharePluginManager.TAG_WEI_BO, 
 				new WeiboShareResult(response));
+		finish();
 	}
 }
