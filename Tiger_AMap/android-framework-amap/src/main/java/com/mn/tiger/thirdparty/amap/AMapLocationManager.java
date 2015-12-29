@@ -9,6 +9,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.location.TGLocation;
+import com.mn.tiger.lbs.location.TGLocationManager;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 
@@ -57,6 +58,16 @@ public class AMapLocationManager implements ILocationManager
     public void requestLocationUpdates()
     {
         LOG.i("[Method:requestLocationUpdates]");
+        if(TGLocationManager.isLocationPermissionDeny())
+        {
+            LOG.w("[Method:requestLocationUpdates] Location Permission Deny, please check your settings");
+            if(null != listener)
+            {
+                listener.onLocationPermissionDeny();
+            }
+            return;
+        }
+
         locationClient.startLocation();
     }
 
