@@ -2,6 +2,7 @@ package com.mn.tiger.thirdparty.wechat;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.mn.tiger.share.TGSharePlugin;
@@ -174,6 +175,8 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 		private String description;
 		
 		private String webpageUrl;
+
+		private Bitmap thumbImage;
 		
 		public TGWeChatWebPageMsgBuilder(int shareType)
 		{
@@ -187,6 +190,7 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 			
 			mediaMessage.title = title;
 			mediaMessage.description = description;
+			mediaMessage.setThumbImage(thumbImage);
 			WXWebpageObject webpageObject = new WXWebpageObject(webpageUrl);
 			mediaMessage.mediaObject = webpageObject;
 			
@@ -206,6 +210,11 @@ public class WeChatSharePlugin extends TGSharePlugin<WXMediaMessage, WeChatShare
 		public void setWebpageUrl(String webpageUrl)
 		{
 			this.webpageUrl = webpageUrl;
+		}
+
+		public void setThumbImage(Bitmap bitmap)
+		{
+			this.thumbImage = bitmap;
 		}
 	}
 	

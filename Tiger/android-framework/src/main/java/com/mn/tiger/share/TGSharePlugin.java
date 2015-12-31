@@ -105,7 +105,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 */
 	protected final T getShareMsg()
 	{
-		if(null == shareMsg && null != msgBuilder)
+		if(null != msgBuilder)
 		{
 			shareMsg = msgBuilder.build();
 		}
