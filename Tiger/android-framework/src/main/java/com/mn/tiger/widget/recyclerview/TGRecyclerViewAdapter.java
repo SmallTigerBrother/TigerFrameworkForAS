@@ -465,7 +465,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             this.items.add(position, data);
             notifyItemInserted(position);
 
-            notifyItemRangeChanged(position, this.items.size() - position);
+            notifyItemRangeChanged(position, this.items.size() - 1);
         }
     }
 
