@@ -279,7 +279,14 @@ public class TGHttpLoader<T> implements IRequestParser
 		}
 
 		onPreExecute();
-		doInBackground(params);
+
+		if(isCancelled())
+		{
+			loadCallback.onLoadOver();
+			return taskID;
+		}
+
+		doInBackground(params, initHttpResultHandler());
 
 		return taskID;
 	}
@@ -302,17 +309,11 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param params
 	 * @return
 	 */
-	protected int doInBackground(TGHttpParams params)
+	protected int doInBackground(TGHttpParams params, TGHttpResultHandler httpResultHandler)
 	{
 		LOG.d("[Method: doInBackground]  " + "start request.");
 
-		if(isCancelled())
-		{
-			loadCallback.onLoadOver();
-			return taskID;
-		}
-
-		TGTaskParams taskParams = initHttpParams(params);
+		TGTaskParams taskParams = initHttpParams(params, httpResultHandler);
 
 		taskID = TGTaskManager.getInstance().startTask(context, taskParams);
 
@@ -332,7 +333,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param params
 	 * @return
 	 */
-	protected TGTaskParams initHttpParams(TGHttpParams params)
+	protected TGTaskParams initHttpParams(TGHttpParams params, TGHttpResultHandler httpResultHandler)
 	{
 		if(requestType > HttpType.REQUEST_PUT ||
 				requestType < HttpType.REQUEST_POST)
@@ -357,7 +358,7 @@ public class TGHttpLoader<T> implements IRequestParser
 		data.putString(TGHttpTask.PARAM_RESLUTCLSNAME, resultClsName);
 
 		TGTaskParams taskParams = TGTaskManager.createTaskParams(data,
-				getTaskClsName(requestType), initHttpResultHandler());
+				getTaskClsName(requestType), httpResultHandler);
 		taskParams.setTaskType(TaskType.TASK_TYPE_HTTP);
 
 		return taskParams;

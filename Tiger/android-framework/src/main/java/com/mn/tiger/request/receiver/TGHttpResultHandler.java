@@ -3,7 +3,6 @@ package com.mn.tiger.request.receiver;
 import android.app.Activity;
 import android.content.Context;
 
-import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.task.result.TGTaskResult;
 import com.mn.tiger.task.result.TGTaskResultHandler;
 
@@ -52,7 +51,7 @@ public abstract class TGHttpResultHandler extends TGTaskResultHandler
 	 * 该方法的作用:
 	 * 处理Http结果
 	 * @date 2014年3月18日
-	 * @param httResult
+	 * @param httpResult
 	 */
 	protected abstract void onSuccess(TGHttpResult httpResult);
 	
