@@ -29,7 +29,10 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
      */
     public void setStringParams(HashMap<String, String> params)
     {
-        this.put("string_param", params);
+        if(null != params)
+        {
+            this.put("string_param", params);
+        }
     }
 
     /**
@@ -47,7 +50,10 @@ public class TGHttpParams extends ConcurrentHashMap<String, HashMap<String, Stri
      */
     public void setFileParams(HashMap<String, String> params)
     {
-        this.put("file_param", params);
+        if(null != params)
+        {
+            this.put("file_param", params);
+        }
     }
 
     /**
