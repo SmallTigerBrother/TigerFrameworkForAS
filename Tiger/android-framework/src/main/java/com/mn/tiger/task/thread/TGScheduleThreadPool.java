@@ -39,7 +39,7 @@ public class TGScheduleThreadPool extends TGThreadPool
 	{
 		for(int i = 0; i < taskList.size(); i++)
 		{
-			taskList.get(i).executeTask(this);
+			this.execute(taskList.get(i));
 		}
 	}
 
