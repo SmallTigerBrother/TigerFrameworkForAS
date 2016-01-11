@@ -148,7 +148,7 @@ public class WheelView extends View
 
 	/**
 	 * 该方法的作用:设置滚轮背景图片
-	 * 
+	 *
 	 * @date 2013-11-15
 	 * @param drawable
 	 */
@@ -869,7 +869,7 @@ public class WheelView extends View
 	/**
 	 * Scroll the wheel
 	 * 
-	 * @param itemsToSkip
+	 * @param itemsToScroll
 	 *            items to scroll
 	 * @param time
 	 *            scrolling duration

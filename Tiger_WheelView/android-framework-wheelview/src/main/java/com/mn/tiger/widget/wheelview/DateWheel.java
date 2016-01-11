@@ -25,7 +25,6 @@ import java.util.Calendar;
  * layout. For a dialog using this view, see
  * 
  * @version V2.0
- * @see JDK1.6,android-8
  */
 public class DateWheel extends FrameLayout
 {
@@ -46,8 +45,8 @@ public class DateWheel extends FrameLayout
 
 	private Context mContext;
 	
-	private int dayTextSize = 14;
-	
+	private int dayTextSize = NumericWheelAdapter.DEFAULT_TEXT_SIZE;
+
 	/**
 	 * How we notify users the date has changed.
 	 */
@@ -507,7 +506,6 @@ public class DateWheel extends FrameLayout
 	 * 该类作用及功能说明 Adapter for numeric wheels. Highlights the current value.
 	 * 
 	 * @version V2.0
-	 * @see JDK1.6,android-8
 	 */
 	private class DateNumericAdapter extends NumericWheelAdapter
 	{
@@ -525,6 +523,7 @@ public class DateWheel extends FrameLayout
 			this.currentValue = current;
 		}
 
+		@Override
 		protected void configureTextView(TextView view)
 		{
 			super.configureTextView(view);
@@ -532,7 +531,6 @@ public class DateWheel extends FrameLayout
 			{
 				// view.setTextColor(0xFF0000F0);
 			}
-			view.setTypeface(Typeface.SANS_SERIF);
 			view.setPadding(0, DisplayUtils.dip2px(context, text_padding_value), 0,
 					DisplayUtils.dip2px(context, text_padding_value));
 		}
