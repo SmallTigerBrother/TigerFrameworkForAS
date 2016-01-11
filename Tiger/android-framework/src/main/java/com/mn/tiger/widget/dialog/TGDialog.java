@@ -624,7 +624,7 @@ public class TGDialog extends Dialog implements IDialog
 	 * @date 2014年2月10日
 	 * @return
 	 */
-	protected LinearLayout getTitleLayout()
+	public LinearLayout getTitleLayout()
 	{
 		return titleLayout;
 	}
@@ -719,7 +719,7 @@ public class TGDialog extends Dialog implements IDialog
 	 * 获取Body区域Layout
 	 * @return
 	 */
-	protected LinearLayout getBodyLayout()
+	public LinearLayout getBodyLayout()
 	{
 		return bodyLayout;
 	}
@@ -813,7 +813,7 @@ public class TGDialog extends Dialog implements IDialog
 	 * 获取底部操作栏Layout
 	 * @return
 	 */
-	protected RelativeLayout getBottomLayout()
+	public RelativeLayout getBottomLayout()
 	{
 		return bottomLayout;
 	}
@@ -871,7 +871,7 @@ public class TGDialog extends Dialog implements IDialog
 	 * @date 2014年1月6日
 	 * @return
 	 */
-	protected LinearLayout getRootView()
+	public LinearLayout getRootView()
 	{
 		return rootView;
 	}
