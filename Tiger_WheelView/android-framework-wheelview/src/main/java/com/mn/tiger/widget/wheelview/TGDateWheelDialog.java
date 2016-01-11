@@ -214,7 +214,15 @@ public class TGDateWheelDialog extends TGDialog
 	};
 
 	/**
-	 *
+	 * 获取日期空间
+	 * @return
+	 */
+	public DateWheel getDateWheel()
+	{
+		return mDateWheel;
+	}
+
+	/**
 	 * 该方法的作用:更新日期 参数: 返回值: 异常: 在什么情况下调用:
 	 *
 	 * @date 2013-2-19
