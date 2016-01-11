@@ -16,8 +16,6 @@ import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 /**
  * Created by peng on 15/11/10.
@@ -112,13 +110,25 @@ public class WeChatAuthorization extends AbsAuthorization
                 break;
             case SendAuth.Resp.ErrCode.ERR_USER_CANCEL:
                 LOG.i("[Method:handleAuthorizeResp] errCode == ERR_USER_CANCEL");
-                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_denied"));
+                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_cancel"));
+                if(null != authorizeCallback)
+                {
+                    authorizeCallback.onAuthorizeCancel();
+                }
                 break;
             case SendAuth.Resp.ErrCode.ERR_AUTH_DENIED:
                 LOG.i("[Method:handleAuthorizeResp] errCode == ERR_AUTH_DENIED");
-                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_cancel"));
+                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_denied"));
+                if (null != authorizeCallback)
+                {
+                    authorizeCallback.onAuthorizeError(resp.errCode, "ERR_AUTH_DENIED", "ERR_AUTH_DENIED");
+                }
                 break;
             default:
+                if (null != authorizeCallback)
+                {
+                    authorizeCallback.onAuthorizeError(resp.errCode, "code == " + resp.errCode, "code == " + resp.errCode);
+                }
                 break;
         }
     }
