@@ -7,10 +7,10 @@ import com.mn.tiger.task.TGTask.TGTaskState;
 import com.mn.tiger.task.TGTask.TaskError;
 import com.mn.tiger.task.queue.TGLock.onLockListener;
 import com.mn.tiger.task.queue.TGLock.onUnLockListener;
-import com.mn.tiger.task.thread.TGFixedThreadPool;
+import com.mn.tiger.task.thread.TGCachedThreadPool;
 import com.mn.tiger.task.thread.TGThreadPool;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 该队列中正在运行任务个数
 	 */
-	protected List<Integer> runningTaskList = new ArrayList<Integer>();
+	protected List<Integer> runningTaskList = new LinkedList<Integer>();
 
 	/**
 	 * 队列状态
@@ -70,7 +70,7 @@ public class TGTaskQueue extends AbsTaskQueue
 	 */
 	protected TGThreadPool initThreadPool()
 	{
-		return new TGFixedThreadPool(getMaxThreadNum());
+		return new TGCachedThreadPool(maxThreadNum);
 	}
 
 	@Override
@@ -102,12 +102,12 @@ public class TGTaskQueue extends AbsTaskQueue
 
 		do
 		{
-			if(totalTask > index && runningTaskList.size() <= getMaxThreadNum())
+			if(totalTask > index && runningTaskList.size() <= maxThreadNum)
 			{
 				TGTask runTask = getTaskArray().get(this.get(index));
 				if (runTask != null && runTask.getTaskState() == TGTaskState.WAITING)
 				{
-					runTask.executeTask(threadPool);
+					threadPool.execute(runTask);
 					runningTaskList.add(runTask.getTaskID());
 					state = TGQueueState.RUNNING;
 
@@ -368,15 +368,6 @@ public class TGTaskQueue extends AbsTaskQueue
 	public int getMaxThreadNum()
 	{
 		return maxThreadNum;
-	}
-
-	/**
-	 * 设置最大并发线程数
-	 * @param maxThreadNum
-	 */
-	public void setMaxThreadNum(int maxThreadNum)
-	{
-		this.maxThreadNum = maxThreadNum;
 	}
 
 	/**

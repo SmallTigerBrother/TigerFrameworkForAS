@@ -1,11 +1,10 @@
 package com.mn.tiger.task.result;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.util.Log;
 
 import com.mn.tiger.log.Logger;
 
@@ -30,6 +29,11 @@ public abstract class TGTaskResultHandler
 
 	public TGTaskResultHandler()
 	{
+		if(Looper.myLooper() != Looper.getMainLooper())
+		{
+			throw new IllegalThreadStateException("can not use this function in sub thread,  or you can use runOnUiThread");
+		}
+
 		mHandler = new Handler()
 		{   @Override
 			public void handleMessage(Message msg)

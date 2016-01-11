@@ -8,14 +8,13 @@ import android.os.RemoteException;
 
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.result.TGTaskResult;
-import com.mn.tiger.task.thread.TGThreadPool;
 
 /**
  * 该类作用及功能说明
  * 可派发任务
  * @date 2014年3月17日
  */
-public class TGTask implements Cloneable
+public class TGTask implements Runnable, Cloneable
 {
 	private static final Logger LOG = Logger.getLogger(TGTask.class);
 
@@ -75,38 +74,16 @@ public class TGTask implements Cloneable
 
 	/**
 	 * 该方法的作用:
-	 * 执行任务
-	 * @date 2014年3月17日
+	 * 任务执行方法
+	 * @date 2014年8月22日
 	 */
-	public TGTaskResult executeTask(TGThreadPool threadPool)
+	public void run()
 	{
-		LOG.d("[Method:executeTask]");
+		LOG.d("[Method:run]");
 
 		// 修改任务状态为正在运行
 		state = TGTaskState.RUNNING;
 
-		// 执行线程
-		Runnable taskRunnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				TGTask.this.run();
-			}
-		};
-
-		threadPool.execute(taskRunnable);
-
-		return null;
-	}
-
-	/**
-	 * 该方法的作用:
-	 * 任务执行方法
-	 * @date 2014年8月22日
-	 */
-	protected void run()
-	{
 		// 通知启动
 		onTaskStart();
 
