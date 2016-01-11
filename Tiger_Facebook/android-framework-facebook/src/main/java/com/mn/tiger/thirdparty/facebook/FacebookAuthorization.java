@@ -61,7 +61,7 @@ public class FacebookAuthorization extends AbsAuthorization
 
     private ILogoutCallback logoutCallback;
 
-    public FacebookAuthorization(LoginButton loginButton, String... permissions)
+    public FacebookAuthorization(String... permissions)
     {
         super(null);
 
@@ -72,14 +72,6 @@ public class FacebookAuthorization extends AbsAuthorization
         }
 
         callbackManager = CallbackManager.Factory.create();
-        if(null != loginButton)
-        {
-            if(null != permissions)
-            {
-                loginButton.setReadPermissions(permissions);
-            }
-            loginButton.registerCallback(callbackManager, facebookCallback);
-        }
     }
 
     @Override
