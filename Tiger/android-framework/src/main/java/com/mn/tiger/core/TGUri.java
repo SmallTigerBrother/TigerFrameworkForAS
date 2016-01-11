@@ -33,61 +33,77 @@ public class TGUri
         int indexOfSeparator = string.indexOf("://");
         int indexOfQuestionMark = string.indexOf("?");
 
+        TGUri uri = new TGUri();
+        uri.string = string;
         if(indexOfSeparator > -1)
         {
-            TGUri leKuUri = new TGUri();
-            leKuUri.string = string;
             //解析scheme
-            leKuUri.scheme = string.substring(0, indexOfSeparator);
+            uri.scheme = string.substring(0, indexOfSeparator);
 
-            if(indexOfSeparator < string.length())
+            //解析host
+            if(indexOfQuestionMark > -1)
             {
-                //解析host
-                if(indexOfQuestionMark > -1)
+                uri.host = string.substring(indexOfSeparator + 3, indexOfQuestionMark);
+                uri.paramString = string.substring(indexOfQuestionMark + 1);
+                //解析params键值对
+                if(!TextUtils.isEmpty(uri.paramString))
                 {
-                    leKuUri.host = string.substring(indexOfSeparator + 3, indexOfQuestionMark);
-                    if(indexOfQuestionMark < string.length())
-                    {
-                        leKuUri.paramString = string.substring(indexOfQuestionMark + 1);
-                        //解析params键值对
-                        if(!TextUtils.isEmpty(leKuUri.paramString))
-                        {
-                            leKuUri.params = new HashMap<String, String>();
-                            String[] keyValues = leKuUri.paramString.split("&");
-                            int count = keyValues.length;
-                            String[] keyAndValue;
-                            for (int i = 0; i < count; i++)
-                            {
-                                if (keyValues[i].indexOf("=") > -1)
-                                {
-                                    keyAndValue = keyValues[i].split("=");
-                                    if(keyAndValue.length > 1)
-                                    {
-                                        leKuUri.params.put(keyAndValue[0], keyAndValue[1]);
-                                    }
-                                    else
-                                    {
-                                        leKuUri.params.put(keyAndValue[0], "");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    leKuUri.host = string.substring(indexOfSeparator + 3);
+                    parseParams(uri);
                 }
             }
+            else
+            {
+                uri.host = string.substring(indexOfSeparator + 3);
+            }
 
-            return leKuUri;
+            return uri;
         }
         else
         {
-            LOG.e("[Method:parse] can not parse to uri with String " + string);
+            if(indexOfQuestionMark > -1)
+            {
+                uri.paramString = string.substring(indexOfQuestionMark + 1);
+                //解析params键值对
+                if(!TextUtils.isEmpty(uri.paramString))
+                {
+                    parseParams(uri);
+                }
+            }
+            else
+            {
+                uri.paramString = string;
+                //解析params键值对
+                if(!TextUtils.isEmpty(uri.paramString))
+                {
+                    parseParams(uri);
+                }
+            }
+            LOG.w("[Method:parse] invalidate uri =  " + string);
+            return uri;
         }
+    }
 
-        return null;
+    private static void parseParams(TGUri uri)
+    {
+        uri.params = new HashMap<String, String>();
+        String[] keyValues = uri.paramString.split("&");
+        int count = keyValues.length;
+        String[] keyAndValue;
+        for (int i = 0; i < count; i++)
+        {
+            if (keyValues[i].indexOf("=") > -1)
+            {
+                keyAndValue = keyValues[i].split("=");
+                if(keyAndValue.length > 1)
+                {
+                    uri.params.put(keyAndValue[0], keyAndValue[1]);
+                }
+                else
+                {
+                    uri.params.put(keyAndValue[0], "");
+                }
+            }
+        }
     }
 
     public boolean isPathPrefixMatch(TGUri uri)
