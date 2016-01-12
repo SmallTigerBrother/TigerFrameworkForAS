@@ -246,7 +246,7 @@ public abstract class TGRecyclerViewHolder<T>
     {
         if(null != onItemClickListener)
         {
-            onItemClickListener.onItemClick(getRecyclerView(), holder.itemView, holder.getAdapterPosition(), holder.getItemId());
+            onItemClickListener.onItemClick(recyclerView, holder.itemView, this.position, holder.getItemId());
         }
     }
 
