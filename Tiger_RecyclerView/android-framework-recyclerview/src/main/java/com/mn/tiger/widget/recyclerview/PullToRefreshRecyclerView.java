@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mn.tiger.widget.pulltorefresh.BGARefreshViewHolder;
 import com.mn.tiger.widget.pulltorefresh.IPullToRefreshView;
 import com.mn.tiger.widget.recyclerview.TGRecyclerView.OnItemClickListener;
 
@@ -27,7 +28,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
     private ArrayList<View> mHeaderViews = new ArrayList<>();
     private ArrayList<View> mFootViews = new ArrayList<>();
     private Adapter mAdapter;
-    private Adapter mWrapAdapter;
+    private HeaderWrapAdapter mWrapAdapter;
     private float mLastY = -1;
     private static final float DRAG_RATE = 3;
     private ArrowRefreshHeader mRefreshHeader;
@@ -106,16 +107,19 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             if (footView instanceof LoadingMoreFooter)
             {
                 ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_COMPLETE);
-            } else
+            }
+            else
             {
                 footView.setVisibility(View.GONE);
             }
-        } else
+        }
+        else
         {
             if (footView instanceof LoadingMoreFooter)
             {
                 ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_NOMORE);
-            } else
+            }
+            else
             {
                 footView.setVisibility(View.GONE);
             }
@@ -132,7 +136,8 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         if (footView instanceof LoadingMoreFooter)
         {
             ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_NOMORE);
-        } else
+        }
+        else
         {
             footView.setVisibility(View.GONE);
         }
@@ -194,9 +199,9 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
     public void setOnItemClickListener(OnItemClickListener onItemClickListener)
     {
         this.onItemClickListener = onItemClickListener;
-        if(null != mAdapter)
+        if (null != mAdapter)
         {
-            ((TGRecyclerViewAdapter)mAdapter).setOnItemClickListener(this.onItemClickListener);
+            ((TGRecyclerViewAdapter) mAdapter).setOnItemClickListener(this.onItemClickListener);
         }
     }
 
@@ -204,14 +209,14 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
     public void setAdapter(Adapter adapter)
     {
         mAdapter = adapter;
-        if(!(adapter instanceof TGRecyclerViewAdapter<?>))
+        if (!(adapter instanceof TGRecyclerViewAdapter<?>))
         {
             throw new RuntimeException("adapter must be an instance of TGRecyclerAdapter");
         }
 
-        if(null != onItemClickListener)
+        if (null != onItemClickListener)
         {
-            ((TGRecyclerViewAdapter<?>)adapter).setOnItemClickListener(this.onItemClickListener);
+            ((TGRecyclerViewAdapter<?>) adapter).setOnItemClickListener(this.onItemClickListener);
         }
 
         mWrapAdapter = new HeaderWrapAdapter(mHeaderViews, mFootViews, adapter);
@@ -231,12 +236,14 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             if (layoutManager instanceof GridLayoutManager)
             {
                 lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-            } else if (layoutManager instanceof StaggeredGridLayoutManager)
+            }
+            else if (layoutManager instanceof StaggeredGridLayoutManager)
             {
                 int[] into = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
                 ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(into);
                 lastVisibleItemPosition = findMax(into);
-            } else
+            }
+            else
             {
                 lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
             }
@@ -249,7 +256,8 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 if (footView instanceof LoadingMoreFooter)
                 {
                     ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_LAODING);
-                } else
+                }
+                else
                 {
                     footView.setVisibility(View.VISIBLE);
                 }
@@ -340,7 +348,8 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         if (view.getParent() != null)
         {
             return true;
-        } else
+        }
+        else
         {
             return false;
         }
@@ -403,11 +412,12 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
     /**
      * 执行数据刷新线程，为防止卡顿掉帧，控制器将选择合适的时机刷新界面
+     *
      * @param runnable
      */
     public void postRefreshRunnable(Runnable runnable)
     {
-        if(!isNoMore)
+        if (!isLoadingData)
         {
             handler.postDelayed(runnable, mRefreshHeader.getAnimDuration());
         }
@@ -428,31 +438,36 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount)
         {
-            mWrapAdapter.notifyItemRangeInserted(positionStart, itemCount);
+            int offset = mWrapAdapter.getHeadersCount() + 1;
+            mWrapAdapter.notifyItemRangeInserted(positionStart + offset, itemCount + offset);
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount)
         {
-            mWrapAdapter.notifyItemRangeChanged(positionStart, itemCount);
+            int offset = mWrapAdapter.getHeadersCount() + 1;
+            mWrapAdapter.notifyItemRangeChanged(positionStart + offset, itemCount + offset);
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, Object payload)
         {
-            mWrapAdapter.notifyItemRangeChanged(positionStart, itemCount, payload);
+            int offset = mWrapAdapter.getHeadersCount() + 1;
+            mWrapAdapter.notifyItemRangeChanged(positionStart + offset, itemCount + offset, payload);
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount)
         {
-            mWrapAdapter.notifyItemRangeRemoved(positionStart, itemCount);
+            int offset = mWrapAdapter.getHeadersCount() + 1;
+            mWrapAdapter.notifyItemRangeRemoved(positionStart + offset, itemCount + offset);
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
         {
-            mWrapAdapter.notifyItemMoved(fromPosition, toPosition);
+            int offset = mWrapAdapter.getHeadersCount() + 1;
+            mWrapAdapter.notifyItemMoved(fromPosition + offset, toPosition + offset);
         }
     };
 
@@ -491,6 +506,8 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                     }
                 });
             }
+
+            this.adapter.onAttachedToRecyclerView(recyclerView);
         }
 
         @Override
@@ -506,7 +523,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 p.setFullSpan(true);
             }
 
-            if(holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
+            if (holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
             {
                 adapter.onViewAttachedToWindow(holder);
             }
@@ -516,10 +533,17 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         public void onViewDetachedFromWindow(ViewHolder holder)
         {
             super.onViewDetachedFromWindow(holder);
-            if(holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
+            if (holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
             {
                 adapter.onViewDetachedFromWindow(holder);
             }
+        }
+
+        @Override
+        public void onDetachedFromRecyclerView(RecyclerView recyclerView)
+        {
+            super.onDetachedFromRecyclerView(recyclerView);
+            this.adapter.onDetachedFromRecyclerView(recyclerView);
         }
 
         public boolean isHeader(int position)
@@ -553,10 +577,12 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             if (viewType == TYPE_REFRESH_HEADER)
             {
                 return new SimpleViewHolder(mHeaderViews.get(0));
-            } else if (viewType == TYPE_HEADER)
+            }
+            else if (viewType == TYPE_HEADER)
             {
                 return new SimpleViewHolder(mHeaderViews.get(headerPosition++));
-            } else if (viewType == TYPE_FOOTER)
+            }
+            else if (viewType == TYPE_FOOTER)
             {
                 return new SimpleViewHolder(mFootViews.get(0));
             }
@@ -589,23 +615,11 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             if (adapter != null)
             {
                 return getHeadersCount() + getFootersCount() + adapter.getItemCount();
-            } else
+            }
+            else
             {
                 return getHeadersCount() + getFootersCount();
             }
-        }
-
-        /**
-         * 获取处Header/Footer之外的列表行数量
-         * @return
-         */
-        public int getCount()
-        {
-            if(null != adapter)
-            {
-                return adapter.getItemCount();
-            }
-            return 0;
         }
 
         @Override
@@ -652,23 +666,23 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             return -1;
         }
 
-        @Override
-        public void unregisterAdapterDataObserver(AdapterDataObserver observer)
-        {
-            if (adapter != null)
-            {
-                adapter.unregisterAdapterDataObserver(observer);
-            }
-        }
-
-        @Override
-        public void registerAdapterDataObserver(AdapterDataObserver observer)
-        {
-            if (adapter != null)
-            {
-                adapter.registerAdapterDataObserver(observer);
-            }
-        }
+//        @Override
+//        public void unregisterAdapterDataObserver(AdapterDataObserver observer)
+//        {
+//            if (adapter != null)
+//            {
+//                adapter.unregisterAdapterDataObserver(observer);
+//            }
+//        }
+//
+//        @Override
+//        public void registerAdapterDataObserver(AdapterDataObserver observer)
+//        {
+//            if (adapter != null)
+//            {
+//                adapter.registerAdapterDataObserver(observer);
+//            }
+//        }
 
         private class SimpleViewHolder extends ViewHolder
         {
