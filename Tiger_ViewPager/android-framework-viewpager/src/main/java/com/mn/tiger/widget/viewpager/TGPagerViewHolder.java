@@ -1,9 +1,9 @@
 package com.mn.tiger.widget.viewpager;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.view.View;
+
+import java.util.List;
 
 /**
  * TGRecyclePagerAdapter使用的ViewHolder

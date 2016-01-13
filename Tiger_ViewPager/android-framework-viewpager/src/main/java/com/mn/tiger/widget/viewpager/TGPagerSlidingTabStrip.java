@@ -16,8 +16,6 @@
 
 package com.mn.tiger.widget.viewpager;
 
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -40,6 +38,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 public class TGPagerSlidingTabStrip extends HorizontalScrollView
 {
@@ -647,7 +647,7 @@ public class TGPagerSlidingTabStrip extends HorizontalScrollView
             dest.writeInt(currentPosition);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>()
+        public static final Creator<SavedState> CREATOR = new Creator<SavedState>()
         {
             @Override
             public SavedState createFromParcel(Parcel in)

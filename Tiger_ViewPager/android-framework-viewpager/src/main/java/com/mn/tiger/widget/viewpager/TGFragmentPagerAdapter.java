@@ -1,10 +1,10 @@
 package com.mn.tiger.widget.viewpager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

@@ -1,10 +1,10 @@
 package com.mn.tiger.widget.viewpager;
 
-import java.util.ArrayList;
-
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
 
 /**
  * 该类作用及功能说明

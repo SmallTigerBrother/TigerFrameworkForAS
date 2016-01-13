@@ -12,13 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mn.tiger.R;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.widget.adpter.TGListAdapter;
 import com.mn.tiger.widget.adpter.TGViewHolder;
 import com.mn.tiger.widget.tab.TGTabView;
 import com.mn.tiger.widget.tab.TGTabView.LayoutParams;
 import com.mn.tiger.widget.tab.TGTabView.OnTabChangeListener;
+import com.mn.tiger.widget.viewpager.R;
 import com.mn.tiger.widget.viewpager.TGFragmentPagerAdapter;
 import com.mn.tiger.widget.viewpager.TGViewPager;
 

@@ -1,8 +1,5 @@
 package com.mn.tiger.widget.viewpager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
@@ -11,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.mn.tiger.log.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 支持视图重用的PagerAdapter

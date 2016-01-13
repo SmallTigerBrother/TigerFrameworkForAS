@@ -108,15 +108,15 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 
 		// 添加BannerViewPager
 		bannerViewPager = new TGAutoFlipViewPager(getContext());
-		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+		LayoutParams layoutParams = new LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		bannerViewPager.setLayoutParams(layoutParams);
 		this.addView(bannerViewPager);
 
 		// 添加TabView
 		tabView = new TGTabView(getContext());
-		RelativeLayout.LayoutParams tabLayoutParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		LayoutParams tabLayoutParams = new LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tabLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		tabLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 		tabLayoutParams.bottomMargin = DisplayUtils.dip2px(getContext(), 8);

@@ -549,7 +549,7 @@ public class VerticalViewPager extends ViewGroup
 	 * Set a listener that will be invoked whenever the page changes or is
 	 * incrementally scrolled. See
 	 * {@link android.support.v4.view.ViewPager.OnPageChangeListener}.
-	 * 
+	 *
 	 * @param listener
 	 *            Listener to set
 	 */
@@ -569,7 +569,7 @@ public class VerticalViewPager extends ViewGroup
 	 * exist. As a result, setting a PageTransformer prior to Android 3.0 (API
 	 * 11) will have no effect.
 	 * </p>
-	 * 
+	 *
 	 * @param reverseDrawingOrder
 	 *            true if the supplied PageTransformer requires page views to be
 	 *            drawn from last to first instead of first to last.
@@ -637,7 +637,7 @@ public class VerticalViewPager extends ViewGroup
 	/**
 	 * Set a separate OnPageChangeListener for internal use by the support
 	 * library.
-	 * 
+	 *
 	 * @param listener
 	 *            Listener to set
 	 * @return The old listener that was set, if any.
@@ -653,7 +653,7 @@ public class VerticalViewPager extends ViewGroup
 	/**
 	 * Returns the number of pages that will be retained to either side of the
 	 * current page in the view hierarchy in an idle state. Defaults to 1.
-	 * 
+	 *
 	 * @return How many pages will be kept offscreen on either side
 	 * @see #setOffscreenPageLimit(int)
 	 */
@@ -681,7 +681,7 @@ public class VerticalViewPager extends ViewGroup
 	 * You should keep this limit low, especially if your pages have complex
 	 * layouts. This setting defaults to 1.
 	 * </p>
-	 * 
+	 *
 	 * @param limit
 	 *            How many pages will be kept offscreen in an idle state.
 	 */
@@ -702,7 +702,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Set the margin between pages.
-	 * 
+	 *
 	 * @param marginPixels
 	 *            Distance between adjacent pages in pixels
 	 * @see #getPageMargin()
@@ -722,7 +722,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Return the margin between pages.
-	 * 
+	 *
 	 * @return The size of the margin in pixels
 	 */
 	public int getPageMargin()
@@ -732,7 +732,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Set a drawable that will be used to fill the margin between pages.
-	 * 
+	 *
 	 * @param d
 	 *            Drawable to display between pages
 	 */
@@ -747,7 +747,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Set a drawable that will be used to fill the margin between pages.
-	 * 
+	 *
 	 * @param resId
 	 *            Resource ID of a drawable to display between pages
 	 */
@@ -789,7 +789,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Like {@link View#scrollBy}, but scroll smoothly instead of immediately.
-	 * 
+	 *
 	 * @param x
 	 *            the number of pixels to scroll by on the X axis
 	 * @param y
@@ -802,7 +802,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Like {@link View#scrollBy}, but scroll smoothly instead of immediately.
-	 * 
+	 *
 	 * @param x
 	 *            the number of pixels to scroll by on the X axis
 	 * @param y
@@ -1352,7 +1352,7 @@ public class VerticalViewPager extends ViewGroup
 					+ " position=" + position + "}";
 		}
 
-		public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat
+		public static final Creator<SavedState> CREATOR = ParcelableCompat
 				.newCreator(new ParcelableCompatCreatorCallbacks<SavedState>()
 				{
 					@Override
@@ -1858,7 +1858,7 @@ public class VerticalViewPager extends ViewGroup
 	 * touch scroll. If you override this method you must call through to the
 	 * superclass implementation (e.g. super.onPageScrolled(position, offset,
 	 * offsetPixels)) before onPageScrolled returns.
-	 * 
+	 *
 	 * @param position
 	 *            Position index of the first page currently being displayed.
 	 *            Page position+1 will be visible if positionOffset is nonzero.
@@ -2576,7 +2576,7 @@ public class VerticalViewPager extends ViewGroup
 	 * <p>
 	 * During a fake drag the ViewPager will ignore all touch events. If a real
 	 * drag is already in progress, this method will return false.
-	 * 
+	 *
 	 * @return true if the fake drag began successfully, false if it could not
 	 *         be started.
 	 * @see #fakeDragBy(float)
@@ -2609,7 +2609,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * End a fake drag of the pager.
-	 * 
+	 *
 	 * @see #beginFakeDrag()
 	 * @see #fakeDragBy(float)
 	 */
@@ -2641,7 +2641,7 @@ public class VerticalViewPager extends ViewGroup
 	/**
 	 * Fake drag by an offset in pixels. You must have called
 	 * {@link #beginFakeDrag()} first.
-	 * 
+	 *
 	 * @param yOffset
 	 *            Offset in pixels to drag by.
 	 * @see #beginFakeDrag()
@@ -2697,7 +2697,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Returns true if a fake drag is in progress.
-	 * 
+	 *
 	 * @return true if currently in a fake drag, false otherwise.
 	 * @see #beginFakeDrag()
 	 * @see #fakeDragBy(float)
@@ -2783,7 +2783,7 @@ public class VerticalViewPager extends ViewGroup
 
 	/**
 	 * Tests scrollability within child views of v given a delta of dx.
-	 * 
+	 *
 	 * @param v
 	 *            View to test for horizontal scrollability
 	 * @param checkV
@@ -2838,7 +2838,7 @@ public class VerticalViewPager extends ViewGroup
 	 * You can call this function yourself to have the scroll view perform
 	 * scrolling from a key event, just as if the event had been dispatched to
 	 * it by the view hierarchy.
-	 * 
+	 *
 	 * @param event
 	 *            The key event to execute.
 	 * @return Return true if the event was handled, else false.
@@ -3288,7 +3288,7 @@ public class VerticalViewPager extends ViewGroup
 		/**
 		 * Gravity setting for use on decor views only: Where to position the
 		 * view page within the overall ViewPager container; constants are
-		 * defined in {@link android.view.Gravity}.
+		 * defined in {@link Gravity}.
 		 */
 		public int gravity;
 
