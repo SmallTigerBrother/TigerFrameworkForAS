@@ -1,8 +1,7 @@
-package com.mn.tiger.test.mock;
+package com.mn.tiger.request.test;
 
 import android.text.TextUtils;
 
-import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.request.receiver.TGHttpResult;
@@ -14,7 +13,7 @@ import java.util.Iterator;
 
 public class HttpMockTester
 {
-	private static final Logger LOG = Logger.getLogger(HttpMockTester.class);
+	private static final Logger LOG = Logger.getLogger(com.mn.tiger.test.mock.HttpMockTester.class);
 
 	public static boolean TEST_ABLE = false;
 

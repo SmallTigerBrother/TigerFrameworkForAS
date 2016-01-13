@@ -1,5 +1,8 @@
 package com.mn.tiger.request.receiver;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,14 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * 该类作用及功能说明 网络请求结果
  * 
  * @version V2.0
- * @see JDK1.6,android-8
  */
 public class TGHttpResult extends HashMap<String, Object>  implements Parcelable
 {
@@ -207,7 +206,7 @@ public class TGHttpResult extends HashMap<String, Object>  implements Parcelable
 		}
 	}
 	
-	public static final Parcelable.Creator<TGHttpResult> CREATOR = new Parcelable.Creator<TGHttpResult>()
+	public static final Creator<TGHttpResult> CREATOR = new Creator<TGHttpResult>()
 	{
 		@Override
 		public TGHttpResult createFromParcel(Parcel source)
