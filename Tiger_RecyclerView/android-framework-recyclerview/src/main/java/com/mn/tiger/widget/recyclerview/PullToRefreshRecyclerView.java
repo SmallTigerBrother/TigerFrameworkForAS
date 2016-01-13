@@ -21,7 +21,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 {
     private Context mContext;
     private boolean isLoadingData = false;
-    private boolean isNoMore = false;
     private int mRefreshProgressStyle = ProgressStyle.SysProgress;
     private int mLoadingMoreProgressStyle = ProgressStyle.Pacman;
     private ArrayList<View> mHeaderViews = new ArrayList<>();
@@ -122,7 +121,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             {
                 footView.setVisibility(View.GONE);
             }
-            isNoMore = true;
         }
         previousTotal = getLayoutManager().getItemCount();
     }
@@ -131,7 +129,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
     {
         isLoadingData = false;
         View footView = mFootViews.get(0);
-        isNoMore = true;
         if (footView instanceof LoadingMoreFooter)
         {
             ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_NOMORE);
@@ -239,7 +236,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
             }
             if (layoutManager.getChildCount() > 0
-                    && lastVisibleItemPosition >= layoutManager.getItemCount() - 1 && layoutManager.getItemCount() > layoutManager.getChildCount() && !isNoMore && mRefreshHeader.getState() < ArrowRefreshHeader.STATE_REFRESHING)
+                    && lastVisibleItemPosition >= layoutManager.getItemCount() - 1 && layoutManager.getItemCount() > layoutManager.getChildCount() && mRefreshHeader.getState() < ArrowRefreshHeader.STATE_REFRESHING)
             {
 
                 View footView = mFootViews.get(0);
@@ -292,7 +289,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                         if (onRefreshListener != null)
                         {
                             onRefreshListener.onPullDownToRefresh();
-                            isNoMore = false;
                             previousTotal = 0;
                         }
                     }
