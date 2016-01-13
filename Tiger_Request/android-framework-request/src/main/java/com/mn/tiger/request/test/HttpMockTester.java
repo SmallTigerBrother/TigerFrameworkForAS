@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 public class HttpMockTester
 {
-	private static final Logger LOG = Logger.getLogger(com.mn.tiger.test.mock.HttpMockTester.class);
+	private static final Logger LOG = Logger.getLogger(HttpMockTester.class);
 
 	public static boolean TEST_ABLE = false;
 

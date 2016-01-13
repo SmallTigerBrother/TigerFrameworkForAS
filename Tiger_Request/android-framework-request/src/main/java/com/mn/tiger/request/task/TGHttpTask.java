@@ -8,8 +8,8 @@ import com.mn.tiger.request.IRequestParser;
 import com.mn.tiger.request.TGHttpParams;
 import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.request.receiver.TGHttpResult;
+import com.mn.tiger.request.test.HttpMockTester;
 import com.mn.tiger.task.TGTask;
-import com.mn.tiger.test.mock.HttpMockTester;
 import com.mn.tiger.utility.MD5;
 import com.mn.tiger.utility.NetworkUtils;
 
@@ -333,6 +333,10 @@ public abstract class TGHttpTask extends TGTask
 	private boolean isCacheable()
 	{
 		Bundle httpParams = (Bundle)getParams();
-		return httpParams.getBoolean(PARAM_CACHEABLE, false);
+		if(null != httpParams)
+		{
+			return httpParams.getBoolean(PARAM_CACHEABLE, false);
+		}
+		return false;
 	}
 }
