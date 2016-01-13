@@ -142,7 +142,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         super.onViewAttachedToWindow(holder);
         //保存ViewHolder
-        viewHolders.put(holder.getAdapterPosition(), holder.getTGRecyclerViewHolder());
+        viewHolders.put(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
 
     @Override
@@ -152,7 +152,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         //移除ViewHolder，仅移除支持重用的ViewHolder
         if(holder.getTGRecyclerViewHolder().recycleAble())
         {
-            viewHolders.remove(holder.getAdapterPosition());
+            viewHolders.remove(holder.getTGRecyclerViewHolder().getPosition());
         }
     }
 

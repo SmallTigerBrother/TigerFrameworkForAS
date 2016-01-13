@@ -108,11 +108,6 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         }
     }
 
-    public void setArrowImageView(int resid)
-    {
-        mArrowImageView.setImageResource(resid);
-    }
-
     public void setState(int state)
     {
         if (state == mState)
@@ -201,7 +196,7 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         mContainer.setLayoutParams(lp);
     }
 
-    public int getVisiableHeight()
+    public int getVisibleHeight()
     {
         int height = 0;
         LayoutParams lp = (LayoutParams) mContainer
@@ -213,12 +208,12 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
     @Override
     public void onMove(float delta)
     {
-        if (getVisiableHeight() > 0 || delta > 0)
+        if (getVisibleHeight() > 0 || delta > 0)
         {
-            setVisiableHeight((int) delta + getVisiableHeight());
+            setVisiableHeight((int) delta + getVisibleHeight());
             if (mState <= STATE_RELEASE_TO_REFRESH)
-            { // 未处于刷新状态，更新箭头
-                if (getVisiableHeight() > mMeasuredHeight)
+            {   // 未处于刷新状态，更新箭头
+                if (getVisibleHeight() > mMeasuredHeight)
                 {
                     setState(STATE_RELEASE_TO_REFRESH);
                 } else
@@ -233,11 +228,13 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
     public boolean releaseAction()
     {
         boolean isOnRefresh = false;
-        int height = getVisiableHeight();
+        int height = getVisibleHeight();
         if (height == 0) // not visible.
+        {
             isOnRefresh = false;
+        }
 
-        if (getVisiableHeight() > mMeasuredHeight && mState < STATE_REFRESHING)
+        if (getVisibleHeight() > mMeasuredHeight && mState < STATE_REFRESHING)
         {
             setState(STATE_REFRESHING);
             isOnRefresh = true;
@@ -266,7 +263,7 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
 
     private void smoothScrollTo(int destHeight)
     {
-        ValueAnimator animator = ValueAnimator.ofInt(getVisiableHeight(), destHeight);
+        ValueAnimator animator = ValueAnimator.ofInt(getVisibleHeight(), destHeight);
         animator.setDuration(300).start();
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {

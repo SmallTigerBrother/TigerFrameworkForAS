@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mn.tiger.widget.pulltorefresh.BGARefreshViewHolder;
 import com.mn.tiger.widget.pulltorefresh.IPullToRefreshView;
 import com.mn.tiger.widget.recyclerview.TGRecyclerView.OnItemClickListener;
 
@@ -24,14 +23,14 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
     private boolean isLoadingData = false;
     private boolean isNoMore = false;
     private int mRefreshProgressStyle = ProgressStyle.SysProgress;
-    private int mLoadingMoreProgressStyle = ProgressStyle.SysProgress;
+    private int mLoadingMoreProgressStyle = ProgressStyle.Pacman;
     private ArrayList<View> mHeaderViews = new ArrayList<>();
     private ArrayList<View> mFootViews = new ArrayList<>();
     private Adapter mAdapter;
     private HeaderWrapAdapter mWrapAdapter;
     private float mLastY = -1;
     private static final float DRAG_RATE = 3;
-    private ArrowRefreshHeader mRefreshHeader;
+    private BaseRefreshHeader mRefreshHeader;
     private boolean pullRefreshEnabled = true;
     private boolean loadingMoreEnabled = true;
     private static final int TYPE_REFRESH_HEADER = -5;
@@ -69,7 +68,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         mContext = context;
         if (pullRefreshEnabled)
         {
-            ArrowRefreshHeader refreshHeader = new ArrowRefreshHeader(mContext);
+            TGRefreshHeader refreshHeader = new TGRefreshHeader(mContext);
             mHeaderViews.add(0, refreshHeader);
             mRefreshHeader = refreshHeader;
             mRefreshHeader.setProgressStyle(mRefreshProgressStyle);
@@ -148,7 +147,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         mRefreshHeader.refreshComplete();
     }
 
-    public void setRefreshHeader(ArrowRefreshHeader refreshHeader)
+    public void setRefreshHeader(BaseRefreshHeader refreshHeader)
     {
         mRefreshHeader = refreshHeader;
     }
@@ -185,14 +184,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         if (mFootViews.size() > 0 && mFootViews.get(0) instanceof LoadingMoreFooter)
         {
             ((LoadingMoreFooter) mFootViews.get(0)).setProgressStyle(style);
-        }
-    }
-
-    private void setArrowImageView(int resid)
-    {
-        if (mRefreshHeader != null)
-        {
-            mRefreshHeader.setArrowImageView(resid);
         }
     }
 
@@ -284,10 +275,10 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 if (isOnTop() && pullRefreshEnabled)
                 {
                     mRefreshHeader.onMove(deltaY / DRAG_RATE);
-                    if (mRefreshHeader.getVisiableHeight() > 0 && mRefreshHeader.getState() < ArrowRefreshHeader.STATE_REFRESHING)
+                    if (mRefreshHeader.getVisibleHeight() > 0 && mRefreshHeader.getState() < ArrowRefreshHeader.STATE_REFRESHING)
                     {
-                        Log.i("getVisiableHeight", "getVisiableHeight = " + mRefreshHeader.getVisiableHeight());
-                        Log.i("getVisiableHeight", " mRefreshHeader.getState() = " + mRefreshHeader.getState());
+                        Log.i("getVisibleHeight", "getVisibleHeight = " + mRefreshHeader.getVisibleHeight());
+                        Log.i("getVisibleHeight", " mRefreshHeader.getState() = " + mRefreshHeader.getState());
                         return false;
                     }
                 }
