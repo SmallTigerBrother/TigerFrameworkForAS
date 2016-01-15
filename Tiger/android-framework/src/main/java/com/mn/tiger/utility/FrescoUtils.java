@@ -270,8 +270,8 @@ public class FrescoUtils
             imageView.setTag(id, true);
         }
 
-        ImageRequest imageRequest = createImageRequest("res://" + resourceId, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
-        DraweeController draweeController = createDraweeController("res://" + resourceId, imageRequest, imageView.getController());
+        ImageRequest imageRequest = createImageRequest("res:///" + resourceId, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        DraweeController draweeController = createDraweeController("res:///" + resourceId, imageRequest, imageView.getController());
         imageView.setController(draweeController);
     }
 
