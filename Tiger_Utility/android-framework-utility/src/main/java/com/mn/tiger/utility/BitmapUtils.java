@@ -772,7 +772,7 @@ public class BitmapUtils
         View view = activity.getWindow().getDecorView();
         view.buildDrawingCache();
         // 获取状态栏高度
-        int statusBarHeights = DisplayUtils.getStatusHeight(activity);
+        int statusBarHeights = DisplayUtils.getStatusBarHeight(activity);
         int[] display = DisplayUtils.getResolution(activity);
         // 允许当前窗口保存缓存信息
         view.setDrawingCacheEnabled(true);
@@ -792,7 +792,7 @@ public class BitmapUtils
      * @return 2013-8-22
      * @author liananse
      */
-    public static boolean saveBtimapToFile(Bitmap bitmap, String path)
+    public static boolean saveBitmapToFile(Bitmap bitmap, String path)
     {
         boolean result = false;
         BufferedOutputStream bos = null;
