@@ -114,7 +114,7 @@ public class FrescoUtils
             imageView.setTag(id, true);
         }
 
-        ImageRequest imageRequest = createImageRequest(uri, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        ImageRequest imageRequest = createImageRequest(uri, imageView.getLayoutParams().width, imageView.getLayoutParams().height, false);
         DraweeController draweeController = createDraweeController(uri, imageRequest, imageView.getController());
         imageView.setController(draweeController);
     }
@@ -164,7 +164,7 @@ public class FrescoUtils
             }
         }
 
-        ImageRequest imageRequest = createImageRequest(uri, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        ImageRequest imageRequest = createImageRequest(uri, imageView.getLayoutParams().width, imageView.getLayoutParams().height, false);
         DraweeController draweeController = createDraweeController(uri, imageRequest, imageView.getController());
         imageView.setController(draweeController);
     }
@@ -200,7 +200,8 @@ public class FrescoUtils
             imageView.setTag(id, true);
         }
 
-        ImageRequest imageRequest = createImageRequest("file://" + filePath, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        ImageRequest imageRequest = createImageRequest("file://" + filePath, imageView.getLayoutParams().width,
+                imageView.getLayoutParams().height, true);
         DraweeController draweeController = createDraweeController("file://" + filePath, imageRequest, imageView.getController());
         imageView.setController(draweeController);
     }
@@ -249,7 +250,8 @@ public class FrescoUtils
             }
         }
 
-        ImageRequest imageRequest = createImageRequest("file://" + filePath, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        ImageRequest imageRequest = createImageRequest("file://" + filePath, imageView.getLayoutParams().width,
+                imageView.getLayoutParams().height, true);
         DraweeController draweeController = createDraweeController("file://" + filePath, imageRequest, imageView.getController());
         imageView.setController(draweeController);
     }
@@ -266,11 +268,31 @@ public class FrescoUtils
         {
             GenericDraweeHierarchyBuilder draweeHierarchyBuilder = new GenericDraweeHierarchyBuilder(imageView.getResources());
             draweeHierarchyBuilder.setFadeDuration(0);
+            draweeHierarchyBuilder.setActualImageScaleType(ScalingUtils.ScaleType.FIT_XY);
             imageView.setHierarchy(draweeHierarchyBuilder.build());
             imageView.setTag(id, true);
         }
 
-        ImageRequest imageRequest = createImageRequest("res:///" + resourceId, imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+        ImageRequest imageRequest = createImageRequest("res:///" + resourceId, imageView.getLayoutParams().width,
+                imageView.getLayoutParams().height, false);
+        DraweeController draweeController = createDraweeController("res:///" + resourceId, imageRequest, imageView.getController());
+        imageView.setController(draweeController);
+    }
+
+    public static void displayResourceImage(int resourceId, DraweeView imageView, ScalingUtils.ScaleType scaleType)
+    {
+        int id = getViewId(imageView);
+        if (null == imageView.getTag(id))
+        {
+            GenericDraweeHierarchyBuilder draweeHierarchyBuilder = new GenericDraweeHierarchyBuilder(imageView.getResources());
+            draweeHierarchyBuilder.setFadeDuration(0);
+            draweeHierarchyBuilder.setActualImageScaleType(scaleType);
+            imageView.setHierarchy(draweeHierarchyBuilder.build());
+            imageView.setTag(id, true);
+        }
+
+        ImageRequest imageRequest = createImageRequest("res:///" + resourceId, imageView.getLayoutParams().width,
+                imageView.getLayoutParams().height, false);
         DraweeController draweeController = createDraweeController("res:///" + resourceId, imageRequest, imageView.getController());
         imageView.setController(draweeController);
     }
@@ -306,11 +328,11 @@ public class FrescoUtils
         return draweeHierarchyBuilder.build();
     }
 
-    private static ImageRequest createImageRequest(String uri, int viewWidth, int viewHeight)
+    private static ImageRequest createImageRequest(String uri, int viewWidth, int viewHeight, boolean autoRotate)
     {
         ResizeOptions resizeOptions = new ResizeOptions(viewWidth, viewHeight);
         return ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
-                .setAutoRotateEnabled(true)
+                .setAutoRotateEnabled(autoRotate)
                 .setProgressiveRenderingEnabled(true)
                 .setResizeOptions(resizeOptions)
                 .build();

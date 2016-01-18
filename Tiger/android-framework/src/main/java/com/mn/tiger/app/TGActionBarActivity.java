@@ -3,6 +3,7 @@ package com.mn.tiger.app;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
+import com.mn.tiger.utility.SystemBarTintManager;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
@@ -56,12 +59,15 @@ public class TGActionBarActivity extends Activity
 
 	private ArrayList<Integer> httpTaskIDList= new ArrayList<Integer>();
 
+    private SystemBarTintManager systemBarTintManager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		super.setContentView(CR.getLayoutId(this, "tiger_content_view"));
+
+		super.setContentView(CR.getLayoutId(this, "tiger_main"));
 		panelLayout = (FrameLayout) findViewById(CR.getViewId(this, "panel"));
 		navigationBar = (TGNavigationBar) findViewById(CR.getViewId(this, "navigationbar"));
 		navigationBar.getLeftNaviButton().setVisibility(View.VISIBLE);
@@ -126,8 +132,36 @@ public class TGActionBarActivity extends Activity
 					}
 				});
 		navigationBar.getRightNaviButton().setBackgroundResource(
-				CR.getDrawableId(this, "tiger_nav_refresh_button_selector"));
+                CR.getDrawableId(this, "tiger_nav_refresh_button_selector"));
 	}
+
+    public void setStatusBarTintEnabled(boolean enabled)
+    {
+        getSystemBarTintManager().setStatusBarTintEnabled(enabled);
+    }
+
+    public void setStatusBarTintColor(int color)
+    {
+        getSystemBarTintManager().setStatusBarTintColor(color);
+    }
+
+    public void setStatusBarTintResource(int res)
+    {
+        getSystemBarTintManager().setStatusBarTintResource(res);
+    }
+
+    private SystemBarTintManager getSystemBarTintManager()
+    {
+        if(null == systemBarTintManager)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            {
+                this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+            systemBarTintManager = new SystemBarTintManager(this);
+        }
+        return systemBarTintManager;
+    }
 
 	/**
 	 * 初始化PanelLayout

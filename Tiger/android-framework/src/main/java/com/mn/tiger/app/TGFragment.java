@@ -46,7 +46,7 @@ public abstract class TGFragment extends Fragment
 	{
 		if(null == mainView)
 		{
-			mainView = inflater.inflate(CR.getLayoutId(getActivity(), "tiger_content_view"), null);
+			mainView = inflater.inflate(CR.getLayoutId(getActivity(), "tiger_main"), null);
 			//初始化导航条
 			navigationBar = (TGNavigationBar) mainView.findViewById(CR.getViewId(getActivity(),
 					"navigationbar"));
