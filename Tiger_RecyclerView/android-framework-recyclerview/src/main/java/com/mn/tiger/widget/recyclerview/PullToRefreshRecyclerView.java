@@ -64,6 +64,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
     private void init(Context context)
     {
+        this.setLayoutManager(new LinearLayoutManager(context));
         mContext = context;
         if (pullRefreshEnabled)
         {

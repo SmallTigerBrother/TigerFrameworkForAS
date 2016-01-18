@@ -148,14 +148,8 @@ public class TGRefreshHeader extends LinearLayout implements BaseRefreshHeader
     public void refreshComplete()
     {
         setState(STATE_DONE);
-        new Handler().postDelayed(new Runnable()
-        {
-            public void run()
-            {
-                smoothScrollTo(0);
-                setState(STATE_NORMAL);
-            }
-        }, 300);
+        smoothScrollTo(0);
+        setState(STATE_NORMAL);
     }
 
     @Override
