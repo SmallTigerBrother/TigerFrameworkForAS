@@ -4,17 +4,14 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -22,12 +19,10 @@ import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
-import com.mn.tiger.utility.DisplayUtils;
 import com.mn.tiger.utility.SystemBarTintManager;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
@@ -63,6 +58,8 @@ public class TGActionBarActivity extends Activity
     private Vector<ActivityObserver> observers;
 
     private ArrayList<Integer> httpTaskIDList = new ArrayList<Integer>();
+
+    private boolean translucentStatusBar = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -477,21 +474,26 @@ public class TGActionBarActivity extends Activity
 
     }
 
-
     @TargetApi(Build.VERSION_CODES.KITKAT)
     protected void setTranslucentStatus(boolean on)
     {
-        getSystemBarManager().setTranslucentStatus(on);
+        this.translucentStatusBar = on;
     }
 
     protected void setStatusBarColor(int color)
     {
-        getSystemBarManager().setStatusBarColor(color);
+        if(translucentStatusBar)
+        {
+            getSystemBarManager().setStatusBarColor(color);
+        }
     }
 
     protected void hideStatusBar()
     {
-        getSystemBarManager().hideStatusBar();
+        if(translucentStatusBar)
+        {
+            getSystemBarManager().hideStatusBar();
+        }
     }
 
     protected SystemBarTintManager getSystemBarManager()
