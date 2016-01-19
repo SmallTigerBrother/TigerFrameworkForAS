@@ -3,6 +3,7 @@ package com.mn.tiger.utility;
 import android.app.Activity;
 import android.content.Context;
 import android.media.ExifInterface;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.view.ViewGroup.MarginLayoutParams;
 import com.mn.tiger.log.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * 显示工具类
@@ -78,6 +81,7 @@ public class DisplayUtils
 
     /**
      * 该方法的作用:获取状态栏的高度
+     *
      * @param context
      * @return
      * @date 2013-3-7
@@ -276,5 +280,64 @@ public class DisplayUtils
             e.printStackTrace();
         }
         return orientation;
+    }
+
+    public static boolean isSupportFullTheme()
+    {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    private static boolean hasGetSmartBar = false;
+    private static boolean hasSmartBar = false;
+    private static int smartHeight = 0;
+
+    /**
+     * 兼容flame smartbar
+     *
+     * @return
+     */
+    public static boolean hasFlameSmartBar()
+    {
+        if (hasGetSmartBar)
+        {
+            return hasSmartBar;
+        }
+        try
+        {
+            Method method = Class.forName("android.os.Build").getMethod("hasSmartBar");
+            hasSmartBar = ((Boolean) method.invoke(null)).booleanValue();
+        }
+        catch (Exception e)
+        {
+        }
+        hasGetSmartBar = true;
+        return hasSmartBar;
+    }
+
+    /**
+     * 获取smartbar高度
+     *
+     * @param context 兼容flame smartbar
+     * @return int SmartBar的高度值
+     */
+    public static int getSmartBarHeight(Context context)
+    {
+        if (hasSmartBar && smartHeight > 0)
+        {
+            return smartHeight;
+        }
+        try
+        {
+            Class<?> c = Class.forName("com.android.internal.R$dimen");
+            Object obj = c.newInstance();
+            Field field = c.getField("mz_action_button_min_height");
+            int height = Integer.parseInt(field.get(obj).toString());
+            smartHeight = context.getResources().getDimensionPixelSize(height);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return smartHeight;
     }
 }
