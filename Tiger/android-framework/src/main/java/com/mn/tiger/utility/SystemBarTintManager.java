@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -35,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout.LayoutParams;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -81,6 +83,11 @@ public class SystemBarTintManager
     private View mStatusBarTintView;
     private View mNavBarTintView;
 
+    private boolean hasSetStatusBarColor = false;
+    private View rootView;
+
+    private Activity activity;
+
     /**
      * Constructor. Call this in the host activity onCreate method after its
      * content view has been set. You should always create new instances when
@@ -91,7 +98,7 @@ public class SystemBarTintManager
     @TargetApi(19)
     public SystemBarTintManager(Activity activity)
     {
-
+        this.activity = activity;
         Window win = activity.getWindow();
         ViewGroup decorViewGroup = (ViewGroup) win.getDecorView();
 
@@ -374,9 +381,9 @@ public class SystemBarTintManager
         mStatusBarTintView.setVisibility(View.GONE);
         decorViewGroup.addView(mStatusBarTintView);
 
-        View mainView = decorViewGroup.findViewById(context.getResources().getIdentifier("content", "id", "android"));
-        mainView.setPadding(mainView.getPaddingLeft(), mainView.getPaddingTop() + mConfig.getStatusBarHeight(),
-                mainView.getPaddingRight(), mainView.getPaddingBottom());
+//        View mainView = decorViewGroup.findViewById(context.getResources().getIdentifier("content", "id", "android"));
+//        mainView.setPadding(mainView.getPaddingLeft(), mainView.getPaddingTop() + mConfig.getStatusBarHeight(),
+//                mainView.getPaddingRight(), mainView.getPaddingBottom());
     }
 
     private void setupNavBarView(Context context, ViewGroup decorViewGroup)
@@ -398,9 +405,171 @@ public class SystemBarTintManager
         mNavBarTintView.setVisibility(View.GONE);
         decorViewGroup.addView(mNavBarTintView);
 
-        View mainView = decorViewGroup.findViewById(context.getResources().getIdentifier("content", "id", "android"));
-        mainView.setPadding(mainView.getPaddingLeft(), mainView.getPaddingTop(),
-                mainView.getPaddingRight(), mainView.getPaddingBottom() + mConfig.getNavigationBarHeight());
+//        View mainView = decorViewGroup.findViewById(context.getResources().getIdentifier("content", "id", "android"));
+//        mainView.setPadding(mainView.getPaddingLeft(), mainView.getPaddingTop(),
+//                mainView.getPaddingRight(), mainView.getPaddingBottom() + mConfig.getNavigationBarHeight());
+    }
+
+    public void setStatusBarColor(int color)
+    {
+        try
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            {
+                if (rootView == null)
+                {
+                    rootView = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
+                }
+
+                if (rootView == null)
+                {
+                    return;
+                }
+                //兼容flame smartbar
+                if (DisplayUtils.hasFlameSmartBar())
+                {
+                    int sbHeight = DisplayUtils.getSmartBarHeight(activity);
+                    if (rootView.getPaddingBottom() < sbHeight)
+                    {
+                        rootView.setPadding(rootView.getPaddingLeft(), rootView.getPaddingTop(), rootView.getPaddingRight(),
+                                rootView.getPaddingBottom() + sbHeight);
+                    }
+                }
+
+                if (hasSetStatusBarColor)
+                {
+                    if (activity.getActionBar() != null && rootView != null)
+                    {
+                        if (activity.getActionBar().isShowing())
+                        {
+                            rootView.setFitsSystemWindows(true);
+                        }
+                        else
+                        {
+                            rootView.setFitsSystemWindows(false);
+                        }
+                    }
+                }
+                else
+                {
+                    this.setTranslucentStatus(true);
+                    if (activity.getActionBar() != null && activity.getActionBar().isShowing())
+                    {
+                        rootView.setFitsSystemWindows(true);
+                    }
+                    rootView.setPadding(rootView.getPaddingLeft(), rootView.getPaddingTop() + DisplayUtils.getStatusBarHeight(activity),
+                            rootView.getPaddingRight(), rootView.getPaddingBottom());
+                    hasSetStatusBarColor = true;
+                }
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                {
+                    this.setStatusBarTintEnabled(true);
+                    if (color == 0)
+                    {
+                        color = SystemBarTintManager.DEFAULT_TINT_COLOR;
+                    }
+                    this.setStatusBarTintColor(color);
+                    if (removeStatus)
+                    {
+                        ((ViewGroup) activity.getWindow().getDecorView()).addView(mStatusBarTintView);
+                    }
+                }
+                else
+                {
+                    if (color == 0)
+                    {
+                        color = SystemBarTintManager.DEFAULT_TINT_COLOR;
+                    }
+                    activity.getWindow().setStatusBarColor(color);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private int lastStatus = -1;
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void setTranslucentStatus(boolean on)
+    {
+        if (on && lastStatus == 1)
+        {
+            return;
+        }
+        if (!on && lastStatus == 0)
+        {
+            return;
+        }
+        lastStatus = on ? 1 : 0;
+        Window win = activity.getWindow();
+        if (on)
+        {
+            win.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        else
+        {
+            win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && on)
+        {
+            Window window = activity.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+    }
+
+    private boolean removeStatus = false;
+
+    public void hideStatusBar()
+    {
+        try
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            {
+                this.setTranslucentStatus(true);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            {
+                if (activity.getActionBar().isShowing())
+                {
+                    activity.getWindow().getDecorView().setFitsSystemWindows(true);
+                }
+                else
+                {
+                    activity.getWindow().getDecorView().setFitsSystemWindows(false);
+                }
+                if (rootView == null)
+                {
+                    rootView = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
+                }
+                if (rootView == null)
+                {
+                    return;
+                }
+                rootView.setPadding(0, 0, 0, rootView.getPaddingBottom());
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                {
+                    ((ViewGroup) activity.getWindow().getDecorView()).removeView(mStatusBarTintView);
+                }
+                else
+                {
+                    activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
+                }
+            }
+            hasSetStatusBarColor = false;
+            rootView = null;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**

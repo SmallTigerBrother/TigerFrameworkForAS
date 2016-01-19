@@ -1,14 +1,17 @@
 package com.mn.tiger.app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,10 +22,12 @@ import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
+import com.mn.tiger.utility.DisplayUtils;
 import com.mn.tiger.utility.SystemBarTintManager;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
@@ -32,464 +37,472 @@ import java.util.Vector;
  */
 public class TGActionBarActivity extends Activity
 {
-	/**
-	 * 导航条
-	 */
-	private TGNavigationBar navigationBar;
+    /**
+     * 导航条
+     */
+    private TGNavigationBar navigationBar;
 
-	/**
-	 * 主视图
-	 */
-	private FrameLayout panelLayout;
+    /**
+     * 主视图
+     */
+    private FrameLayout panelLayout;
 
-	/**
-	 * 加载框
-	 */
-	private DialogFragment loadingDialog;
+    /**
+     * 加载框
+     */
+    private DialogFragment loadingDialog;
 
-	/**
-	 * laoding对话框显示计数器
-	 */
-	private int dialogShowCount = 0;
+    /**
+     * laoding对话框显示计数器
+     */
+    private int dialogShowCount = 0;
 
-	/**
-	 * Activity声明周期观察者
-	 */
-	private Vector<ActivityObserver> observers;
+    /**
+     * Activity声明周期观察者
+     */
+    private Vector<ActivityObserver> observers;
 
-	private ArrayList<Integer> httpTaskIDList= new ArrayList<Integer>();
+    private ArrayList<Integer> httpTaskIDList = new ArrayList<Integer>();
 
-    private SystemBarTintManager systemBarTintManager;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-		super.setContentView(CR.getLayoutId(this, "tiger_main"));
-		panelLayout = (FrameLayout) findViewById(CR.getViewId(this, "panel"));
-		navigationBar = (TGNavigationBar) findViewById(CR.getViewId(this, "navigationbar"));
-		navigationBar.getLeftNaviButton().setVisibility(View.VISIBLE);
-		initNavigationResource(navigationBar);
-		initPanelLayout(panelLayout);
-
-		//添加到Application中
-		TGApplicationProxy.getInstance().addActivityToStack(this);
-	}
-
-	@Override
-	public void setContentView(View view, LayoutParams params)
-	{
-		panelLayout.addView(view, params);
-	}
-
-	@Override
-	public void setContentView(int layoutResID)
-	{
-		LayoutInflater inflater = LayoutInflater.from(this);
-		View contentView = inflater.inflate(layoutResID, null);
-
-		this.setContentView(contentView, new FrameLayout.LayoutParams(
-				FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-	}
-
-	@Override
-	public void setContentView(View view)
-	{
-		if(null == view.getLayoutParams())
-		{
-			this.setContentView(view,new FrameLayout.LayoutParams(
-					FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-		}
-		else
-		{
-			this.setContentView(view, view.getLayoutParams());
-		}
-	}
-
-	/**
-	 * 该方法的作用: 初始化导航条资源
-	 * @date 2013-11-8
-	 * @param navigationBar
-	 */
-	protected void initNavigationResource(TGNavigationBar navigationBar)
-	{
-		navigationBar.setBackgroundResource(CR.getDrawableId(this,
-				"tiger_header_background"));
-
-		navigationBar.getLeftNaviButton().setBackgroundResource(
-				CR.getDrawableId(this, "tiger_nav_back_button_selector"));
-
-		showLeftBarButton(true);
-		navigationBar.getLeftNaviButton().setOnClickListener(
-				new OnClickListener()
-				{
-					@Override
-					public void onClick(View v)
-					{
-						finish();
-					}
-				});
-		navigationBar.getRightNaviButton().setBackgroundResource(
-                CR.getDrawableId(this, "tiger_nav_refresh_button_selector"));
-	}
-
-    public void setStatusBarTintEnabled(boolean enabled)
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
     {
-        getSystemBarTintManager().setStatusBarTintEnabled(enabled);
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        super.setContentView(CR.getLayoutId(this, "tiger_main"));
+        panelLayout = (FrameLayout) findViewById(CR.getViewId(this, "panel"));
+        navigationBar = (TGNavigationBar) findViewById(CR.getViewId(this, "navigationbar"));
+        navigationBar.getLeftNaviButton().setVisibility(View.VISIBLE);
+        initNavigationResource(navigationBar);
+        initPanelLayout(panelLayout);
+
+        //添加到Application中
+        TGApplicationProxy.getInstance().addActivityToStack(this);
     }
 
-    public void setStatusBarTintColor(int color)
+    @Override
+    public void setContentView(View view, LayoutParams params)
     {
-        getSystemBarTintManager().setStatusBarTintColor(color);
+        panelLayout.addView(view, params);
     }
 
-    public void setStatusBarTintResource(int res)
+    @Override
+    public void setContentView(int layoutResID)
     {
-        getSystemBarTintManager().setStatusBarTintResource(res);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View contentView = inflater.inflate(layoutResID, null);
+
+        this.setContentView(contentView, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
     }
 
-    private SystemBarTintManager getSystemBarTintManager()
+    @Override
+    public void setContentView(View view)
     {
-        if(null == systemBarTintManager)
+        if (null == view.getLayoutParams())
         {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            {
-                this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            }
-            systemBarTintManager = new SystemBarTintManager(this);
+            this.setContentView(view, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         }
-        return systemBarTintManager;
+        else
+        {
+            this.setContentView(view, view.getLayoutParams());
+        }
     }
 
-	/**
-	 * 初始化PanelLayout
-	 * @param panelLayout
-	 */
-	protected void initPanelLayout(FrameLayout panelLayout)
-	{
+    /**
+     * 该方法的作用: 初始化导航条资源
+     *
+     * @param navigationBar
+     * @date 2013-11-8
+     */
+    protected void initNavigationResource(TGNavigationBar navigationBar)
+    {
+        navigationBar.setBackgroundResource(CR.getDrawableId(this,
+                "tiger_header_background"));
 
-	}
+        navigationBar.getLeftNaviButton().setBackgroundResource(
+                CR.getDrawableId(this, "tiger_nav_back_button_selector"));
 
-	/**
-	 * 该方法的作用: 获取导航条左按钮
-	 *
-	 * @date 2013-11-18
-	 * @return
-	 */
-	public TGImageButton getLeftBarButton()
-	{
-		return navigationBar.getLeftNaviButton();
-	}
+        showLeftBarButton(true);
+        navigationBar.getLeftNaviButton().setOnClickListener(
+                new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        finish();
+                    }
+                });
+        navigationBar.getRightNaviButton().setBackgroundResource(
+                CR.getDrawableId(this, "tiger_nav_refresh_button_selector"));
+    }
 
-	/**
-	 * 该方法的作用: 获取导航条右按钮
-	 *
-	 * @date 2013-11-18
-	 * @return
-	 */
-	public TGImageButton getRightBarButton()
-	{
-		return navigationBar.getRightNaviButton();
-	}
+    /**
+     * 初始化PanelLayout
+     *
+     * @param panelLayout
+     */
+    protected void initPanelLayout(FrameLayout panelLayout)
+    {
 
-	/**
-	 * 该方法的作用: 获取导航条
-	 *
-	 * @date 2013-11-8
-	 * @return
-	 */
-	public TGNavigationBar getNavigationBar()
-	{
-		return navigationBar;
-	}
+    }
 
-	/**
-	 * 该方法的作用: 获取导航条中间TextView
-	 *
-	 * @date 2013-11-18
-	 * @return
-	 */
-	public TextView getMiddleTextView()
-	{
-		return navigationBar.getMiddleTextView();
-	}
+    /**
+     * 该方法的作用: 获取导航条左按钮
+     *
+     * @return
+     * @date 2013-11-18
+     */
+    public TGImageButton getLeftBarButton()
+    {
+        return navigationBar.getLeftNaviButton();
+    }
 
-	/**
-	 * 该方法的作用: 设置导航条标题文本
-	 *
-	 * @date 2013-11-18
-	 * @param titleText
-	 * @return
-	 */
-	public boolean setBarTitleText(String titleText)
-	{
-		TextView middleTextView = getMiddleTextView();
-		if (null != middleTextView)
-		{
-			middleTextView.setText(titleText);
-			return true;
-		}
+    /**
+     * 该方法的作用: 获取导航条右按钮
+     *
+     * @return
+     * @date 2013-11-18
+     */
+    public TGImageButton getRightBarButton()
+    {
+        return navigationBar.getRightNaviButton();
+    }
 
-		return false;
-	}
+    /**
+     * 该方法的作用: 获取导航条
+     *
+     * @return
+     * @date 2013-11-8
+     */
+    public TGNavigationBar getNavigationBar()
+    {
+        return navigationBar;
+    }
 
-	/**
-	 * 该方法的作用: 显示导航条左按钮
-	 *
-	 * @date 2013-11-18
-	 * @param show
-	 */
-	public void showLeftBarButton(boolean show)
-	{
-		TGImageButton leftButton = getLeftBarButton();
-		if (null != leftButton)
-		{
-			if (show)
-			{
-				leftButton.setVisibility(View.VISIBLE);
-			}
-			else
-			{
-				leftButton.setVisibility(View.GONE);
-			}
-		}
-	}
+    /**
+     * 该方法的作用: 获取导航条中间TextView
+     *
+     * @return
+     * @date 2013-11-18
+     */
+    public TextView getMiddleTextView()
+    {
+        return navigationBar.getMiddleTextView();
+    }
 
-	/**
-	 * 该方法的作用: 显示导航条右按钮
-	 *
-	 * @date 2013-11-18
-	 * @param show
-	 */
-	public void showRightBarButton(boolean show)
-	{
-		TGImageButton rightButton = getRightBarButton();
-		if (null != rightButton)
-		{
-			if (show)
-			{
-				rightButton.setVisibility(View.VISIBLE);
-			}
-			else
-			{
-				rightButton.setVisibility(View.GONE);
-			}
-		}
-	}
+    /**
+     * 该方法的作用: 设置导航条标题文本
+     *
+     * @param titleText
+     * @return
+     * @date 2013-11-18
+     */
+    public boolean setBarTitleText(String titleText)
+    {
+        TextView middleTextView = getMiddleTextView();
+        if (null != middleTextView)
+        {
+            middleTextView.setText(titleText);
+            return true;
+        }
 
-	@Override
-	protected void onDestroy()
-	{
-		TGApplicationProxy.getInstance().removeActivityFromStack(this);
-		if(null != observers)
-		{
-			Iterator<ActivityObserver> iterator = observers.iterator();
-			while (iterator.hasNext())
-			{
-				iterator.next().onDestroy();
-			}
-			//清空观察者，防止内存泄露
-			observers.clear();
-		}
+        return false;
+    }
 
-		onCancelHttpLoader();
+    /**
+     * 该方法的作用: 显示导航条左按钮
+     *
+     * @param show
+     * @date 2013-11-18
+     */
+    public void showLeftBarButton(boolean show)
+    {
+        TGImageButton leftButton = getLeftBarButton();
+        if (null != leftButton)
+        {
+            if (show)
+            {
+                leftButton.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                leftButton.setVisibility(View.GONE);
+            }
+        }
+    }
 
-		super.onDestroy();
-	}
+    /**
+     * 该方法的作用: 显示导航条右按钮
+     *
+     * @param show
+     * @date 2013-11-18
+     */
+    public void showRightBarButton(boolean show)
+    {
+        TGImageButton rightButton = getRightBarButton();
+        if (null != rightButton)
+        {
+            if (show)
+            {
+                rightButton.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                rightButton.setVisibility(View.GONE);
+            }
+        }
+    }
 
-	/**
-	 * 将HttpLoader的taskID注册到Activity中
-	 * @param taskID
-	 */
-	public void registerHttpLoader(int taskID)
-	{
-		httpTaskIDList.add(taskID);
-	}
+    @Override
+    protected void onDestroy()
+    {
+        TGApplicationProxy.getInstance().removeActivityFromStack(this);
+        if (null != observers)
+        {
+            Iterator<ActivityObserver> iterator = observers.iterator();
+            while (iterator.hasNext())
+            {
+                iterator.next().onDestroy();
+            }
+            //清空观察者，防止内存泄露
+            observers.clear();
+        }
 
-	/**
-	 * 取消注册HttpLoader
-	 * @param taskID
-	 */
-	public void unRegisterHttpLoader(int taskID)
-	{
-		httpTaskIDList.remove(Integer.valueOf(taskID));
-	}
+        onCancelHttpLoader();
 
-	/**
-	 * 取消Http请求
-	 */
-	protected void onCancelHttpLoader()
-	{
-		for (Integer taskID : httpTaskIDList)
-		{
-			TGTaskManager.getInstance().cancelTask(taskID, TaskType.TASK_TYPE_HTTP);
-		}
-	}
+        super.onDestroy();
+    }
 
-	/**
-	 * 设置导航条是否可见
-	 * @param navigationBarVisible
-	 */
-	public void setNavigationBarVisible(boolean navigationBarVisible)
-	{
-		if(navigationBarVisible)
-		{
-			navigationBar.setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			navigationBar.setVisibility(View.GONE);
-		}
-	}
+    /**
+     * 将HttpLoader的taskID注册到Activity中
+     *
+     * @param taskID
+     */
+    public void registerHttpLoader(int taskID)
+    {
+        httpTaskIDList.add(taskID);
+    }
 
-	@Override
-	public boolean onCreatePanelMenu(int featureId, Menu menu)
-	{
-		//方式flyme系统中弹出清理内存工具条时，应用崩溃
-		return false;
-	}
+    /**
+     * 取消注册HttpLoader
+     *
+     * @param taskID
+     */
+    public void unRegisterHttpLoader(int taskID)
+    {
+        httpTaskIDList.remove(Integer.valueOf(taskID));
+    }
 
-	/**
-	 * 显示进度对话框
-	 */
-	public void showLoadingDialog()
-	{
-		if(null == loadingDialog)
-		{
-			loadingDialog = initLoadingDialog();
-		}
+    /**
+     * 取消Http请求
+     */
+    protected void onCancelHttpLoader()
+    {
+        for (Integer taskID : httpTaskIDList)
+        {
+            TGTaskManager.getInstance().cancelTask(taskID, TaskType.TASK_TYPE_HTTP);
+        }
+    }
 
-		if(null != loadingDialog)
-		{
-			if(dialogShowCount <= 0)
-			{
-				dialogShowCount = 0;
-				loadingDialog.show(getFragmentManager(), "loadingDialog");
-			}
-			dialogShowCount++;
-		}
-	}
+    /**
+     * 设置导航条是否可见
+     *
+     * @param navigationBarVisible
+     */
+    public void setNavigationBarVisible(boolean navigationBarVisible)
+    {
+        if (navigationBarVisible)
+        {
+            navigationBar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            navigationBar.setVisibility(View.GONE);
+        }
+    }
 
-	/**
-	 * 隐藏进度对话框
-	 */
-	public void dismissLoadingDialog()
-	{
-		dialogShowCount--;
-		if(loadingDialog != null && dialogShowCount<= 0)
-		{
-			loadingDialog.dismissAllowingStateLoss();
-		}
-	}
+    @Override
+    public boolean onCreatePanelMenu(int featureId, Menu menu)
+    {
+        //方式flyme系统中弹出清理内存工具条时，应用崩溃
+        return false;
+    }
 
-	/**
-	 * 初始化进度对话框
-	 * @return
-	 */
-	protected DialogFragment initLoadingDialog()
-	{
-		return null;
-	}
+    /**
+     * 显示进度对话框
+     */
+    public void showLoadingDialog()
+    {
+        if (null == loadingDialog)
+        {
+            loadingDialog = initLoadingDialog();
+        }
 
-	/**
-	 * 启动指定的Activity
-	 * @param clazz
-	 */
-	protected void startActivity(Class clazz)
-	{
-		startActivity(new Intent(this, clazz));
-	}
+        if (null != loadingDialog)
+        {
+            if (dialogShowCount <= 0)
+            {
+                dialogShowCount = 0;
+                loadingDialog.show(getFragmentManager(), "loadingDialog");
+            }
+            dialogShowCount++;
+        }
+    }
 
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		if(null != observers)
-		{
-			Iterator<ActivityObserver> iterator = observers.iterator();
-			while (iterator.hasNext())
-			{
-				iterator.next().onResume();
-			}
-		}
-	}
+    /**
+     * 隐藏进度对话框
+     */
+    public void dismissLoadingDialog()
+    {
+        dialogShowCount--;
+        if (loadingDialog != null && dialogShowCount <= 0)
+        {
+            loadingDialog.dismissAllowingStateLoss();
+        }
+    }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		super.onActivityResult(requestCode, resultCode, data);
-		if(null != observers)
-		{
-			Iterator<ActivityObserver> iterator = observers.iterator();
-			while (iterator.hasNext())
-			{
-				iterator.next().onActivityResult(requestCode, resultCode, data);
-			}
-		}
-	}
+    /**
+     * 初始化进度对话框
+     *
+     * @return
+     */
+    protected DialogFragment initLoadingDialog()
+    {
+        return null;
+    }
 
-	/**
-	 * 注册Activity观察者
-	 * @param activityObserver
-	 */
-	public void registerActivityObserver(ActivityObserver activityObserver)
-	{
-		if(null == observers)
-		{
-			observers = new Vector<ActivityObserver>();
-		}
-		observers.add(activityObserver);
-	}
+    /**
+     * 启动指定的Activity
+     *
+     * @param clazz
+     */
+    protected void startActivity(Class clazz)
+    {
+        startActivity(new Intent(this, clazz));
+    }
 
-	/**
-	 * 注销Activity观察者
-	 * @param activityObserver
-	 */
-	public void unregisterActivityObserver(ActivityObserver activityObserver)
-	{
-		if(null != observers && null != activityObserver && observers.contains(activityObserver))
-		{
-			observers.remove(activityObserver);
-		}
-	}
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (null != observers)
+        {
+            Iterator<ActivityObserver> iterator = observers.iterator();
+            while (iterator.hasNext())
+            {
+                iterator.next().onResume();
+            }
+        }
+    }
 
-	@Override
-	public void onBackPressed()
-	{
-		boolean canBack = true;
-		if(null != observers)
-		{
-			Iterator<ActivityObserver> iterator = observers.iterator();
-			while (iterator.hasNext())
-			{
-				boolean canBackFromObserver = iterator.next().onBackPressed();
-				canBack = canBack ? canBackFromObserver : false;
-			}
-		}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (null != observers)
+        {
+            Iterator<ActivityObserver> iterator = observers.iterator();
+            while (iterator.hasNext())
+            {
+                iterator.next().onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
 
-		if(canBack)
-		{
-			super.onBackPressed();
-		}
-	}
+    /**
+     * 注册Activity观察者
+     *
+     * @param activityObserver
+     */
+    public void registerActivityObserver(ActivityObserver activityObserver)
+    {
+        if (null == observers)
+        {
+            observers = new Vector<ActivityObserver>();
+        }
+        observers.add(activityObserver);
+    }
 
-	@Override
-	public void onTrimMemory(int level)
-	{
-		super.onTrimMemory(level);
-		if (level == TRIM_MEMORY_UI_HIDDEN)
-		{
-			onTrimMemoryUIHidden();
-		}
-	}
+    /**
+     * 注销Activity观察者
+     *
+     * @param activityObserver
+     */
+    public void unregisterActivityObserver(ActivityObserver activityObserver)
+    {
+        if (null != observers && null != activityObserver && observers.contains(activityObserver))
+        {
+            observers.remove(activityObserver);
+        }
+    }
 
-	/**
-	 * 当UI不再显示时回调，用于清理内存
-	 */
-	protected void onTrimMemoryUIHidden()
-	{
+    @Override
+    public void onBackPressed()
+    {
+        boolean canBack = true;
+        if (null != observers)
+        {
+            Iterator<ActivityObserver> iterator = observers.iterator();
+            while (iterator.hasNext())
+            {
+                boolean canBackFromObserver = iterator.next().onBackPressed();
+                canBack = canBack ? canBackFromObserver : false;
+            }
+        }
 
-	}
+        if (canBack)
+        {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onTrimMemory(int level)
+    {
+        super.onTrimMemory(level);
+        if (level == TRIM_MEMORY_UI_HIDDEN)
+        {
+            onTrimMemoryUIHidden();
+        }
+    }
+
+    /**
+     * 当UI不再显示时回调，用于清理内存
+     */
+    protected void onTrimMemoryUIHidden()
+    {
+
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    protected void setTranslucentStatus(boolean on)
+    {
+        getSystemBarManager().setTranslucentStatus(on);
+    }
+
+    protected void setStatusBarColor(int color)
+    {
+        getSystemBarManager().setStatusBarColor(color);
+    }
+
+    protected void hideStatusBar()
+    {
+        getSystemBarManager().hideStatusBar();
+    }
+
+    protected SystemBarTintManager getSystemBarManager()
+    {
+        if (manager == null)
+        {
+            manager = new SystemBarTintManager(this);
+        }
+        return manager;
+    }
+
+    private SystemBarTintManager manager;
+
 }
