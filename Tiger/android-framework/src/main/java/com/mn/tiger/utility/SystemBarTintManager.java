@@ -100,7 +100,6 @@ public class SystemBarTintManager
     {
         this.activity = activity;
         Window win = activity.getWindow();
-        ViewGroup decorViewGroup = (ViewGroup) win.getDecorView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
@@ -137,16 +136,6 @@ public class SystemBarTintManager
         {
             mNavBarAvailable = false;
         }
-
-        if (mStatusBarAvailable)
-        {
-            setupStatusBarView(activity, decorViewGroup);
-        }
-        if (mNavBarAvailable)
-        {
-            setupNavBarView(activity, decorViewGroup);
-        }
-
     }
 
     /**
@@ -163,6 +152,10 @@ public class SystemBarTintManager
         mStatusBarTintEnabled = enabled;
         if (mStatusBarAvailable)
         {
+            if(null == mStatusBarTintView)
+            {
+                setupStatusBarView(activity, (ViewGroup) activity.getWindow().getDecorView());
+            }
             mStatusBarTintView.setVisibility(enabled ? View.VISIBLE : View.GONE);
         }
     }
@@ -181,6 +174,10 @@ public class SystemBarTintManager
         mNavBarTintEnabled = enabled;
         if (mNavBarAvailable)
         {
+            if(null == mNavBarTintView)
+            {
+                setupNavBarView(activity, (ViewGroup) activity.getWindow().getDecorView());
+            }
             mNavBarTintView.setVisibility(enabled ? View.VISIBLE : View.GONE);
         }
     }
@@ -523,6 +520,7 @@ public class SystemBarTintManager
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        this.mStatusBarAvailable = true;
     }
 
     private boolean removeStatus = false;
@@ -537,7 +535,7 @@ public class SystemBarTintManager
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             {
-                if (activity.getActionBar().isShowing())
+                if (null != activity.getActionBar() && activity.getActionBar().isShowing())
                 {
                     activity.getWindow().getDecorView().setFitsSystemWindows(true);
                 }
