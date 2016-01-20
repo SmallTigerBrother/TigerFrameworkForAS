@@ -1,6 +1,7 @@
 package com.mn.tiger.thirdparty.amap;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.mn.tiger.lbs.map.IMapManager;
+import com.mn.tiger.utility.BitmapUtils;
 
 /**
  * Created by Dalang on 2015/8/23.
@@ -209,5 +211,33 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
         {
             aMap.setOnMapLongClickListener(null);
         }
+    }
+
+    public void getMapScreenShot(final OnMapScreenShotListener listener, final String filePath)
+    {
+        aMap.getMapScreenShot(new AMap.OnMapScreenShotListener()
+        {
+            @Override
+            public void onMapScreenShot(Bitmap bitmap)
+            {
+                if(null != listener)
+                {
+                    Bitmap compressBitmap = null;
+                    //如果文件路径不为null，压缩图片
+                    if(!TextUtils.isEmpty(filePath))
+                    {
+                        compressBitmap = BitmapUtils.compressBitmap(bitmap, filePath, 70);
+                    }
+                    bitmap = (null != compressBitmap) ? compressBitmap : bitmap;
+                    listener.onMapScreenShot(bitmap, filePath);
+                }
+            }
+        });
+        aMap.invalidate();
+    }
+
+    public interface OnMapScreenShotListener
+    {
+        void onMapScreenShot(Bitmap bitmap, String filePath);
     }
 }
