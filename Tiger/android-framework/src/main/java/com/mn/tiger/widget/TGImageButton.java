@@ -148,6 +148,11 @@ public class TGImageButton extends LinearLayout
 		}
 	}
 
+	public void setText(int resId)
+	{
+		setText(getContext().getString(resId));
+	}
+
 	public void setTextColor(int color)
 	{
 		textColor = color;
@@ -255,7 +260,7 @@ public class TGImageButton extends LinearLayout
 	 * 该方法的作用:设置徽章视图背景颜色
 	 * 
 	 * @date 2013-8-13
-	 * @param drawable
+	 * @param color
 	 */
 	public void setBadgeBackgroudColor(int color)
 	{

@@ -166,7 +166,7 @@ public abstract class TGFragment extends Fragment
 	 * @date 2013-11-18
 	 * @return
 	 */
-	public TextView getMiddleTextView()
+	public TGImageButton getMiddleTextView()
 	{
 		return navigationBar.getMiddleTextView();
 	}
@@ -180,14 +180,7 @@ public abstract class TGFragment extends Fragment
 	 */
 	public boolean setBarTitleText(String titleText)
 	{
-		TextView middleTextView = getMiddleTextView();
-		if (null != middleTextView)
-		{
-			middleTextView.setText(titleText);
-			return true;
-		}
-
-		return false;
+		return navigationBar.setMiddleText(titleText);
 	}
 
 	/**

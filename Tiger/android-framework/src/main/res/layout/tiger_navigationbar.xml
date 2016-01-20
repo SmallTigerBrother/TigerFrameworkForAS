@@ -10,14 +10,12 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp" >
 
-        <TextView
+        <com.mn.tiger.widget.TGImageButton
             android:id="@+id/tiger_navi_middle_text"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:textSize="20sp" />
+            android:background="@android:color/holo_blue_dark"/>
     </RelativeLayout>
 
     <RelativeLayout

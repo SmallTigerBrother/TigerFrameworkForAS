@@ -49,7 +49,7 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 中间标题TextView
 	 */
-	private TextView middleTextView;
+	private TGImageButton middleTextView;
 
 
 	public TGNavigationBar(Context context) 
@@ -76,7 +76,7 @@ public class TGNavigationBar extends RelativeLayout
         rightNaviLayout = (RelativeLayout)findViewById(R.id.tiger_navi_right_layout);
         middleNaviLayout = (RelativeLayout)findViewById(R.id.tiger_navi_middle_layout);
 
-        middleTextView = (TextView)findViewById(R.id.tiger_navi_middle_text);
+        middleTextView = (TGImageButton)findViewById(R.id.tiger_navi_middle_text);
         leftNaviButton = (TGImageButton)findViewById(R.id.tiger_navi_left_btn);
         rightNaviButton = (TGImageButton)findViewById(R.id.tiger_navi_right_btn);
 	}
@@ -168,7 +168,7 @@ public class TGNavigationBar extends RelativeLayout
 	 * @date 2013-8-30
 	 * @return
 	 */
-	public TextView getMiddleTextView()
+	public TGImageButton getMiddleTextView()
 	{
 		return middleTextView;
 	}
@@ -182,9 +182,8 @@ public class TGNavigationBar extends RelativeLayout
 	 */
 	public boolean setMiddleText(String text)
 	{
-		TextView middleText = getMiddleTextView();
-		
-		if (null != middleText) 
+		TGImageButton middleText = getMiddleTextView();
+		if (null != middleText)
 		{
 			middleText.setText(text);
 			return true;

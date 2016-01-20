@@ -59,7 +59,7 @@ public class TGActionBarActivity extends Activity
 
     private ArrayList<Integer> httpTaskIDList = new ArrayList<Integer>();
 
-    private boolean translucentStatusBar = true;
+    private boolean translucentStatusBar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -185,7 +185,7 @@ public class TGActionBarActivity extends Activity
      * @return
      * @date 2013-11-18
      */
-    public TextView getMiddleTextView()
+    public TGImageButton getMiddleTextView()
     {
         return navigationBar.getMiddleTextView();
     }
@@ -199,14 +199,7 @@ public class TGActionBarActivity extends Activity
      */
     public boolean setBarTitleText(String titleText)
     {
-        TextView middleTextView = getMiddleTextView();
-        if (null != middleTextView)
-        {
-            middleTextView.setText(titleText);
-            return true;
-        }
-
-        return false;
+        return navigationBar.setMiddleText(titleText);
     }
 
     /**
@@ -445,8 +438,8 @@ public class TGActionBarActivity extends Activity
             Iterator<ActivityObserver> iterator = observers.iterator();
             while (iterator.hasNext())
             {
-                boolean canBackFromObserver = iterator.next().onBackPressed();
-                canBack = canBack ? canBackFromObserver : false;
+                boolean interceptByObserver = iterator.next().onBackPressed();
+                canBack = canBack ? !interceptByObserver : false;
             }
         }
 
@@ -478,6 +471,11 @@ public class TGActionBarActivity extends Activity
     protected void setTranslucentStatus(boolean on)
     {
         this.translucentStatusBar = on;
+    }
+
+    public boolean isTranslucentStatusBar()
+    {
+        return translucentStatusBar;
     }
 
     protected void setStatusBarColor(int color)
