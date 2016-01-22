@@ -5,26 +5,27 @@ package com.medialab.dimension.policy;
  */
 public abstract class CaculatePolicy
 {
-	/**
-	 * 参考设备的屏幕大小（英寸）
-	 */
-	private double inchOfReferenceDevice = 4d;
-	
-	/**
-	 * 参考设备的屏幕像素点密度
-	 */
-	private double densityOfReferenceDevice = 1d;
+	private double densityOfScreen;
 	
 	/**
 	 * 目标屏幕缩放比例
 	 */
 	private double scale = 1;
 	
-	public CaculatePolicy(double inchOfScreen)
+	private int width;
+	
+	private int height;
+	
+	private double inchOfScreen;
+	
+	public CaculatePolicy(int width,int height, double inchOfScreen)
 	{
-		this.inchOfReferenceDevice = getInchOfReferenceDevice();
-		this.densityOfReferenceDevice = getDensityOfReferenceDevice();
+		this.width = width;
+		this.height = height;
+		this.inchOfScreen = inchOfScreen;
+		
 		this.scale = caculateScale(inchOfScreen);
+		this.densityOfScreen = getDensity(width, height, inchOfScreen);
 	}
 	
 	/**
@@ -34,7 +35,14 @@ public abstract class CaculatePolicy
 	 */
 	public double caculateScale(double inchOfScreen)
 	{
-		return Math.sqrt(inchOfScreen/inchOfReferenceDevice);
+		return new Double(width) / new Double(getReferenceDeviceWidth()) * getRatio();
+		
+//		return Math.sqrt((new Double(width) / new Double(getReferenceDeviceWidth()) * inchOfScreen / inchOfReferenceDevice));
+		
+//		return getDensity(1080, 1920, 5.5) / densityOfReferenceDevice;
+//		return Math.sqrt(inchOfScreen/inchOfReferenceDevice);
+//		return (inchOfScreen + inchOfReferenceDevice)/(inchOfReferenceDevice * 2);
+//		return Math.sqrt((inchOfScreen + inchOfReferenceDevice)/(inchOfReferenceDevice * 2));
 	}
 		
 	/**
@@ -56,7 +64,7 @@ public abstract class CaculatePolicy
 	 */
 	public final int px2sp(int pxValue)
 	{
-		return (int)((pxValue * scale / densityOfReferenceDevice) + 0.5f);
+		return (int)((pxValue * scale / densityOfScreen) + 0.5f);
 	}
 	
 	/**
@@ -66,8 +74,17 @@ public abstract class CaculatePolicy
 	 */
 	public final int px2dp(int pxValue)
 	{
-		return (int)((pxValue * scale) / densityOfReferenceDevice);
+		return (int)((pxValue * scale) / densityOfScreen);
 	}
+	
+	protected double getRatio()
+	{
+		return Math.sqrt(inchOfScreen) * 2 / inchOfScreen;
+	}
+	
+	public abstract int getReferenceDeviceWidth();
+	
+	public abstract int getReferenceDeviceHeight();
 	
 	/**
 	 * 获取参考设备屏幕大小（英寸）
@@ -79,6 +96,9 @@ public abstract class CaculatePolicy
 	 * 获取参考设备屏幕像素点密度
 	 * @return
 	 */
-	public abstract double getDensityOfReferenceDevice();
+	public double getDensityOfReferenceDevice()
+	{
+		return getDensity(getReferenceDeviceWidth(), getReferenceDeviceHeight(), getInchOfReferenceDevice());
+	}
 	
 }

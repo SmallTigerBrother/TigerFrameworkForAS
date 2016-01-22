@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.medialab.dimension.data.DimensionVO;
 import com.medialab.dimension.policy.CaculatePolicy;
 import com.medialab.dimension.policy.CaculatePolicyBaseOnIphone5;
+import com.medialab.dimension.policy.CaculatePolicyBaseOnIphone6;
 import com.medialab.dimension.xml.DefaultXMLReader;
 import com.medialab.dimension.xml.XMLWriter;
 
@@ -13,7 +14,7 @@ public class Main
 	/**
 	 * 原始文件路径
 	 */
-	private static final String resFilePath = "/Users/peng/AndroidStudioProjects/PocketWish/app/src/main/res/values/dimens.xml";
+	private static final String resFilePath = "/Users/peng/AndroidStudioProjects/beautyHouse/BeautyHouse/app/src/main/res/values/dimens.xml";
 	
 	/**
 	 * 结果文件路径
@@ -26,7 +27,7 @@ public class Main
 		ArrayList<DimensionVO> dimensions = new DefaultXMLReader().readDimensionXML(resFilePath);
 		
 		//2、创建计算策略
-		CaculatePolicy caculatePolicy = new CaculatePolicyBaseOnIphone5(4d);
+		CaculatePolicy caculatePolicy = new CaculatePolicyBaseOnIphone6(1080, 1920, 5.5);
 		
 		//3、计算所有dimension的大小
 		for (DimensionVO dimensionVO : dimensions)

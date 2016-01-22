@@ -5,20 +5,26 @@ package com.medialab.dimension.policy;
  */
 public class CaculatePolicyBaseOnIphone5 extends CaculatePolicy
 {
-	public CaculatePolicyBaseOnIphone5(double inchOfScreen)
+	public CaculatePolicyBaseOnIphone5(int width,int height, double inchOfScreen)
 	{
-		super(inchOfScreen);
+		super(width, height, inchOfScreen);
+	}
+	
+	@Override
+	public int getReferenceDeviceWidth()
+	{
+		return 640;
 	}
 
+	@Override
+	public int getReferenceDeviceHeight()
+	{
+		return 1136;
+	}
+	
 	@Override
 	public double getInchOfReferenceDevice()
 	{
 		return 4d;
-	}
-
-	@Override
-	public double getDensityOfReferenceDevice()
-	{
-		return getDensity(640, 1136, 4d);
 	}
 }
