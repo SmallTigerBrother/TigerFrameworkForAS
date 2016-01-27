@@ -1,17 +1,11 @@
 package com.mn.tiger.lbs.location;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.os.*;
-import android.os.Process;
 
-import com.mn.tiger.app.TGApplication;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.utility.PackageUtils;
 
 /**
  * Created by Dalang on 2015/7/26.

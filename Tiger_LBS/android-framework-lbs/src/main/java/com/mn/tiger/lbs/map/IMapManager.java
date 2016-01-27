@@ -1,5 +1,6 @@
 package com.mn.tiger.lbs.map;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
@@ -43,7 +44,9 @@ public interface IMapManager
      * @param langitude 精度
      * @param title 标题
      */
-    void addMarker(double latitude, double langitude, String title);
+    IMarker addMarker(double latitude, double langitude, String title);
+
+    IMarker addMarker(double latitude, double longitude, String title,String snippet, Object params);
 
     /**
      * 将地图中心点转至指定点
@@ -51,6 +54,12 @@ public interface IMapManager
      * @param longitude 经度
      */
     void centerTo(double latitude, double longitude);
+
+    void centerZoomTo(double latitude, double longitude, float zoom);
+
+    void zoomTo(float zoom);
+
+    float getZoom();
 
     /**
      * 显示我的位置
@@ -67,5 +76,10 @@ public interface IMapManager
     interface OnMapLongClickListener
     {
         void onLongClick(double latitude, double longitude);
+    }
+
+    interface OnMapScreenShotListener
+    {
+        void onMapScreenShot(Bitmap bitmap, String filePath);
     }
 }
