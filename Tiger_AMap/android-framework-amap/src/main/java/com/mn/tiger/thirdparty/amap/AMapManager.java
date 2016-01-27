@@ -11,14 +11,15 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.mn.tiger.lbs.map.IMapManager;
+import com.mn.tiger.lbs.map.IMarker;
 import com.mn.tiger.utility.BitmapUtils;
 
 /**
@@ -63,27 +64,24 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
         aMap.setMyLocationEnabled(true);
     }
 
-    public void addMarker(double latitude, double longitude, String title)
+    public IMarker addMarker(double latitude, double longitude, String title)
     {
-        addMarker(latitude, longitude, title, null, null);
+        return addMarker(latitude, longitude, title, null, null);
     }
 
-    public void addMarker(double latitude, double longitude, String title,String snippet, Object params)
+    public IMarker addMarker(double latitude, double longitude, String title,String snippet, Object params)
     {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.draggable(false);
         markerOptions.position(new LatLng(latitude, longitude));
-        boolean canShowInfoWindow = false;
         if(!TextUtils.isEmpty(title))
         {
             markerOptions.title(title);
-            canShowInfoWindow = true;
         }
 
         if(!TextUtils.isEmpty(snippet))
         {
             markerOptions.snippet(snippet);
-            canShowInfoWindow = true;
         }
 
         Marker marker = aMap.addMarker(markerOptions);
@@ -92,10 +90,7 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
             marker.setObject(params);
         }
 
-        if(canShowInfoWindow)
-        {
-            marker.showInfoWindow();
-        }
+        return new AMarker(marker);
     }
 
     /**
@@ -124,8 +119,28 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
     @Override
     public void centerTo(double latitude, double longitude)
     {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17);
-        aMap.animateCamera(cameraUpdate);
+        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), getZoom()));
+    }
+
+    @Override
+    public void centerZoomTo(double latitude, double longitude, float zoom)
+    {
+        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoom));
+    }
+
+    public void zoomTo(float zoom)
+    {
+        aMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+    }
+
+    public float getZoom()
+    {
+        CameraPosition cameraPosition = aMap.getCameraPosition();
+        if(null != cameraPosition)
+        {
+            return cameraPosition.zoom;
+        }
+        return 15;
     }
 
     @Override
@@ -234,10 +249,5 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
             }
         });
         aMap.invalidate();
-    }
-
-    public interface OnMapScreenShotListener
-    {
-        void onMapScreenShot(Bitmap bitmap, String filePath);
     }
 }
