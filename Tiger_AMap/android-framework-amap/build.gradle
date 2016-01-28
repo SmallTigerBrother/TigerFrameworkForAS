@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "1.0.9"
+version = "1.0.10"
 def siteUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS'    // project homepage
 def gitUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS.git' // project git
 group = "com.mn.tiger"
@@ -62,7 +62,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'Tiger Framework For Android'
+                name 'AMap For Android'
                 url siteUrl
                 licenses {
                     license {

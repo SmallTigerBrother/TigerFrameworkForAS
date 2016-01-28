@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.amap.api.location.AMapLocation;
@@ -63,6 +65,27 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
         aMap.getUiSettings().setAllGesturesEnabled(true);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setMyLocationEnabled(true);
+    }
+
+    @Override
+    public void disallowScrollParentInterceptTouchEvent(final ViewGroup scrollParent)
+    {
+        ((ViewGroup)mapView.getChildAt(0)).getChildAt(0).setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if(event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+                {
+                    scrollParent.requestDisallowInterceptTouchEvent(false);
+                }
+                else
+                {
+                    scrollParent.requestDisallowInterceptTouchEvent(true);
+                }
+                return false;
+            }
+        });
     }
 
     public IMarker addMarker(double latitude, double longitude, String title)
