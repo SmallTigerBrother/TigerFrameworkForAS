@@ -41,12 +41,34 @@ public interface IMapManager
     /**
      * 添加地标
      * @param latitude 纬度
-     * @param langitude 精度
+     * @param langitude 经度
      * @param title 标题
      */
     IMarker addMarker(double latitude, double langitude, String title);
 
-    IMarker addMarker(double latitude, double longitude, String title,String snippet, Object params);
+    /**
+     * 添加地标
+     * @param latitude 纬度
+     * @param longitude 经度
+     * @param title 标题
+     * @param snippet 简述
+     * @return
+     */
+    IMarker addMarker(double latitude, double longitude, String title, String snippet);
+
+    IMarker addMarker(double latitude, double longitude, String title,String snippet, int iconRes);
+
+    /**
+     * 添加地标
+     * @param latitude 维度
+     * @param longitude 经度
+     * @param title 标题
+     * @param snippet 简述
+     * @param iconRes 图标
+     * @param params 参数
+     * @return
+     */
+    IMarker addMarker(double latitude, double longitude, String title, String snippet,int iconRes, Object params);
 
     /**
      * 将地图中心点转至指定点

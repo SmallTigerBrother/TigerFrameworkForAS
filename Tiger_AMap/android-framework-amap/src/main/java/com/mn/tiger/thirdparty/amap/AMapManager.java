@@ -14,6 +14,7 @@ import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
@@ -66,10 +67,20 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
 
     public IMarker addMarker(double latitude, double longitude, String title)
     {
-        return addMarker(latitude, longitude, title, null, null);
+        return addMarker(latitude, longitude, title, null, -1, null);
     }
 
-    public IMarker addMarker(double latitude, double longitude, String title,String snippet, Object params)
+    public IMarker addMarker(double latitude, double longitude, String title,String snippet)
+    {
+        return addMarker(latitude, longitude, title, snippet, -1, null);
+    }
+
+    public IMarker addMarker(double latitude, double longitude, String title,String snippet, int iconRes)
+    {
+        return addMarker(latitude, longitude, title, snippet, iconRes, null);
+    }
+
+    public IMarker addMarker(double latitude, double longitude, String title,String snippet, int iconRes, Object params)
     {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.draggable(false);
@@ -82,6 +93,11 @@ public class AMapManager implements IMapManager, AMapLocationListener, LocationS
         if(!TextUtils.isEmpty(snippet))
         {
             markerOptions.snippet(snippet);
+        }
+
+        if(iconRes > 0)
+        {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(iconRes));
         }
 
         Marker marker = aMap.addMarker(markerOptions);
