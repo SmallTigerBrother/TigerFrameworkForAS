@@ -1,6 +1,7 @@
 package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -54,7 +55,8 @@ public class LoadingMoreFooter extends LinearLayout
 
         addView(progressCon);
         mText = new TextView(context);
-        mText.setText("正在加载...");
+        mText.setText(mContext.getText(R.string.listview_loading));
+        mText.setTextColor(0xffB5B5B5);
 
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins((int) getResources().getDimension(R.dimen.textandiconmargin), 0, 0, 0);
