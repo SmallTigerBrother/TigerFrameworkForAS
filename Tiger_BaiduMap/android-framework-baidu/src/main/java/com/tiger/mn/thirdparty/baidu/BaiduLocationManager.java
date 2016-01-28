@@ -6,9 +6,9 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.mn.tiger.app.TGApplication;
+import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.location.ILocationManager;
-import com.mn.tiger.lbs.map.TGLocation;
+import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.utility.CR;
 
 /**
@@ -39,7 +39,7 @@ public class BaiduLocationManager implements ILocationManager
      */
     BaiduLocationManager()
     {
-        locationClient = new LocationClient(TGApplication.getInstance());
+        locationClient = new LocationClient(TGApplicationProxy.getInstance().getApplication());
         locationClient.registerLocationListener(locationListener);
 
         LocationClientOption option = new LocationClientOption();
@@ -97,7 +97,7 @@ public class BaiduLocationManager implements ILocationManager
             }
         }
 
-        Context context = TGApplication.getInstance();
+        Context context = TGApplicationProxy.getInstance().getApplication();
         String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
         String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
 
@@ -116,10 +116,16 @@ public class BaiduLocationManager implements ILocationManager
     }
 
     @Override
-    public void destroy()
+    public void onDestroy()
     {
         locationClient.stop();
         locationClient = null;
+    }
+
+    @Override
+    public TGLocation getLastLocation()
+    {
+        return convert2TGLocation(locationClient.getLastKnownLocation());
     }
 
     static TGLocation convert2TGLocation(BDLocation location)

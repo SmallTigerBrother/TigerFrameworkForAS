@@ -47,6 +47,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.mn.tiger:android-framework:latest.integration@aar'
+    compile 'com.mn.tiger:android-framework-logger:latest.integration'
+    compile 'com.mn.tiger:android-framework-lbs:latest.integration@aar'
+    compile 'com.mn.tiger:android-framework-utility:latest.integration'
     compile files('locSDK_5.3.jar')
 }
 
@@ -56,7 +59,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'Tiger Framework For Android'
+                name 'BaiduMap For Android'
                 url siteUrl
                 licenses {
                     license {
@@ -110,7 +113,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "android-framework-baidu"
+        name = "android-framework-baidumap"
         // #CONFIG# project name in jcenter
         websiteUrl = siteUrl
         vcsUrl = gitUrl

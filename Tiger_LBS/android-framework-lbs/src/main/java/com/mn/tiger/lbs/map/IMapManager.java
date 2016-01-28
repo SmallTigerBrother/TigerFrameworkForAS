@@ -18,6 +18,12 @@ public interface IMapManager
     void init(ViewGroup mapContainer, Bundle savedInstanceState);
 
     /**
+     * 禁止滚动父视图接收事件
+     * @param scrollParent
+     */
+    void disallowScrollParentInterceptTouchEvent(ViewGroup scrollParent);
+
+    /**
      * 保存状态
      * @param outState
      */
