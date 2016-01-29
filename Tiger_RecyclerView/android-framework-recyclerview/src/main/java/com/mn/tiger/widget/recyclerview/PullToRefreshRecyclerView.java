@@ -426,36 +426,36 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount)
         {
-            int offset = mWrapAdapter.getHeadersCount() + 1;
-            mWrapAdapter.notifyItemRangeInserted(positionStart + offset, itemCount + offset);
+            int offset = mWrapAdapter.getHeadersCount();
+            mWrapAdapter.notifyItemRangeInserted(positionStart + offset, itemCount);
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount)
         {
-            int offset = mWrapAdapter.getHeadersCount() + 1;
-            mWrapAdapter.notifyItemRangeChanged(positionStart + offset, itemCount + offset);
+            int offset = mWrapAdapter.getHeadersCount();
+            mWrapAdapter.notifyItemRangeChanged(positionStart + offset, itemCount);
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, Object payload)
         {
-            int offset = mWrapAdapter.getHeadersCount() + 1;
-            mWrapAdapter.notifyItemRangeChanged(positionStart + offset, itemCount + offset, payload);
+            int offset = mWrapAdapter.getHeadersCount();
+            mWrapAdapter.notifyItemRangeChanged(positionStart + offset, itemCount, payload);
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount)
         {
-            int offset = mWrapAdapter.getHeadersCount() + 1;
-            mWrapAdapter.notifyItemRangeRemoved(positionStart + offset, itemCount + offset);
+            int offset = mWrapAdapter.getHeadersCount();
+            mWrapAdapter.notifyItemRangeRemoved(positionStart + offset, itemCount);
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount)
         {
-            int offset = mWrapAdapter.getHeadersCount() + 1;
-            mWrapAdapter.notifyItemMoved(fromPosition + offset, toPosition + offset);
+            int offset = mWrapAdapter.getHeadersCount();
+            mWrapAdapter.notifyItemMoved(fromPosition + offset, toPosition);
         }
     };
 
