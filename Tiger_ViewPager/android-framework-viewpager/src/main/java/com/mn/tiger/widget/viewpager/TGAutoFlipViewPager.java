@@ -27,6 +27,11 @@ public class TGAutoFlipViewPager extends ViewPager
 	 */
 	private int currentPageNum = 0;
 
+	/**
+	 * 翻页周期
+	 */
+	private int duration = 4000;
+
 	private AutoFlipRunnable autoFlipRunnable;
 
 	/**
@@ -42,21 +47,6 @@ public class TGAutoFlipViewPager extends ViewPager
 	};
 
 	/**
-	 * 是否继续翻页
-	 */
-	private boolean isContinue = true;
-
-	/**
-	 * 是否正在滚动
-	 */
-	private boolean isSrolling = false;
-
-	/**
-	 * 翻页周期
-	 */
-	private int duration = 4000;
-
-	/**
 	 * 内置的页码改变监听器
 	 */
 	private OnPageChangeListener internalPageChangeListener = null;
@@ -64,14 +54,12 @@ public class TGAutoFlipViewPager extends ViewPager
 	public TGAutoFlipViewPager(Context context)
 	{
 		super(context);
-		autoFlipRunnable = new AutoFlipRunnable();
 		setListeners();
 	}
 
 	public TGAutoFlipViewPager(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-		autoFlipRunnable = new AutoFlipRunnable();
 		setListeners();
 	}
 
@@ -81,59 +69,68 @@ public class TGAutoFlipViewPager extends ViewPager
 	private void setListeners()
 	{
 		setOnTouchListener(new OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
-				switch (event.getAction())
-				{
-					//当按下、滑动时不能自动滚动
-					case MotionEvent.ACTION_DOWN:
-					case MotionEvent.ACTION_MOVE:
-						isContinue = false;
-						break;
-					case MotionEvent.ACTION_UP://当手指抬起后不能自动滚动
-						isContinue = true;
-						break;
-					default:
-						isContinue = true;
-						break;
-				}
-				return false;
-			}
-		});
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                switch (event.getAction())
+                {
+                    //当按下、滑动时不能自动滚动
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_MOVE:
+                        if (null != autoFlipRunnable)
+                        {
+                            autoFlipRunnable.setContinue(false);
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP://当手指抬起后不能自动滚动
+                        if (null != autoFlipRunnable)
+                        {
+                            autoFlipRunnable.setContinue(true);
+                        }
+                        break;
+                    default:
+                        if (null != autoFlipRunnable)
+                        {
+                            autoFlipRunnable.setContinue(true);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
 
 		//设置默认的OnPageChangeListener，记录currentPageNum
 		super.setOnPageChangeListener(new OnPageChangeListener()
-		{
-			@Override
-			public void onPageSelected(int page)
-			{
-				currentPageNum = page;
-				if(null != internalPageChangeListener)
-				{
-					internalPageChangeListener.onPageSelected(page);
-				}
-			}
+        {
+            @Override
+            public void onPageSelected(int page)
+            {
+                currentPageNum = page;
+                if (null != internalPageChangeListener)
+                {
+                    internalPageChangeListener.onPageSelected(page);
+                }
+            }
 
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2)
-			{
-				if(null != internalPageChangeListener)
-				{
-					internalPageChangeListener.onPageScrolled(arg0, arg1, arg2);
-				}
-			}
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2)
+            {
+                if (null != internalPageChangeListener)
+                {
+                    internalPageChangeListener.onPageScrolled(arg0, arg1, arg2);
+                }
+            }
 
-			@Override
-			public void onPageScrollStateChanged(int arg0)
-			{
-				if(null != internalPageChangeListener)
-				{
-					internalPageChangeListener.onPageScrollStateChanged(arg0);
-				}
-			}
-		});
+            @Override
+            public void onPageScrollStateChanged(int arg0)
+            {
+                if (null != internalPageChangeListener)
+                {
+                    internalPageChangeListener.onPageScrollStateChanged(arg0);
+                }
+            }
+        });
 	}
 
 	@Override
@@ -157,10 +154,13 @@ public class TGAutoFlipViewPager extends ViewPager
 	public void startScroll()
 	{
 		LOG.d("[Method:startScroll]");
-		handler.postDelayed(autoFlipRunnable, duration);
-
-		isContinue = true;
-		isSrolling = true;
+		if(null == autoFlipRunnable && getAdapter().getCount() > 1)
+		{
+			autoFlipRunnable = new AutoFlipRunnable();
+			autoFlipRunnable.setContinue(true);
+			autoFlipRunnable.setScrolling(true);
+			handler.postDelayed(autoFlipRunnable, duration);
+		}
 	}
 
 	@Override
@@ -176,7 +176,11 @@ public class TGAutoFlipViewPager extends ViewPager
 	public void stopScroll()
 	{
 		LOG.d("[Method:stopScroll]");
-		isSrolling = false;
+        if(null != autoFlipRunnable)
+        {
+            autoFlipRunnable.setScrolling(false);
+            autoFlipRunnable = null;
+        }
 	}
 
 	/**
@@ -199,14 +203,21 @@ public class TGAutoFlipViewPager extends ViewPager
 
 	private final class AutoFlipRunnable implements Runnable
 	{
-		private boolean running = false;
+		/**
+		 * 是否继续翻页
+		 */
+		private boolean isContinue = true;
+
+		/**
+		 * 是否正在滚动
+		 */
+		private boolean isScrolling = false;
 
 		@Override
 		public void run()
 		{
-			if (isContinue && isSrolling)
+			if (isContinue && isScrolling)
 			{
-				running = true;
 				//定时重发
 				currentPageNum++;
 				handler.sendEmptyMessage(currentPageNum);
@@ -214,15 +225,21 @@ public class TGAutoFlipViewPager extends ViewPager
 
 				LOG.d("[Method:AutoFlipRunnable:run] to next page == " + currentPageNum);
 			}
-			else
-			{
-				running = false;
-			}
 		}
 
-		public boolean isRunning()
+		public void setScrolling(boolean scrolling)
 		{
-			return running;
+			this.isScrolling = scrolling;
+		}
+
+		public boolean isScrolling()
+		{
+			return isScrolling;
+		}
+
+		public void setContinue(boolean isContinue)
+		{
+			this.isContinue = isContinue;
 		}
 	}
 

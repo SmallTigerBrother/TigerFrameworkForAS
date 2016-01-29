@@ -2,6 +2,7 @@ package com.mn.tiger.widget.viewpager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.view.PagerAdapter;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.mn.tiger.core.ActivityObserver;
+import com.mn.tiger.core.FragmentObserver;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.DisplayUtils;
 import com.mn.tiger.widget.adpter.TGListAdapter;
