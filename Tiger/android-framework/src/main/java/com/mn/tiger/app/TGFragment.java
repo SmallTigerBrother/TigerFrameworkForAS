@@ -59,13 +59,13 @@ public abstract class TGFragment extends Fragment
 			mainView = inflater.inflate(CR.getLayoutId(getActivity(), "tiger_main"), null);
 			//初始化导航条
 			navigationBar = (TGNavigationBar) mainView.findViewById(CR.getViewId(getActivity(),
-					"navigationbar"));
+					"tiger_navigationbar"));
 			initNavigationResource(navigationBar);
 			setNavigationBarVisible(navigationBarVisible);
 			
 			//加入自定义视图
 			panelLayout = (FrameLayout) mainView.findViewById(CR.getViewId(getActivity(),
-					"panel"));
+					"tiger_panel"));
 			initPanelLayout(panelLayout);
 			FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
 					FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
