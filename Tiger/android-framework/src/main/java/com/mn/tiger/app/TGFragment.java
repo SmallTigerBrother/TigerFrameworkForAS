@@ -9,10 +9,15 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.mn.tiger.core.ActivityObserver;
+import com.mn.tiger.core.FragmentObserver;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
+
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * 自定义Fragment基类
@@ -40,6 +45,11 @@ public abstract class TGFragment extends Fragment
 	 * 最底层的Layout
 	 */
 	private FrameLayout panelLayout;
+
+	/**
+	 * Activity声明周期观察者
+	 */
+	private Vector<FragmentObserver> observers;
 	
 	public final View onCreateView(LayoutInflater inflater, ViewGroup container, 
 			Bundle savedInstanceState) 
@@ -260,4 +270,103 @@ public abstract class TGFragment extends Fragment
 	{
 		startActivity(new Intent(getActivity(), activityClazz));
 	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if (null != observers)
+		{
+			Iterator<FragmentObserver> iterator = observers.iterator();
+			while (iterator.hasNext())
+			{
+				iterator.next().onResume();
+			}
+		}
+	}
+
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		if (null != observers)
+		{
+			Iterator<FragmentObserver> iterator = observers.iterator();
+			while (iterator.hasNext())
+			{
+				iterator.next().onPause();
+			}
+		}
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		if (null != observers)
+		{
+			Iterator<FragmentObserver> iterator = observers.iterator();
+			while (iterator.hasNext())
+			{
+				iterator.next().onStop();
+			}
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		if (null != observers)
+		{
+			Iterator<FragmentObserver> iterator = observers.iterator();
+			while (iterator.hasNext())
+			{
+				iterator.next().onActivityResult(requestCode, resultCode, data);
+			}
+		}
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if (null != observers)
+		{
+			Iterator<FragmentObserver> iterator = observers.iterator();
+			while (iterator.hasNext())
+			{
+				iterator.next().onDestroy();
+			}
+		}
+	}
+
+	/**
+	 * 注册Fragment观察者
+	 *
+	 * @param fragmentObserver
+	 */
+	public void registerActivityObserver(FragmentObserver fragmentObserver)
+	{
+		if (null == observers)
+		{
+			observers = new Vector<FragmentObserver>();
+		}
+		observers.add(fragmentObserver);
+	}
+
+	/**
+	 * 注销Fragment观察者
+	 *
+	 * @param fragmentObserver
+	 */
+	public void unregisterActivityObserver(FragmentObserver fragmentObserver)
+	{
+		if (null != observers && null != fragmentObserver && observers.contains(fragmentObserver))
+		{
+			observers.remove(fragmentObserver);
+		}
+	}
+
+
 }

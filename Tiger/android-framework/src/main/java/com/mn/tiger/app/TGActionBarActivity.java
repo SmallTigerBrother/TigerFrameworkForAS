@@ -389,6 +389,34 @@ public class TGActionBarActivity extends Activity
     }
 
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+        if (null != observers)
+        {
+            Iterator<ActivityObserver> iterator = observers.iterator();
+            while (iterator.hasNext())
+            {
+                iterator.next().onPause();
+            }
+        }
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        if (null != observers)
+        {
+            Iterator<ActivityObserver> iterator = observers.iterator();
+            while (iterator.hasNext())
+            {
+                iterator.next().onStop();
+            }
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);

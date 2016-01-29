@@ -3,10 +3,9 @@ package com.mn.tiger.core;
 import android.content.Intent;
 
 /**
- * Created by peng on 15/8/22.
- * Activity生命周期观察者
+ * Created by peng on 16/1/29.
  */
-public interface ActivityObserver
+public interface FragmentObserver
 {
     void onResume();
 
@@ -15,8 +14,6 @@ public interface ActivityObserver
     void onStop();
 
     void onDestroy();
-
-    boolean onBackPressed();
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 }
