@@ -422,7 +422,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.addAll(data);
-            notifyItemRangeInserted(items.size() - data.size(), items.size());
+            notifyItemRangeInserted(items.size() - data.size(), data.size());
         }
     }
 
@@ -436,7 +436,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.addAll(Arrays.asList(data));
-            notifyItemRangeInserted(items.size() - data.length, items.size());
+            notifyItemRangeInserted(items.size() - data.length, data.length);
         }
     }
 
