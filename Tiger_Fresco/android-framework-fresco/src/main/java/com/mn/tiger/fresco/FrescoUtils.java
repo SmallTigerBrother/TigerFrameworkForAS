@@ -1,15 +1,18 @@
-package com.mn.tiger.utility;
+package com.mn.tiger.fresco;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.widget.DrawerLayout;
 
 import com.facebook.common.internal.Supplier;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeController;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
@@ -19,10 +22,11 @@ import com.facebook.drawee.view.DraweeView;
 import com.facebook.imagepipeline.cache.MemoryCacheParams;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.utility.CR;
 
 /**
  * Created by peng on 15/10/22.
@@ -163,7 +167,6 @@ public class FrescoUtils
                 imageView.setTag(id, true);
             }
         }
-
         ImageRequest imageRequest = createImageRequest(uri, imageView.getLayoutParams().width, imageView.getLayoutParams().height, false);
         DraweeController draweeController = createDraweeController(uri, imageRequest, imageView.getController());
         imageView.setController(draweeController);
@@ -340,20 +343,75 @@ public class FrescoUtils
 
     private static AbstractDraweeController createDraweeController(String uri, ImageRequest imageRequest, DraweeController oldDraweeController)
     {
-        return Fresco.newDraweeControllerBuilder()
+        final AbstractDraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setUri(uri)
                 .setTapToRetryEnabled(true)
                 .setOldController(oldDraweeController)
                 .setImageRequest(imageRequest)
                 .build();
+        draweeController.addControllerListener(new TGDraweeControllerListener(draweeController));
+        return draweeController;
     }
 
     private static int getViewId(DraweeView draweeView)
     {
-        if(PLACE_HOLDER_ID == -1)
+        if(PLACE_HOLDER_ID == -1 && null != draweeView)
         {
-            PLACE_HOLDER_ID = CR.getViewId(TGApplicationProxy.getInstance().getApplication(), "placeholder");
+            PLACE_HOLDER_ID = CR.getViewId(draweeView.getContext(), "placeholder");
         }
         return PLACE_HOLDER_ID;
+    }
+
+    private static class TGDraweeControllerListener implements ControllerListener
+    {
+        private AbstractDraweeController draweeController;
+
+        private static final int MAX_RETRY = 2;
+
+        private int retry = 0;
+
+        public TGDraweeControllerListener(AbstractDraweeController controller)
+        {
+            this.draweeController = controller;
+        }
+        @Override
+        public void onSubmit(String id, Object callerContext)
+        {
+
+        }
+
+        @Override
+        public void onFinalImageSet(String id, Object imageInfo, Animatable animatable)
+        {
+
+        }
+
+        @Override
+        public void onIntermediateImageSet(String id, Object imageInfo)
+        {
+
+        }
+
+        @Override
+        public void onIntermediateImageFailed(String id, Throwable throwable)
+        {
+
+        }
+
+        @Override
+        public void onFailure(String id, Throwable throwable)
+        {
+            LOG.e("[Method:TGDraweeControllerListener:onFailure] id == " + id + " error == " + throwable.getMessage());
+            if(++retry <= MAX_RETRY)
+            {
+                draweeController.onClick();
+            }
+        }
+
+        @Override
+        public void onRelease(String id)
+        {
+
+        }
     }
 }

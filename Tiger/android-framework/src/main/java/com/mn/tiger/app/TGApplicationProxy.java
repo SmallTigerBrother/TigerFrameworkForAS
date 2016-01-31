@@ -11,7 +11,6 @@ import android.support.multidex.MultiDexApplication;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.system.AppConfigs;
 import com.mn.tiger.system.SystemConfigs;
-import com.mn.tiger.utility.FrescoUtils;
 import com.squareup.otto.Bus;
 
 import java.lang.reflect.Field;
@@ -48,7 +47,6 @@ public class TGApplicationProxy
 
         SystemConfigs.initSystemConfigs(application);
         AppConfigs.initAppConfigs(application);
-        FrescoUtils.initialize(application);
         return proxy;
     }
 
@@ -60,7 +58,6 @@ public class TGApplicationProxy
 
         SystemConfigs.initSystemConfigs(application);
         AppConfigs.initAppConfigs(application);
-        FrescoUtils.initialize(application);
         return proxy;
     }
 
