@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Looper;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
@@ -466,5 +467,14 @@ public class Commons
 		{
 			return className;
 		}
+	}
+
+    /**
+     * 判断是否在主线程
+     * @return
+     */
+	public static boolean isOnMainThread()
+	{
+		return Looper.myLooper() == Looper.getMainLooper();
 	}
 }
