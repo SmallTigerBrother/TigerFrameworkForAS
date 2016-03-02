@@ -77,6 +77,16 @@ public abstract class CaculatePolicy
 		return (int)((pxValue * scale) / densityOfScreen);
 	}
 	
+	/**
+	 * PX转换为px
+	 * @param pxValue
+	 * @return
+	 */
+	public final int px2px(int pxValue)
+	{
+		return (int)(pxValue * scale + 0.5f);
+	}
+	
 	protected double getRatio()
 	{
 		return Math.sqrt(inchOfScreen) * 2 / inchOfScreen;
