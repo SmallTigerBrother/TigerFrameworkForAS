@@ -56,7 +56,7 @@ public class TGRetrofit
             {
                 if(context instanceof TGActionBarActivity)
                 {
-//                    ((TGActionBarActivity)context);
+                    ((TGActionBarActivity)context).cancel(call);
                 }
                 return;
             }
@@ -65,7 +65,7 @@ public class TGRetrofit
             {
                 if(null != context && context instanceof TGActionBarActivity)
                 {
-//                    ((TGActionBarActivity)context).cance;
+                    ((TGActionBarActivity)context).dequeue(call);
                 }
                 return;
             }
@@ -80,12 +80,12 @@ public class TGRetrofit
                 if(null != response)
                 {
                     this.success = false;
-                    onRequestError(response.code(), response.message());
+                    onRequestError(response.code(), response.message(), response);
                 }
                 else
                 {
                     this.success = false;
-                    onRequestError( -1, "");
+                    onRequestError( -1, "", response);
                 }
             }
 
@@ -99,7 +99,7 @@ public class TGRetrofit
         public void onFailure(Call<T> call, Throwable t)
         {
             this.success = false;
-            onRequestError(-1, t.getMessage());
+            onRequestError(-1, t.getMessage(), null);
             onRequestOver(call);
         }
 
@@ -112,7 +112,7 @@ public class TGRetrofit
 
         public abstract D parseOriginalResponse(Response<T> response);
 
-        public void onRequestError( int code ,String message)
+        public void onRequestError( int code ,String message, Response<T> response)
         {
 
         }
@@ -121,7 +121,7 @@ public class TGRetrofit
         {
             if(null != context && context instanceof TGActionBarActivity)
             {
-//                ((TGActionBarActivity)context).dequ
+                ((TGActionBarActivity)context).dequeue(call);
             }
         }
 

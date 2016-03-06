@@ -301,7 +301,7 @@ public class TGActionBarActivity extends Activity
         executedCalls.remove(call);
     }
 
-    protected void cancel(Call<?> call)
+    public void cancel(Call<?> call)
     {
         call.cancel();
         executedCalls.remove(call);
