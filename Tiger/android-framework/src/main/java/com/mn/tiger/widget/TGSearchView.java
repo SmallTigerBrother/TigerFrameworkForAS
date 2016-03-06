@@ -57,7 +57,6 @@ public class TGSearchView extends RelativeLayout
 	private boolean closeIconEnable = true;
 
 	/**
-	 * @date 2013-1-29 构造函数
 	 * @param context
 	 *            运行环境
 	 */
@@ -68,7 +67,6 @@ public class TGSearchView extends RelativeLayout
 	}
 
 	/**
-	 * @date 2013-1-29 构造函数
 	 * @param context
 	 *            运行环境
 	 * @param attrs
@@ -82,8 +80,6 @@ public class TGSearchView extends RelativeLayout
 
 	/**
 	 * 该方法的作用: 初始化所有视图
-	 * 
-	 * @date 2013-1-29
 	 */
 	private void setupViews()
 	{
@@ -194,7 +190,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置查询内容
 	 * 
-	 * @date 2013-1-29
 	 * @param query
 	 *            查询内容
 	 */
@@ -209,7 +204,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 获取输入框
 	 * 
-	 * @date 2013-3-25
 	 * @return
 	 */
 	public AutoCompleteTextView getInputTextView()
@@ -220,7 +214,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置查询字体颜色
 	 * 
-	 * @date 2013-1-29
 	 * @param color
 	 *            字体颜色
 	 */
@@ -235,7 +228,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置查询字体大小
 	 * 
-	 * @date 2013-1-29
 	 * @param size
 	 *            字体大小
 	 */
@@ -250,7 +242,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置查询提示
 	 * 
-	 * @date 2013-1-29
 	 * @param hint
 	 *            提示
 	 */
@@ -265,7 +256,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置查询提示文字颜色
 	 * 
-	 * @date 2013-1-29
 	 * @param color
 	 *            提示文字颜色
 	 */
@@ -280,7 +270,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置关闭按钮是否可用
 	 * 
-	 * @date 2013-1-29
 	 * @param enable
 	 *            是否可用
 	 */
@@ -304,7 +293,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置关闭图标
 	 * 
-	 * @date 2013-1-29
 	 * @param drawable
 	 *            关闭图标
 	 */
@@ -319,7 +307,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 获取关闭图标视图
 	 * 
-	 * @date 2013-1-31
 	 * @return 关闭图标视图
 	 */
 	public ImageView getCloseIconView()
@@ -330,7 +317,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置查询内容事件监听器
 	 * 
-	 * @date 2013-1-29
 	 * @param listener
 	 *            内容事件监听器
 	 */
@@ -342,7 +328,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: 设置焦点变化事件监听器
 	 * 
-	 * @date 2013-1-29
 	 * @param listener
 	 *            焦点变化事件监听器
 	 */
@@ -357,7 +342,6 @@ public class TGSearchView extends RelativeLayout
 	/**
 	 * 该方法的作用: dip转换为px
 	 * 
-	 * @date 2013-2-7
 	 * @param dpValue
 	 *            dip的数值
 	 * @return
@@ -370,8 +354,6 @@ public class TGSearchView extends RelativeLayout
 
 	/**
 	 * 该方法的作用: 获取搜索关键字
-	 * @author l00220455
-	 * @date 2013-6-17
 	 * @return
 	 */
 	public String getQueryText()
@@ -398,7 +380,6 @@ public class TGSearchView extends RelativeLayout
 		/**
 		 * 该方法的作用: 查询内容变化时的回调方法
 		 * 
-		 * @date 2013-1-29
 		 * @param newText
 		 *            新的查询内容
 		 */
@@ -407,7 +388,6 @@ public class TGSearchView extends RelativeLayout
 		/**
 		 * 该方法的作用: 提交查询内容时的回调方法
 		 * 
-		 * @date 2013-1-29
 		 * @param query
 		 *            查询内容
 		 */

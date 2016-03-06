@@ -206,9 +206,6 @@ public class TGBadgeView extends TGImageButton
 
 	/**
 	 * 该方法的作用:设置徽标显示的文字
-	 * 
-	 * @date 2013-8-13
-	 * @param text
 	 */
 	public void setText(String text)
 	{
@@ -427,7 +424,6 @@ public class TGBadgeView extends TGImageButton
 
 	/**
 	 * Returns the target View this badge has been attached to.
-	 * 
 	 */
 	public View getTarget()
 	{

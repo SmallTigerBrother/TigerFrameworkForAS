@@ -1,6 +1,12 @@
 package com.mn.tiger.core.encode;
 
-import it.sauronsoftware.base64.Base64;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.mn.tiger.core.cache.TGCache;
+import com.mn.tiger.core.zip.TGZip;
+import com.mn.tiger.utility.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,13 +26,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.text.TextUtils;
-
-import com.mn.tiger.core.cache.TGCache;
-import com.mn.tiger.utility.FileUtils;
-import com.mn.tiger.core.zip.TGZip;
+import it.sauronsoftware.base64.Base64;
 
 public class TGEncode
 {
@@ -34,12 +34,7 @@ public class TGEncode
 			'a', 'b', 'c', 'd', 'e', 'f' };
 
 	/**
-	 * 
 	 * 该方法的作用:把byte数组转换成十六进制的字符串
-	 * 
-	 * @date 2013-2-26
-	 * @param b
-	 * @return
 	 */
 	private static String toHexString(byte[] b)
 	{
@@ -53,18 +48,13 @@ public class TGEncode
 	}
 
 	/**
-	 * 
 	 * 该方法的作用:用AES解密
-	 * 
-	 * @date 2013-2-26
 	 * @param hieroglyph
 	 *            AES加密的字符串
 	 * @param key
 	 *            密钥
 	 * @param isUnZip
 	 *            是否需要压缩   
-	 * @return byte[]
-	 * @throws Exception
 	 */
 	public static byte[] getAESDecrypt(String key, String hieroglyph, boolean isUnZip) throws Exception
 	{
@@ -90,14 +80,10 @@ public class TGEncode
 	/**
 	 * 
 	 * 该方法的作用:用AES解密
-	 * 
-	 * @date 2013-2-26
 	 * @param hieroglyph
 	 *            AES加密的字符串
 	 * @param key
 	 *            密钥
-	 * @return String
-	 * @throws Exception
 	 */
 	public static String getAESDecryptLocal(String key, String hieroglyph) throws Exception
 	{
@@ -173,12 +159,7 @@ public class TGEncode
 	}
 
 	/**
-	 * 
 	 * 该方法的作用:用RSA加密数据
-	 * 
-	 * @param key
-	 * @param hieroglyph
-	 * @return
 	 */
 	public static String getRSAEncrypt(String encryptkey, String data) throws Exception
 	{
@@ -193,13 +174,8 @@ public class TGEncode
 	/**
 	 * 
 	 * 该方法的作用:RSA加密,公钥加密，私钥解密，反之亦然
-	 * 
-	 * @date 2013-2-26
-	 * @param data
 	 * @param publicKey
 	 *            公钥
-	 * @return
-	 * @throws Exception
 	 */
 	public static byte[] getRSAEncrypt(PublicKey publicKey, byte[] data) throws Exception
 	{
@@ -223,10 +199,7 @@ public class TGEncode
 	/**
 	 * 该方法的作用:获取RSA公钥
 	 * 
-	 * @date 2013-2-26
-	 * @param key
 	 * @return 返回公钥对象(PublicKey)
-	 * @throws Exception
 	 */
 	private static PublicKey getPublicKeyByString(String key) throws Exception
 	{
@@ -240,11 +213,6 @@ public class TGEncode
 	/**
 	 * 
 	 * 该方法的作用:MD5加密
-	 * 
-	 * @date 2013-2-26
-	 * @param data
-	 * @return
-	 * @throws Exception
 	 */
 	public static String getMD5Encrypt(byte[] data) throws Exception
 	{
@@ -257,11 +225,8 @@ public class TGEncode
 	 * 
 	 * 该方法的作用:MD5加密
 	 * 
-	 * @date 2013-2-26
 	 * @param inStr
 	 *            需要加密的String
-	 * @return String
-	 * @throws Exception
 	 */
 	public static String getMD5Encrypt(String inStr) throws Exception
 	{
@@ -275,7 +240,6 @@ public class TGEncode
 	 * 
 	 * 该方法的作用:对数据流读取的信息进行加密
 	 * 
-	 * @date 2013-2-26
 	 * @param input
 	 *            数据流读取的信息
 	 * @return 加密后的String
@@ -317,11 +281,6 @@ public class TGEncode
 	/**
 	 * 
 	 * 该方法的作用:文件加密,适应于大文件的加密
-	 * 
-	 * @date 2013-3-25
-	 * @param context
-	 * @param file
-	 * @throws Exception
 	 */
 	public static void simpleEncodeFile(Context context, File file) throws Exception
 	{
@@ -343,13 +302,7 @@ public class TGEncode
 	}
 
 	/**
-	 * 
 	 * 该方法的作用:文件解密,适用于大文件的解密
-	 * 
-	 * @date 2013-3-25
-	 * @param context
-	 * @param file
-	 * @throws Exception
 	 */
 	public static void simpleDecodeFile(Context context, File file) throws Exception
 	{
@@ -373,10 +326,6 @@ public class TGEncode
 	/**
 	 * 该方法的作用:
 	 * 加密AESKey
-	 * @date 2014年8月26日
-	 * @param context
-	 * @param aesKey
-	 * @return
 	 */
 	public static String encryptAESKey(Context context, String aesKey)
 	{
@@ -391,11 +340,6 @@ public class TGEncode
 	/**
 	 * 该方法的作用:
 	 * 加密AESKey
-	 * @date 2014年8月26日
-	 * @param context
-	 * @param aesKey
-	 * @param maxConfuseCount
-	 * @return
 	 */
 	private static String encryptAESKey(Context context, String aesKey, int maxConfuseCount)
 	{
@@ -419,8 +363,6 @@ public class TGEncode
 	/**
 	 * 该方法的作用:
 	 * 获取混淆字符
-	 * @date 2014年8月26日
-	 * @return
 	 */
 	private static String getConfusedChar()
 	{
@@ -431,10 +373,6 @@ public class TGEncode
 	/**
 	 * 该方法的作用:
 	 * 解密AESKey
-	 * @date 2014年8月26日
-	 * @param context
-	 * @param aesKey
-	 * @return
 	 */
 	public static String decrypytAESKey(Context context, String aesKey)
 	{

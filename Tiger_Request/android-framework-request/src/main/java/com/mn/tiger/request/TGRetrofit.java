@@ -1,5 +1,10 @@
 package com.mn.tiger.request;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.mn.tiger.app.TGActionBarActivity;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -32,9 +37,39 @@ public class TGRetrofit
     {
         private boolean success = false;
 
+        private Context context;
+
+        public Callback(Context context)
+        {
+            this.context = context;
+        }
+
+        public Context getContext()
+        {
+            return context;
+        }
+
         @Override
         public void onResponse(Call<T> call, Response<T> response)
         {
+            if(null != context && context instanceof Activity && ((Activity)context).isFinishing())
+            {
+                if(context instanceof TGActionBarActivity)
+                {
+//                    ((TGActionBarActivity)context);
+                }
+                return;
+            }
+
+            if(call.isCanceled())
+            {
+                if(null != context && context instanceof TGActionBarActivity)
+                {
+//                    ((TGActionBarActivity)context).cance;
+                }
+                return;
+            }
+
             if(!hasError(call, response))
             {
                 this.success = true;
@@ -57,7 +92,7 @@ public class TGRetrofit
             /**
              * 请求结束
              */
-            onReqeustOver(call);
+            onRequestOver(call);
         }
 
         @Override
@@ -65,7 +100,7 @@ public class TGRetrofit
         {
             this.success = false;
             onRequestError(-1, t.getMessage());
-            onReqeustOver(call);
+            onRequestOver(call);
         }
 
         public boolean hasError(Call<T> call, Response<T> response)
@@ -82,9 +117,12 @@ public class TGRetrofit
 
         }
 
-        public void onReqeustOver(Call<T> call)
+        public void onRequestOver(Call<T> call)
         {
-
+            if(null != context && context instanceof TGActionBarActivity)
+            {
+//                ((TGActionBarActivity)context).dequ
+            }
         }
 
         public boolean isSuccess()

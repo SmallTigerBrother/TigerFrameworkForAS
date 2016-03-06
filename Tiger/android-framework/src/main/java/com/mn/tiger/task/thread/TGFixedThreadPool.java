@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 /**
  * 该类作用及功能说明
  * 线程池
- * @date 2014年8月23日
  */
 public class TGFixedThreadPool extends TGThreadPool
 {
@@ -28,8 +27,6 @@ public class TGFixedThreadPool extends TGThreadPool
 	/**
 	 * 该方法的作用:
 	 * 执行线程
-	 * @date 2014年8月23日
-	 * @param runnale
 	 */
 	public void execute(Runnable runnale)
 	{
@@ -39,7 +36,6 @@ public class TGFixedThreadPool extends TGThreadPool
 	/**
 	 * 该方法的作用:
 	 * 销毁
-	 * @date 2014年8月23日
 	 */
 	public void destroy()
 	{

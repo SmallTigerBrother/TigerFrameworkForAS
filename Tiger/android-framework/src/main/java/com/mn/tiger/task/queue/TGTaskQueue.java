@@ -14,18 +14,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
  * 该类作用及功能说明: 可并行执行多个任务的队列
- *
- * @date 2014年6月25日
  */
 public class TGTaskQueue extends AbsTaskQueue
 {
 	private static final Logger LOG = Logger.getLogger(TGTaskQueue.class);
 
-	/**
-	 * @date 2014年6月25日
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -55,7 +49,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 构造函数
-	 * @date 2014年6月25日
 	 */
 	public TGTaskQueue(int maxThreadNum)
 	{
@@ -66,7 +59,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 初始化线程池
-	 * @return
 	 */
 	protected TGThreadPool initThreadPool()
 	{
@@ -142,7 +134,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 该方法的作用: 移除任务
-	 * @date 2014年6月25日
 	 */
 	protected boolean removeTask(Integer taskId)
 	{
@@ -178,8 +169,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 该方法的作用: 暂停任务队列
-	 *
-	 * @date 2014年3月17日
 	 */
 	public void pauseTaskQueue()
 	{
@@ -202,8 +191,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 该方法的作用: 暂停某个指定任务
-	 *
-	 * @date 2014年3月17日
 	 */
 	public boolean pauseTask(int taskId)
 	{
@@ -226,7 +213,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 克隆任务并插入队列
-	 * @param task
 	 */
 	private void cloneTaskEnQueue(TGTask task)
 	{
@@ -250,8 +236,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 该方法的作用: 重启任务队列
-	 *
-	 * @date 2014年3月17日
 	 */
 	public void restart()
 	{
@@ -265,8 +249,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 取消某个任务
-	 * @param taskId
-	 * @return
 	 */
 	public boolean cancelTask(int taskId)
 	{
@@ -285,7 +267,6 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 该方法的作用:
 	 * 取消所有任务
-	 * @date 2014年9月4日
 	 */
 	public void cancelAllTasks()
 	{
@@ -297,8 +278,6 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 该方法的作用:
 	 * 获取任务状态
-	 * @date 2014年8月22日
-	 * @return
 	 */
 	public TGQueueState getState()
 	{
@@ -308,8 +287,6 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 该方法的作用:
 	 * 设置任务状态
-	 * @date 2014年8月22日
-	 * @param state
 	 */
 	public void setState(TGQueueState state)
 	{
@@ -319,8 +296,6 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 该方法的作用:
 	 * 获取线程池
-	 * @date 2014年8月22日
-	 * @return
 	 */
 	public TGThreadPool getThreadPool()
 	{
@@ -330,8 +305,6 @@ public class TGTaskQueue extends AbsTaskQueue
 	/**
 	 * 该方法的作用:
 	 * 设置线程池
-	 * @date 2014年8月22日
-	 * @param threadPool
 	 */
 	public void setThreadPool(TGThreadPool threadPool)
 	{
@@ -340,8 +313,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 该方法的作用: 获取默认任务监听
-	 * @date 2014年6月25日
-	 * @return
 	 */
 	protected ITaskListener getTaskListener()
 	{
@@ -354,7 +325,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 设置任务监听器
-	 * @param listener
 	 */
 	protected void setTaskListener(ITaskListener listener)
 	{
@@ -363,7 +333,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 获取最大并发线程数
-	 * @return
 	 */
 	public int getMaxThreadNum()
 	{
@@ -372,7 +341,6 @@ public class TGTaskQueue extends AbsTaskQueue
 
 	/**
 	 * 该类作用及功能说明: 默认任务队列监听
-	 * @date 2014年6月25日
 	 */
 	public class DefaultTaskListener implements ITaskListener
 	{

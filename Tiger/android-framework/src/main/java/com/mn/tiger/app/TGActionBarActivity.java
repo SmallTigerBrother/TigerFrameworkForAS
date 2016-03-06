@@ -13,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.task.TGTaskManager;
@@ -23,9 +22,12 @@ import com.mn.tiger.utility.SystemBarTintManager;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Vector;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * 带导航条的Activity基类
@@ -57,7 +59,9 @@ public class TGActionBarActivity extends Activity
      */
     private Vector<ActivityObserver> observers;
 
-    private ArrayList<Integer> httpTaskIDList = new ArrayList<Integer>();
+    private LinkedList<Integer> httpTaskIDList = new LinkedList<Integer>();
+
+    private LinkedList<Call> executedCalls = new LinkedList<>();
 
     private boolean translucentStatusBar = false;
 
@@ -284,6 +288,23 @@ public class TGActionBarActivity extends Activity
     public void unRegisterHttpLoader(int taskID)
     {
         httpTaskIDList.remove(Integer.valueOf(taskID));
+    }
+
+    public <T> void enqueue(Call<T> call, Callback<T> callback)
+    {
+        call.enqueue(callback);
+        executedCalls.add(call);
+    }
+
+    public void dequeue(Call<?> call)
+    {
+        executedCalls.remove(call);
+    }
+
+    protected void cancel(Call<?> call)
+    {
+        call.cancel();
+        executedCalls.remove(call);
     }
 
     /**

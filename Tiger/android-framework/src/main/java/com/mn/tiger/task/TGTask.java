@@ -12,7 +12,6 @@ import com.mn.tiger.task.result.TGTaskResult;
 /**
  * 该类作用及功能说明
  * 可派发任务
- * @date 2014年3月17日
  */
 public class TGTask implements Runnable, Cloneable
 {
@@ -65,7 +64,6 @@ public class TGTask implements Runnable, Cloneable
 
 	/**
 	 * 构造函数
-	 * @date 2014年6月25日
 	 */
 	public TGTask()
 	{
@@ -75,7 +73,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 任务执行方法
-	 * @date 2014年8月22日
 	 */
 	public void run()
 	{
@@ -125,8 +122,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 执行自身（任务真正的执行方法）
-	 * @date 2014年3月17日
-	 * @return
 	 */
 	protected TGTaskState executeOnSubThread()
 	{
@@ -136,8 +131,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 发送任务结果
-	 * @date 2014年3月18日
-	 * @param result
 	 */
 	protected void sendTaskResult(Object result)
 	{
@@ -168,7 +161,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 暂停任务
-	 * @date 2014年3月17日
 	 */
 	public final void pause()
 	{
@@ -180,7 +172,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 取消任务
-	 * @date 2014年3月17日
 	 */
 	public final void cancel()
 	{
@@ -191,7 +182,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 任务开始方法
-	 * @date 2014年3月17日
 	 */
 	protected void onTaskStart()
 	{
@@ -211,8 +201,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 任务变化方法
-	 * @date 2014年3月17日
-	 * @param progress
 	 */
 	protected void onTaskChanged(int progress)
 	{
@@ -227,7 +215,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 任务完成方法
-	 * @date 2014年3月17日
 	 */
 	protected void onTaskFinished()
 	{
@@ -246,9 +233,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 任务出错方法
-	 * @date 2014年3月17日
-	 * @param code
-	 * @param msg
 	 */
 	protected void onTaskError(int code, Object msg)
 	{
@@ -266,7 +250,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 任务取消的方法
-	 * @date 2014年3月20日
 	 */
 	protected void onTaskCancel()
 	{
@@ -283,7 +266,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 *
 	 * 该方法的作用: 暂停任务
-	 * @date 2014年8月15日
 	 */
 	protected void onTaskPause()
 	{
@@ -300,7 +282,6 @@ public class TGTask implements Runnable, Cloneable
 
 	/**
 	 * 该方法的作用: 清空回调接口，清空属性，销毁任务
-	 * @date 2014年8月15日
 	 */
 	protected void onDestroy()
 	{
@@ -340,8 +321,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 是否正在执行中
-	 * @date 2014年8月15日
-	 * @return
 	 */
 	public boolean isRunning()
 	{
@@ -351,8 +330,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 获取任务状态
-	 * @date 2014年3月17日
-	 * @return
 	 */
 	public TGTaskState getTaskState()
 	{
@@ -362,8 +339,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置任务状态
-	 * @date 2014年8月22日
-	 * @param state
 	 */
 	protected void setTaskState(TGTaskState state)
 	{
@@ -373,8 +348,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置任务ID
-	 * @date 2014年3月17日
-	 * @param taskID
 	 */
 	public void setTaskID(int taskID)
 	{
@@ -384,8 +357,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 获取任务ID
-	 * @date 2014年3月17日
-	 * @return
 	 */
 	public Integer getTaskID()
 	{
@@ -395,8 +366,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 获取Messenger
-	 * @date 2014年3月18日
-	 * @return
 	 */
 	public Messenger getMessenger()
 	{
@@ -406,8 +375,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置Messenger
-	 * @date 2014年3月18日
-	 * @param messenger
 	 */
 	public void setMessenger(Messenger messenger)
 	{
@@ -417,8 +384,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 获取参数
-	 * @date 2014年3月18日
-	 * @return
 	 */
 	public Object getParams()
 	{
@@ -428,8 +393,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置参数
-	 * @date 2014年3月18日
-	 * @param params
 	 */
 	public void setParams(Object params)
 	{
@@ -449,8 +412,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 获取类型
-	 * @date 2014年8月22日
-	 * @return
 	 */
 	public int getType()
 	{
@@ -460,8 +421,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置任务类型
-	 * @date 2014年8月22日
-	 * @param type
 	 */
 	public void setType(int type)
 	{
@@ -471,8 +430,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 获取任务变化监听器
-	 * @date 2014年3月17日
-	 * @return
 	 */
 	public ITaskListener getTaskListener()
 	{
@@ -482,8 +439,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置任务变化监听器
-	 * @date 2014年3月17日
-	 * @param taskListener
 	 */
 	public void setTaskListener(ITaskListener taskListener)
 	{
@@ -493,9 +448,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该方法的作用:
 	 * 设置任务错误信息
-	 * @date 2014年8月22日
-	 * @param errorCode
-	 * @param errorMsg
 	 */
 	public void setTaskError(int errorCode, String errorMsg)
 	{
@@ -506,7 +458,6 @@ public class TGTask implements Runnable, Cloneable
 	/**
 	 * 该类作用及功能说明
 	 * 任务错误
-	 * @date 2014年3月17日
 	 */
 	public static class TaskError
 	{
@@ -542,10 +493,7 @@ public class TGTask implements Runnable, Cloneable
 	}
 
 	/**
-	 *
 	 * 该类作用及功能说明 任务状态
-	 *
-	 * @date 2014年7月28日
 	 */
 	public enum TGTaskState
 	{

@@ -40,7 +40,6 @@ public class TGTaskManager
 
 	/**
 	 * 获取对象实例
-	 * @return
 	 */
 	public static TGTaskManager getInstance()
 	{
@@ -64,11 +63,7 @@ public class TGTaskManager
 	}
 
 	/**
-	 *
 	 * 该方法的作用: 添加开始任务
-	 * @date 2014年8月11日
-	 * @param taskParams
-	 * @return
 	 */
 	public int startTask(Context context, TGTaskParams taskParams)
 	{
@@ -94,9 +89,6 @@ public class TGTaskManager
 
 	/**
 	 * 启动有序任务列表
-	 * @param context
-	 * @param taskList
-	 * @return
 	 */
 	public int startScheduleTaskList(Context context, TGScheduleTaskList taskList)
 	{
@@ -114,8 +106,6 @@ public class TGTaskManager
 
 	/**
 	 * 取消任务
-	 * @param taskId
-	 * @param taskType
 	 */
 	public void cancelTask(int taskId, int taskType)
 	{
@@ -139,8 +129,6 @@ public class TGTaskManager
 
 	/**
 	 * 取消有序任务列表
-	 * @param context
-	 * @param taskList
 	 */
 	public void cancelScheduleTaskList(Context context, TGScheduleTaskList taskList)
 	{
@@ -158,9 +146,6 @@ public class TGTaskManager
 
 	/**
 	 * 停止任务
-	 * @date 2014年5月21日
-	 * @param taskId
-	 * @param taskType
 	 */
 	public void pauseTask(int taskId, int taskType)
 	{
@@ -177,9 +162,6 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:
-	 * @date 2014年5月16日
-	 * @param taskParams
-	 * @return
 	 */
 	public static TGTask createTask(Context context, TGTaskParams taskParams)
 	{
@@ -204,10 +186,6 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:创建任务参数
-	 * @param params
-	 * @param taskClsName
-	 * @param taskResultHandler
-	 * @return
 	 */
 	public static TGTaskParams createTaskParams(HashMap<String, String> params, String taskClsName,
 												TGTaskResultHandler taskResultHandler)
@@ -217,12 +195,6 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:创建任务参数
-	 * @date 2014年6月3日
-	 * @param params
-	 *            hashmap
-	 * @param taskClsName
-	 * @param taskResultHandler
-	 * @return
 	 */
 	public static TGTaskParams createTaskParams(HashMap<String, String> params, String taskClsName,
 												TGTaskResultHandler taskResultHandler, int taskId)
@@ -247,10 +219,6 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:创建任务参数
-	 * @param param
-	 * @param taskClsName
-	 * @param taskResultHandler
-	 * @return
 	 */
 	public static TGTaskParams createTaskParams(String param, String taskClsName,
 												TGTaskResultHandler taskResultHandler)
@@ -260,11 +228,7 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:创建任务参数
-	 * @param param
-	 * @param taskClsName
-	 * @param taskResultHandler
 	 * @param taskId 指定的任务ID号
-	 * @return
 	 */
 	public static TGTaskParams createTaskParams(String param, String taskClsName,
 												TGTaskResultHandler taskResultHandler, int taskId)
@@ -289,10 +253,6 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:创建任务参数
-	 * @param params
-	 * @param taskClsName
-	 * @param taskResultHandler
-	 * @return
 	 */
 	public static TGTaskParams createTaskParams(Bundle params, String taskClsName,
 												TGTaskResultHandler taskResultHandler)
@@ -302,13 +262,7 @@ public class TGTaskManager
 
 	/**
 	 * 该方法的作用:创建任务参数
-	 * @date 2014年6月3日
-	 * @param params
-	 *            Bundle
-	 * @param taskClsName
-	 * @param taskResultHandler
 	 * @param taskId 指定的任务ID号
-	 * @return
 	 */
 	public static TGTaskParams createTaskParams(Bundle params, String taskClsName,
 												TGTaskResultHandler taskResultHandler, int taskId)

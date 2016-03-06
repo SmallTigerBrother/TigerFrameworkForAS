@@ -3,16 +3,14 @@ package com.mn.tiger.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.mn.tiger.R;
+import com.mn.tiger.utility.CR;
 
 
 /**
  * 该类作用及功能说明
  * 顶部导航条
  * @version V2.0
- * @date 2013-8-30
  */
 public class TGNavigationBar extends RelativeLayout
 {	
@@ -67,24 +65,22 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 初始化试图
-	 * @date 2013-8-30
 	 */
 	protected void setupViews()
 	{
-        inflate(getContext(), R.layout.tiger_navigationbar, this);
-        leftNaviLayout = (RelativeLayout)findViewById(R.id.tiger_navi_left_layout);
-        rightNaviLayout = (RelativeLayout)findViewById(R.id.tiger_navi_right_layout);
-        middleNaviLayout = (RelativeLayout)findViewById(R.id.tiger_navi_middle_layout);
+        inflate(getContext(), CR.getLayoutId(getContext(), "tiger_navigationbar"), this);
+        leftNaviLayout = (RelativeLayout)findViewById(CR.getViewId(getContext(),"tiger_navi_left_layout"));
+        rightNaviLayout = (RelativeLayout)findViewById(CR.getViewId(getContext(), "tiger_navi_right_layout"));
+        middleNaviLayout = (RelativeLayout)findViewById(CR.getViewId(getContext(), "tiger_navi_middle_layout"));
 
-        middleTextView = (TGImageButton)findViewById(R.id.tiger_navi_middle_text);
-        leftNaviButton = (TGImageButton)findViewById(R.id.tiger_navi_left_btn);
-        rightNaviButton = (TGImageButton)findViewById(R.id.tiger_navi_right_btn);
+        middleTextView = (TGImageButton)findViewById(CR.getViewId(getContext(), "tiger_navi_middle_text"));
+        leftNaviButton = (TGImageButton)findViewById(CR.getViewId(getContext(), "tiger_navi_left_btn"));
+        rightNaviButton = (TGImageButton)findViewById(CR.getViewId(getContext(), "tiger_navi_right_btn"));
 	}
 	
 	/**
 	 * 该方法的作用:
 	 * 获取左导航Layout
-	 * @date 2013-8-30
 	 * @return
 	 */
 	public RelativeLayout getLeftNaviLayout()
@@ -95,7 +91,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 获取右导航Layout
-	 * @date 2013-8-30
 	 * @return
 	 */
 	public RelativeLayout getRightNaviLayout()
@@ -106,7 +101,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 获取中间导航Layout
-	 * @date 2013-8-30
 	 * @return
 	 */
 	public RelativeLayout getMiddleNaviLayout()
@@ -117,7 +111,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 获取左导航按钮
-	 * @date 2013-8-30
 	 * @return
 	 */
 	public TGImageButton getLeftNaviButton()
@@ -128,7 +121,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 设置左侧导航按钮
-	 * @date 2014年3月23日
 	 * @param leftNaviButton
 	 */
 	public void setLeftNaviButton(TGImageButton leftNaviButton)
@@ -141,7 +133,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 获取右导航按钮
-	 * @date 2013-8-30
 	 * @return
 	 */
 	public TGImageButton getRightNaviButton()
@@ -152,7 +143,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 设置右侧导航按钮
-	 * @date 2014年3月23日
 	 * @param rightNaviButton
 	 */
 	public void setRightNaviButton(TGImageButton rightNaviButton)
@@ -165,7 +155,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 获取中间标题TextView
-	 * @date 2013-8-30
 	 * @return
 	 */
 	public TGImageButton getMiddleTextView()
@@ -176,7 +165,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 设置标题文本
-	 * @date 2013-8-30
 	 * @param text
 	 * @return
 	 */
@@ -195,7 +183,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 设置左导航按钮是否可用
-	 * @date 2013-8-30
 	 * @param enabled
 	 */
 	public void setLeftButtonEnabled(boolean enabled) 
@@ -206,7 +193,6 @@ public class TGNavigationBar extends RelativeLayout
 	/**
 	 * 该方法的作用:
 	 * 设置右导航按钮是否可用
-	 * @date 2013-8-30
 	 * @param enabled
 	 */
 	public void setRightButtonEnabled(boolean enabled) 

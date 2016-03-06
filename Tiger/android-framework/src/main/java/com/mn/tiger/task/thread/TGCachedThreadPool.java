@@ -30,8 +30,6 @@ public class TGCachedThreadPool extends TGThreadPool
     /**
      * 该方法的作用:
      * 执行线程
-     * @date 2014年8月23日
-     * @param runnale
      */
     public void execute(Runnable runnale)
     {
@@ -41,7 +39,6 @@ public class TGCachedThreadPool extends TGThreadPool
     /**
      * 该方法的作用:
      * 销毁
-     * @date 2014年8月23日
      */
     public void destroy()
     {

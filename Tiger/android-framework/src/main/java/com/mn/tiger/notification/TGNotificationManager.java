@@ -21,7 +21,6 @@ public abstract class TGNotificationManager
     /**
      * 显示通知
      *
-     * @param context
      * @param type    通知类型
      * @param builder 通知信息建造者
      */
@@ -36,8 +35,6 @@ public abstract class TGNotificationManager
 
     /**
      * 显示通知
-     *
-     * @param context
      * @param type    通知类型（用户区分不同的通知）
      * @param builder 通知信息建造者
      */
@@ -53,7 +50,6 @@ public abstract class TGNotificationManager
 
     /**
      * 接收通知
-     * @param intent
      */
     public void receiveNotification(Intent intent)
     {

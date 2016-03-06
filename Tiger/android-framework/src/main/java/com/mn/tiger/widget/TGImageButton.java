@@ -55,10 +55,8 @@ public class TGImageButton extends LinearLayout
 	 * 
 	 * 该方法的作用:获取内容视图
 	 * 
-	 * @date 2013-4-11
 	 * @param type
 	 *            根据指定的类型，获取对应类型的视图
-	 * @return
 	 */
 	private View getContentView(int type)
 	{
@@ -171,9 +169,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置文本大小 注意：设置px的值即可，此方法转换成sp值再设置
-	 * 
-	 * @date 2013-4-12
-	 * @param size
 	 */
 	public void setTextSize(float size)
 	{
@@ -193,11 +188,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置内容视图与MPImageButton的间距
-	 * @date 2013-4-12
-	 * @param left
-	 * @param top
-	 * @param right
-	 * @param bottom
 	 */
 	public void setViewPadding(int left, int top, int right, int bottom)
 	{
@@ -214,7 +204,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:
-	 * @date 2013-8-13
 	 */
 	private void initBadgeView()
 	{
@@ -228,8 +217,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置徽章图片背景资源
-	 * @date 2013-8-13
-	 * @param resid
 	 */
 	public void setBadgeBackgroudResource(int resid)
 	{
@@ -242,9 +229,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置徽章视图背景图片
-	 * 
-	 * @date 2013-8-13
-	 * @param drawable
 	 */
 	@SuppressWarnings("deprecation")
 	public void setBadgeBackgroudDrawable(Drawable drawable)
@@ -258,9 +242,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置徽章视图背景颜色
-	 * 
-	 * @date 2013-8-13
-	 * @param color
 	 */
 	public void setBadgeBackgroudColor(int color)
 	{
@@ -273,9 +254,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:
-	 * 
-	 * @date 2013-8-13
-	 * @param drawable
 	 */
 	public void setBadgeDrawable(Drawable drawable)
 	{
@@ -288,9 +266,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:
-	 * 
-	 * @date 2013-8-13
-	 * @param resId
 	 */
 	public void setBadgeResource(int resId)
 	{
@@ -303,9 +278,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:
-	 * 
-	 * @date 2013-8-13
-	 * @param bm
 	 */
 	public void setBadgeBitmap(Bitmap bm)
 	{
@@ -318,9 +290,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置徽章视图文本
-	 * 
-	 * @date 2013-8-13
-	 * @param text
 	 */
 	public void setBadgeText(String text)
 	{
@@ -333,9 +302,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置徽标文本颜色
-	 * 
-	 * @date 2013-8-13
-	 * @param color
 	 */
 	public void setBadgeTextColor(int color)
 	{
@@ -348,9 +314,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:
-	 * 
-	 * @date 2013-8-13
-	 * @param size
 	 */
 	public void setBadgeTextSize(float size)
 	{
@@ -363,9 +326,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置显示位置
-	 * 
-	 * @date 2013-8-13
-	 * @param layoutPosition
 	 */
 	public void setBadgePosition(int layoutPosition)
 	{
@@ -378,9 +338,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置徽章的margin值
-	 * 
-	 * @date 2013-8-13
-	 * @param badgeMargin
 	 */
 	public void setBadgeMargin(int left, int top, int right, int bottom)
 	{
@@ -393,12 +350,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:设置padding值
-	 * 
-	 * @date 2013-8-13
-	 * @param left
-	 * @param top
-	 * @param right
-	 * @param bottom
 	 */
 	public void setBadgePadding(int left, int top, int right, int bottom)
 	{
@@ -434,9 +385,6 @@ public class TGImageButton extends LinearLayout
 
 	/**
 	 * 该方法的作用:获取内容视图(文本内容或者图片内容)
-	 * 
-	 * @date 2013-4-12
-	 * @return
 	 */
 	public View getContentView()
 	{

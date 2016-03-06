@@ -1,7 +1,5 @@
 package com.mn.tiger.widget.slidingmenu;
 
-import java.lang.reflect.Method;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -25,6 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.mn.tiger.widget.slidingmenu.CustomViewAbove.OnPageChangeListener;
+
+import java.lang.reflect.Method;
 
 /**
  * The Class SlidingMenu.
@@ -65,8 +65,6 @@ public class SlidingMenu extends RelativeLayout
 	 * the component's <code>addOnOpenListener<code> method. When
 	 * the onOpen event occurs, that object's appropriate
 	 * method is invoked
-	 * 
-	 * @see OnOpenEvent
 	 */
 	public interface OnOpenListener
 	{
@@ -83,8 +81,6 @@ public class SlidingMenu extends RelativeLayout
 	 * the component's <code>addOnCloseListener<code> method. When
 	 * the onClose event occurs, that object's appropriate
 	 * method is invoked.
-	 * 
-	 * @see OnCloseEvent
 	 */
 	public interface OnCloseListener
 	{
@@ -796,10 +792,7 @@ public class SlidingMenu extends RelativeLayout
 
 	/**
 	 * Controls whether the SlidingMenu can be opened with a swipe gesture.
-	 * Options are {@link #TOUCHMODE_MARGIN TOUCHMODE_MARGIN},
-	 * {@link #TOUCHMODE_FULLSCREEN TOUCHMODE_FULLSCREEN}, or
-	 * {@link #TOUCHMODE_NONE TOUCHMODE_NONE}
-	 * 
+	 *
 	 * @param mode
 	 *            the new touch mode
 	 */
@@ -816,10 +809,7 @@ public class SlidingMenu extends RelativeLayout
 
 	/**
 	 * Controls whether the SlidingMenu can be opened with a swipe gesture.
-	 * Options are {@link #TOUCHMODE_MARGIN TOUCHMODE_MARGIN},
-	 * {@link #TOUCHMODE_FULLSCREEN TOUCHMODE_FULLSCREEN}, or
-	 * {@link #TOUCHMODE_NONE TOUCHMODE_NONE}
-	 * 
+	 *
 	 * @param mode
 	 *            the new touch mode
 	 */

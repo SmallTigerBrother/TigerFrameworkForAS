@@ -9,7 +9,6 @@ import android.widget.TextView;
  * 该类作用及功能说明 走马灯视图
  * 
  * @version V2.0
- * @see JDK1.6,android-8
  */
 public class TGMarqueeText extends TextView
 {

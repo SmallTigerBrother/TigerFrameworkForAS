@@ -18,8 +18,6 @@ import com.mn.tiger.utility.CR;
 
 /**
  * 该类作用及功能说明:通讯录索引条
- * 
- * @date 2014-2-26
  */
 public class TGLetterView extends View
 {
@@ -116,8 +114,6 @@ public class TGLetterView extends View
 
 	/**
 	 * 该方法的作用:初始化画笔
-	 * 
-	 * @date 2014-3-12
 	 */
 	private void initPaint()
 	{
@@ -139,7 +135,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:设置LetterView中字体的样式
 	 * 
-	 * @date 2014-3-12
 	 * @param typeface
 	 */
 	public void setTextType(Typeface typeface)
@@ -150,8 +145,7 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:设置背景颜色
 	 * 
-	 * @date 2014-2-26
-	 * @param bgColor
+	 * @param backgroundColor
 	 */
 	public void setLetterViewBackgroundColor(int backgroundColor)
 	{
@@ -160,9 +154,7 @@ public class TGLetterView extends View
 
 	/**
 	 * 该方法的作用:设置要显示的字体颜色
-	 * 
-	 * @date 2014-2-26
-	 * @param i
+	 * @param currentPosition
 	 */
 
 	private void showTextColor(int currentPosition)
@@ -188,7 +180,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:设置选中item字体颜色的变化
 	 * 
-	 * @date 2014-2-26
 	 * @param selectTextColor
 	 */
 	public void setSelectTextColor(int selectTextColor)
@@ -199,7 +190,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:计算平均每个item所占的位置高度
 	 * 
-	 * @date 2014-2-26
 	 * @return
 	 */
 	private int getAverageHeight()
@@ -211,7 +201,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:设置LetterView中每个item的字体大小
 	 * 
-	 * @date 2014-2-26
 	 * @param size
 	 */
 	public void setTextSize(int size)
@@ -221,8 +210,6 @@ public class TGLetterView extends View
 
 	/**
 	 * 该方法的作用:获取letterview自身的高度
-	 * 
-	 * @date 2014-3-12
 	 * @return
 	 */
 	private int getLetterViewHeight()
@@ -233,7 +220,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:获取letterview自身的宽度
 	 * 
-	 * @date 2014-3-12
 	 * @return
 	 */
 	private int getLetterViewWidth()
@@ -244,7 +230,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:设置item的默认颜色
 	 * 
-	 * @date 2014-2-26
 	 * @param textColor
 	 */
 	public void setTextColor(int textColor)
@@ -255,7 +240,6 @@ public class TGLetterView extends View
 	/**
 	 * 该方法的作用:设置要显示的内容集合
 	 * 
-	 * @date 2014-2-26
 	 * @param strings
 	 */
 	public void setTextContent(String[] strings)

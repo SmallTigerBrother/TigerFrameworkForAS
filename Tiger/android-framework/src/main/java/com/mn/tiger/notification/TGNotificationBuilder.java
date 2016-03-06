@@ -75,8 +75,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 设置滚动文本
-	 * 
-	 * @param tickerText
 	 */
 	public void setTickerText(String tickerText)
 	{
@@ -85,8 +83,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 设置标题
-	 * 
-	 * @param title
 	 */
 	public void setContentTitle(String title)
 	{
@@ -95,8 +91,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 设置内容文本
-	 * 
-	 * @param text
 	 */
 	public void setContentText(String text)
 	{
@@ -105,9 +99,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 设置extra数据
-	 * 
-	 * @param key
-	 * @param value
 	 */
 	public void putExtra(String key, int value)
 	{
@@ -116,9 +107,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 设置extra数据
-	 * 
-	 * @param key
-	 * @param value
 	 */
 	public void putExtra(String key, String value)
 	{
@@ -127,9 +115,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 设置extra数据
-	 * 
-	 * @param key
-	 * @param value
 	 */
 	public void putExtra(String key, Serializable value)
 	{
@@ -138,8 +123,6 @@ public class TGNotificationBuilder
 
 	/**
 	 * 构造通知
-	 * 
-	 * @return
 	 */
 	final Notification build()
 	{
