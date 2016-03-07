@@ -182,7 +182,6 @@ public class TGRetrofit
             if(null != context && context instanceof TGActionBarActivity)
             {
                 ((TGActionBarActivity)context).dequeue(call);
-                return;
             }
 
             if(!hasError(call, response))
@@ -197,12 +196,14 @@ public class TGRetrofit
                 {
                     //请求失败
                     this.success = false;
+                    LOG.e("[Method:onResponse] code = " + response.code() + " message = " + response.message());
                     onRequestError(response.code(), response.message(), response);
                 }
                 else
                 {
                     //请求失败
                     this.success = false;
+                    LOG.e("[Method:onResponse] code = -1");
                     onRequestError(-1, "", response);
                 }
             }
