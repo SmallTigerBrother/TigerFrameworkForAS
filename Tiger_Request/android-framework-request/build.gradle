@@ -47,10 +47,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.google.code.gson:gson:latest.integration'
     compile 'com.mn.tiger:android-framework:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:retrofit:latest.integration'
 }
 
 install {
