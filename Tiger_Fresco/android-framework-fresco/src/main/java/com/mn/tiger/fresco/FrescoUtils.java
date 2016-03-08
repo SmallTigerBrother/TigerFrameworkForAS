@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
-import com.facebook.common.internal.Supplier;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.AbstractDraweeController;
 import com.facebook.drawee.controller.ControllerListener;
@@ -18,11 +17,10 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.DraweeView;
-import com.facebook.imagepipeline.cache.MemoryCacheParams;
 import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.facebook.soloader.SoLoader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 
@@ -35,39 +33,35 @@ public class FrescoUtils
 
     private static int PLACE_HOLDER_ID = -1;
 
-    private static final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
-
-    private static final int MAX_MEMORY_CACHE_SIZE = (int) (MAX_HEAP_SIZE * 0.25);
-
+    /**
+     * 初始化
+     * @param context
+     */
     public static void initialize(Context context)
     {
         try
         {
             Class.forName("com.facebook.drawee.backends.pipeline.Fresco");
-            final MemoryCacheParams memoryCacheParams = new MemoryCacheParams(
-                    MAX_MEMORY_CACHE_SIZE,
-                    Integer.MAX_VALUE,
-                    MAX_MEMORY_CACHE_SIZE,
-                    Integer.MAX_VALUE,
-                    Integer.MAX_VALUE);
-
-            Supplier<MemoryCacheParams> memoryCacheParamsSupplier = new Supplier<MemoryCacheParams>()
-            {
-                @Override
-                public MemoryCacheParams get()
-                {
-                    return memoryCacheParams;
-                }
-            };
-
-            ImagePipelineConfig.Builder builder = ImagePipelineConfig.newBuilder(context)
-                    .setBitmapMemoryCacheParamsSupplier(memoryCacheParamsSupplier);
-
-            Fresco.initialize(context, builder.build());
+            Fresco.initialize(context);
         }
         catch (ClassNotFoundException e)
         {
             LOG.e("[Method:initialize]", e);
+        }
+    }
+
+    /**
+     * 加载webpJNI库
+     */
+    public static void loadWebpJNI()
+    {
+        try
+        {
+            SoLoader.loadLibrary("webp");
+        }
+        catch(UnsatisfiedLinkError nle)
+        {
+            LOG.e("[Method:loadWebpJNI]", nle);
         }
     }
 
