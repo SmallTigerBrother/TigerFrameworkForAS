@@ -8,7 +8,6 @@ import com.mn.tiger.datastorage.db.sqlite.Selector;
 import com.mn.tiger.datastorage.db.sqlite.WhereBuilder;
 import com.mn.tiger.datastorage.db.upgrade.AbsDbUpgrade;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.utility.Constant;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class TGDownloadDBHelper
 	private TGDBManager getDB(Context context)
 	{
 		TGDBManager db = TGDBManager.create(context, context.getApplicationInfo().dataDir
-						+ File.separator + Constant.STORE_DATABASE_PATH, database_name, database_version,
+						+ File.separator + "downloader", database_name, database_version,
 				new AbsDbUpgrade()
 				{
 					@Override

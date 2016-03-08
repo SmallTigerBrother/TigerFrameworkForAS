@@ -3,19 +3,19 @@ package com.mn.tiger.download;
 import android.content.Context;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.HttpType;
-import com.mn.tiger.request.TGHttpParams;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by peng on 15/9/27.
@@ -24,22 +24,18 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
 {
     private static final Logger LOG = Logger.getLogger(OKHttpDownloadClient.class);
 
-    private int tag = -1;
-
-    private static OkHttpClient okHttpClient = new OkHttpClient();
-
-    {
-        okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
-        okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
-        okHttpClient.setWriteTimeout(60, TimeUnit.SECONDS);
-    }
+    private static OkHttpClient okHttpClient =
+            new OkHttpClient.Builder().connectTimeout(120, TimeUnit.SECONDS)
+                    .readTimeout(120, TimeUnit.SECONDS)
+                    .writeTimeout(120, TimeUnit.SECONDS).build();
 
     private Response response;
+
+    private Call call;
 
     public OKHttpDownloadClient(Context context, TGDownloader downloader, TGDownloadTask downloadTask)
     {
         super(context, downloader, downloadTask);
-        this.tag = downloadTask.getTaskID();
     }
 
     @Override
@@ -50,7 +46,8 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
             LOG.d("[Method:executeHttpConnect] url : " + downloader.getUrl() + "\n" + "params : " + downloader.getParams().toString() + "\n");
 
             Request request = buildRequest(downloader.getRequestType(), downloader.getUrl(), downloader.getParams(), null);
-            response = okHttpClient.newCall(request).execute();
+            call = okHttpClient.newCall(request);
+            response = call.execute();
         }
         catch (IOException e)
         {
@@ -94,7 +91,6 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
             }
         }
 
-        builder.tag(tag);
         return builder.build();
     }
 
@@ -106,7 +102,7 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
      */
     private RequestBody initFormDataRequestBody(HashMap<String, String> parameters) throws IOException
     {
-        FormEncodingBuilder builder = new FormEncodingBuilder();
+        FormBody.Builder builder = new FormBody.Builder();
         for(Map.Entry<String, String> entry : parameters.entrySet())
         {
             builder.add(entry.getKey(), entry.getValue());
@@ -123,15 +119,7 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
     @Override
     protected long getContentLength()
     {
-        try
-        {
-            return response.body().contentLength();
-        }
-        catch (IOException e)
-        {
-            LOG.e("[Method:getContentLength]", e);
-            return 0;
-        }
+        return response.body().contentLength();
     }
 
     @Override
@@ -166,6 +154,6 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
     @Override
     public void cancel()
     {
-        okHttpClient.cancel(tag);
+        call.cancel();
     }
 }

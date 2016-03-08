@@ -3,7 +3,6 @@ package com.mn.tiger.download;
 import android.content.Context;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.task.TGTask.TGTaskState;
 import com.mn.tiger.utility.Commons;
 import com.mn.tiger.utility.FileUtils;

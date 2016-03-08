@@ -3,7 +3,6 @@ package com.mn.tiger.download;
 import android.os.Bundle;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.error.TGHttpError;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.NetworkUtils;
@@ -76,9 +75,9 @@ public class TGDownloadTask extends TGTask
 	{
 		if(getTaskState() == TGTaskState.WAITING)
 		{
-			downloadHttpClient.cancel();
 			TGDownloader downloader = TGDownloader.getInstance(getContext(), mDownloadParams, this.getTaskID());
 			onDownloadCancel(downloader);
+			downloadHttpClient.cancel();
 		}
 		super.onTaskCancel();
 	}

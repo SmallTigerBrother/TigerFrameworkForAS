@@ -4,9 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.error.TGErrorMsgEnum;
-import com.mn.tiger.request.error.TGHttpError;
-import com.mn.tiger.request.receiver.TGHttpResult;
 import com.mn.tiger.utility.FileUtils;
 
 import java.io.IOException;

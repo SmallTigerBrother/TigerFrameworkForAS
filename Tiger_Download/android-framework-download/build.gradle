@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "1.0.0"
+version = "1.0.1"
 def siteUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS'    // project homepage
 def gitUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS.git' // project git
 group = "com.mn.tiger"
@@ -47,8 +47,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.mn.tiger:android-framework:latest.integration@aar'
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.mn.tiger:android-framework-logger:latest.integration'
+    compile 'com.mn.tiger:android-framework-utility:latest.integration'
+    compile 'com.mn.tiger:android-framework-datastorage:latest.integration'
+    compile 'com.google.code.gson:gson:latest.integration'
+    compile 'com.squareup.okhttp3:okhttp:latest.integration'
 }
 
 install {
