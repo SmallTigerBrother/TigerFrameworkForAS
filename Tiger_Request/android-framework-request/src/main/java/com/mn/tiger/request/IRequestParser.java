@@ -10,9 +10,10 @@ public interface IRequestParser
 {
 	/**
 	 * 解析请求结果
+	 * @param httpParams
 	 * @param httpResult 请求结果
 	 * @param resultClsName 请求结果类的类名
 	 * @return
 	 */
-	Object parseRequestResult(TGHttpResult httpResult, String resultClsName);
+	Object parseRequestResult(TGHttpParams httpParams, TGHttpResult httpResult, String resultClsName);
 }

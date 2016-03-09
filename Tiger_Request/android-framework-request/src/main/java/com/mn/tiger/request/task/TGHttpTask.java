@@ -14,6 +14,7 @@ import com.mn.tiger.utility.MD5;
 import com.mn.tiger.utility.NetworkUtils;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 该类作用及功能说明 Http请求任务类
@@ -58,6 +59,8 @@ public abstract class TGHttpTask extends TGTask
 	 * 缓存用的Key
 	 */
 	private String cacheKey = "";
+
+	private static ConcurrentHashMap<String,IRequestParser> requestParserMap = new ConcurrentHashMap<>();
 
 	@Override
 	protected TGTaskState executeOnSubThread()
@@ -148,8 +151,14 @@ public abstract class TGHttpTask extends TGTask
 		{
 			try
 			{
-				IRequestParser parser = (IRequestParser) Class.forName(parserClsName).newInstance();
-				httpResult.setObjectResult(parser.parseRequestResult(httpResult, resultClsName));
+				IRequestParser parser = requestParserMap.get(parserClsName);
+                if(null == parser)
+                {
+                    //缓存解析器，一个类型仅会存在一个解析器
+                    parser = (IRequestParser) Class.forName(parserClsName).newInstance();
+                    requestParserMap.put(parserClsName, parser);
+                }
+				httpResult.setObjectResult(parser.parseRequestResult(getRequestParams(), httpResult, resultClsName));
 			}
 			catch (Exception e)
 			{

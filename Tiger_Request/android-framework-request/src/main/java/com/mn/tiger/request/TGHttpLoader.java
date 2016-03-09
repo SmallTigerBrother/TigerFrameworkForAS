@@ -22,7 +22,6 @@ import com.mn.tiger.task.TGTaskParams;
 import com.mn.tiger.task.TaskType;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Http请求类（包含异步、同步方法）
@@ -82,11 +81,6 @@ public class TGHttpLoader<T> implements IRequestParser
 	private String taskClsName = null;
 
 	/**
-	 * 解析类的类名
-	 */
-	private String parserClsName = "";
-
-	/**
 	 * 结果类的类名
 	 */
 	private String resultClsName = "";
@@ -98,42 +92,6 @@ public class TGHttpLoader<T> implements IRequestParser
 
 	public TGHttpLoader()
 	{
-		stringParams = new HashMap<String, String>();
-		params = new TGHttpParams();
-		params.setStringParams(stringParams);
-		parserClsName = this.getClass().getName();
-
-		appendBaseRequestParams();
-	}
-
-	/**
-	 * 设置请求方式
-	 * @param httpType
-	 */
-	public void setHttpType(int httpType)
-	{
-		this.requestType = httpType;
-	}
-
-	/**
-	 * 执行Http请求，请在调用该方法之前，调用setHttpType方法设置请求方式
-	 * @param context
-	 * @param requestUrl
-	 * @param clazz
-	 * @param callback
-	 */
-	public void load(Context context,String requestUrl, Class<T> clazz,
-					 OnLoadCallback<T> callback)
-	{
-		if(requestType == HttpType.REQUEST_UNKNOWN)
-		{
-			LOG.e("[Method:load] you may not set HttpType before use this method, we will try load by HttpType.REQUEST_GET");
-			execute(context, HttpType.REQUEST_GET, requestUrl, clazz.getName(), callback);
-		}
-		else
-		{
-			execute(context, requestType, requestUrl, clazz.getName(), callback);
-		}
 	}
 
 	/**
@@ -145,6 +103,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	public final void loadByGet(Context context, String requestUrl, Class<T> clazz,
 						  OnLoadCallback<T> callback)
 	{
+		appendBaseRequestParams();
 		execute(context, HttpType.REQUEST_GET, requestUrl, clazz.getName(), callback);
 	}
 
@@ -156,8 +115,9 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param requestUrl
 	 * @return
 	 */
-	public TGHttpResult loadByGetSync(Context context, String requestUrl, Class<T> clazz)
+	public final TGHttpResult loadByGetSync(Context context, String requestUrl, Class<T> clazz)
 	{
+		appendBaseRequestParams();
         return executeSync(context,HttpType.REQUEST_GET, requestUrl, clazz.getName());
 	}
 
@@ -170,6 +130,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	public final void loadByPost(Context context, String requestUrl, Class<T> clazz,
 								 OnLoadCallback<T> callback)
 	{
+		appendBaseRequestParams();
 		execute(context, HttpType.REQUEST_POST, requestUrl, clazz.getName(), callback);
 	}
 
@@ -182,6 +143,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 */
 	public TGHttpResult loadByPostSync(Context context, String requestUrl, Class<T> clazz)
 	{
+		appendBaseRequestParams();
         return executeSync(context, HttpType.REQUEST_POST, requestUrl, clazz.getName());
 	}
 
@@ -194,6 +156,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	public final void loadByPut(Context context, String requestUrl, Class<T> clazz,
 								OnLoadCallback<T> callback)
 	{
+		appendBaseRequestParams();
 		execute(context, HttpType.REQUEST_PUT, requestUrl, clazz.getName(), callback);
 	}
 
@@ -204,8 +167,9 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param requestUrl
 	 * @return
 	 */
-	public TGHttpResult loadByPutSync(Context context, String requestUrl)
+	public final TGHttpResult loadByPutSync(Context context, String requestUrl)
 	{
+		appendBaseRequestParams();
         return executeSync(context, HttpType.REQUEST_PUT, requestUrl, null);
 	}
 
@@ -218,6 +182,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	public final void loadByDelete(Context context, String requestUrl, Class<T> clazz,
 								   OnLoadCallback<T> callback)
 	{
+		appendBaseRequestParams();
 		execute(context, HttpType.REQUEST_DELETE, requestUrl, clazz.getName(), callback);
 	}
 
@@ -228,8 +193,9 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * @param requestUrl
 	 * @return
 	 */
-	public TGHttpResult loadByDeleteSync(Context context, String requestUrl)
+	public final TGHttpResult loadByDeleteSync(Context context, String requestUrl)
 	{
+		appendBaseRequestParams();
         return executeSync(context, HttpType.REQUEST_DELETE, requestUrl, null);
 	}
 
@@ -254,27 +220,24 @@ public class TGHttpLoader<T> implements IRequestParser
 	protected TGHttpResult executeSync(Context context, int requestType, String requestUrl,
 							   String resultClsName)
 	{
-		TGHttpParams httpParams = new TGHttpParams();
-		httpParams.setStringParams(stringParams);
-		httpParams.setFileParams(fileParams);
 		TGHttpResult httpResult = null;
 		AbstractSyncHttpLoader syncHttpLoader = new OkHttpSyncHttpLoader(0);
 		switch (requestType)
 		{
 			case HttpType.REQUEST_GET:
-				httpResult = syncHttpLoader.loadByGetSync(context, requestUrl, httpParams, properties);
+				httpResult = syncHttpLoader.loadByGetSync(context, requestUrl, getHttpParams(), properties);
 				break;
 			case HttpType.REQUEST_POST:
-				httpResult = syncHttpLoader.loadByPostSync(context, requestUrl, httpParams, properties);
+				httpResult = syncHttpLoader.loadByPostSync(context, requestUrl, getHttpParams(), properties);
 				break;
 			case HttpType.REQUEST_DELETE:
-				httpResult = syncHttpLoader.loadByDeleteSync(context, requestUrl, httpParams, properties);
+				httpResult = syncHttpLoader.loadByDeleteSync(context, requestUrl, getHttpParams(), properties);
 				break;
 			case HttpType.REQUEST_PUT:
-				httpResult = syncHttpLoader.loadByPutSync(context, requestUrl, httpParams, properties);
+				httpResult = syncHttpLoader.loadByPutSync(context, requestUrl, getHttpParams(), properties);
 				break;
 		}
-		httpResult.setObjectResult(parseRequestResult(httpResult, resultClsName));
+		httpResult.setObjectResult(parseRequestResult(getHttpParams(), httpResult, resultClsName));
 		return httpResult;
 	}
 
@@ -312,7 +275,7 @@ public class TGHttpLoader<T> implements IRequestParser
 			return taskID;
 		}
 
-		doInBackground(params, initHttpResultHandler());
+		doInBackground(getHttpParams(), initHttpResultHandler());
 
 		return taskID;
 	}
@@ -380,7 +343,7 @@ public class TGHttpLoader<T> implements IRequestParser
 			data.putSerializable(TGHttpTask.PARAM_PARAMS, params);
 		}
 
-		data.putString(TGHttpTask.PARAM_PARSERCLSNAME, parserClsName);
+		data.putString(TGHttpTask.PARAM_PARSERCLSNAME, this.getClass().getName());
 		data.putString(TGHttpTask.PARAM_RESLUTCLSNAME, resultClsName);
 
 		TGTaskParams taskParams = TGTaskManager.createTaskParams(data,
@@ -473,31 +436,6 @@ public class TGHttpLoader<T> implements IRequestParser
 	}
 
 	/**
-	 * 该方法的作用: 设置Headers请求参数(会清空原有参数)
-	 * @date 2014年5月23日
-	 * @param properties
-	 */
-	public final TGHttpLoader<T> setProperties(Map<String, String> properties)
-	{
-		if(null == properties)
-		{
-			properties = new HashMap<String, String>();
-		}
-
-		if(this.properties != properties)
-		{
-			this.properties.clear();
-		}
-
-		if(null != properties)
-		{
-			this.properties.putAll(properties);
-		}
-
-		return this;
-	}
-
-	/**
 	 * 添加Headers请求参数
 	 * @param key
 	 * @param value
@@ -514,24 +452,6 @@ public class TGHttpLoader<T> implements IRequestParser
 	}
 
 	/**
-	 * 设置字符串参数（会清空原有参数）
-	 * @param params
-	 */
-	public final TGHttpLoader<T> setRequestParams(Map<String, String> params)
-	{
-		if(this.stringParams != params)
-		{
-			this.stringParams.clear();
-		}
-
-		if(null != params)
-		{
-			this.stringParams.putAll(params);
-		}
-		return this;
-	}
-
-	/**
 	 * 添加字符串参数
 	 * @param key
 	 * @param value
@@ -540,7 +460,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	{
 		if(null != key && null != value)
 		{
-			this.stringParams.put(key, value);
+			this.getStringParams().put(key, value);
 		}
 		else
 		{
@@ -594,13 +514,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	{
 		if(null != key && null != filePath)
 		{
-			if(null == fileParams)
-			{
-				fileParams = new HashMap<String, String>();
-				params.setFileParams(fileParams);
-			}
-
-			fileParams.put(key, filePath);
+			getFileParams().put(key, filePath);
 		}
 		else
 		{
@@ -609,7 +523,36 @@ public class TGHttpLoader<T> implements IRequestParser
 		return this;
 	}
 
-	/**
+    protected final HashMap<String, String> getFileParams()
+    {
+        if(null == fileParams)
+        {
+            fileParams = new HashMap<String, String>();
+            getHttpParams().setFileParams(fileParams);
+        }
+        return fileParams;
+    }
+
+    protected final TGHttpParams getHttpParams()
+    {
+        if(null == params)
+        {
+            params = new TGHttpParams();
+        }
+        return params;
+    }
+
+    protected final HashMap<String, String> getStringParams()
+    {
+        if(null == stringParams)
+        {
+            stringParams = new HashMap<>();
+            getHttpParams().setStringParams(stringParams);
+        }
+        return stringParams;
+    }
+
+    /**
 	 * 解析请求结果（从已解析成对象的结果中解析出所需要的结果），默认直接返回原始结果
 	 * @param originalResultObject  已解析成对象的原始结果
 	 * @return 目标对象结果
@@ -688,7 +631,7 @@ public class TGHttpLoader<T> implements IRequestParser
 	 * 解析请求结果
 	 */
 	@Override
-	public Object parseRequestResult(TGHttpResult httpResult, String resultClsName)
+	public Object parseRequestResult(TGHttpParams httpParams, TGHttpResult httpResult, String resultClsName)
 	{
 		//判断解析结果的className是否为Void
 		if(!TextUtils.isEmpty(resultClsName) && !resultClsName.equalsIgnoreCase(Void.class.getName()))
@@ -705,7 +648,7 @@ public class TGHttpLoader<T> implements IRequestParser
 				catch (Exception e)
 				{
 					LOG.e("[Method:parseRequestResult] url : "  + this.requestUrl + "\n params : " +
-							stringParams + "\n" + e.getMessage());
+							getStringParams() + "\n" + e.getMessage());
 				}
 			}
 		}
@@ -716,11 +659,6 @@ public class TGHttpLoader<T> implements IRequestParser
 	protected final String getRequestUrl()
 	{
 		return requestUrl;
-	}
-
-	protected final HashMap<String, String> getStringParams()
-	{
-		return stringParams;
 	}
 
 	/**
