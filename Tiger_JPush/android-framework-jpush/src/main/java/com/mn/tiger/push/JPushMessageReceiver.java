@@ -23,6 +23,7 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 		Bundle extras = intent.getExtras();
 		String title = extras.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE, "");
 		String alert = extras.getString(JPushInterface.EXTRA_ALERT, "");
+		String message = extras.getString(JPushInterface.EXTRA_MESSAGE,"");
 		String pushMsgExtra = extras.getString(JPushInterface.EXTRA_EXTRA, "");
 		String registrationId = extras.getString(JPushInterface.EXTRA_REGISTRATION_ID, "");
 
@@ -30,17 +31,17 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 		if(JPushInterface.ACTION_MESSAGE_RECEIVED.equals(action))
 		{
 			LOG.d("[Method:onReceive] ACTION_MESSAGE_RECEIVED");
-			onPushMessageReceived(context, title, alert, pushMsgExtra);
+			onPushMessageReceived(context, intent, title, alert, message, pushMsgExtra);
 		}
 		else if(JPushInterface.ACTION_NOTIFICATION_OPENED.equals(action))
 		{
 			LOG.d("[Method:onReceive] ACTION_NOTIFICATION_OPENED");
-			onPushNotificationOpened(context, title, alert, pushMsgExtra);
+			onPushNotificationOpened(context, intent, title, alert, message, pushMsgExtra);
 		}
 		else if(JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(action))
 		{
 			LOG.d("[Method:onReceive] ACTION_NOTIFICATION_RECEIVED");
-			onPushNotificationReceived(context, title, alert, pushMsgExtra);
+			onPushNotificationReceived(context, intent, title, alert, message, pushMsgExtra);
 		}
 		else if(JPushInterface.ACTION_REGISTRATION_ID.equals(action))
 		{
@@ -59,7 +60,7 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 	 * @param alert
 	 * @param extra
 	 */
-	protected abstract void onPushMessageReceived(Context context, String title, String alert, String extra);
+	protected abstract void onPushMessageReceived(Context context, Intent intent, String title, String alert, String message, String extra);
 
 	/**
 	 * JPush通知点击时的回调方法
@@ -68,7 +69,7 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 	 * @param alert
 	 * @param extra
 	 */
-	protected abstract void onPushNotificationOpened(Context context, String title, String alert, String extra);
+	protected abstract void onPushNotificationOpened(Context context, Intent intent, String title, String alert, String message, String extra);
 
 	/**
 	 * JPush通知收到时的回调方法
@@ -77,6 +78,6 @@ public abstract class JPushMessageReceiver extends BroadcastReceiver
 	 * @param alert
 	 * @param extra
 	 */
-	protected abstract void onPushNotificationReceived(Context context, String title, String alert, String extra);
+	protected abstract void onPushNotificationReceived(Context context, Intent intent, String title, String alert, String message, String extra);
 
 }

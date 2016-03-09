@@ -53,10 +53,11 @@ public class FrescoUtils
     /**
      * 加载webpJNI库
      */
-    public static void loadWebpJNI()
+    public static void loadWebpJNI(Context context)
     {
         try
         {
+            SoLoader.init(context, false);
             SoLoader.loadLibrary("webp");
         }
         catch(UnsatisfiedLinkError nle)
