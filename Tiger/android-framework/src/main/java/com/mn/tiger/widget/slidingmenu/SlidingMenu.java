@@ -1140,17 +1140,17 @@ public class SlidingMenu extends RelativeLayout
 	public static enum SlideMode
 	{
 		/**
-		 * Constant value for use with setMode(). Puts the menu to the left of the
+		 * Constant value for use with setSystemBarMode(). Puts the menu to the left of the
 		 * content.
 		 */
 		LEFT,
 		/**
-		 * Constant value for use with setMode(). Puts menus to the left and right
+		 * Constant value for use with setSystemBarMode(). Puts menus to the left and right
 		 * of the content.
 		 */
 		LEFT_RIGHT,
 		/**
-		 * Constant value for use with setMode(). Puts the menu to the right of the
+		 * Constant value for use with setSystemBarMode(). Puts the menu to the right of the
 		 * content.
 		 */
 		RIGHT
