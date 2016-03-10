@@ -464,10 +464,23 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             this.items.add(position, data);
             notifyItemInserted(position);
-
-            notifyItemRangeChanged(position, this.items.size() - 1);
         }
     }
+
+    /**
+     * 在指定位置插入部分数据
+     * @param position
+     * @param data
+     */
+    public final void insertData(int position, T[] data)
+    {
+        if(null != data && position >= 0 && position <= this.items.size())
+        {
+            this.items.addAll(position, Arrays.asList(data));
+            notifyItemRangeInserted(position, data.length);
+        }
+    }
+
 
     /**
      * 删除列表行
