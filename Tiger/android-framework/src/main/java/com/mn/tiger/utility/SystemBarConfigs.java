@@ -112,24 +112,27 @@ public class SystemBarConfigs
 
     public void notifyConfigChanged()
     {
-        initSystemBarManager();
-        manager.setTranslucentStatusBar(translucentStatusBar);
-        if(translucentStatusBar)
+        if(!DisplayUtils.hasFlameSmartBar())
         {
-            manager.setStatusBarColor(statusBarColor);
-            if(!statusBarVisible)
+            initSystemBarManager();
+            manager.setTranslucentStatusBar(translucentStatusBar);
+            if(translucentStatusBar)
             {
-                manager.hideStatusBar();
-            }
-            else
-            {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                manager.setStatusBarColor(statusBarColor);
+                if(!statusBarVisible)
                 {
-                    manager.showStatusBar();
+                    manager.hideStatusBar();
                 }
                 else
                 {
-                    manager.hideStatusBar();
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                    {
+                        manager.showStatusBar();
+                    }
+                    else
+                    {
+                        manager.hideStatusBar();
+                    }
                 }
             }
         }
