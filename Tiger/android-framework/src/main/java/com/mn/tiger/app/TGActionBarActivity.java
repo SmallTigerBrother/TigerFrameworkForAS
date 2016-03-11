@@ -1,10 +1,8 @@
 package com.mn.tiger.app;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +16,7 @@ import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.task.TGTaskManager;
 import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
-import com.mn.tiger.utility.SystemBarTintManager;
+import com.mn.tiger.utility.SystemBarConfigs;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
@@ -63,7 +61,7 @@ public class TGActionBarActivity extends Activity
 
     private LinkedList<Call> executedCalls = new LinkedList<>();
 
-    private boolean translucentStatusBar = false;
+    private SystemBarConfigs systemBarConfigs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -516,42 +514,13 @@ public class TGActionBarActivity extends Activity
 
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    protected void setTranslucentStatus(boolean on)
+    public SystemBarConfigs getSystemBarConfigs()
     {
-        this.translucentStatusBar = on;
-    }
-
-    public boolean isTranslucentStatusBar()
-    {
-        return translucentStatusBar;
-    }
-
-    protected void setStatusBarColor(int color)
-    {
-        if(translucentStatusBar)
+        if (systemBarConfigs == null)
         {
-            getSystemBarManager().setStatusBarColor(color);
+            systemBarConfigs = SystemBarConfigs.newSystemBarManagerConfigs(this);
         }
+        return systemBarConfigs;
     }
-
-    protected void hideStatusBar()
-    {
-        if(translucentStatusBar)
-        {
-            getSystemBarManager().hideStatusBar();
-        }
-    }
-
-    protected SystemBarTintManager getSystemBarManager()
-    {
-        if (manager == null)
-        {
-            manager = new SystemBarTintManager(this);
-        }
-        return manager;
-    }
-
-    private SystemBarTintManager manager;
 
 }
