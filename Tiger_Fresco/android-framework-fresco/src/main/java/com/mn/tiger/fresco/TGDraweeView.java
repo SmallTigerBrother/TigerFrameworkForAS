@@ -68,107 +68,67 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         //图片资源
         private Variable<String> uri = new Variable<>();
         //占位图片
-        private Variable<Drawable> placeHolder = new Variable<>();
+        private Drawable placeHolder = null;
         //占位图背景色
-        private Variable<Integer> placeHolderBackgroundColor = new Variable<>();
+        private Variable<Integer> placeHolderBackgroundColor = new Variable<>(Color.TRANSPARENT);
         //加载图片的显示ScaleType
-        private Variable<ScalingUtils.ScaleType> scaleType = new Variable<>(ScalingUtils.ScaleType.CENTER_CROP);
+        private ScalingUtils.ScaleType scaleType = ScalingUtils.ScaleType.CENTER_CROP;
         //是否显示成圆形
-        private Variable<Boolean> circle = new Variable<>(false);
+        private boolean circle = false;
         //圆角边框颜色
-        private Variable<Integer> roundBorderColor = new Variable<>(Color.TRANSPARENT);
+        private int roundBorderColor = Color.TRANSPARENT;
         //圆角边框宽度
-        private Variable<Integer> roundBorderWidth = new Variable<>(0);
+        private int roundBorderWidth =0;
         //是否自动旋转
-        private Variable<Boolean> autoRotate = new Variable<>(true);
-        //视图宽度
-        private Variable<Integer> width = new Variable<>(0);
-        //视图高度
-        private Variable<Integer> height = new Variable<>(0);
+        private boolean autoRotate = false;
         /**
          * 显示图片
          */
         public void display()
         {
-            if(null == draweeHierarchy)
+            //如果占位背景色发生改变，重新生成draweeHierarchy
+            if(null == draweeHierarchy || (!placeHolderBackgroundColor.isNull() && placeHolderBackgroundColor.isChanged()))
             {
+                placeHolderBackgroundColor.resetChangeStatus();
                 draweeHierarchy = newHierarchy();
-                TGDraweeView.this.setHierarchy(draweeHierarchy);
             }
-            else
+
+            //设置占位图片
+            if(null != placeHolder)
             {
-                //如果占位背景色发生改变，重新生成draweeHierarchy
-                if (!placeHolderBackgroundColor.isNull() && placeHolderBackgroundColor.isChanged())
-                {
-                    placeHolderBackgroundColor.resetChangeStatus();
-
-                    draweeHierarchy = newHierarchy();
-                }
-
-                //设置占位图片
-                if(!placeHolder.isNull() && placeHolder.isChanged())
-                {
-                    placeHolder.resetChangeStatus();
-
-                    draweeHierarchy.setPlaceholderImage(placeHolder.getValue());
-                }
-
-                //设置圆角参数
-                if((!circle.isNull() && circle.isChanged()) || (!roundBorderColor.isNull() && roundBorderColor.isChanged())
-                        || (!roundBorderWidth.isNull() && roundBorderWidth.isChanged()))
-                {
-                    circle.resetChangeStatus();
-                    roundBorderColor.resetChangeStatus();
-                    roundBorderWidth.resetChangeStatus();
-
-                    RoundingParams roundingParams = new RoundingParams();
-                    roundingParams.setRoundAsCircle(circle.getValue());
-                    roundingParams.setBorder(roundBorderColor.getValue(), roundBorderWidth.getValue());
-                    draweeHierarchy.setRoundingParams(roundingParams);
-                }
-
-                //设置加载图ScaleType
-                if(!scaleType.isNull() && scaleType.isChanged())
-                {
-                    scaleType.resetChangeStatus();
-
-                    draweeHierarchy.setActualImageScaleType(scaleType.getValue());
-                }
+                draweeHierarchy.setPlaceholderImage(placeHolder);
             }
 
-            width.setValue(TGDraweeView.this.getLayoutParams().width);
-            height.setValue(TGDraweeView.this.getLayoutParams().height);
+            //设置圆角参数
+            RoundingParams roundingParams = new RoundingParams();
+            roundingParams.setRoundAsCircle(circle);
+            roundingParams.setBorder(roundBorderColor, roundBorderWidth);
+            draweeHierarchy.setRoundingParams(roundingParams);
+
+            //设置加载图ScaleType
+            draweeHierarchy.setActualImageScaleType(scaleType);
+            TGDraweeView.this.setHierarchy(draweeHierarchy);
+
             //设置图片，判断数据是否已发生变化
-            if((!uri.isNull() && uri.isChanged()) || (!width.isNull() && width.isChanged()) ||
-                    (!height.isNull() && !height.isChanged()) || (!autoRotate.isNull() && autoRotate.isChanged()))
-            {
-                uri.resetChangeStatus();
-                width.resetChangeStatus();
-                height.resetChangeStatus();
-                autoRotate.resetChangeStatus();
+            ResizeOptions resizeOptions = new ResizeOptions(TGDraweeView.this.getLayoutParams().width,
+                    TGDraweeView.this.getLayoutParams().height);
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri.getValue()))
+                    .setAutoRotateEnabled(autoRotate)
+                    .setProgressiveRenderingEnabled(true)
+                    .setResizeOptions(resizeOptions)
+                    .build();
 
-                ResizeOptions resizeOptions = new ResizeOptions(width.getValue(), height.getValue());
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri.getValue()))
-                        .setAutoRotateEnabled(autoRotate.getValue())
-                        .setProgressiveRenderingEnabled(true)
-                        .setResizeOptions(resizeOptions)
-                        .build();
+            //初始化DraweeController
+            AbstractDraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setUri(uri.getValue())
+                    .setTapToRetryEnabled(true)
+                    .setOldController(TGDraweeView.this.getController())
+                    .setImageRequest(request)
+                    .build();
+            //设置图片加载监听器
+            draweeController.addControllerListener(new TGDraweeControllerListener(draweeController));
+            TGDraweeView.this.setController(draweeController);
 
-                //初始化DraweeController
-                AbstractDraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                        .setUri(uri.getValue())
-                        .setTapToRetryEnabled(true)
-                        .setOldController(TGDraweeView.this.getController())
-                        .setImageRequest(request)
-                        .build();
-                //设置图片加载监听器
-                draweeController.addControllerListener(new TGDraweeControllerListener(draweeController));
-                TGDraweeView.this.setController(draweeController);
-            }
-            else
-            {
-                TGDraweeView.this.setController(TGDraweeView.this.getController());
-            }
         }
 
         /**
@@ -178,29 +138,11 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         private GenericDraweeHierarchy newHierarchy()
         {
             GenericDraweeHierarchyBuilder draweeHierarchyBuilder = new GenericDraweeHierarchyBuilder(TGDraweeView.this.getResources());
-            //设置占位图片
-            if (!placeHolder.isNull())
-            {
-                draweeHierarchyBuilder.setPlaceholderImage(placeHolder.getValue(), ScalingUtils.ScaleType.CENTER_INSIDE);
-            }
             //设置占位图背景色
             if(!placeHolderBackgroundColor.isNull())
             {
+                placeHolderBackgroundColor.resetChangeStatus();
                 draweeHierarchyBuilder.setBackground(new ColorDrawable(placeHolderBackgroundColor.getValue()));
-            }
-
-            //设置是否显示成圆形
-            if(!circle.isNull())
-            {
-                RoundingParams roundingParams = new RoundingParams();
-                roundingParams.setRoundAsCircle(circle.getValue());
-                roundingParams.setBorder(roundBorderColor.getValue(), roundBorderWidth.getValue());
-                draweeHierarchyBuilder.setRoundingParams(roundingParams).build();
-            }
-            //设置加载的图片显示的ScaleType
-            if(!scaleType.isNull())
-            {
-                draweeHierarchyBuilder.setActualImageScaleType(scaleType.getValue());
             }
 
             return draweeHierarchyBuilder.build();
@@ -208,13 +150,13 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
 
         public FrescoConfigs placeHolder(Drawable drawable)
         {
-            this.placeHolder.setValue(drawable);
+            this.placeHolder = drawable;
             return this;
         }
 
         public FrescoConfigs placeHolder(int resId)
         {
-            this.placeHolder.setValue(getResources().getDrawable(resId));
+            this.placeHolder = getResources().getDrawable(resId);
             return this;
         }
 
@@ -226,13 +168,13 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
 
         public FrescoConfigs scaleType(ScalingUtils.ScaleType scaleType)
         {
-            this.scaleType.setValue(scaleType);
+            this.scaleType = scaleType;
             return this;
         }
 
         public FrescoConfigs circle(boolean circle)
         {
-            this.circle.setValue(circle);
+            this.circle  = circle;
             return this;
         }
 
