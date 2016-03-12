@@ -404,7 +404,6 @@ public class FrescoUtils
         @Override
         public void onRelease(String id)
         {
-
         }
     }
 }
