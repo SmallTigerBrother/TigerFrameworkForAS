@@ -109,9 +109,10 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             draweeHierarchy.setActualImageScaleType(scaleType);
             TGDraweeView.this.setHierarchy(draweeHierarchy);
 
-            //设置图片，判断数据是否已发生变化
-            ResizeOptions resizeOptions = new ResizeOptions(TGDraweeView.this.getLayoutParams().width,
-                    TGDraweeView.this.getLayoutParams().height);
+            //设置图片
+            int width = TGDraweeView.this.getLayoutParams().width > 0 ? TGDraweeView.this.getLayoutParams().width : TGDraweeView.this.getMeasuredWidth();
+            int height = TGDraweeView.this.getLayoutParams().height > 0 ? TGDraweeView.this.getLayoutParams().height : TGDraweeView.this.getMeasuredHeight();
+            ResizeOptions resizeOptions = new ResizeOptions(width,height);
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri.getValue()))
                     .setAutoRotateEnabled(autoRotate)
                     .setProgressiveRenderingEnabled(true)
