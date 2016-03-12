@@ -69,7 +69,13 @@ public class TGActionBarActivity extends Activity
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        super.setContentView(CR.getLayoutId(this, "tiger_main"));
+        int layoutId = CR.getLayoutId(this, "tiger_main");
+        if(null != systemBarConfigs)
+        {
+            layoutId = systemBarConfigs.getActivityLayoutId();
+        }
+        super.setContentView(layoutId);
+
         panelLayout = (FrameLayout) findViewById(CR.getViewId(this, "tiger_panel"));
         navigationBar = (TGNavigationBar) findViewById(CR.getViewId(this, "tiger_navigationbar"));
         navigationBar.getLeftNaviButton().setVisibility(View.VISIBLE);
