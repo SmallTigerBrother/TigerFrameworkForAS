@@ -96,7 +96,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             //设置占位图片
             if(null != placeHolder)
             {
-                draweeHierarchy.setPlaceholderImage(placeHolder);
+                draweeHierarchy.setPlaceholderImage(placeHolder, ScalingUtils.ScaleType.CENTER_INSIDE);
             }
 
             //设置圆角参数
