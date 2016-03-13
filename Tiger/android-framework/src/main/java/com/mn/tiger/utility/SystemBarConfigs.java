@@ -46,14 +46,21 @@ public class SystemBarConfigs
 
     public int getActivityLayoutId()
     {
-        switch (mode)
+        if(translucentStatusBar)
         {
-            case FIT_WINDOW:
-                return CR.getLayoutId(activity,"tiger_main_systembar_tint");
-            case NON_FIT_WINDOW:
-                return CR.getLayoutId(activity,"tiger_main_systembar_tint_nonfit");
-            default:
-                return CR.getLayoutId(activity,"tiger_main_systembar_tint");
+            switch (mode)
+            {
+                case FIT_WINDOW:
+                    return CR.getLayoutId(activity,"tiger_main_systembar_tint");
+                case NON_FIT_WINDOW:
+                    return CR.getLayoutId(activity,"tiger_main_systembar_tint_nonfit");
+                default:
+                    return CR.getLayoutId(activity,"tiger_main");
+            }
+        }
+        else
+        {
+            return CR.getLayoutId(activity,"tiger_main");
         }
     }
 
@@ -161,7 +168,7 @@ public class SystemBarConfigs
         public void setTranslucentStatusBar(boolean on)
         {
             Window window = activity.getWindow();
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             {
                 WindowManager.LayoutParams winParams = window.getAttributes();
                 final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
