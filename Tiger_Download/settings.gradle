@@ -1,1 +1,1 @@
-include ':android-framework-download'
+include ':android-framework-download','GreenDaoGenerator'

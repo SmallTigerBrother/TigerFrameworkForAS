@@ -31,6 +31,7 @@ android {
         main {
             //设置jni目录，打包.so文件
             jniLibs.srcDirs = ['libs']
+            java.srcDirs = ['src/main/java', 'src/main/java-gen']
         }
 
         // Move the build types to build-types/<type>
@@ -52,6 +53,7 @@ dependencies {
     compile 'com.mn.tiger:android-framework-datastorage:latest.integration'
     compile 'com.google.code.gson:gson:latest.integration'
     compile 'com.squareup.okhttp3:okhttp:latest.integration'
+    compile 'de.greenrobot:greendao:2.1.0'
 }
 
 install {
