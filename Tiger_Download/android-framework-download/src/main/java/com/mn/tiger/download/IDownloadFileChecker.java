@@ -1,5 +1,7 @@
 package com.mn.tiger.download;
 
+import com.mn.tiger.download.db.TGDownloader;
+
 /**
  * 下载文件校验类
  */

@@ -2,6 +2,7 @@ package com.mn.tiger.download;
 
 import android.text.TextUtils;
 
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.Commons;
 import com.mn.tiger.utility.FileUtils;

@@ -2,7 +2,8 @@ package com.mn.tiger.download.observe;
 
 import android.database.Observable;
 
-import com.mn.tiger.download.TGDownloader;
+import com.mn.tiger.download.DownloadStatus;
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 
 /**
@@ -53,8 +54,8 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 		TGDownloader downloader = (TGDownloader)result;
 		switch(downloader.getDownloadStatus())
 		{
-			case TGDownloader.DOWNLOAD_FAILED:
-				LOG.i("[Method:notifyChange], Status:DOWNLOAD_FAILED ;" + "observer size: " + mObservers.size());
+			case DownloadStatus.FAILED:
+				LOG.i("[Method:notifyChange], Status:FAILED ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -64,8 +65,8 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				}
 				unregisterAll();
 				break;
-			case TGDownloader.DOWNLOAD_SUCCEED:
-				LOG.i("[Method:notifyChange], Status:DOWNLOAD_SUCCEED ;" + "observer size: " + mObservers.size());
+			case DownloadStatus.SUCCEED:
+				LOG.i("[Method:notifyChange], Status:SUCCEED ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -75,8 +76,8 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				}
 				unregisterAll();
 				break;
-			case TGDownloader.DOWNLOAD_DOWNLOADING:
-				LOG.i("[Method:notifyChange], Status:DOWNLOAD_DOWNLOADING ;" + "observer size: " + mObservers.size());
+			case DownloadStatus.DOWNLOADING:
+				LOG.i("[Method:notifyChange], Status:DOWNLOADING ;" + "observer size: " + mObservers.size());
 				int progress = 0;
 				for (TGDownloadObserver observer : mObservers)
 				{
@@ -87,7 +88,7 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 					}
 				}
 				break;
-			case TGDownloader.DOWNLOAD_PAUSE:
+			case DownloadStatus.PAUSE:
 				LOG.i("[Method:notifyChange], Status:DOWNLOAD_STOP ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
@@ -98,8 +99,8 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				}
 				unregisterAll();
 				break;
-			case TGDownloader.DOWNLOAD_STARTING:
-				LOG.i("[Method:notifyChange], Status:DOWNLOAD_STARTING ;" + "observer size: " + mObservers.size());
+			case DownloadStatus.STARTING:
+				LOG.i("[Method:notifyChange], Status:STARTING ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)
@@ -109,8 +110,8 @@ public class TGDownloadObservable extends Observable<TGDownloadObserver>
 				}
 				break;
 
-			case TGDownloader.DOWNLOAD_CANCEL:
-				LOG.i("[Method:notifyChange], Status:DOWNLOAD_CANCEL ;" + "observer size: " + mObservers.size());
+			case DownloadStatus.CANCEL:
+				LOG.i("[Method:notifyChange], Status:CANCEL ;" + "observer size: " + mObservers.size());
 				for (TGDownloadObserver observer : mObservers)
 				{
 					if(observer != null)

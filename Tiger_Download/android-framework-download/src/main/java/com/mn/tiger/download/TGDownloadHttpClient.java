@@ -3,6 +3,8 @@ package com.mn.tiger.download;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.mn.tiger.download.db.TGDownloadDBHelper;
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.FileUtils;
 
@@ -133,12 +135,12 @@ public abstract class TGDownloadHttpClient
 
         // 设置文件存储路径
         downloader.setSavePath(savePath);
-        if(!downloader.isBreakPoints())
+        if(!downloader.getAccessRanges())
         {
-            downloader.setBreakPoints(serverFileSize > 0 && acceptRange.equalsIgnoreCase("bytes"));
+            downloader.setAccessRanges(serverFileSize > 0 && acceptRange.equalsIgnoreCase("bytes"));
         }
 
-        TGDownloadDBHelper.getInstance(context).saveDownloader(downloader);
+        TGDownloadDBHelper.getInstance().saveOrUpdateDownloader(downloader);
     }
 
     /**
@@ -166,7 +168,7 @@ public abstract class TGDownloadHttpClient
             }
 
             //2、 若支持断点下载，执行断点下载；若不支持断点下载，使用普通下载
-            if (downloader.isBreakPoints())
+            if (downloader.getAccessRanges())
             {
                 LOG.d("[Method:dealDownloadResult]  Server support break point");
 
@@ -261,8 +263,8 @@ public abstract class TGDownloadHttpClient
         }
 
         // 如果是断点下载，删除本地记录
-        downloader.setDownloadStatus(TGDownloader.DOWNLOAD_SUCCEED);
-        TGDownloadDBHelper.getInstance(context).deleteDownloader(downloader);
+        downloader.setDownloadStatus(DownloadStatus.SUCCEED);
+        TGDownloadDBHelper.getInstance().softDeleteDownloader(downloader);
 
         downloadTask.onDownloadSuccess(downloader);
     }
@@ -274,7 +276,7 @@ public abstract class TGDownloadHttpClient
     void onDownloadStart(TGDownloader downloader)
     {
         // 设置下载状态为开始
-        downloader.setDownloadStatus(TGDownloader.DOWNLOAD_STARTING);
+        downloader.setDownloadStatus(DownloadStatus.STARTING);
 
         downloadTask.onDownloadStart(downloader);
     }
@@ -286,8 +288,8 @@ public abstract class TGDownloadHttpClient
     void onDownloading(TGDownloader downloader)
     {
         // 如果是断点下载，更新本地记录
-        downloader.setDownloadStatus(TGDownloader.DOWNLOAD_DOWNLOADING);
-        TGDownloadDBHelper.getInstance(context).updateDownloader(downloader);
+        downloader.setDownloadStatus(DownloadStatus.DOWNLOADING);
+        TGDownloadDBHelper.getInstance().saveOrUpdateDownloader(downloader);
 
         // 服务端没返回文件长度时，不返回进度
         if (downloader.getFileSize() <= 0)
@@ -304,18 +306,13 @@ public abstract class TGDownloadHttpClient
      */
     void onDownloadPause(TGDownloader downloader)
     {
-        downloader.setDownloadStatus(TGDownloader.DOWNLOAD_PAUSE);
+        downloader.setDownloadStatus(DownloadStatus.PAUSE);
         // 如果不是断点下载，删除本地文件和数据库记录; 断点下载，更新本地数据库下载状态
-        if(!downloader.isBreakPoints())
+        if(!downloader.getAccessRanges())
         {
             FileUtils.deleteFile(downloader.getSavePath());
-            TGDownloadDBHelper.getInstance(context).deleteDownloader(downloader);
         }
-        else
-        {
-            TGDownloadDBHelper.getInstance(context).updateDownloader(downloader);
-        }
-
+        TGDownloadDBHelper.getInstance().saveOrUpdateDownloader(downloader);
         downloadTask.onDownloadPause(downloader);
     }
 
@@ -334,18 +331,13 @@ public abstract class TGDownloadHttpClient
             return;
         }
 
-        downloader.setDownloadStatus(TGDownloader.DOWNLOAD_FAILED);
+        downloader.setDownloadStatus(DownloadStatus.FAILED);
         // 如果不是断点下载，删除本地文件和数据库记录; 断点下载，更新本地数据库下载状态
-        if (!downloader.isBreakPoints())
+        if (!downloader.getAccessRanges())
         {
             FileUtils.deleteFile(downloader.getSavePath());
-            TGDownloadDBHelper.getInstance(context).deleteDownloader(downloader);
         }
-        else
-        {
-            TGDownloadDBHelper.getInstance(context).updateDownloader(downloader);
-        }
-
+        TGDownloadDBHelper.getInstance().saveOrUpdateDownloader(downloader);
         downloadTask.onDownloadFailed(downloader);
     }
 
@@ -359,9 +351,9 @@ public abstract class TGDownloadHttpClient
         // 删除本地文件
         FileUtils.deleteFile(downloader.getSavePath());
         // 如果是断点下载，删除数据库记录
-        if (downloader.isBreakPoints())
+        if (downloader.getAccessRanges())
         {
-            TGDownloadDBHelper.getInstance(context).deleteDownloader(downloader);
+            TGDownloadDBHelper.getInstance().deleteDownloader(downloader);
         }
 
         // 重新下载
@@ -384,7 +376,7 @@ public abstract class TGDownloadHttpClient
     void onDownloadCancel(TGDownloader downloader)
     {
         FileUtils.deleteFile(downloader.getSavePath());
-        TGDownloadDBHelper.getInstance(context).deleteDownloader(downloader);
+        TGDownloadDBHelper.getInstance().softDeleteDownloader(downloader);
         downloadTask.onDownloadCancel(downloader);
     }
 

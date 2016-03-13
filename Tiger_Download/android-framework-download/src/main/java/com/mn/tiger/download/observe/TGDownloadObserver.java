@@ -1,6 +1,6 @@
 package com.mn.tiger.download.observe;
 
-import com.mn.tiger.download.TGDownloader;
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 
 /**

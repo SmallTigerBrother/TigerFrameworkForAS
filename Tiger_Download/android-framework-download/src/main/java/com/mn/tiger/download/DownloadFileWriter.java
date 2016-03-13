@@ -2,6 +2,7 @@ package com.mn.tiger.download;
 
 import android.content.Context;
 
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGTask.TGTaskState;
 import com.mn.tiger.utility.Commons;
@@ -88,12 +89,13 @@ class DownloadFileWriter
 				if (downloadTask == null || downloadTask.getTaskState() == TGTaskState.ERROR
 						|| downloadTask.getTaskState() == TGTaskState.PAUSE)
 				{
-					downloader.setDownloadStatus(TGDownloader.DOWNLOAD_PAUSE);
+					downloader.setDownloadStatus(DownloadStatus.PAUSE);
 					downloadHttpClient.onDownloadPause(downloader);
 					return;
 				}
 				else if(downloadTask.getTaskState() == TGTaskState.CANCEL)
 				{
+					downloader.setDownloadStatus(DownloadStatus.CANCEL);
 					downloadHttpClient.onDownloadCancel(downloader);
 					return;
 				}

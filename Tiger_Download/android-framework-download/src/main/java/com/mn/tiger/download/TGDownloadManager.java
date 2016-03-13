@@ -4,7 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.mn.tiger.datastorage.db.sqlite.Selector;
+import com.mn.tiger.download.db.TGDownloadDBHelper;
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.download.observe.TGDownloadObserveController;
 import com.mn.tiger.download.observe.TGDownloadObserver;
 import com.mn.tiger.log.Logger;
@@ -93,89 +94,9 @@ public class TGDownloadManager
 	 *
 	 * @date 2014年8月26日
 	 */
-	public void startAll(String type)
-	{
-		LOG.i("[Method:startAll] type == " + type);
-		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getDownloader(type);
-
-		if (null != downloaders)
-		{
-			TGDownloadParams downloadParams = null;
-			try
-			{
-				for (TGDownloader downloader : downloaders)
-				{
-					// 获取下载参数
-					downloadParams = (TGDownloadParams) Class.forName(downloader
-							.getParamsClsName()).newInstance();
-					downloadParams.setRequestType(downloader.getRequestType());
-					downloadParams.setSavePath(downloader.getSavePath());
-					downloadParams.setUrl(downloader.getUrl());
-					downloadParams.setParams(downloader.getParams());
-					if (!TextUtils.isEmpty(downloader.getTaskClsName()))
-					{
-						downloadParams.setTaskClsName(downloader.getTaskClsName());
-					}
-					start(downloadParams);
-				}
-			}
-			catch(Exception e)
-			{
-				LOG.e("[Method:startAll] type == " + type, e);
-			}
-		}
-	}
-
-	/**
-	 *
-	 * 该方法的作用: 取消传入类型所有下载任务
-	 *
-	 * @date 2014年8月26日
-	 */
-	public void cancelAll(String type)
-	{
-		LOG.i("[Method:cancelAll] type == " + type);
-		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getDownloader(type);
-
-		if (null != downloaders)
-		{
-			for (TGDownloader downloader : downloaders)
-			{
-				cancel(Integer.valueOf(downloader.getId()));
-			}
-		}
-	}
-
-	/**
-	 *
-	 * 该方法的作用: 停止传入类型所有下载任务
-	 *
-	 * @date 2014年8月26日
-	 */
-	public void pauseAll(String type)
-	{
-		LOG.i("[Method:pauseAll] type == " + type);
-		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getDownloader(type);
-
-		if (null != downloaders)
-		{
-			for (TGDownloader downloader : downloaders)
-			{
-				pause(Integer.valueOf(downloader.getId()));
-			}
-		}
-	}
-
-	/**
-	 *
-	 * 该方法的作用: 启动所有下载任务
-	 *
-	 * @date 2014年8月26日
-	 */
-	public void startAll()
+	public void startAll(List<TGDownloader> downloaders)
 	{
 		LOG.i("[Method:startAll]");
-		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getAllDownloader();
 
 		if (null != downloaders)
 		{
@@ -190,7 +111,7 @@ public class TGDownloadManager
 					downloadParams.setRequestType(downloader.getRequestType());
 					downloadParams.setSavePath(downloader.getSavePath());
 					downloadParams.setUrl(downloader.getUrl());
-					downloadParams.setParams(downloader.getParams());
+					downloadParams.setParams(downloader.getParamsMap());
 					if (!TextUtils.isEmpty(downloader.getTaskClsName()))
 					{
 						downloadParams.setTaskClsName(downloader.getTaskClsName());
@@ -211,15 +132,14 @@ public class TGDownloadManager
 	 *
 	 * @date 2014年8月26日
 	 */
-	public void cancelAll()
+	public void cancelAll(List<TGDownloader> downloaders)
 	{
 		LOG.i("[Method:cancelAll]");
-		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getAllDownloader();
 		if (null != downloaders)
 		{
 			for (TGDownloader downloader : downloaders)
 			{
-				cancel(Integer.valueOf(downloader.getId()));
+				cancel((int)downloader.getId());
 			}
 		}
 	}
@@ -230,16 +150,14 @@ public class TGDownloadManager
 	 *
 	 * @date 2014年8月26日
 	 */
-	public void pauseAll()
+	public void pauseAll(List<TGDownloader> downloaders)
 	{
 		LOG.i("[Method:pauseAll]");
-		List<TGDownloader> downloaders = TGDownloadDBHelper.getInstance(mContext).getAllDownloader();
-
 		if (null != downloaders)
 		{
 			for (TGDownloader downloader : downloaders)
 			{
-				pause(Integer.valueOf(downloader.getId()));
+				pause((int)downloader.getId());
 			}
 		}
 	}
@@ -276,7 +194,7 @@ public class TGDownloadManager
 		{
 			//如果当前任务正在下载中，直接返回当前任务的id
 			taskParams = TGTaskManager.createTaskParams(params,
-					downloadParams.getTaskClsName(), resultHandler, Integer.parseInt(downloader.getId()));
+					downloadParams.getTaskClsName(), resultHandler, (int)downloader.getId());
 		}
 		else
 		{
@@ -299,7 +217,7 @@ public class TGDownloadManager
 	 */
 	public TGDownloader getLocalDownloader(TGDownloadParams downloadParams)
 	{
-		return getDownloadInfo(downloadParams.getUrl(), downloadParams.getParams(), downloadParams.getSavePath());
+		return TGDownloadDBHelper.getInstance().findDownloader(downloadParams.getUrl(), downloadParams.getParams(), downloadParams.getSavePath());
 	}
 
 	/**
@@ -322,13 +240,13 @@ public class TGDownloadManager
 		if(file == null || !file.exists())
 		{
 			LOG.w("[Method:checkLocalDownloader] can not found the local file with url == " + downloader.getUrl());
-			delDownloader(downloader);
+            TGDownloadDBHelper.getInstance().deleteDownloader(downloader);
 			return null;
 		}
 
 		//重置完成进度
 		downloader.setCompleteSize(file.length());
-		TGDownloadDBHelper.getInstance(getContext()).updateDownloader(downloader);
+		TGDownloadDBHelper.getInstance().saveOrUpdateDownloader(downloader);
 
 		return downloader;
 	}
@@ -343,7 +261,7 @@ public class TGDownloadManager
 	public void registerDownloadObserver(int taskId, TGDownloadObserver observer)
 	{
 		TGDownloadObserveController.getInstance().registerDataSetObserver(String.valueOf(taskId),
-				observer);
+                observer);
 	}
 
 	/**
@@ -366,51 +284,37 @@ public class TGDownloadManager
 	 * @param params
 	 * @return
 	 */
-	public TGDownloader getDownloadInfo(String urlstr, HashMap<String, String> params, String savePath)
+	public TGDownloader findDownloader(String urlstr, HashMap<String, String> params, String savePath)
 	{
 		TGDownloader downloader = null;
-		downloader = TGDownloadDBHelper.getInstance(mContext).getDownloader(urlstr, params, savePath);
-
+		downloader = TGDownloadDBHelper.getInstance().findDownloader(urlstr, params, savePath);
 		return downloader;
 	}
 
-	/**
-	 *
-	 * 该方法的作用: 根据下载类型查询下载任务信息
-	 *
-	 * @date 2014年8月24日
-	 * @param downloadType
-	 * @return
-	 */
-	public List<TGDownloader> getDownloadInfoByType(String downloadType)
-	{
-		return TGDownloadDBHelper.getInstance(mContext).getDownloader(downloadType);
-	}
-
-	/**
-	 *
-	 * 该方法的作用: 根据传入sql查询下载任务信息
-	 *
-	 * @date 2014年8月24日
-	 * @param selector
-	 * @return
-	 */
-	public List<TGDownloader> getDownloadInfoBySQL(Selector selector)
-	{
-		return TGDownloadDBHelper.getInstance(mContext).getDownloaderBySql(selector);
-	}
+    /**
+     * 查询指定状态、类型、是否已软删的下载记录
+     * @param downloadStatuses
+     * @param downloadTypes
+     * @param includeSoftDelete
+     * @return
+     */
+    public List<TGDownloader> findDownloaders(int[] downloadStatuses, String[] downloadTypes, boolean includeSoftDelete)
+    {
+        return TGDownloadDBHelper.getInstance().findDownloaders(downloadStatuses, downloadTypes, includeSoftDelete);
+    }
 
 	/**
 	 *
 	 * 该方法的作用: 删除下载任务
 	 *
 	 * @date 2014年8月24日
-	 * @param downloader
+	 * @param taskId
 	 * @return
 	 */
-	public void delDownloader(TGDownloader downloader)
+	public void deleteDownloaderTask(int taskId)
 	{
-		TGDownloadDBHelper.getInstance(mContext).deleteDownloader(downloader);
+		TGDownloadDBHelper.getInstance().deleteDownloader(taskId);
+		TGTaskManager.getInstance().cancelTask(taskId, TaskType.TASK_TYPE_DOWNLOAD);
 	}
 
 	/**
