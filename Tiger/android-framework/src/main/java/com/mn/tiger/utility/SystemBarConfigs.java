@@ -46,14 +46,21 @@ public class SystemBarConfigs
 
     public int getActivityLayoutId()
     {
-        switch (mode)
+        if(translucentStatusBar)
         {
-            case FIT_WINDOW:
-                return CR.getLayoutId(activity,"tiger_main_systembar_tint");
-            case NON_FIT_WINDOW:
-                return CR.getLayoutId(activity,"tiger_main_systembar_tint_nonfit");
-            default:
-                return CR.getLayoutId(activity,"tiger_main_systembar_tint");
+            switch (mode)
+            {
+                case FIT_WINDOW:
+                    return CR.getLayoutId(activity,"tiger_main_systembar_tint");
+                case NON_FIT_WINDOW:
+                    return CR.getLayoutId(activity,"tiger_main_systembar_tint_nonfit");
+                default:
+                    return CR.getLayoutId(activity,"tiger_main");
+            }
+        }
+        else
+        {
+            return CR.getLayoutId(activity,"tiger_main");
         }
     }
 

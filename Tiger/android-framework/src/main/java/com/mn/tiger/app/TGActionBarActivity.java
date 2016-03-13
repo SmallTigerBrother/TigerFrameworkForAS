@@ -70,12 +70,9 @@ public class TGActionBarActivity extends Activity
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        int layoutId = CR.getLayoutId(this, "tiger_main");
-        if(null != systemBarConfigs)
-        {
-            layoutId = systemBarConfigs.getActivityLayoutId();
-        }
-        super.setContentView(layoutId);
+        systemBarConfigs = SystemBarConfigs.newSystemBarManagerConfigs(this);
+        initSystemBarConfigs(systemBarConfigs);
+        super.setContentView(systemBarConfigs.getActivityLayoutId());
 
         panelLayout = (FrameLayout) findViewById(CR.getViewId(this, "tiger_panel"));
         navigationBar = (TGNavigationBar) findViewById(CR.getViewId(this, "tiger_navigationbar"));
@@ -115,6 +112,11 @@ public class TGActionBarActivity extends Activity
         {
             this.setContentView(view, view.getLayoutParams());
         }
+    }
+
+    protected void initSystemBarConfigs(SystemBarConfigs configs)
+    {
+
     }
 
     /**
@@ -552,13 +554,8 @@ public class TGActionBarActivity extends Activity
 
     }
 
-    public SystemBarConfigs getSystemBarConfigs()
+    protected SystemBarConfigs getSystemBarConfigs()
     {
-        if (systemBarConfigs == null)
-        {
-            systemBarConfigs = SystemBarConfigs.newSystemBarManagerConfigs(this);
-        }
         return systemBarConfigs;
     }
-
 }
