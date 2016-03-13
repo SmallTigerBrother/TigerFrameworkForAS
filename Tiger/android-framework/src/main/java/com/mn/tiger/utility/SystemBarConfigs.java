@@ -168,7 +168,7 @@ public class SystemBarConfigs
         public void setTranslucentStatusBar(boolean on)
         {
             Window window = activity.getWindow();
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             {
                 WindowManager.LayoutParams winParams = window.getAttributes();
                 final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
