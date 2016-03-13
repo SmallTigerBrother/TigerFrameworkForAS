@@ -26,6 +26,7 @@ import java.util.Vector;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 带导航条的Activity基类
@@ -83,7 +84,7 @@ public class TGActionBarActivity extends Activity
         initPanelLayout(panelLayout);
 
         //添加到Application中
-        TGApplicationProxy.getInstance().addActivityToStack(this);
+        TGApplicationProxy.addActivityToStack(this);
     }
 
     @Override
@@ -257,7 +258,7 @@ public class TGActionBarActivity extends Activity
     @Override
     protected void onDestroy()
     {
-        TGApplicationProxy.getInstance().removeActivityFromStack(this);
+        TGApplicationProxy.removeActivityFromStack(this);
         if (null != observers)
         {
             Iterator<ActivityObserver> iterator = observers.iterator();
@@ -270,6 +271,8 @@ public class TGActionBarActivity extends Activity
         }
 
         onCancelHttpLoader();
+
+        onCancelCalls();
 
         super.onDestroy();
     }
@@ -300,6 +303,25 @@ public class TGActionBarActivity extends Activity
         executedCalls.add(call);
     }
 
+    public <T> void enqueue(Call<T> call)
+    {
+        call.enqueue(new Callback<T>()
+        {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response)
+            {
+
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable t)
+            {
+
+            }
+        });
+        executedCalls.add(call);
+    }
+
     public void dequeue(Call<?> call)
     {
         executedCalls.remove(call);
@@ -311,6 +333,15 @@ public class TGActionBarActivity extends Activity
         executedCalls.remove(call);
     }
 
+    protected void onCancelCalls()
+    {
+        for (Call call : executedCalls)
+        {
+            call.cancel();
+        }
+        executedCalls.clear();
+    }
+
     /**
      * 取消Http请求
      */
@@ -320,6 +351,7 @@ public class TGActionBarActivity extends Activity
         {
             TGTaskManager.getInstance().cancelTask(taskID, TaskType.TASK_TYPE_HTTP);
         }
+        httpTaskIDList.clear();
     }
 
     /**

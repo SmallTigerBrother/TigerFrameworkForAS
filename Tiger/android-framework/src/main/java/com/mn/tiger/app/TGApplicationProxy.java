@@ -61,14 +61,9 @@ public class TGApplicationProxy
         return proxy;
     }
 
-    public static TGApplicationProxy getInstance()
+    public static Application getApplication()
     {
-        return proxy;
-    }
-
-    public Application getApplication()
-    {
-        return application;
+        return proxy.application;
     }
 
     /**
@@ -77,9 +72,9 @@ public class TGApplicationProxy
      * @date 2013-12-3
      * @param activity
      */
-    public void addActivityToStack(Activity activity)
+    public static void addActivityToStack(Activity activity)
     {
-        activities.add(activity);
+        proxy.activities.add(activity);
     }
 
     /**
@@ -88,15 +83,15 @@ public class TGApplicationProxy
      * @date 2014年1月3日
      * @param activity
      */
-    public void removeActivityFromStack(Activity activity)
+    public static void removeActivityFromStack(Activity activity)
     {
-        activities.remove(activity);
+        proxy.activities.remove(activity);
     }
 
     /**
      * 退出应用时销毁所有启动的Activity
      */
-    public void exit()
+    public static void exit()
     {
         finishAllActivity();
         System.exit(0);
@@ -107,24 +102,24 @@ public class TGApplicationProxy
      *
      * @date 2014年3月4日
      */
-    public void finishAllActivity()
+    public static void finishAllActivity()
     {
         Activity activity;
-        for (int i = 0; i < activities.size(); i++)
+        for (int i = 0; i < proxy.activities.size(); i++)
         {
-            activity = activities.get(i);
+            activity = proxy.activities.get(i);
             if (null != activity && !activity.isFinishing())
             {
                 activity.finish();
             }
         }
 
-        activities.clear();
+        proxy.activities.clear();
     }
 
-    public Bus getBus()
+    public static Bus getBus()
     {
-        return bus;
+        return proxy.bus;
     }
 
     /**
@@ -159,7 +154,7 @@ public class TGApplicationProxy
                 LOG.e(e);
             }
 
-            this.collectDeviceInfo(TGApplicationProxy.getInstance().getApplication());
+            this.collectDeviceInfo(TGApplicationProxy.getApplication());
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(1);
         }
