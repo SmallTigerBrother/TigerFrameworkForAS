@@ -1,0 +1,147 @@
+package com.mn.tiger.request;
+
+import android.app.Activity;
+import android.content.Context;
+
+import com.mn.tiger.app.TGActionBarActivity;
+import com.mn.tiger.log.Logger;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+/**
+ * Created by Dalang on 2016/3/13.
+ */
+public abstract class TGCallback<T, D> implements Callback<T>
+{
+    private static final Logger LOG = Logger.getLogger(TGCallback.class);
+
+    /**
+     * 是否请求成功
+     */
+    private boolean success = false;
+
+    private Context context;
+
+    public TGCallback(Context context)
+    {
+        this.context = context;
+    }
+
+    protected Context getContext()
+    {
+        return context;
+    }
+
+    @Override
+    public void onResponse(Call<T> call, Response<T> response)
+    {
+        //如果界面已销毁,取消call
+        if(null != context && context instanceof Activity && ((Activity)context).isFinishing())
+        {
+            if(context instanceof TGActionBarActivity)
+            {
+                ((TGActionBarActivity)context).cancel(call);
+            }
+            return;
+        }
+
+        //从队列中移除call
+        if(null != context && context instanceof TGActionBarActivity)
+        {
+            ((TGActionBarActivity)context).dequeue(call);
+        }
+
+        if(!hasError(call, response))
+        {
+            //请求成功
+            this.success = true;
+            onRequestSuccess(response, parseOriginalResponse(response));
+        }
+        else
+        {
+            if(null != response)
+            {
+                //请求失败
+                this.success = false;
+                LOG.e("[Method:onResponse] code = " + response.code() + " message = " + response.message());
+                onRequestError(response.code(), response.message(), response);
+            }
+            else
+            {
+                //请求失败
+                this.success = false;
+                LOG.e("[Method:onResponse] code = -1");
+                onRequestError(-1, "", response);
+            }
+        }
+
+        /**
+         * 请求结束
+         */
+        onRequestOver(call);
+    }
+
+    @Override
+    public void onFailure(Call<T> call, Throwable t)
+    {
+        this.success = false;
+        onRequestError(-1, t.getMessage(), null);
+        onRequestOver(call);
+    }
+
+    /**
+     * 判断是否存在请求异常
+     * @param call
+     * @param response
+     * @return
+     */
+    protected boolean hasError(Call<T> call, Response<T> response)
+    {
+        return false;
+    }
+
+    /**
+     * 请求成功回调方法
+     * @param response
+     * @param data
+     */
+    public abstract void onRequestSuccess(Response<T> response, D data);
+
+    /**
+     * 解析原始结果
+     * @param response
+     * @return
+     */
+    protected abstract D parseOriginalResponse(Response<T> response);
+
+    /**
+     * 请求错误回调方法
+     * @param code
+     * @param message
+     * @param response
+     */
+    public void onRequestError( int code ,String message, Response<T> response)
+    {
+
+    }
+
+    /**
+     * 请求结束回调方法
+     * @param call
+     */
+    protected void onRequestOver(Call<T> call)
+    {
+
+    }
+
+    /**
+     * 是否请求成功
+     * @return
+     */
+    protected boolean isSuccess()
+    {
+        return success;
+    }
+}
