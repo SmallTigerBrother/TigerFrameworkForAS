@@ -4,12 +4,12 @@
     android:layout_height="match_parent" >
 
     <WebView
-        android:id="@+id/webview"
+        android:id="@+id/tiger_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <View
-        android:id="@+id/progress"
+        android:id="@+id/tiger_progress"
         android:layout_width="0dp"
         android:layout_height="1dip"
         android:background="#f8759c" />
