@@ -28,21 +28,17 @@
 
     <string name="tiger_not_space" >空间不足,下载失败!</string>
     
-    <string name="dialog_sheet_cancel">取消</string>
+    <string name="tiger_dialog_sheet_cancel">取消</string>
     
-    <string name="http_error_no_network">无网络连接，请确认网络设置是否正确</string>
-    <string name="http_error_socket_timeout">连接超时,请稍后再试</string>
-    <string name="http_error_ioexception">请求异常，请稍后再试</string>
-    <string name="http_error_unknown_exception">未知错误</string>
+    <string name="tiger_http_error_no_network">无网络连接，请确认网络设置是否正确</string>
+    <string name="tiger_http_error_socket_timeout">连接超时,请稍后再试</string>
+    <string name="tiger_http_error_ioexception">请求异常，请稍后再试</string>
+    <string name="tiger_http_error_unknown_exception">未知错误</string>
     
-    <string name="hours_ago">%1$s小时前</string>
-    <string name="minutes_ago">%1$s分钟前</string>
-    <string name="just_now">刚刚</string>
-
     <string name="tiger_ptr_loading">加载中...</string>
 
-    <string name="wechat_auth_user_denied">微信拒绝了您的授权请求</string>
-    <string name="wechat_auth_user_cancel">您已取消微信授权登录</string>
+    <string name="tiger_wechat_auth_user_denied">微信拒绝了您的授权请求</string>
+    <string name="tiger_wechat_auth_user_cancel">您已取消微信授权登录</string>
 
-    <string name="geo_code_error">获取位置信息错误</string>
+    <string name="tiger_geo_code_error">获取位置信息错误</string>
 </resources>

@@ -8,6 +8,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/spinner_loading_animation" />
+        android:background="@drawable/tiger_spinner_loading_animation" />
 
 </RelativeLayout>

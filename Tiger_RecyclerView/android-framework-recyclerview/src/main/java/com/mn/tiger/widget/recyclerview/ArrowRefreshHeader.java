@@ -59,7 +59,7 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         mContext = context;
         // 初始情况，设置下拉刷新view高度为0
         mContainer = (LinearLayout) LayoutInflater.from(context).inflate(
-                R.layout.listview_header, null);
+                R.layout.tiger_listview_header, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         lp.setMargins(0, 0, 0, 0);
         this.setLayoutParams(lp);
@@ -68,11 +68,11 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         addView(mContainer, new LayoutParams(LayoutParams.MATCH_PARENT, 0));
         setGravity(Gravity.BOTTOM);
 
-        mArrowImageView = (ImageView) findViewById(R.id.listview_header_arrow);
-        mStatusTextView = (TextView) findViewById(R.id.refresh_status_textview);
+        mArrowImageView = (ImageView) findViewById(R.id.tiger_listview_header_arrow);
+        mStatusTextView = (TextView) findViewById(R.id.tiger_refresh_status_textview);
 
         //init the progress view
-        mProgressBar = (SimpleViewSwitcher) findViewById(R.id.listview_header_progressbar);
+        mProgressBar = (SimpleViewSwitcher) findViewById(R.id.tiger_listview_header_progressbar);
         AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(context);
         progressView.setIndicatorColor(0xffB5B5B5);
         progressView.setIndicatorId(ProgressStyle.BallSpinFadeLoader);
@@ -89,7 +89,7 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         mRotateDownAnim.setDuration(ROTATE_ANIM_DURATION);
         mRotateDownAnim.setFillAfter(true);
 
-        mHeaderTimeView = (TextView) findViewById(R.id.last_refresh_time);
+        mHeaderTimeView = (TextView) findViewById(R.id.tiger_last_refresh_time);
         measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mMeasuredHeight = getMeasuredHeight();
     }
@@ -139,21 +139,21 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
                 {
                     mArrowImageView.clearAnimation();
                 }
-                mStatusTextView.setText(R.string.listview_header_hint_normal);
+                mStatusTextView.setText(R.string.tiger_listview_header_hint_normal);
                 break;
             case STATE_RELEASE_TO_REFRESH:
                 if (mState != STATE_RELEASE_TO_REFRESH)
                 {
                     mArrowImageView.clearAnimation();
                     mArrowImageView.startAnimation(mRotateUpAnim);
-                    mStatusTextView.setText(R.string.listview_header_hint_release);
+                    mStatusTextView.setText(R.string.tiger_listview_header_hint_release);
                 }
                 break;
             case STATE_REFRESHING:
-                mStatusTextView.setText(R.string.refreshing);
+                mStatusTextView.setText(R.string.tiger_refreshing);
                 break;
             case STATE_DONE:
-                mStatusTextView.setText(R.string.refresh_done);
+                mStatusTextView.setText(R.string.tiger_refresh_done);
                 break;
             default:
         }
@@ -239,13 +239,13 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
             setState(STATE_REFRESHING);
             isOnRefresh = true;
         }
-        // refreshing and header isn't shown fully. do nothing.
+        // tiger_refreshing and header isn't shown fully. do nothing.
         if (mState == STATE_REFRESHING && height <= mMeasuredHeight)
         {
             //return;
         }
         int destHeight = 0; // default: scroll back to dismiss header.
-        // is refreshing, just scroll back to show all the header.
+        // is tiger_refreshing, just scroll back to show all the header.
         if (mState == STATE_REFRESHING)
         {
             destHeight = mMeasuredHeight;

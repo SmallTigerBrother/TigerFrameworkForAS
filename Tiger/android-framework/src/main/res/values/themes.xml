@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <style name="DialogTheme.Sheet" parent="@android:style/Theme.Dialog">
+    <style name="TigerDialogTheme.Sheet" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -10,7 +10,7 @@
         <!-- 设置背景透明 -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowAnimationStyle">@style/DialogSheetAnimation</item>
+        <item name="android:windowAnimationStyle">@style/TigerDialogSheetAnimation</item>
     </style>
     
 </resources>
