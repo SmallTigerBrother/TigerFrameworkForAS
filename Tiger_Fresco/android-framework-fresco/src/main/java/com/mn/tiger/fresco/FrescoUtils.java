@@ -83,9 +83,9 @@ public class FrescoUtils
             SoLoader.init(context,false);
             SoLoader.loadLibrary("webp");
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
-            LOG.e(e);
+            LOG.e("[Method:loadWebpJNI]", e);
         }
     }
 
