@@ -46,7 +46,7 @@ public class TGActionSheetDialog extends Dialog implements View.OnClickListener
 	public TGActionSheetDialog(Context context, int theme)
 	{
 		super(context, theme);
-		super.setContentView(CR.getLayoutId(context, "dialog_sheet"));
+		super.setContentView(CR.getLayoutId(context, "tiger_dialog_sheet"));
 		//设置对话框宽度、高度
 		this.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 
 				ViewGroup.LayoutParams.WRAP_CONTENT);

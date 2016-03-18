@@ -65,8 +65,8 @@ public class TGRefreshHeader extends LinearLayout implements BaseRefreshHeader
         layoutParams.height = 0;
         mContainer.setLayoutParams(layoutParams);
 
-        mHeaderArrowIv = (ImageView) findViewById(CR.getViewId(getContext(), "iv_default_refresh_header_arrow"));
-        mHeaderChrysanthemumIv = (ImageView) findViewById(CR.getViewId(getContext(), "iv_default_refresh_header_chrysanthemum"));
+        mHeaderArrowIv = (ImageView) findViewById(CR.getViewId(getContext(), "tiger_iv_default_refresh_header_arrow"));
+        mHeaderChrysanthemumIv = (ImageView) findViewById(CR.getViewId(getContext(), "tiger_iv_default_refresh_header_chrysanthemum"));
         mHeaderChrysanthemumAd = (AnimationDrawable) mHeaderChrysanthemumIv.getDrawable();
 
         measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

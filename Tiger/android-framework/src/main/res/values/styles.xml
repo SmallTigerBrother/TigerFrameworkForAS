@@ -1,18 +1,18 @@
 <resources>
 
-    <style name="AppTheme" mce_bogus="1">
-        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+    <style name="TigerAppTheme" mce_bogus="1">
+        <item name="android:windowAnimationStyle">@style/TigerAnimationActivity</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="AnimationActivity" parent="android:Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/anim_enter</item>
-        <item name="android:activityOpenExitAnimation">@anim/anim_exit</item>
-        <item name="android:activityCloseEnterAnimation">@anim/back_enter</item>
-        <item name="android:activityCloseExitAnimation">@anim/back_exit</item>
+    <style name="TigerAnimationActivity" parent="android:Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/tiger_anim_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/tiger_anim_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/tiger_back_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/tiger_back_exit</item>
     </style>
 
-    <style name="tiger_baseDialog" parent="@android:style/Theme.Dialog">
+    <style name="TigerBaseDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowFrame">@null</item>
@@ -21,7 +21,7 @@
     </style>
 
     <!-- progress dialog -->
-    <style name="tiger_progressDialog" parent="@android:style/Theme.Dialog">
+    <style name="TigerProgressDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowFrame">@null</item>
@@ -33,19 +33,12 @@
         <!--  -->
     </style>
     
-    <style name="HeaderLoadingBar">
-        <item name="android:indeterminateOnly">true</item>
-        <item name="android:indeterminateDrawable">@drawable/loading_bar</item>
-        <item name="android:indeterminateBehavior">repeat</item>
-        <item name="android:indeterminateDuration">3500</item>
+    <style name="TigerDialogSheetAnimation" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/tiger_dialog_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/tiger_dialog_bottom_out</item>
     </style>
 
-    <style name="DialogSheetAnimation" parent="@android:style/Animation.Dialog">
-        <item name="android:windowEnterAnimation">@anim/dialog_bottom_in</item>
-        <item name="android:windowExitAnimation">@anim/dialog_bottom_out</item>
-    </style>
-
-    <style name="LoadingDialogStyle" parent="android:Theme.Dialog">
+    <style name="TigerLoadingDialogStyle" parent="android:Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>

@@ -9,10 +9,10 @@
     http://code.google.com/p/android/issues/detail?id=939
     -->
     <corners
-        android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="0dp"
+        android:bottomLeftRadius="@dimen/tiger_indicator_corner_radius"
+        android:bottomRightRadius="@dimen/tiger_indicator_corner_radius"
         android:radius="1dp"
-        android:topLeftRadius="@dimen/indicator_corner_radius"
-        android:topRightRadius="@dimen/indicator_corner_radius" />
+        android:topLeftRadius="0dp"
+        android:topRightRadius="0dp" />
 
 </shape>

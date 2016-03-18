@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mjet_searchview_contentview"
+    android:id="@+id/tiger_searchview_contentview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/tiger_search_input_bg"

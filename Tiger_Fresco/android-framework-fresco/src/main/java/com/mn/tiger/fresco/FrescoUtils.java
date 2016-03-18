@@ -23,6 +23,7 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.facebook.soloader.SoLoader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
 
@@ -68,6 +69,23 @@ public class FrescoUtils
         catch (ClassNotFoundException e)
         {
             LOG.e("[Method:initialize]", e);
+        }
+    }
+
+    /**
+     * 加载webp
+     * @param context
+     */
+    public static void loadWebpJNI(Context context)
+    {
+        try
+        {
+            SoLoader.init(context,false);
+            SoLoader.loadLibrary("webp");
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
         }
     }
 
@@ -355,7 +373,7 @@ public class FrescoUtils
     {
         if(PLACE_HOLDER_ID == -1 && null != draweeView)
         {
-            PLACE_HOLDER_ID = CR.getViewId(draweeView.getContext(), "placeholder");
+            PLACE_HOLDER_ID = CR.getViewId(draweeView.getContext(), "tiger_placeholder");
         }
         return PLACE_HOLDER_ID;
     }

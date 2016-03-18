@@ -24,7 +24,7 @@
                 android:id="@+id/refresh_status_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/listview_header_hint_normal" />
+                android:text="@string/tiger_listview_header_hint_normal" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/listview_header_last_time"
+                    android:text="@string/tiger_listview_header_last_time"
                     android:textSize="12sp" />
 
                 <TextView
@@ -54,7 +54,7 @@
             android:layout_marginLeft="35dp"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/listview_header_text"
-            android:src="@drawable/ic_pulltorefresh_arrow" />
+            android:src="@drawable/tiger_ic_pulltorefresh_arrow" />
 
         <com.mn.tiger.widget.recyclerview.SimpleViewSwitcher
             android:id="@+id/listview_header_progressbar"

@@ -59,7 +59,7 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         mContext = context;
         // 初始情况，设置下拉刷新view高度为0
         mContainer = (LinearLayout) LayoutInflater.from(context).inflate(
-                R.layout.listview_header, null);
+                R.layout.tiger_listview_header, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         lp.setMargins(0, 0, 0, 0);
         this.setLayoutParams(lp);
@@ -139,21 +139,21 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
                 {
                     mArrowImageView.clearAnimation();
                 }
-                mStatusTextView.setText(R.string.listview_header_hint_normal);
+                mStatusTextView.setText(R.string.tiger_listview_header_hint_normal);
                 break;
             case STATE_RELEASE_TO_REFRESH:
                 if (mState != STATE_RELEASE_TO_REFRESH)
                 {
                     mArrowImageView.clearAnimation();
                     mArrowImageView.startAnimation(mRotateUpAnim);
-                    mStatusTextView.setText(R.string.listview_header_hint_release);
+                    mStatusTextView.setText(R.string.tiger_listview_header_hint_release);
                 }
                 break;
             case STATE_REFRESHING:
-                mStatusTextView.setText(R.string.refreshing);
+                mStatusTextView.setText(R.string.tiger_refreshing);
                 break;
             case STATE_DONE:
-                mStatusTextView.setText(R.string.refresh_done);
+                mStatusTextView.setText(R.string.tiger_refresh_done);
                 break;
             default:
         }
