@@ -6,6 +6,7 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.AttributeSet;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -21,6 +22,8 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.mn.tiger.log.Logger;
 
+import java.util.HashMap;
+
 /**
  * Created by peng on 16/1/31.
  */
@@ -29,6 +32,10 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
     private static final Logger LOG = Logger.getLogger(TGDraweeView.class);
 
     private FrescoConfigs frescoConfigs;
+
+    private static final Handler HANDLER = new Handler();
+
+    private static final HashMap<Integer,Boolean> HASH_CODE_CACHE = new HashMap<>();
 
     public TGDraweeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
@@ -59,6 +66,17 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         return frescoConfigs;
     }
 
+    @Override
+    protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+        //移除缓存记录
+        if(HASH_CODE_CACHE.size() > 0)
+        {
+            HASH_CODE_CACHE.remove(frescoConfigs.hashCode());
+        }
+    }
+
     /**
      * Fresco参数
      */
@@ -81,6 +99,8 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         private int roundBorderWidth =0;
         //是否自动旋转
         private boolean autoRotate = false;
+
+        private TGDraweeControllerListener controllerListener;
         /**
          * 显示图片
          */
@@ -126,8 +146,13 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
                     .setOldController(TGDraweeView.this.getController())
                     .setImageRequest(request)
                     .build();
+
+            if(null == controllerListener)
+            {
+                controllerListener = new TGDraweeControllerListener(this);
+            }
             //设置图片加载监听器
-            draweeController.addControllerListener(new TGDraweeControllerListener(this));
+            draweeController.addControllerListener(controllerListener);
             TGDraweeView.this.setController(draweeController);
         }
 
@@ -201,7 +226,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
     {
         private FrescoConfigs configs;
 
-        private static final int MAX_RETRY = 2;
+        private static final int MAX_RETRY = 10;
 
         private int retry = 0;
 
@@ -236,10 +261,23 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         @Override
         public void onFailure(String id, Throwable throwable)
         {
-            LOG.e("[Method:TGDraweeControllerListener:onFailure] id == " + id + " error == " + throwable.getMessage());
-            if(++retry <= MAX_RETRY)
+            final int configsHashCode = configs.hashCode();
+            HASH_CODE_CACHE.put(configsHashCode,true);
+            retry++;
+            LOG.e("[Method:TGDraweeControllerListener:onFailure] id == " + id + "retry == " + retry + " error == " + throwable.getMessage());
+            if(retry <= MAX_RETRY)
             {
-                this.configs.display();
+                HANDLER.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if(HASH_CODE_CACHE.containsKey(configsHashCode))
+                        {
+                            configs.display();
+                        }
+                    }
+                }, 100);
             }
         }
 
