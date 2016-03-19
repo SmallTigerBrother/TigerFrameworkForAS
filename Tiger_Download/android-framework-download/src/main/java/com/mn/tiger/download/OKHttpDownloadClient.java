@@ -2,11 +2,11 @@ package com.mn.tiger.download;
 
 import android.content.Context;
 
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -43,9 +43,9 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
     {
         try
         {
-            LOG.d("[Method:executeHttpConnect] url : " + downloader.getUrl() + "\n" + "params : " + downloader.getParams().toString() + "\n");
+            LOG.d("[Method:executeHttpConnect] url : " + downloader.getUrl() + "\n" + "params : " + downloader.getParams() + "\n");
 
-            Request request = buildRequest(downloader.getRequestType(), downloader.getUrl(), downloader.getParams(), null);
+            Request request = buildRequest(downloader.getRequestType(), downloader.getUrl(), downloader.getParamsMap(), null);
             call = okHttpClient.newCall(request);
             response = call.execute();
         }
@@ -64,7 +64,7 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
      * @return
      * @throws IOException
      */
-    private Request buildRequest(int httpType, String requestUrl, HashMap<String, String> parameters,
+    private Request buildRequest(int httpType, String requestUrl, Map<String, String> parameters,
                                  Map<String, String> properties) throws IOException
     {
         Request.Builder builder = new Request.Builder();
@@ -100,7 +100,7 @@ public class OKHttpDownloadClient extends TGDownloadHttpClient
      * @return
      * @throws IOException
      */
-    private RequestBody initFormDataRequestBody(HashMap<String, String> parameters) throws IOException
+    private RequestBody initFormDataRequestBody(Map<String, String> parameters) throws IOException
     {
         FormBody.Builder builder = new FormBody.Builder();
         for(Map.Entry<String, String> entry : parameters.entrySet())

@@ -4,12 +4,11 @@ package com.mn.tiger.download.db;
 /**
  * Entity mapped to table "DOWNLOADER".
  */
-public class Downloader {
+public class Downloader implements java.io.Serializable {
 
     private long id;
     /** Not-null value. */
     private String url;
-    /** Not-null value. */
     private String params;
     private long fileSize;
     private long completeSize;
@@ -17,17 +16,19 @@ public class Downloader {
     /** Not-null value. */
     private String savePath;
     private int requestType;
-    /** Not-null value. */
     private String checkKey;
-    private boolean isBreakPoints;
+    private boolean accessRanges;
     private int errorCode;
-    /** Not-null value. */
     private String errorMsg;
     /** Not-null value. */
     private String taskClsName;
     /** Not-null value. */
     private String paramsClsName;
-    private int downloadType;
+    private String downloadType;
+    /** Not-null value. */
+    private java.util.Date createTime;
+    private boolean softDelete;
+    private String extras;
 
     public Downloader() {
     }
@@ -36,7 +37,7 @@ public class Downloader {
         this.id = id;
     }
 
-    public Downloader(long id, String url, String params, long fileSize, long completeSize, int downloadStatus, String savePath, int requestType, String checkKey, boolean isBreakPoints, int errorCode, String errorMsg, String taskClsName, String paramsClsName, int downloadType) {
+    public Downloader(long id, String url, String params, long fileSize, long completeSize, int downloadStatus, String savePath, int requestType, String checkKey, boolean accessRanges, int errorCode, String errorMsg, String taskClsName, String paramsClsName, String downloadType, java.util.Date createTime, boolean softDelete, String extras) {
         this.id = id;
         this.url = url;
         this.params = params;
@@ -46,12 +47,15 @@ public class Downloader {
         this.savePath = savePath;
         this.requestType = requestType;
         this.checkKey = checkKey;
-        this.isBreakPoints = isBreakPoints;
+        this.accessRanges = accessRanges;
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
         this.taskClsName = taskClsName;
         this.paramsClsName = paramsClsName;
         this.downloadType = downloadType;
+        this.createTime = createTime;
+        this.softDelete = softDelete;
+        this.extras = extras;
     }
 
     public long getId() {
@@ -72,12 +76,10 @@ public class Downloader {
         this.url = url;
     }
 
-    /** Not-null value. */
     public String getParams() {
         return params;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setParams(String params) {
         this.params = params;
     }
@@ -124,22 +126,20 @@ public class Downloader {
         this.requestType = requestType;
     }
 
-    /** Not-null value. */
     public String getCheckKey() {
         return checkKey;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setCheckKey(String checkKey) {
         this.checkKey = checkKey;
     }
 
-    public boolean getIsBreakPoints() {
-        return isBreakPoints;
+    public boolean getAccessRanges() {
+        return accessRanges;
     }
 
-    public void setIsBreakPoints(boolean isBreakPoints) {
-        this.isBreakPoints = isBreakPoints;
+    public void setAccessRanges(boolean accessRanges) {
+        this.accessRanges = accessRanges;
     }
 
     public int getErrorCode() {
@@ -150,12 +150,10 @@ public class Downloader {
         this.errorCode = errorCode;
     }
 
-    /** Not-null value. */
     public String getErrorMsg() {
         return errorMsg;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
     }
@@ -180,12 +178,38 @@ public class Downloader {
         this.paramsClsName = paramsClsName;
     }
 
-    public int getDownloadType() {
+    public String getDownloadType() {
         return downloadType;
     }
 
-    public void setDownloadType(int downloadType) {
+    public void setDownloadType(String downloadType) {
         this.downloadType = downloadType;
+    }
+
+    /** Not-null value. */
+    public java.util.Date getCreateTime() {
+        return createTime;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setCreateTime(java.util.Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public boolean getSoftDelete() {
+        return softDelete;
+    }
+
+    public void setSoftDelete(boolean softDelete) {
+        this.softDelete = softDelete;
+    }
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
     }
 
 }

@@ -127,9 +127,8 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
                     .setImageRequest(request)
                     .build();
             //设置图片加载监听器
-            draweeController.addControllerListener(new TGDraweeControllerListener(draweeController));
+            draweeController.addControllerListener(new TGDraweeControllerListener(this));
             TGDraweeView.this.setController(draweeController);
-
         }
 
         /**
@@ -198,17 +197,17 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         }
     }
 
-    private static class TGDraweeControllerListener implements ControllerListener
+    private class TGDraweeControllerListener implements ControllerListener
     {
-        private AbstractDraweeController draweeController;
+        private FrescoConfigs configs;
 
         private static final int MAX_RETRY = 2;
 
         private int retry = 0;
 
-        public TGDraweeControllerListener(AbstractDraweeController controller)
+        public TGDraweeControllerListener(FrescoConfigs configs)
         {
-            this.draweeController = controller;
+            this.configs = configs;
         }
         @Override
         public void onSubmit(String id, Object callerContext)
@@ -240,7 +239,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             LOG.e("[Method:TGDraweeControllerListener:onFailure] id == " + id + " error == " + throwable.getMessage());
             if(++retry <= MAX_RETRY)
             {
-                draweeController.onClick();
+                this.configs.display();
             }
         }
 

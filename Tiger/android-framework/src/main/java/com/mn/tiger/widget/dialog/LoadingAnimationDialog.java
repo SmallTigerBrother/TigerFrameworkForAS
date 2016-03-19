@@ -31,7 +31,7 @@ public class LoadingAnimationDialog extends TGDialogFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(CR.getLayoutId(getActivity(), "loading_anima_dialog_layout"), container, false);
+		View view = inflater.inflate(CR.getLayoutId(getActivity(), "tiger_loading_anima_dialog_layout"), container, false);
 
 		ImageView loadingIV = (ImageView) view.findViewById(CR.getViewId(getActivity(), "loading_iv"));
 

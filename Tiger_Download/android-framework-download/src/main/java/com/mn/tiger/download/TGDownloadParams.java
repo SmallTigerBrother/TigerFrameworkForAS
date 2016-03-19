@@ -12,16 +12,6 @@ import java.util.HashMap;
  */
 public class TGDownloadParams implements Cloneable, Serializable 
 {
-	/**
-	 * Post请求类型
-	 */
-	public static final int REQUEST_POST = HttpType.REQUEST_POST;
-
-	/**
-	 * Get请求类型
-	 */
-	public static final int REQUEST_GET = HttpType.REQUEST_GET;
-
 	// 序列化ID
 	private static final long serialVersionUID = 1L;
 
@@ -44,6 +34,11 @@ public class TGDownloadParams implements Cloneable, Serializable
 	 * 用于区分不同类型下载任务，在同一客户端存在多个下载中心时使用
 	 */
 	private String downloadType;
+
+    /**
+     * 其他参数
+     */
+	private HashMap<String,String> extras;
 	
 	public TGDownloadParams()
 	{
@@ -108,8 +103,22 @@ public class TGDownloadParams implements Cloneable, Serializable
 	{
 		return downloadType;
 	}
-	
-	/**
+
+    /**
+     * 其他参数
+     * @param extras
+     */
+    public void setExtras(HashMap<String, String> extras)
+    {
+        this.extras = extras;
+    }
+
+    public HashMap<String, String> getExtras()
+    {
+        return extras;
+    }
+
+    /**
 	 * 用于区分不同类型下载任务，在同一客户端存在多个下载中心时使用
 	 */
 	public void setDownloadType(String downloadType)

@@ -22,7 +22,6 @@
     <string name="tiger_filedownload_begin">开始下载</string>
     <string name="tiger_filedownload_loadover">下载完成</string>
     <string name="tiger_filedownload_failure">下载失败</string>
-    <string name="tiger_w3update_message">非常抱歉，您没有安装w3 mobile或其版本太低, 现在安装更新吗？</string>
 
     <!-- crash -->
     <string name="tiger_program_error">程序出错啦!</string>
@@ -52,32 +51,21 @@
 
     <string name="tiger_not_space" >空间不足,下载失败!</string>
     
-    <string name="xlistview_header_hint_normal">下拉可以刷新</string>
-    <string name="xlistview_header_hint_ready">松开可以刷新</string>
-    <string name="xlistview_header_hint_loading">正在加载…</string>
-    <string name="xlistview_header_last_time">上次更新时间：</string>
-    <string name="xlistview_footer_hint_normal">查看更多</string>
-    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="tiger_dialog_sheet_cancel">取消</string>
     
-    <string name="dialog_sheet_cancel">取消</string>
+    <string name="tiger_http_error_no_network">无网络连接，请确认网络设置是否正确</string>
+    <string name="tiger_http_error_socket_timeout">连接超时,请稍后再试</string>
+    <string name="tiger_http_error_ioexception">请求异常，请稍后再试</string>
+    <string name="tiger_http_error_unknown_exception">未知错误</string>
     
-    <string name="http_error_no_network">无网络连接，请确认网络设置是否正确</string>
-    <string name="http_error_socket_timeout">连接超时,请稍后再试</string>
-    <string name="http_error_ioexception">请求异常，请稍后再试</string>
-    <string name="http_error_unknown_exception">未知错误</string>
-    
-    <string name="hours_ago">%1$s小时前</string>
-    <string name="minutes_ago">%1$s分钟前</string>
-    <string name="just_now">刚刚</string>
-
     <string name="tiger_ptr_loading">loading...</string>
 
-    <string name="wechat_auth_user_denied">微信拒绝了您的授权请求</string>
-    <string name="wechat_auth_user_cancel">您已取消微信授权登录</string>
+    <string name="tiger_wechat_auth_user_denied">微信拒绝了您的授权请求</string>
+    <string name="tiger_wechat_auth_user_cancel">您已取消微信授权登录</string>
 
-    <string name="china_zh">中国</string>
-    <string name="china_en">China</string>
+    <string name="tiger_china_zh">中国</string>
+    <string name="tiger_china_en">China</string>
 
-    <string name="geo_code_error">获取位置信息错误</string>
+    <string name="tiger_geo_code_error">获取位置信息错误</string>
     
 </resources>

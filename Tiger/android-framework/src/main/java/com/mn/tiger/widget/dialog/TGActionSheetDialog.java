@@ -46,7 +46,7 @@ public class TGActionSheetDialog extends Dialog implements View.OnClickListener
 	public TGActionSheetDialog(Context context, int theme)
 	{
 		super(context, theme);
-		super.setContentView(CR.getLayoutId(context, "dialog_sheet"));
+		super.setContentView(CR.getLayoutId(context, "tiger_tiger_dialog_sheet"));
 		//设置对话框宽度、高度
 		this.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 
 				ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -144,7 +144,7 @@ public class TGActionSheetDialog extends Dialog implements View.OnClickListener
 	{
 		Button button = new Button(getContext());
 		button.setGravity(Gravity.CENTER);
-		button.setText(CR.getStringId(getContext(), "dialog_sheet_cancel"));
+		button.setText(CR.getStringId(getContext(), "tiger_dialog_sheet_cancel"));
 		button.setBackgroundColor(0xfff6f6f6);
 		button.setTextSize(18);
 		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

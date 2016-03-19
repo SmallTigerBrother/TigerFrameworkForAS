@@ -1,5 +1,6 @@
 package com.mn.tiger.download;
 
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.FileUtils;
 
@@ -22,7 +23,7 @@ public class FileSizeDownloadFileChecker implements IDownloadFileChecker
 			}
 			else
 			{
-				if(!downloader.isBreakPoints())
+				if(!downloader.getAccessRanges())
 				{
 					file.delete();
 				}

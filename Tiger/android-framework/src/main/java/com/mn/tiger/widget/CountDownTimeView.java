@@ -81,7 +81,7 @@ public class CountDownTimeView extends TextView
 	
 	/**
 	 * 设置终止时间差，单位是毫秒，即距离结束还有多少毫秒
-	 * @param endTimeMillis 终止时间差
+	 * @param deltaTimeMillis 终止时间差
 	 */
 	public void setDeltaTime(long deltaTimeMillis, OnTimeChangedListener listener)
 	{

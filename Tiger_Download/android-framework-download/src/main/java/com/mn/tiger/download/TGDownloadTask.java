@@ -2,6 +2,7 @@ package com.mn.tiger.download;
 
 import android.os.Bundle;
 
+import com.mn.tiger.download.db.TGDownloader;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.task.TGTask;
 import com.mn.tiger.task.TaskType;
@@ -64,7 +65,7 @@ public class TGDownloadTask extends TGTask
 	{
 		if(getTaskState() == TGTaskState.WAITING)
 		{
-			TGDownloader downloader = TGDownloader.getInstance(getContext(), mDownloadParams, this.getTaskID());
+			TGDownloader downloader = TGDownloader.fromTGDownloadParams(mDownloadParams, this.getTaskID());
 			onDownloadPause(downloader);
 		}
 		super.onTaskPause();
@@ -75,7 +76,7 @@ public class TGDownloadTask extends TGTask
 	{
 		if(getTaskState() == TGTaskState.WAITING)
 		{
-			TGDownloader downloader = TGDownloader.getInstance(getContext(), mDownloadParams, this.getTaskID());
+			TGDownloader downloader = TGDownloader.fromTGDownloadParams(mDownloadParams, this.getTaskID());
 			onDownloadCancel(downloader);
 			downloadHttpClient.cancel();
 		}
@@ -126,14 +127,14 @@ public class TGDownloadTask extends TGTask
 		if(NetworkUtils.isConnectivityAvailable(getContext()))
 		{
 			// 获取下载参数
-			downloader = TGDownloader.getInstance(getContext(), mDownloadParams, getTaskID());
+			downloader = TGDownloader.fromTGDownloadParams(mDownloadParams, getTaskID());
 			downloadHttpClient = new OKHttpDownloadClient(getContext(), downloader, this);
 			// 执行下载操作
 			downloadHttpClient.execute();
 		}
 		else
 		{
-			TGDownloader downloader = TGDownloader.getInstance(getContext(), mDownloadParams, getTaskID());
+			TGDownloader downloader = TGDownloader.fromTGDownloadParams(mDownloadParams, getTaskID());
 			downloader.setErrorCode(TGHttpError.NO_NETWORK);
 			downloader.setErrorMsg(TGHttpError.getDefaultErrorMsg(getContext(), TGHttpError.NO_NETWORK));
 			onDownloadFailed(downloader);

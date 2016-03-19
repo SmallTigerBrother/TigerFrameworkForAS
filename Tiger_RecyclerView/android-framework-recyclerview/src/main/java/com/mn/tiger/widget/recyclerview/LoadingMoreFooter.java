@@ -1,7 +1,6 @@
 package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -55,11 +54,11 @@ public class LoadingMoreFooter extends LinearLayout
 
         addView(progressCon);
         mText = new TextView(context);
-        mText.setText(mContext.getText(R.string.listview_loading));
+        mText.setText(mContext.getText(R.string.tiger_listview_loading));
         mText.setTextColor(0xffB5B5B5);
 
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins((int) getResources().getDimension(R.dimen.textandiconmargin), 0, 0, 0);
+        layoutParams.setMargins((int) getResources().getDimension(R.dimen.tiger_textandiconmargin), 0, 0, 0);
 
         mText.setLayoutParams(layoutParams);
         addView(mText);
@@ -85,15 +84,15 @@ public class LoadingMoreFooter extends LinearLayout
         {
             case STATE_LAODING:
                 progressCon.setVisibility(View.VISIBLE);
-                mText.setText(mContext.getText(R.string.listview_loading));
+                mText.setText(mContext.getText(R.string.tiger_listview_loading));
                 this.setVisibility(View.VISIBLE);
                 break;
             case STATE_COMPLETE:
-                mText.setText(mContext.getText(R.string.listview_loading));
+                mText.setText(mContext.getText(R.string.tiger_listview_loading));
                 this.setVisibility(View.GONE);
                 break;
             case STATE_NOMORE:
-                mText.setText(mContext.getText(R.string.nomore_loading));
+                mText.setText(mContext.getText(R.string.tiger_nomore_loading));
                 progressCon.setVisibility(View.GONE);
                 this.setVisibility(View.VISIBLE);
                 break;

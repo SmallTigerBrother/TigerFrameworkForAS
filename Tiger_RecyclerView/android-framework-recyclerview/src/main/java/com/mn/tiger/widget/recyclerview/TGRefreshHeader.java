@@ -4,9 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -65,8 +62,8 @@ public class TGRefreshHeader extends LinearLayout implements BaseRefreshHeader
         layoutParams.height = 0;
         mContainer.setLayoutParams(layoutParams);
 
-        mHeaderArrowIv = (ImageView) findViewById(CR.getViewId(getContext(), "iv_default_refresh_header_arrow"));
-        mHeaderChrysanthemumIv = (ImageView) findViewById(CR.getViewId(getContext(), "iv_default_refresh_header_chrysanthemum"));
+        mHeaderArrowIv = (ImageView) findViewById(CR.getViewId(getContext(), "tiger_iv_default_refresh_header_arrow"));
+        mHeaderChrysanthemumIv = (ImageView) findViewById(CR.getViewId(getContext(), "tiger_iv_default_refresh_header_chrysanthemum"));
         mHeaderChrysanthemumAd = (AnimationDrawable) mHeaderChrysanthemumIv.getDrawable();
 
         measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -113,13 +110,13 @@ public class TGRefreshHeader extends LinearLayout implements BaseRefreshHeader
             setState(STATE_REFRESHING);
             isOnRefresh = true;
         }
-        // refreshing and header isn't shown fully. do nothing.
+        // tiger_refreshing and header isn't shown fully. do nothing.
         if (mState == STATE_REFRESHING && height <= mMeasuredHeight)
         {
             //return;
         }
         int destHeight = 0; // default: scroll back to dismiss header.
-        // is refreshing, just scroll back to show all the header.
+        // is tiger_refreshing, just scroll back to show all the header.
         if (mState == STATE_REFRESHING)
         {
             destHeight = mMeasuredHeight;

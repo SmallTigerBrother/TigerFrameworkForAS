@@ -48,9 +48,9 @@ public class TGWebViewActivity extends TGActionBarActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(CR.getLayoutId(this, "webview_activity"));
-        mWebView = (WebView)findViewById(CR.getViewId(this,"webview"));
-        mProgress = (View)findViewById(CR.getViewId(this, "progress"));
+        setContentView(CR.getLayoutId(this, "tiger_webview_activity"));
+        mWebView = (WebView)findViewById(CR.getViewId(this,"tiger_webview"));
+        mProgress = (View)findViewById(CR.getViewId(this, "tiger_progress"));
 
         barTitle = getIntent().getStringExtra(WEBVIEW_ACTIVITY_TITLE);
         url = getIntent().getStringExtra(URL);
