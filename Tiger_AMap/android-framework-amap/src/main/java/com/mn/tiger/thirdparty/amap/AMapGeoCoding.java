@@ -25,14 +25,14 @@ public class AMapGeoCoding implements IGeoCoding
     public void geoCoding(final double latitude, final double longitude, final IGeoCodeListener listener)
     {
         LOG.i("[Method:geoCoding] latitude == " + latitude + " longitude == " + longitude);
-        GeocodeSearch geocodeSearch = new GeocodeSearch(TGApplicationProxy.getInstance().getApplication());
+        GeocodeSearch geocodeSearch = new GeocodeSearch(TGApplicationProxy.getApplication());
         geocodeSearch.setOnGeocodeSearchListener(new GeocodeSearch.OnGeocodeSearchListener()
         {
             @Override
             public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int code)
             {
                 LOG.i("[Method:geoCoding:onRegeocodeSearched] code == " + code + " address == " + regeocodeResult.getRegeocodeAddress().getFormatAddress());
-                Context context = TGApplicationProxy.getInstance().getApplication();
+                Context context = TGApplicationProxy.getApplication();
                 if(code == 0 && null != regeocodeResult && null != regeocodeResult.getRegeocodeAddress() &&
                     null != regeocodeResult.getRegeocodeAddress().getFormatAddress())
                 {
@@ -46,7 +46,7 @@ public class AMapGeoCoding implements IGeoCoding
                         location.setCity(address.getCity());
                         location.setAddress(address.getFormatAddress());
                         location.setStreet(address.getStreetNumber().getStreet());
-                        location.setCountry(context.getString(CR.getStringId(context, "china_zh")));
+                        location.setCountry(context.getString(CR.getStringId(context, "tiger_china_zh")));
                         listener.onGeoCodingSuccess(location);
                     }
                 }
@@ -54,7 +54,7 @@ public class AMapGeoCoding implements IGeoCoding
                 {
                     if(null != listener)
                     {
-                        listener.onGeoCodingError(code, context.getString(CR.getStringId(context, "geo_code_error")));
+                        listener.onGeoCodingError(code, context.getString(CR.getStringId(context, "tiger_geo_code_error")));
                     }
                 }
             }

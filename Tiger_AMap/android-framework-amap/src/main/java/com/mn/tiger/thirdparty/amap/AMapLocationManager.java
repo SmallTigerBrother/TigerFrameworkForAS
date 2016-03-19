@@ -44,7 +44,7 @@ public class AMapLocationManager implements ILocationManager
      */
     public AMapLocationManager()
     {
-        locationClient = new AMapLocationClient(TGApplicationProxy.getInstance().getApplication());
+        locationClient = new AMapLocationClient(TGApplicationProxy.getApplication());
         AMapLocationClientOption option = new AMapLocationClientOption();
         option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
         locationClient.setLocationOption(option);
@@ -106,9 +106,9 @@ public class AMapLocationManager implements ILocationManager
             return false;
         }
 
-        Context context = TGApplicationProxy.getInstance().getApplication();
-        String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
-        String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
+        Context context = TGApplicationProxy.getApplication();
+        String chinaZH = context.getResources().getString(CR.getStringId(context, "tiger_china_zh"));
+        String chinaEN = context.getResources().getString(CR.getStringId(context, "tiger_china_en"));
 
         if(!location.getCountry().equalsIgnoreCase(chinaZH) && !location.getCountry().equalsIgnoreCase(chinaEN))
         {
