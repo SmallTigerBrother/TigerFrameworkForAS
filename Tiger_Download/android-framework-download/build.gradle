@@ -50,7 +50,6 @@ dependencies {
     compile 'com.mn.tiger:android-framework:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-logger:latest.integration'
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
-    compile 'com.mn.tiger:android-framework-datastorage:latest.integration'
     compile 'com.google.code.gson:gson:latest.integration'
     compile 'com.squareup.okhttp3:okhttp:latest.integration'
     compile 'de.greenrobot:greendao:2.1.0'
