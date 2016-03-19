@@ -22,7 +22,6 @@
     <string name="tiger_filedownload_begin">开始下载</string>
     <string name="tiger_filedownload_loadover">下载完成</string>
     <string name="tiger_filedownload_failure">下载失败</string>
-    <string name="tiger_w3update_message">非常抱歉，您没有安装w3 mobile或其版本太低, 现在安装更新吗？</string>
 
     <!-- crash -->
     <string name="tiger_program_error">程序出错啦!</string>

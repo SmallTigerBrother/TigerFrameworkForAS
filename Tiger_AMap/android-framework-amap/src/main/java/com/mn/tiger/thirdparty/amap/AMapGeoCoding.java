@@ -46,7 +46,7 @@ public class AMapGeoCoding implements IGeoCoding
                         location.setCity(address.getCity());
                         location.setAddress(address.getFormatAddress());
                         location.setStreet(address.getStreetNumber().getStreet());
-                        location.setCountry(context.getString(CR.getStringId(context, "china_zh")));
+                        location.setCountry(context.getString(CR.getStringId(context, "tiger_china_zh")));
                         listener.onGeoCodingSuccess(location);
                     }
                 }
@@ -54,7 +54,7 @@ public class AMapGeoCoding implements IGeoCoding
                 {
                     if(null != listener)
                     {
-                        listener.onGeoCodingError(code, context.getString(CR.getStringId(context, "geo_code_error")));
+                        listener.onGeoCodingError(code, context.getString(CR.getStringId(context, "tiger_geo_code_error")));
                     }
                 }
             }
