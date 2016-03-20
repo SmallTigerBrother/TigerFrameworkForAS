@@ -24,7 +24,8 @@ public class LoadingAnimationDialog extends TGDialogFragment
 	{
 		super.onCreate(savedInstanceState);
 
-		int style = DialogFragment.STYLE_NO_TITLE, theme = CR.getStyleId(getActivity(), "LoadingDialogStyle");
+		int style = DialogFragment.STYLE_NO_TITLE;
+		int theme = CR.getStyleId(getActivity(), "TigerLoadingDialogStyle");
 		setStyle(style, theme);
 	}
 

@@ -40,13 +40,13 @@ public class TGActionSheetDialog extends Dialog implements View.OnClickListener
 	
 	public TGActionSheetDialog(Context context)
 	{
-		this(context, CR.getStyleId(context, "DialogTheme_Sheet"));
+		this(context, CR.getStyleId(context, "TigerDialogTheme.Sheet"));
 	}
 	
 	public TGActionSheetDialog(Context context, int theme)
 	{
 		super(context, theme);
-		super.setContentView(CR.getLayoutId(context, "tiger_tiger_dialog_sheet"));
+		super.setContentView(CR.getLayoutId(context, "tiger_dialog_sheet"));
 		//设置对话框宽度、高度
 		this.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 
 				ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -54,11 +54,10 @@ public class TGActionSheetDialog extends Dialog implements View.OnClickListener
 		//设置视图显示在底部
 		this.getWindow().setGravity(Gravity.BOTTOM);
 		
-		panelLayout = (LinearLayout) this.findViewById(CR.getViewId(context, "sheet_btn_panel"));
+		panelLayout = (LinearLayout) this.findViewById(CR.getViewId(context, "tiger_sheet_btn_panel"));
 		//添加取消按钮
 		cancelBtn = createCancelButton();
-		cancelBtn.setId(CR.getViewId(context, "cancel_btn"));
-		LinearLayout mainLayout = (LinearLayout) this.findViewById(CR.getViewId(context,"sheet_main"));
+		LinearLayout mainLayout = (LinearLayout) this.findViewById(CR.getViewId(context,"tiger_sheet_main"));
 		mainLayout.addView(cancelBtn);
 	}
 	

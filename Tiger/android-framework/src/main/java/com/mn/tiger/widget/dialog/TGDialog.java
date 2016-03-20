@@ -114,7 +114,7 @@ public class TGDialog extends Dialog implements IDialog
 	
 	public TGDialog(Context context)
 	{
-		super(context, CR.getStyleId(context, "tiger_baseDialog"));
+		super(context, CR.getStyleId(context, "TigerBaseDialog"));
 		dialogParams = new TGDialogParams(getContext());
 		setupDialog();
 	}
@@ -1090,7 +1090,7 @@ public class TGDialog extends Dialog implements IDialog
 		 */
 		public int getDialogTheme()
 		{
-			return CR.getStyleId(context, "tiger_baseDialog");
+			return CR.getStyleId(context, "TigerBaseDialog");
 		}
 		
 		/**
