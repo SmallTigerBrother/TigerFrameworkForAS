@@ -54,7 +54,8 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             {
                 Request request = buildRequest(HttpType.REQUEST_GET, requestUrl, parameters, properties);
                 TGHttpResult httpResult = execute(context, request);
-                LOG.i("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
+                LOG.i("[Method:loadByGetSync] url : " + requestUrl + "\n" + "params : " +
+                        (null != parameters.getStringParams() ? parameters.getStringParams() : "") + "\n" +
                         "result : " + httpResult.getResult());
                 return httpResult;
             }
@@ -79,7 +80,8 @@ public class OkHttpSyncHttpLoader extends AbstractSyncHttpLoader
             {
                 Request request = buildRequest(HttpType.REQUEST_POST, requestUrl, parameters, properties);
                 TGHttpResult httpResult = execute(context,request);
-                LOG.i("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " + parameters.getStringParams().toString() + "\n" +
+                LOG.i("[Method:loadByPostSync] url : " + requestUrl + "\n" + "params : " +
+                        (null != parameters.getStringParams() ? parameters.getStringParams() : "") + "\n" +
                         "result : " + httpResult.getResult());
                 return httpResult;
             }
