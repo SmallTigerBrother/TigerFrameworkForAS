@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.mn.tiger.utility.SystemBarConfigs;
 import com.mn.tiger.widget.TGImageButton;
 import com.mn.tiger.widget.TGNavigationBar;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -557,5 +559,20 @@ public class TGActionBarActivity extends Activity
     protected SystemBarConfigs getSystemBarConfigs()
     {
         return systemBarConfigs;
+    }
+
+    protected int getResultCode()
+    {
+        try
+        {
+            Field resultCodeField = Activity.class.getDeclaredField("mResultCode");
+            resultCodeField.setAccessible(true);
+            return resultCodeField.getInt(this);
+        }
+        catch (Exception e)
+        {
+            Log.e(this.getClass().getSimpleName(), "[Method:getResultCode]" + e);
+            return RESULT_CANCELED;
+        }
     }
 }
