@@ -223,11 +223,10 @@ public class TGDownloader implements Serializable
 	}
 
 	@SuppressWarnings("unused")
-	private void setParamsStr(String params)
+	public void setParamsStr(String params)
 	{
 		this.params = new Gson().fromJson(params, new TypeToken<HashMap<String, String>>(){}.getType());
 	}
-
 
 	/**
 	 * @return the downloadStatus
