@@ -110,7 +110,7 @@ public class WeChatAuthorization extends AbsAuthorization
                 break;
             case SendAuth.Resp.ErrCode.ERR_USER_CANCEL:
                 LOG.i("[Method:handleAuthorizeResp] errCode == ERR_USER_CANCEL");
-                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_cancel"));
+                ToastUtils.showToast(activity, CR.getStringId(activity, "tiger_wechat_auth_user_cancel"));
                 if(null != authorizeCallback)
                 {
                     authorizeCallback.onAuthorizeCancel();
@@ -118,7 +118,7 @@ public class WeChatAuthorization extends AbsAuthorization
                 break;
             case SendAuth.Resp.ErrCode.ERR_AUTH_DENIED:
                 LOG.i("[Method:handleAuthorizeResp] errCode == ERR_AUTH_DENIED");
-                ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_denied"));
+                ToastUtils.showToast(activity, CR.getStringId(activity, "tiger_wechat_auth_user_denied"));
                 if (null != authorizeCallback)
                 {
                     authorizeCallback.onAuthorizeError(resp.errCode, "ERR_AUTH_DENIED", "ERR_AUTH_DENIED");
