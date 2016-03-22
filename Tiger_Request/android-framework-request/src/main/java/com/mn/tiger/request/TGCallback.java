@@ -73,7 +73,7 @@ public abstract class TGCallback<T, D> implements Callback<T>
                 //请求失败
                 this.success = false;
                 LOG.e("[Method:onResponse] code = -1");
-                onRequestError(-1, "", response);
+                onRequestError(-1, "unknown error, the response is null", response);
             }
         }
 
@@ -114,7 +114,10 @@ public abstract class TGCallback<T, D> implements Callback<T>
      * @param response
      * @return
      */
-    protected abstract D parseOriginalResponse(Response<T> response);
+    protected D parseOriginalResponse(Response<T> response)
+    {
+        return (D)response.body();
+    }
 
     /**
      * 请求错误回调方法
