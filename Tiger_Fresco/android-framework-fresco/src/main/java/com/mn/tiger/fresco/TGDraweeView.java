@@ -99,6 +99,10 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         private int roundBorderWidth =0;
         //是否自动旋转
         private boolean autoRotate = false;
+        /**
+         * 图片渐变显示时间
+         */
+        private int fadeDuration = 100;
 
         private TGDraweeControllerListener controllerListener;
         /**
@@ -118,6 +122,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             {
                 draweeHierarchy.setPlaceholderImage(placeHolder, ScalingUtils.ScaleType.CENTER_INSIDE);
             }
+            draweeHierarchy.setFadeDuration(fadeDuration);
 
             //设置圆角参数
             RoundingParams roundingParams = new RoundingParams();
@@ -169,6 +174,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
                 placeHolderBackgroundColor.resetChangeStatus();
                 draweeHierarchyBuilder.setBackground(new ColorDrawable(placeHolderBackgroundColor.getValue()));
             }
+            draweeHierarchyBuilder.setFadeDuration(200);
 
             return draweeHierarchyBuilder.build();
         }
@@ -218,6 +224,12 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         public FrescoConfigs resourceImage(int resourceId)
         {
             uri.setValue("res:///" + resourceId);
+            return this;
+        }
+
+        public FrescoConfigs fadeDuration(int fadeDuration)
+        {
+            this.fadeDuration = fadeDuration;
             return this;
         }
     }
