@@ -10,12 +10,15 @@ import com.mn.tiger.authorize.IAuthorizeCallback;
 import com.mn.tiger.authorize.ILogoutCallback;
 import com.mn.tiger.authorize.IRegisterCallback;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.TGHttpLoader;
-import com.mn.tiger.request.receiver.TGHttpResult;
+import com.mn.tiger.request.TGCallback;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
+
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Created by peng on 15/11/10.
@@ -52,14 +55,19 @@ public class WeChatAuthorization extends AbsAuthorization
     private String secret;
 
     /**
-     * @param appID 开发者在微信开放平台申请的AppID
-     * @param secret  开发者在微信开放平台申请的AppScecret
+     * 负责网络请求的接口
+     */
+    private WeChatAuthorizeService weChatAuthorizeService;
+
+    /**
+     * @param appID  开发者在微信开放平台申请的AppID
+     * @param secret 开发者在微信开放平台申请的AppScecret
      * @param state  state参数，用户自行设定
      */
-    public WeChatAuthorization(String appID, String secret ,String state)
+    public WeChatAuthorization(String appID, String secret, String state)
     {
         super(appID);
-        TGApplicationProxy.getInstance().getBus().register(this);
+        TGApplicationProxy.getBus().register(this);
 
         WeChatAPI.init(appID);
 
@@ -76,7 +84,7 @@ public class WeChatAuthorization extends AbsAuthorization
 
         final SendAuth.Req req = new SendAuth.Req();
         req.scope = AUTH_SCOPE;
-        if(!TextUtils.isEmpty(this.state))
+        if (!TextUtils.isEmpty(this.state))
         {
             req.state = this.state;
         }
@@ -97,6 +105,7 @@ public class WeChatAuthorization extends AbsAuthorization
 
     /**
      * 接收请求微信认证的返回值
+     *
      * @param resp
      */
     @Subscribe
@@ -111,7 +120,7 @@ public class WeChatAuthorization extends AbsAuthorization
             case SendAuth.Resp.ErrCode.ERR_USER_CANCEL:
                 LOG.i("[Method:handleAuthorizeResp] errCode == ERR_USER_CANCEL");
                 ToastUtils.showToast(activity, CR.getStringId(activity, "wechat_auth_user_cancel"));
-                if(null != authorizeCallback)
+                if (null != authorizeCallback)
                 {
                     authorizeCallback.onAuthorizeCancel();
                 }
@@ -135,108 +144,95 @@ public class WeChatAuthorization extends AbsAuthorization
 
     /**
      * 请求AccessToken
+     *
      * @param code
      */
     private void requestAccessToken(String code)
     {
-        TGHttpLoader<WeChatAuthorizeResult> httpLoader = new TGHttpLoader<WeChatAuthorizeResult>();
-        httpLoader.loadByGet(activity, getRequestAccessTokenUrl(code), WeChatAuthorizeResult.class,
-                new TGHttpLoader.OnLoadCallback<WeChatAuthorizeResult>()
+        Call<WeChatAuthorizeResult> call = getWeChatAuthorizeService().getAccessToken(getAppID(), secret, code, "authorization_code");
+        TGCallback<WeChatAuthorizeResult, WeChatAuthorizeResult> callback =
+                new TGCallback<WeChatAuthorizeResult, WeChatAuthorizeResult>(activity)
         {
             @Override
-            public void onLoadStart()
+            public void onRequestSuccess(Response<WeChatAuthorizeResult> response, WeChatAuthorizeResult data)
             {
-                if(activity instanceof TGActionBarActivity)
+                LOG.i("[Method:requestAccessToken:onRequestSuccess]");
+                if (null != data)
                 {
-                    ((TGActionBarActivity)activity).showLoadingDialog();
-                }
-            }
-
-            @Override
-            public void onLoadSuccess(WeChatAuthorizeResult result, TGHttpResult httpResult)
-            {
-                LOG.i("[Method:requestAccessToken:onLoadSuccess]");
-                if(null != result)
-                {
-                    if (result.getErrCode() > 0)
+                    if (data.getErrCode() > 0)
                     {
-                        ToastUtils.showToast(activity, result.getErrMsg());
+                        ToastUtils.showToast(activity, data.getErrMsg());
                     }
                     else
                     {
-                        WeChatAuthorization.this.authorizeResult = result;
+                        WeChatAuthorization.this.authorizeResult = data;
                         //请求用户信息
-                        requestUserInfo(result.getUID(), result.getAccessToken());
+                        requestUserInfo(data.getUID(), data.getAccessToken());
                     }
                 }
             }
 
             @Override
-            public void onLoadError(int code, String message, TGHttpResult httpResult)
+            protected boolean hasError(Call<WeChatAuthorizeResult> call, Response<WeChatAuthorizeResult> response)
             {
-                LOG.i("[Method:requestAccessToken:onLoadError]");
-                ToastUtils.showToast(activity, message);
+                return null == response || null == response.body();
             }
 
             @Override
-            public void onLoadCache(WeChatAuthorizeResult result, TGHttpResult httpResult)
-            {}
-
-            @Override
-            public void onLoadOver()
+            protected void onRequestOver(Call<WeChatAuthorizeResult> call)
             {
-                if(activity instanceof TGActionBarActivity)
+                super.onRequestOver(call);
+                if (activity instanceof TGActionBarActivity)
                 {
-                    ((TGActionBarActivity)activity).dismissLoadingDialog();
+                    ((TGActionBarActivity) activity).dismissLoadingDialog();
                 }
             }
-        });
-    }
 
-    /**
-     *获取请求AccessToken的Url
-     * @param code
-     * @return
-     */
-    private String getRequestAccessTokenUrl(String code)
-    {
-        return "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + getAppID() + "&secret=" + secret +"&code=" +
-                code +"&grant_type=authorization_code";
+            @Override
+            public void onRequestError(int code, String message, Response<WeChatAuthorizeResult> response)
+            {
+                super.onRequestError(code, message, response);
+                LOG.i("[Method:requestAccessToken:onRequestError]");
+                ToastUtils.showToast(activity, message);
+            }
+        };
+        //发送请求
+        if (activity instanceof TGActionBarActivity)
+        {
+            ((TGActionBarActivity) activity).enqueue(call, callback);
+            ((TGActionBarActivity) activity).showLoadingDialog();
+        }
+        else
+        {
+            call.enqueue(callback);
+        }
     }
 
     /**
      * 请求用户信息
+     *
      * @param openId
      * @param accessToken
      */
     private void requestUserInfo(String openId, String accessToken)
     {
-        TGHttpLoader<WeChatAuthorizeResult.WeChatUser> httpLoader = new TGHttpLoader<WeChatAuthorizeResult.WeChatUser>();
-        httpLoader.loadByGet(activity, getRequestUserUrl(openId, accessToken), WeChatAuthorizeResult.WeChatUser.class,
-                new TGHttpLoader.OnLoadCallback<WeChatAuthorizeResult.WeChatUser>()
+        Call<WeChatAuthorizeResult.WeChatUser> call = getWeChatAuthorizeService().getUserInfo(accessToken, openId);
+        TGCallback<WeChatAuthorizeResult.WeChatUser, WeChatAuthorizeResult.WeChatUser> callback =
+                new TGCallback<WeChatAuthorizeResult.WeChatUser, WeChatAuthorizeResult.WeChatUser>(activity)
                 {
                     @Override
-                    public void onLoadStart()
+                    public void onRequestSuccess(Response<WeChatAuthorizeResult.WeChatUser> response, WeChatAuthorizeResult.WeChatUser data)
                     {
-                        if(activity instanceof TGActionBarActivity)
+                        LOG.i("[Method:requestUserInfo:onRequestSuccess]");
+                        if (null != data)
                         {
-                            ((TGActionBarActivity)activity).showLoadingDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onLoadSuccess(WeChatAuthorizeResult.WeChatUser user, TGHttpResult httpResult)
-                    {
-                        LOG.i("[Method:requestUserInfo:onLoadSuccess]");
-                        if(null != user)
-                        {
-                            if (user.getErrCode() > 0)
+                            if (data.getErrCode() > 0)
                             {
-                                ToastUtils.showToast(activity, user.getErrmsg());
+                                ToastUtils.showToast(activity, data.getErrmsg());
                             }
                             else
                             {
-                                authorizeResult.setUser(user);
+                                authorizeResult.setUser(data);
                                 authorizeCallback.onAuthorizeSuccess(authorizeResult);
                                 LOG.i("[Method:requestUserInfo] onAuthorizeSuccess with userInfo");
                             }
@@ -244,40 +240,54 @@ public class WeChatAuthorization extends AbsAuthorization
                     }
 
                     @Override
-                    public void onLoadError(int code, String message, TGHttpResult httpResult)
+                    protected boolean hasError(Call<WeChatAuthorizeResult.WeChatUser> call, Response<WeChatAuthorizeResult.WeChatUser> response)
                     {
-                        LOG.i("[Method:requestUserInfo:onLoadError]");
-                        ToastUtils.showToast(activity, message);
+                        return null == response || null == response.body();
                     }
 
                     @Override
-                    public void onLoadCache(WeChatAuthorizeResult.WeChatUser result, TGHttpResult httpResult)
-                    {}
-
-                    @Override
-                    public void onLoadOver()
+                    protected void onRequestOver(Call<WeChatAuthorizeResult.WeChatUser> call)
                     {
-                        if(activity instanceof TGActionBarActivity)
+                        super.onRequestOver(call);
+                        if (activity instanceof TGActionBarActivity)
                         {
-                            ((TGActionBarActivity)activity).dismissLoadingDialog();
+                            ((TGActionBarActivity) activity).dismissLoadingDialog();
                         }
                     }
-                });
+
+                    @Override
+                    public void onRequestError(int code, String message, Response<WeChatAuthorizeResult.WeChatUser> response)
+                    {
+                        super.onRequestError(code, message, response);
+                        LOG.w("[Method:requestUserInfo:onRequestError]");
+                        ToastUtils.showToast(activity, message);
+                    }
+                };
+
+        //发送请求
+        if (activity instanceof TGActionBarActivity)
+        {
+            ((TGActionBarActivity) activity).enqueue(call, callback);
+            ((TGActionBarActivity) activity).showLoadingDialog();
+        }
+        else
+        {
+            call.enqueue(callback);
+        }
     }
 
-    /**
-     * 获取请求用户信息的Url
-     * @param openId
-     * @param accessToken
-     * @return
-     */
-    private String getRequestUserUrl(String openId, String accessToken)
+    private WeChatAuthorizeService getWeChatAuthorizeService()
     {
-        return "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId;
+        if(null == weChatAuthorizeService)
+        {
+            weChatAuthorizeService = new Retrofit.Builder().baseUrl("https://api.weixin.qq.com/").build().create(WeChatAuthorizeService.class);
+        }
+
+        return weChatAuthorizeService;
     }
 
     public void onDestroy()
     {
-        TGApplicationProxy.getInstance().getBus().unregister(this);
+        TGApplicationProxy.getBus().unregister(this);
     }
 }

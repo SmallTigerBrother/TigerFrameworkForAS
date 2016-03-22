@@ -23,7 +23,7 @@ class WeChatAPI
 
     private WeChatAPI(String appID)
     {
-        this.api = WXAPIFactory.createWXAPI(TGApplicationProxy.getInstance().getApplication(), appID);
+        this.api = WXAPIFactory.createWXAPI(TGApplicationProxy.getApplication(), appID);
         this.api.registerApp(appID);
     }
 

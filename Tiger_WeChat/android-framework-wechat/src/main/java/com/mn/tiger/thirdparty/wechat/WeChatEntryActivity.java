@@ -77,7 +77,7 @@ public class WeChatEntryActivity extends Activity implements IWXAPIEventHandler
 		else if(req instanceof SendAuth.Resp)
 		{
 			LOG.i("[Method:onResp] authorize over");
-            TGApplicationProxy.getInstance().getBus().post((SendAuth.Resp)req);
+            TGApplicationProxy.getBus().post((SendAuth.Resp)req);
 		}
 
         finish();
