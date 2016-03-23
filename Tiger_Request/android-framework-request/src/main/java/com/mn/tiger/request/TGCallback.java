@@ -13,7 +13,7 @@ import retrofit2.Response;
 /**
  * Created by Dalang on 2016/3/13.
  */
-public abstract class TGCallback<T, D> implements Callback<T>
+public abstract class TGCallback<T> implements Callback<T>
 {
     private static final Logger LOG = Logger.getLogger(TGCallback.class);
 
@@ -57,7 +57,7 @@ public abstract class TGCallback<T, D> implements Callback<T>
         {
             //请求成功
             this.success = true;
-            onRequestSuccess(response, parseOriginalResponse(response));
+            onRequestSuccess(response, response.body());
         }
         else
         {
@@ -97,7 +97,7 @@ public abstract class TGCallback<T, D> implements Callback<T>
      * @param response
      * @return
      */
-    protected boolean hasError(Call<T> call, Response<T> response)
+    public boolean hasError(Call<T> call, Response<T> response)
     {
         return false;
     }
@@ -107,17 +107,7 @@ public abstract class TGCallback<T, D> implements Callback<T>
      * @param response
      * @param data
      */
-    public abstract void onRequestSuccess(Response<T> response, D data);
-
-    /**
-     * 解析原始结果
-     * @param response
-     * @return
-     */
-    protected D parseOriginalResponse(Response<T> response)
-    {
-        return (D)response.body();
-    }
+    public abstract void onRequestSuccess(Response<T> response, T data);
 
     /**
      * 请求错误回调方法
@@ -127,23 +117,21 @@ public abstract class TGCallback<T, D> implements Callback<T>
      */
     public void onRequestError( int code ,String message, Response<T> response)
     {
-
     }
 
     /**
      * 请求结束回调方法
      * @param call
      */
-    protected void onRequestOver(Call<T> call)
+    public void onRequestOver(Call<T> call)
     {
-
     }
 
     /**
      * 是否请求成功
      * @return
      */
-    protected boolean isSuccess()
+    public boolean isSuccess()
     {
         return success;
     }
