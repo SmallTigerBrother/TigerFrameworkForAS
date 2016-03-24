@@ -101,6 +101,9 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         private boolean autoRotate = false;
 
         private TGDraweeControllerListener controllerListener;
+
+        private int faceDuration = 1000;
+
         /**
          * 显示图片
          */
@@ -118,6 +121,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             {
                 draweeHierarchy.setPlaceholderImage(placeHolder, ScalingUtils.ScaleType.CENTER_INSIDE);
             }
+            draweeHierarchy.setFadeDuration(faceDuration);
 
             //设置圆角参数
             RoundingParams roundingParams = new RoundingParams();
@@ -218,6 +222,12 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
         public FrescoConfigs resourceImage(int resourceId)
         {
             uri.setValue("res:///" + resourceId);
+            return this;
+        }
+
+        public FrescoConfigs setFaceDuration(int faceDuration)
+        {
+            this.faceDuration = faceDuration;
             return this;
         }
     }

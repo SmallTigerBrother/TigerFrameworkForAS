@@ -46,9 +46,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.mn.tiger:android-framework:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-logger:latest.integration'
-    compile 'com.mn.tiger:android-framework-datastorage:latest.integration'
     compile files('libs/jmessage-android-1.2.0.jar')
 }
 

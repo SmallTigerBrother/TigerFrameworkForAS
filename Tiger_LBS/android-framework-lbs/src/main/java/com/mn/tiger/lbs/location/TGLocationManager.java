@@ -208,21 +208,21 @@ public class TGLocationManager implements ILocationManager
 
     public static boolean isLocationPermissionDeny()
     {
-        PackageManager packageManager = TGApplicationProxy.getInstance().getApplication().getPackageManager();
-        String packageName = TGApplicationProxy.getInstance().getApplication().getPackageName();
+        PackageManager packageManager = TGApplicationProxy.getApplication().getPackageManager();
+        String packageName = TGApplicationProxy.getApplication().getPackageName();
         return PackageManager.PERMISSION_GRANTED != packageManager.checkPermission("android.permission.ACCESS_COARSE_LOCATION", packageName)
                 && PackageManager.PERMISSION_GRANTED != packageManager.checkPermission("android.permission.ACCESS_FINE_LOCATION",packageName);
     }
 
     public static boolean isGPSProviderEnabled()
     {
-        LocationManager locationManager = (LocationManager)TGApplicationProxy.getInstance().getApplication().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager)TGApplicationProxy.getApplication().getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public static boolean isNetWorkProviderEnabled()
     {
-        LocationManager locationManager = (LocationManager)TGApplicationProxy.getInstance().getApplication().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager)TGApplicationProxy.getApplication().getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
