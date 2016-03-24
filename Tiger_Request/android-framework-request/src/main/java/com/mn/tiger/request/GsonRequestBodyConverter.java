@@ -14,20 +14,40 @@ import okhttp3.RequestBody;
 import okio.Buffer;
 import retrofit2.Converter;
 
-final class GsonRequestBodyConverter<T> implements Converter<T, RequestBody>
+public class GsonRequestBodyConverter<T> implements Converter<T, RequestBody>
 {
     private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private final Gson gson;
-    private final TypeAdapter<T> adapter;
+    private Gson gson;
+    private TypeAdapter<T> adapter;
 
-    GsonRequestBodyConverter(Gson gson, TypeAdapter<T> adapter) {
+    public GsonRequestBodyConverter()
+    {
+    }
+
+    void setGson(Gson gson)
+    {
         this.gson = gson;
+    }
+
+    void setTypeAdapter(TypeAdapter<T> adapter)
+    {
         this.adapter = adapter;
     }
 
-    @Override public RequestBody convert(T value) throws IOException
+    public Gson getGson()
+    {
+        return gson;
+    }
+
+    public TypeAdapter<T> getTypeAdapter()
+    {
+        return adapter;
+    }
+
+    @Override
+    public RequestBody convert(T value) throws IOException
     {
         Buffer buffer = new Buffer();
         Writer writer = new OutputStreamWriter(buffer.outputStream(), UTF_8);
