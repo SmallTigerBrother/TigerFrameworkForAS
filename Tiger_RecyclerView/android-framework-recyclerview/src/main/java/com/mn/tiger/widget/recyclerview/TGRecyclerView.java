@@ -63,7 +63,7 @@ public class TGRecyclerView extends RecyclerView
         {
             ((TGRecyclerViewAdapter<?>)adapter).setOnItemClickListener(this.onItemClickListener);
         }
-
+        ((TGRecyclerViewAdapter)adapter).setRecyclerView(this);
         super.setAdapter(adapter);
     }
 

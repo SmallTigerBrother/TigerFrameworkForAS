@@ -30,6 +30,8 @@ public abstract class TGRecyclerViewHolder<T>
 
     private RecyclerView recyclerView;
 
+    View convertView;
+
     /**
      * Adapter真正使用的ViewHolder
      */

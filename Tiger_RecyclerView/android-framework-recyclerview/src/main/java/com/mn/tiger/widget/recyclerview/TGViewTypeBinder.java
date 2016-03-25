@@ -3,7 +3,6 @@ package com.mn.tiger.widget.recyclerview;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.Commons;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -33,9 +32,14 @@ class TGViewTypeBinder
     private HashMap<Integer,Integer> positionViewTypeMap;
 
     /**
-     * 多类型ViewHolder的简单实例
+     * 绑定ViewHolder类型、ViewHolder实例的Map，Key为ViewHolder类型，Value为ViewHolder的实例，多类型ViewHolder的简单实例
      */
-    private ArrayList<TGRecyclerViewHolder> viewHolderInstances;
+    private HashMap<Class<?>, TGRecyclerViewHolder> viewHolderInstances;
+
+    /**
+     * 绑定ViewType，不支持重用的ViewHolder的Map，Key为ViewType，Value为ViewHolder的实例，仅存储不支持重用的ViewHolder
+     */
+    private HashMap<Integer, TGRecyclerViewHolder> unRecyclableViewHolders;
 
     public TGViewTypeBinder(TGRecyclerViewAdapter adapter, Class<? extends TGRecyclerViewHolder>[] viewHolderClasses)
     {
@@ -43,18 +47,26 @@ class TGViewTypeBinder
         this.viewTypeHolderMap = new HashMap<>();
         this.positionViewTypeMap = new HashMap<>();
         //初始化各个类型ViewHolder的代理实例
-        this.viewHolderInstances = new ArrayList<>(viewHolderClasses.length);
+        this.viewHolderInstances = new HashMap<>(viewHolderClasses.length);
         //初始化绑定Data类型，ViewHolder的Map
-        this.dataTypeHolderMap = new HashMap<>();
+        this.dataTypeHolderMap = new HashMap<>(viewHolderClasses.length);
         int count = viewHolderClasses.length;
         try
         {
             for(int i = 0; i < count; i++)
             {
                 TGRecyclerViewHolder viewHolder = viewHolderClasses[i].newInstance();
+                Class<?> viewHolderClass = viewHolder.getClass();
                 viewHolder.setAdapter(adapter);
-                viewHolderInstances.add(viewHolder);
-                dataTypeHolderMap.put(Commons.getClassNameOfGenericType(viewHolderClasses[i], 0), viewHolderClasses[i]);
+                if(!viewHolder.recycleAble())
+                {
+                    if(null == unRecyclableViewHolders)
+                    {
+                        unRecyclableViewHolders = new HashMap<>();
+                    }
+                }
+                viewHolderInstances.put(viewHolderClass, viewHolder);
+                dataTypeHolderMap.put(Commons.getClassNameOfGenericType(viewHolderClass, 0), viewHolderClass);
             }
         }
         catch (Exception e)
@@ -68,7 +80,7 @@ class TGViewTypeBinder
      * @param position
      * @return
      */
-    public int getItemViewType(int position)
+    public int generateItemViewType(int position)
     {
         //首先根据position生成ViewType
         int viewType = generateViewTypeByPosition(position);
@@ -81,6 +93,32 @@ class TGViewTypeBinder
         if(viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
         {
             throw new RuntimeException("Illegal viewType of position " + position);
+        }
+
+        //若该ViewHolder不支持重用，即刻初始化
+        if(this.adapter.enableUnRecycleViewHolder)
+        {
+            TGRecyclerViewHolder viewHolderInstance = viewHolderInstances.get(viewTypeHolderMap.get(viewType));
+            if(!viewHolderInstance.recycleAble())
+            {
+                //判断是否已初始化过该ViewType
+                if(!unRecyclableViewHolders.containsKey(viewType))
+                {
+                    try
+                    {
+                        TGRecyclerViewHolder viewHolder = viewHolderInstance.getClass().newInstance();
+                        this.adapter.initViewHolder(viewHolder);
+                        viewHolder.convertView = viewHolder.initView(adapter.parent, viewType);
+                        viewHolder.fillData(adapter.parent, viewHolder.convertView,
+                                this.adapter.getItem(position), position, viewType);
+                        unRecyclableViewHolders.put(viewType, viewHolder);
+                    }
+                    catch (Exception e)
+                    {
+                        LOG.e(e);
+                    }
+                }
+            }
         }
 
         return viewType;
@@ -96,10 +134,11 @@ class TGViewTypeBinder
         Integer viewType = positionViewTypeMap.get(position);
         if(null == viewType || viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
         {
-            for (TGRecyclerViewHolder viewHolderInstance : viewHolderInstances)
+            for (TGRecyclerViewHolder viewHolderInstance : viewHolderInstances.values())
             {
                 viewHolderInstance.setPosition(position);
                 viewType = viewHolderInstance.getItemViewType(position);
+                //缓存ViewType
                 if(viewType != TGRecyclerViewAdapter.NONE_VIEW_TYPE)
                 {
                     positionViewTypeMap.put(position,viewType);
@@ -123,7 +162,7 @@ class TGViewTypeBinder
         if(null == viewType || viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
         {
             String dataClass = adapter.getItem(position).getClass().getCanonicalName();
-            viewType = generateViewType();
+            viewType = createViewType();
             //绑定ViewType
             Class<?> viewHolderClass = dataTypeHolderMap.get(dataClass);
             if(null != viewHolderClass)
@@ -150,7 +189,9 @@ class TGViewTypeBinder
     {
         try
         {
-            return (TGRecyclerViewHolder)viewTypeHolderMap.get(viewType).newInstance();
+            //检查ViewHolder是否支持重用
+            TGRecyclerViewHolder viewHolder = getUnRecyclableViewHolder(viewType);
+            return null == viewHolder ? (TGRecyclerViewHolder)viewTypeHolderMap.get(viewType).newInstance() : viewHolder;
         }
         catch (Exception e)
         {
@@ -163,9 +204,23 @@ class TGViewTypeBinder
      * 自动生成ViewType
      * @return
      */
-    public int generateViewType()
+    public int createViewType()
     {
         VIEW_TYPE -= 1;
         return VIEW_TYPE;
+    }
+
+    /**
+     * 获取不支持重用的ViewHolder实例
+     * @param viewType
+     * @return
+     */
+    TGRecyclerViewHolder getUnRecyclableViewHolder(int viewType)
+    {
+        if(null == unRecyclableViewHolders)
+        {
+            return null;
+        }
+        return unRecyclableViewHolders.get(viewType);
     }
 }

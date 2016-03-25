@@ -208,6 +208,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             ((TGRecyclerViewAdapter<?>) adapter).setOnItemClickListener(this.onItemClickListener);
         }
 
+        ((TGRecyclerViewAdapter)adapter).setRecyclerView(this);
         mWrapAdapter = new HeaderWrapAdapter(mHeaderViews, mFootViews, adapter);
         super.setAdapter(mWrapAdapter);
         mAdapter.registerAdapterDataObserver(mDataObserver);

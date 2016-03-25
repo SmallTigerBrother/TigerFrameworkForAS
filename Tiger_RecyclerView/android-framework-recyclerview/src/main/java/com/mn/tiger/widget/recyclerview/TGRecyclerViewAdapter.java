@@ -2,7 +2,6 @@ package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import com.mn.tiger.log.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,7 +48,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     /**
      * 使用Adapter的RecyclerView
      */
-    private ViewGroup parent;
+    ViewGroup parent;
 
     /**
      * 保存extras数据的数组
@@ -65,12 +63,18 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     /**
      * 用来处理内部ViewType的类
      */
+    @Deprecated
     private TGRecyclerViewHolder<T> internalViewHolder;
 
     /**
      * 多种ViewType时，处理Data、ViewHoler、ViewType绑定的管理类
      */
     private TGViewTypeBinder viewTypeBinder;
+
+    /**
+     * 是否启用不支持重用的特性
+     */
+    boolean enableUnRecycleViewHolder = false;
 
     /**
      * 支持一种数据类型的构造函数
@@ -91,7 +95,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
 
         this.viewHolderClass = viewHolderClass;
-        internalViewHolder = initViewHolder(NONE_VIEW_TYPE);
+        internalViewHolder = createViewHolder(NONE_VIEW_TYPE);
         this.setHasStableIds(true);
     }
 
@@ -123,16 +127,31 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
     }
 
+    final void setRecyclerView(RecyclerView recyclerView)
+    {
+        this.parent = recyclerView;
+    }
+
+    /**
+     * 设置是否启用不支持重用的特性
+     * @param enableUnRecycleViewHolder
+     */
+    public void setEnableUnRecycleViewHolder(boolean enableUnRecycleViewHolder)
+    {
+        this.enableUnRecycleViewHolder = enableUnRecycleViewHolder;
+    }
+
     @Override
     public InternalRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        this.parent = parent;
-        TGRecyclerViewHolder<T> viewHolder = initViewHolder(viewType);
+        TGRecyclerViewHolder<T> viewHolder = createViewHolder(viewType);
+        if(viewHolder.recycleAble()  || (!enableUnRecycleViewHolder && !viewHolder.recycleAble()))
+        {
+            viewHolder.convertView = viewHolder.initView(parent, viewType);
+            viewHolder.attachOnItemClickListener(viewHolder.convertView);
+        }
 
-        View view = viewHolder.initView(parent,viewType);
-        viewHolder.attachOnItemClickListener(view);
-
-        InternalRecyclerViewHolder<T> internalRecyclerViewHolder = new InternalRecyclerViewHolder<T>(view);
+        InternalRecyclerViewHolder<T> internalRecyclerViewHolder = new InternalRecyclerViewHolder<T>(viewHolder.convertView);
         internalRecyclerViewHolder.setTGRecyclerViewHolder(viewHolder);
         return internalRecyclerViewHolder;
     }
@@ -142,8 +161,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
         tgRecyclerViewHolder.setPosition(position);
-        tgRecyclerViewHolder.updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
-        tgRecyclerViewHolder.fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+        if(tgRecyclerViewHolder.recycleAble() || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recycleAble()))
+        {
+            tgRecyclerViewHolder.updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+            tgRecyclerViewHolder.fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+        }
     }
 
     @Override
@@ -179,6 +201,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             return ((TGMultiViewTypeRecyclerViewHolder)viewHolder).getCurrentViewHolder();
         }
 
+        if(null == viewHolder && null != viewTypeBinder && enableUnRecycleViewHolder)
+        {
+            return viewTypeBinder.getUnRecyclableViewHolder(getItemViewType(position));
+        }
         return viewHolder;
     }
 
@@ -188,7 +214,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         //如果支持自动的多类型控制，通过viewTypeBinder获取ViewType
         if(null != viewTypeBinder)
         {
-            return viewTypeBinder.getItemViewType(position);
+            return viewTypeBinder.generateItemViewType(position);
         }
         else if(null != internalViewHolder)
         {
@@ -205,7 +231,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @return
      */
-    protected final TGRecyclerViewHolder<T> initViewHolder(int viewType)
+    protected final TGRecyclerViewHolder<T> createViewHolder(int viewType)
     {
         TGRecyclerViewHolder<T> viewHolder = null;
         if(null != viewTypeBinder)
@@ -223,7 +249,13 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                 throw new RuntimeException(e);
             }
         }
+        initViewHolder(viewHolder);
 
+        return viewHolder;
+    }
+
+    final TGRecyclerViewHolder<T> initViewHolder(TGRecyclerViewHolder<T> viewHolder)
+    {
         if(null != viewHolder)
         {
             viewHolder.setContext(context);
@@ -231,8 +263,26 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             viewHolder.setOnItemClickListener(onItemClickListener);
             viewHolder.setRecyclerView((RecyclerView) parent);
         }
-
         return viewHolder;
+    }
+
+    /**
+     * 生成ViewType
+     * @param startPosition
+     * @param endPosition
+     */
+    private void generateViewTypes(int startPosition, int endPosition)
+    {
+        if(enableUnRecycleViewHolder)
+        {
+            if(null != viewTypeBinder)
+            {
+                for (int i = startPosition; i <= endPosition ; i++)
+                {
+                    viewTypeBinder.generateItemViewType(i);
+                }
+            }
+        }
     }
 
     /**
@@ -283,6 +333,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public final void updateData(int position, T data)
     {
         this.items.set(position, data);
+        generateViewTypes(position,position);
         notifyItemChanged(position);
     }
 
@@ -300,6 +351,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             {
                 this.items.clear();
                 this.items.addAll(data);
+                generateViewTypes(0, data.size() - 1);
             }
             notifyDataSetChanged();
         }
@@ -316,6 +368,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             this.items.clear();
             this.items.addAll(Arrays.asList(data));
+            generateViewTypes(0, data.length - 1);
             notifyDataSetChanged();
         }
     }
@@ -339,6 +392,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                     if(position > -1)
                     {
                         this.items.set(position, dataItem);
+                        generateViewTypes(position,position);
                         notifyItemChanged(position);
                     }
                     else
@@ -367,6 +421,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                 if(position > -1)
                 {
                     this.items.set(position, dataItem);
+                    generateViewTypes(position,position);
                     notifyItemChanged(position);
                 }
                 else
@@ -389,6 +444,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             if(position > -1)
             {
                 this.items.set(position, data);
+                generateViewTypes(position,position);
                 this.notifyItemChanged(position);
             }
             else
@@ -408,6 +464,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.addAll(data);
+            generateViewTypes(items.size() - data.size(), data.size() -1 );
             notifyItemRangeInserted(items.size() - data.size(), data.size());
         }
     }
@@ -422,6 +479,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.addAll(Arrays.asList(data));
+            generateViewTypes(items.size() - data.length, data.length - 1);
             notifyItemRangeInserted(items.size() - data.length, data.length);
         }
     }
@@ -435,6 +493,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.add(data);
+            generateViewTypes(items.size() - 1, items.size() - 1);
             notifyItemInserted(items.size() - 1);
         }
     }
@@ -449,6 +508,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if(null != data && position >= 0 && position <= this.items.size())
         {
             this.items.add(position, data);
+            generateViewTypes(position,position);
             notifyItemInserted(position);
         }
     }
@@ -463,6 +523,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if(null != data && position >= 0 && position <= this.items.size())
         {
             this.items.addAll(position, Arrays.asList(data));
+            generateViewTypes(position, position + data.length - 1);
             notifyItemRangeInserted(position, data.length);
         }
     }
