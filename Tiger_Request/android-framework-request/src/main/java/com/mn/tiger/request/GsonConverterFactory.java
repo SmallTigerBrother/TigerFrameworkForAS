@@ -66,6 +66,7 @@ public class GsonConverterFactory extends Converter.Factory
 
         if(null != converter)
         {
+            converter.setType(type);
             converter.setTypeAdapter(adapter);
         }
         return converter;
@@ -95,6 +96,7 @@ public class GsonConverterFactory extends Converter.Factory
         if(null != converter)
         {
             converter.setGson(gson);
+            converter.setType(type);
             converter.setTypeAdapter(adapter);
         }
         return converter;

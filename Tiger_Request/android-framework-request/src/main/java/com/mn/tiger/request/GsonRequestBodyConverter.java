@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import okhttp3.MediaType;
@@ -21,6 +22,7 @@ public class GsonRequestBodyConverter<T> implements Converter<T, RequestBody>
 
     private Gson gson;
     private TypeAdapter<T> adapter;
+    private Type type;
 
     public GsonRequestBodyConverter()
     {
@@ -36,6 +38,11 @@ public class GsonRequestBodyConverter<T> implements Converter<T, RequestBody>
         this.adapter = adapter;
     }
 
+    void setType(Type type)
+    {
+        this.type = type;
+    }
+
     public Gson getGson()
     {
         return gson;
@@ -44,6 +51,11 @@ public class GsonRequestBodyConverter<T> implements Converter<T, RequestBody>
     public TypeAdapter<T> getTypeAdapter()
     {
         return adapter;
+    }
+
+    public Type getType()
+    {
+        return type;
     }
 
     @Override

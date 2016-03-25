@@ -4,6 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.mn.tiger.log.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
@@ -14,6 +15,8 @@ public class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
 
     private TypeAdapter<T> adapter;
 
+    private Type type;
+
     public GsonResponseBodyConverter()
     {
     }
@@ -23,28 +26,51 @@ public class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
         this.adapter = adapter;
     }
 
+    void setType(Type type)
+    {
+        this.type = type;
+    }
+
+    public Type getType()
+    {
+        return type;
+    }
+
     public TypeAdapter<T> getAdapter()
     {
         return adapter;
     }
 
     @Override
-    public T convert(ResponseBody value) throws IOException
+    public final T convert(ResponseBody value) throws IOException
     {
         try
         {
-            String rawData = value.string();
+            return convert(value, value.string(), adapter, type);
+        }
+        finally
+        {
+            value.close();
+        }
+    }
+
+    public T convert(ResponseBody value,String rawData, TypeAdapter<T> adapter, Type type)
+    {
+        try
+        {
+            T result = null;
             LOG.i("[Method:convert] result = " + rawData);
-            T result = adapter.fromJson(rawData);
+            result = adapter.fromJson(rawData);
             if (result instanceof TGResult)
             {
                 ((TGResult) result).setRawData(rawData);
             }
             return result;
         }
-        finally
+        catch (Exception e)
         {
-            value.close();
+            LOG.e("[Method:convert] " + e.getMessage());
+            return null;
         }
     }
 }
