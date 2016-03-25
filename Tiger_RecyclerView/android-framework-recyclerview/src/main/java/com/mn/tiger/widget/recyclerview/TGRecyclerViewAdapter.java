@@ -2,9 +2,12 @@ package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.mn.tiger.log.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +20,8 @@ import java.util.List;
  */
 public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerViewAdapter.InternalRecyclerViewHolder<T>>
 {
+    private static final Logger LOG = Logger.getLogger(TGRecyclerViewAdapter.class);
+
     /**
      * 不区分ViewType
      */
@@ -111,6 +116,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
         this.setHasStableIds(true);
 
+        if(viewHolderClasses.length == 0 || viewHolderClasses.length == 1)
+        {
+            LOG.e("[Method:TGRecyclerViewAdapter] you should set more than one ViewHolder when use this constructor");
+        }
         viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
     }
 
@@ -264,29 +273,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     final void setOnItemClickListener(TGRecyclerView.OnItemClickListener onItemClickListener)
     {
         this.onItemClickListener = onItemClickListener;
-    }
-
-    /**
-     * 根据数据类型获取可见区域的所有ViewHolder
-     * @param clazz
-     * @return
-     */
-    protected final List<TGRecyclerViewHolder> getViewHolderByDataType(Class<?> clazz)
-    {
-        List<TGRecyclerViewHolder> targetViewHolders = new ArrayList<TGRecyclerViewHolder>();
-
-        Iterator<TGRecyclerViewHolder<T>> iterator = viewHolders.values().iterator();
-        TGRecyclerViewHolder viewHolder = null;
-        while (iterator.hasNext())
-        {
-            viewHolder = iterator.next();
-            if(null != viewTypeBinder && viewTypeBinder.isSameDataType(viewHolder, clazz))
-            {
-                targetViewHolders.add(viewHolder);
-            }
-        }
-
-        return targetViewHolders;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.mn.tiger.widget.recyclerview;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.Commons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -14,12 +15,7 @@ class TGViewTypeBinder
 
     private TGRecyclerViewAdapter adapter;
 
-    private static int VIEW_TYPE = 1;
-
-    /**
-     * 绑定Data类型，ViewType的Map，Key为数据class的名称，Value为ViewType
-     */
-    private HashMap<String, Integer> dataViewTypeMap;
+    private int VIEW_TYPE = -10000;
 
     /**
      * 绑定ViewType，ViewHolder的Map，Key为ViewType，Value为ViewHolder的类型
@@ -31,18 +27,39 @@ class TGViewTypeBinder
      */
     private HashMap<String, Class<?>> dataTypeHolderMap;
 
+    /**
+     * 绑定position，ViewType的Map，Key为position，Value为ViewType
+     */
+    private HashMap<Integer,Integer> positionViewTypeMap;
+
+    /**
+     * 多类型ViewHolder的简单实例
+     */
+    private ArrayList<TGRecyclerViewHolder> viewHolderInstances;
+
     public TGViewTypeBinder(TGRecyclerViewAdapter adapter, Class<? extends TGRecyclerViewHolder>[] viewHolderClasses)
     {
         this.adapter = adapter;
-        this.dataViewTypeMap = new HashMap<String, Integer>();
-        this.viewTypeHolderMap = new HashMap<Integer, Class<?>>();
-
+        this.viewTypeHolderMap = new HashMap<>();
+        this.positionViewTypeMap = new HashMap<>();
+        //初始化各个类型ViewHolder的代理实例
+        this.viewHolderInstances = new ArrayList<>(viewHolderClasses.length);
         //初始化绑定Data类型，ViewHolder的Map
-        dataTypeHolderMap = new HashMap<String, Class<?>>();
+        this.dataTypeHolderMap = new HashMap<>();
         int count = viewHolderClasses.length;
-        for(int i = 0; i < count; i++)
+        try
         {
-            dataTypeHolderMap.put(Commons.getClassNameOfGenericType(viewHolderClasses[i], 0), viewHolderClasses[i]);
+            for(int i = 0; i < count; i++)
+            {
+                TGRecyclerViewHolder viewHolder = viewHolderClasses[i].newInstance();
+                viewHolder.setAdapter(adapter);
+                viewHolderInstances.add(viewHolder);
+                dataTypeHolderMap.put(Commons.getClassNameOfGenericType(viewHolderClasses[i], 0), viewHolderClasses[i]);
+            }
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
         }
     }
 
@@ -53,29 +70,75 @@ class TGViewTypeBinder
      */
     public int getItemViewType(int position)
     {
-        String dataClass = adapter.getItem(position).getClass().getCanonicalName();
-        Integer viewType = dataViewTypeMap.get(dataClass);
-
-        //如果当前的ViewType不存在，自动生成一个ViewType，并绑定DataClass、ViewHolderClass
-        if(null == viewType || viewType.intValue() == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
+        //首先根据position生成ViewType
+        int viewType = generateViewTypeByPosition(position);
+        //若根据position生成的ViewType不合法，则通过泛型参数类型生成ViewType
+        if (viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
         {
+            viewType = generateViewTypeByGenericParamType(position);
+        }
+
+        if(viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
+        {
+            throw new RuntimeException("Illegal viewType of position " + position);
+        }
+
+        return viewType;
+    }
+
+    /**
+     * 根据位置生成ViewType
+     * @param position
+     * @return
+     */
+    private int generateViewTypeByPosition(int position)
+    {
+        Integer viewType = positionViewTypeMap.get(position);
+        if(null == viewType || viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
+        {
+            for (TGRecyclerViewHolder viewHolderInstance : viewHolderInstances)
+            {
+                viewHolderInstance.setPosition(position);
+                viewType = viewHolderInstance.getItemViewType(position);
+                if(viewType != TGRecyclerViewAdapter.NONE_VIEW_TYPE)
+                {
+                    positionViewTypeMap.put(position,viewType);
+                    viewTypeHolderMap.put(viewType, viewHolderInstance.getClass());
+                    return viewType;
+                }
+            }
+        }
+
+        return null != viewType ? viewType : TGRecyclerViewAdapter.NONE_VIEW_TYPE;
+    }
+
+    /**
+     * 根据泛型参数类型生成ViewType
+     * @param position
+     * @return
+     */
+    private int generateViewTypeByGenericParamType(int position)
+    {
+        Integer viewType = positionViewTypeMap.get(position);
+        if(null == viewType || viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
+        {
+            String dataClass = adapter.getItem(position).getClass().getCanonicalName();
             viewType = generateViewType();
-
-            //绑定DataClass
-            dataViewTypeMap.put(dataClass, Integer.valueOf(viewType));
-
-            //绑定ViewHolderClass
+            //绑定ViewType
             Class<?> viewHolderClass = dataTypeHolderMap.get(dataClass);
             if(null != viewHolderClass)
             {
-                viewTypeHolderMap.put(viewType, dataTypeHolderMap.get(dataClass));
+                positionViewTypeMap.put(position, viewType);
+                viewTypeHolderMap.put(viewType,viewHolderClass);
+                return viewType;
             }
             else
             {
-                LOG.e("[Method:getItemViewType] position == " + position + "  dataClass == " + dataClass);
+                throw new IllegalArgumentException("can not find ViewHolder bind with " + dataClass);
             }
         }
-        return viewType;
+
+        return TGRecyclerViewAdapter.NONE_VIEW_TYPE;
     }
 
     /**
@@ -97,29 +160,12 @@ class TGViewTypeBinder
     }
 
     /**
-     * 判断viewHolder中持有的ViewType，与DataClass绑定的ViewType是否一致
-     * @param viewHolder
-     * @param dataClass
-     * @return
-     */
-    boolean isSameDataType(TGRecyclerViewHolder viewHolder, Class<?> dataClass)
-    {
-        Class<?> viewHolderClass = dataTypeHolderMap.get(dataClass.getCanonicalName());
-        if(null != viewHolderClass && viewHolderClass.isInstance(viewHolder))
-        {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 自动生成ViewType
      * @return
      */
-    public static int generateViewType()
+    public int generateViewType()
     {
-        VIEW_TYPE += 1;
-
+        VIEW_TYPE -= 1;
         return VIEW_TYPE;
     }
 }

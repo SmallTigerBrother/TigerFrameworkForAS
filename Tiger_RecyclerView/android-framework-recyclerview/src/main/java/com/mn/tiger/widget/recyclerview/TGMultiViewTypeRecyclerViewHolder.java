@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 /**
  * Created by Dalang on 2015/10/29.
  */
+@Deprecated
 public abstract class TGMultiViewTypeRecyclerViewHolder<T> extends TGRecyclerViewHolder<T>
 {
     private TGRecyclerViewHolder<T> internalViewHolder;
