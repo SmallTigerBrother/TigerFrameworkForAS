@@ -47,6 +47,11 @@ public abstract class TGRecyclerViewHolder<T>
      */
     private InternalOnClickListener internalOnClickListener;
 
+    /**
+     * 是否已被回收
+     */
+    private boolean recycled = true;
+
     public TGRecyclerViewHolder()
     {
     }
@@ -239,6 +244,33 @@ public abstract class TGRecyclerViewHolder<T>
     public boolean recycleAble()
     {
         return true;
+    }
+
+    /**
+     * 是否已被回收
+     * @return
+     */
+    boolean isRecycled()
+    {
+        return recycled;
+    }
+
+    /**
+     * 是否已经被回收
+     * @param recycled
+     */
+    void setRecycled(boolean recycled)
+    {
+        this.recycled = recycled;
+        if(this.recycled)
+        {
+            onRecycled();
+        }
+    }
+
+    protected void onRecycled()
+    {
+
     }
 
     /**

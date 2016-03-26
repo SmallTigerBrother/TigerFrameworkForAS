@@ -10,7 +10,6 @@ import com.mn.tiger.log.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -36,11 +35,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     private List<T> items = null;
 
     /**
-     * viewholder类，用于视图重用，初始化列表行和填充列表行数据
-     */
-    private Class<? extends TGRecyclerViewHolder<T>> viewHolderClass;
-
-    /**
      * 列表行点击事件
      */
     private TGRecyclerView.OnItemClickListener onItemClickListener;
@@ -56,17 +50,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     private SparseArray<Object> extras;
 
     /**
-     * 保存position - viewHolder的数组
-     */
-    private HashMap<Integer,TGRecyclerViewHolder<T>> viewHolders;
-
-    /**
-     * 用来处理内部ViewType的类
-     */
-    @Deprecated
-    private TGRecyclerViewHolder<T> internalViewHolder;
-
-    /**
      * 多种ViewType时，处理Data、ViewHoler、ViewType绑定的管理类
      */
     private TGViewTypeBinder viewTypeBinder;
@@ -75,29 +58,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * 是否启用不支持重用的特性
      */
     boolean enableUnRecycleViewHolder = false;
-
-    /**
-     * 支持一种数据类型的构造函数
-     * @param context
-     * @param items
-     * @param viewHolderClass
-     */
-    public TGRecyclerViewAdapter(Context context, List<T> items,
-                                 Class<? extends TGRecyclerViewHolder<T>> viewHolderClass)
-    {
-        this.context = context;
-        this.items = new ArrayList<T>();
-        if (null != items)
-        {
-            this.items.addAll(items);
-        }
-
-        this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
-
-        this.viewHolderClass = viewHolderClass;
-        internalViewHolder = createViewHolder(NONE_VIEW_TYPE);
-        this.setHasStableIds(true);
-    }
 
     /**
      * 支持多种数据类型的构造函数
@@ -117,13 +77,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             this.items.addAll(items);
         }
 
-        this.viewHolders = new HashMap<Integer,TGRecyclerViewHolder<T>>();
         this.setHasStableIds(true);
-
-        if(viewHolderClasses.length == 0 || viewHolderClasses.length == 1)
-        {
-            LOG.e("[Method:TGRecyclerViewAdapter] you should set more than one ViewHolder when use this constructor");
-        }
         viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
     }
 
@@ -161,7 +115,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
         tgRecyclerViewHolder.setPosition(position);
-        if(tgRecyclerViewHolder.recycleAble() || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recycleAble()))
+        if(tgRecyclerViewHolder.recycleAble()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recycleAble()))
         {
             tgRecyclerViewHolder.updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
             tgRecyclerViewHolder.fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
@@ -173,18 +127,14 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         super.onViewAttachedToWindow(holder);
         //保存ViewHolder
-        viewHolders.put(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
+        viewTypeBinder.putViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
 
     @Override
     public void onViewDetachedFromWindow(InternalRecyclerViewHolder<T> holder)
     {
         super.onViewDetachedFromWindow(holder);
-        //移除ViewHolder，仅移除支持重用的ViewHolder
-        if(holder.getTGRecyclerViewHolder().recycleAble())
-        {
-            viewHolders.remove(holder.getTGRecyclerViewHolder().getPosition());
-        }
+        viewTypeBinder.recycleViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
 
     /**
@@ -195,35 +145,13 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     public final TGRecyclerViewHolder<T> getViewHolderAtPosition(int position)
     {
-        TGRecyclerViewHolder<T> viewHolder = viewHolders.get(position);
-        if(viewHolder instanceof TGMultiViewTypeRecyclerViewHolder)
-        {
-            return ((TGMultiViewTypeRecyclerViewHolder)viewHolder).getCurrentViewHolder();
-        }
-
-        if(null == viewHolder && null != viewTypeBinder && enableUnRecycleViewHolder)
-        {
-            return viewTypeBinder.getUnRecyclableViewHolder(getItemViewType(position));
-        }
-        return viewHolder;
+        return viewTypeBinder.getRecyclerViewHolderAtPosition(position);
     }
 
     @Override
     public  int getItemViewType(int position)
     {
-        //如果支持自动的多类型控制，通过viewTypeBinder获取ViewType
-        if(null != viewTypeBinder)
-        {
-            return viewTypeBinder.generateItemViewType(position);
-        }
-        else if(null != internalViewHolder)
-        {
-            return internalViewHolder.getItemViewType(position);
-        }
-        else
-        {
-            return NONE_VIEW_TYPE;
-        }
+        return viewTypeBinder.generateItemViewType(position);
     }
 
     /**
@@ -233,24 +161,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     protected final TGRecyclerViewHolder<T> createViewHolder(int viewType)
     {
-        TGRecyclerViewHolder<T> viewHolder = null;
-        if(null != viewTypeBinder)
-        {
-            viewHolder = viewTypeBinder.newViewHolderByType(viewType);
-        }
-        else
-        {
-            try
-            {
-                viewHolder = viewHolderClass.newInstance();
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
+        TGRecyclerViewHolder<T> viewHolder = viewTypeBinder.newViewHolderByType(viewType);
         initViewHolder(viewHolder);
-
         return viewHolder;
     }
 
@@ -283,6 +195,14 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                 }
             }
         }
+    }
+
+    /**
+     * 回收所有不支持回收的ViewHolder
+     */
+    public void recycleUnRecyclableViewHolders()
+    {
+        viewTypeBinder.recycleUnRecyclableViewHolders();
     }
 
     /**
