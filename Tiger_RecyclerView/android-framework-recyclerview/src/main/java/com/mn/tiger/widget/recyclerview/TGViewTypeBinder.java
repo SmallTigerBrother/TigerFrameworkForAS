@@ -23,12 +23,12 @@ class TGViewTypeBinder
     /**
      * 绑定ViewType，ViewHolder的Map，Key为ViewType，Value为ViewHolder的类型
      */
-    private HashMap<Integer, Class<?>> viewTypeHolderMap;
+    private HashMap<Integer, TGRecyclerViewHolder> viewTypeHolderMap;
 
     /**
-     * 绑定Data类型，ViewHolder的Map，Key为数据class的名称，Value为ViewHolder的类型
+     * 绑定Data类型，ViewHolder的Map，Key为数据class的名称，Value为ViewHolder的简单实例
      */
-    private HashMap<String, Class<?>> dataTypeHolderMap;
+    private HashMap<String, TGRecyclerViewHolder> dataTypeHolderMap;
 
     /**
      * 绑定position，ViewType的Map，Key为position，Value为ViewType
@@ -40,8 +40,14 @@ class TGViewTypeBinder
      */
     private HashMap<Class<?>, TGRecyclerViewHolder> viewHolderInstances;
 
+    /**
+     * 保存UnRecyclable的ViewHolder的数组
+     */
     private RecycleArray recycleArray;
 
+    /**
+     * 保存Recyclable的ViewHolder的Map
+     */
     private HashMap<Integer,TGRecyclerViewHolder> allViewHolders;
 
     public TGViewTypeBinder(TGRecyclerViewAdapter adapter, Class<? extends TGRecyclerViewHolder>[] viewHolderClasses)
@@ -62,7 +68,7 @@ class TGViewTypeBinder
                 TGRecyclerViewHolder viewHolder = viewHolderClasses[i].newInstance();
                 Class<?> viewHolderClass = viewHolder.getClass();
                 viewHolder.setAdapter(adapter);
-                if(!viewHolder.recycleAble())
+                if(!viewHolder.recyclable())
                 {
                     if(null == recycleArray)
                     {
@@ -76,8 +82,7 @@ class TGViewTypeBinder
                 {
                     LOG.e("[Method:TGViewTypeBinder]the dataClass can not be Object, or you can return a constant value in 'getViewType' of TGRecyclerViewHolder");
                 }
-
-                dataTypeHolderMap.put(dataClass, viewHolderClass);
+                dataTypeHolderMap.put(dataClass, viewHolder);
             }
         }
         catch (Exception e)
@@ -128,7 +133,7 @@ class TGViewTypeBinder
                 if(viewType != TGRecyclerViewAdapter.NONE_VIEW_TYPE)
                 {
                     positionViewTypeMap.put(position,viewType);
-                    viewTypeHolderMap.put(viewType, viewHolderInstance.getClass());
+                    viewTypeHolderMap.put(viewType, viewHolderInstance);
                     return viewType;
                 }
             }
@@ -150,11 +155,11 @@ class TGViewTypeBinder
             String dataClass = adapter.getItem(position).getClass().getCanonicalName();
             viewType = createViewType();
             //绑定ViewType
-            Class<?> viewHolderClass = dataTypeHolderMap.get(dataClass);
-            if(null != viewHolderClass)
+            TGRecyclerViewHolder viewHolder = dataTypeHolderMap.get(dataClass);
+            if(null != viewHolder)
             {
                 positionViewTypeMap.put(position, viewType);
-                viewTypeHolderMap.put(viewType,viewHolderClass);
+                viewTypeHolderMap.put(viewType,viewHolder);
                 return viewType;
             }
         }
@@ -182,7 +187,7 @@ class TGViewTypeBinder
                     return recycleArray.getScrapView(viewType);
                 }
             }
-            return null == viewHolder ? (TGRecyclerViewHolder)viewTypeHolderMap.get(viewType).newInstance() : viewHolder;
+            return null == viewHolder ? viewTypeHolderMap.get(viewType).getClass().newInstance() : viewHolder;
         }
         catch (Exception e)
         {
@@ -191,10 +196,15 @@ class TGViewTypeBinder
         }
     }
 
+    /**
+     * 初始化UnRecyclable的ViewHolder（不支持复用，预加载）
+     * @param position
+     * @param viewType
+     */
     private void initUnRecyclableViewHolder(int position, int viewType)
     {
-        TGRecyclerViewHolder viewHolderInstance = viewHolderInstances.get(viewTypeHolderMap.get(viewType));
-        if(!viewHolderInstance.recycleAble())
+        TGRecyclerViewHolder viewHolderInstance = viewTypeHolderMap.get(viewType);
+        if(!viewHolderInstance.recyclable())
         {
             //判断是否已初始化过该ViewType
             if(!recycleArray.getScrapViewArrayByType(viewType).containsKey(position))
@@ -204,10 +214,10 @@ class TGViewTypeBinder
                     //初始化ViewHolder
                     TGRecyclerViewHolder viewHolder = viewHolderInstance.getClass().newInstance();
                     this.adapter.initViewHolder(viewHolder);
-                    viewHolder.convertView = viewHolder.initView(adapter.parent, viewType);
+                    viewHolder.convertView = viewHolder.initView(adapter.recyclerView, viewType);
                     viewHolder.attachOnItemClickListener(viewHolder.convertView);
-                    viewHolder.updateViewDimension(adapter.parent, viewHolder.convertView, adapter.getItem(position), position, viewType);
-                    viewHolder.fillData(adapter.parent, viewHolder.convertView, adapter.getItem(position), position, viewType);
+                    viewHolder.updateViewDimension(adapter.recyclerView, viewHolder.convertView, adapter.getItem(position), position, viewType);
+                    viewHolder.fillData(adapter.recyclerView, viewHolder.convertView, adapter.getItem(position), position, viewType);
                     recycleArray.addScrapView(viewHolder,position,viewType);
                 }
                 catch (Exception e)
@@ -229,6 +239,11 @@ class TGViewTypeBinder
         return VIEW_TYPE;
     }
 
+    /**
+     * 获取指定position的ViewHolder
+     * @param position
+     * @return
+     */
     public TGRecyclerViewHolder getRecyclerViewHolderAtPosition(int position)
     {
         TGRecyclerViewHolder viewHolder = null;
@@ -245,18 +260,42 @@ class TGViewTypeBinder
         return viewHolder;
     }
 
+    /**
+     * 获取内部存储的简单实例，用户来获取其他数据
+     * @param position
+     * @return
+     */
+    TGRecyclerViewHolder getSimpleViewHolderInstanceAtPosition(int position)
+    {
+        int viewType = generateItemViewType(position);
+        return viewTypeHolderMap.get(viewType);
+    }
+
+    /**
+     * 记录指定位置的viewholder
+     * @param position
+     * @param viewHolder
+     */
     void putViewHolder(int position, TGRecyclerViewHolder viewHolder)
     {
         viewHolder.setRecycled(false);
         allViewHolders.put(position, viewHolder);
     }
 
+    /**
+     * 释放指定位置的viewHolder
+     * @param position
+     * @param viewHolder
+     */
     void recycleViewHolder(int position, TGRecyclerViewHolder viewHolder)
     {
         viewHolder.setRecycled(true);
         allViewHolders.remove(position);
     }
 
+    /**
+     * 释放所有不支持复用的ViewHolders
+     */
     void recycleUnRecyclableViewHolders()
     {
         if(null != recycleArray)
@@ -335,6 +374,10 @@ class TGViewTypeBinder
             return scrapArray;
         }
 
+        /**
+         * 释放指定ViewType的不支持复用的ViewHolders
+         * @param viewType
+         */
         public void recycleUnRecyclableViewHolders(int viewType)
         {
             LinkedHashMap<Integer,TGRecyclerViewHolder> viewHolders = recycleArray.allScrapViewArrays.get(viewType);
@@ -345,6 +388,9 @@ class TGViewTypeBinder
             }
         }
 
+        /**
+         * 释放所有不支持复用的ViewHolders
+         */
         public void recycleUnRecyclableViewHolders()
         {
             if(null != recycleArray)

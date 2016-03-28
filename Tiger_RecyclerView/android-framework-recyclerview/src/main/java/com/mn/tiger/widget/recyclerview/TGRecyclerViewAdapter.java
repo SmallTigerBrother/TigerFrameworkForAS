@@ -1,7 +1,9 @@
 package com.mn.tiger.widget.recyclerview;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     /**
      * 使用Adapter的RecyclerView
      */
-    ViewGroup parent;
+    RecyclerView recyclerView;
 
     /**
      * 保存extras数据的数组
@@ -81,9 +83,20 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
     }
 
-    final void setRecyclerView(RecyclerView recyclerView)
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView)
     {
-        this.parent = recyclerView;
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+        //设置SpanSizeLookup
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if(layoutManager instanceof GridLayoutManager)
+        {
+            if(!(((GridLayoutManager) layoutManager).getSpanSizeLookup() instanceof PullToRefreshRecyclerView.HeaderSpanSizeLookup))
+            {
+                ((GridLayoutManager) layoutManager).setSpanSizeLookup(new TGSpanSizeLookup(this));
+            }
+        }
     }
 
     /**
@@ -99,7 +112,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public InternalRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         TGRecyclerViewHolder<T> viewHolder = createViewHolder(viewType);
-        if(viewHolder.recycleAble()  || (!enableUnRecycleViewHolder && !viewHolder.recycleAble()))
+        if(viewHolder.recyclable()  || (!enableUnRecycleViewHolder && !viewHolder.recyclable()))
         {
             viewHolder.convertView = viewHolder.initView(parent, viewType);
             viewHolder.attachOnItemClickListener(viewHolder.convertView);
@@ -115,10 +128,10 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
         tgRecyclerViewHolder.setPosition(position);
-        if(tgRecyclerViewHolder.recycleAble()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recycleAble()))
+        if(tgRecyclerViewHolder.recyclable()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recyclable()))
         {
-            tgRecyclerViewHolder.updateViewDimension(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
-            tgRecyclerViewHolder.fillData(parent, holder.itemView, getItem(position), position, holder.getItemViewType());
+            tgRecyclerViewHolder.updateViewDimension(recyclerView, holder.itemView, getItem(position), position, holder.getItemViewType());
+            tgRecyclerViewHolder.fillData(recyclerView, holder.itemView, getItem(position), position, holder.getItemViewType());
         }
     }
 
@@ -126,6 +139,13 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public void onViewAttachedToWindow(InternalRecyclerViewHolder<T> holder)
     {
         super.onViewAttachedToWindow(holder);
+        //设置FullSpan参数
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        int position = holder.getTGRecyclerViewHolder().getPosition();
+        if(null != layoutParams && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams)
+        {
+            ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(position));
+        }
         //保存ViewHolder
         viewTypeBinder.putViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
@@ -173,7 +193,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             viewHolder.setContext(context);
             viewHolder.setAdapter(this);
             viewHolder.setOnItemClickListener(onItemClickListener);
-            viewHolder.setRecyclerView((RecyclerView) parent);
+            viewHolder.setRecyclerView((RecyclerView) recyclerView);
         }
         return viewHolder;
     }
@@ -644,6 +664,27 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         public TGRecyclerViewHolder<T> getTGRecyclerViewHolder()
         {
             return tgRecyclerViewHolder;
+        }
+    }
+
+    final static class TGSpanSizeLookup extends GridLayoutManager.SpanSizeLookup
+    {
+        private TGRecyclerViewAdapter adapter;
+
+        public TGSpanSizeLookup(TGRecyclerViewAdapter adapter)
+        {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public int getSpanSize(int position)
+        {
+            TGRecyclerViewHolder viewHolder = this.adapter.viewTypeBinder.getSimpleViewHolderInstanceAtPosition(position);
+            if(null != viewHolder)
+            {
+                return viewHolder.getSpanSize(position);
+            }
+            return 1;
         }
     }
 }

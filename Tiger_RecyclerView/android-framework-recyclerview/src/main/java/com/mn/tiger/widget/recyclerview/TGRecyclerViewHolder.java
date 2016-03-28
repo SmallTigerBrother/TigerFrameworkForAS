@@ -30,6 +30,9 @@ public abstract class TGRecyclerViewHolder<T>
 
     private RecyclerView recyclerView;
 
+    /**
+     * 列表行视图
+     */
     View convertView;
 
     /**
@@ -51,6 +54,7 @@ public abstract class TGRecyclerViewHolder<T>
      * 是否已被回收
      */
     private boolean recycled = true;
+
 
     public TGRecyclerViewHolder()
     {
@@ -241,9 +245,29 @@ public abstract class TGRecyclerViewHolder<T>
      * 设置ViewHolder是否支持重用
      * @return
      */
-    public boolean recycleAble()
+    public boolean recyclable()
     {
         return true;
+    }
+
+    /**
+     * 设置列表行是否独占一整行（瀑布流时生效）
+     * @param position
+     * @return
+     */
+    public boolean isFullSpan(int position)
+    {
+        return false;
+    }
+
+    /**
+     * 使用GridLayoutManager填充数据时，控制单个Grid大小的参数，默认为1
+     * @param position
+     * @return
+     */
+    public int getSpanSize(int position)
+    {
+        return 1;
     }
 
     /**

@@ -79,6 +79,15 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         mFootViews.get(0).setVisibility(GONE);
     }
 
+    public void setLayoutManager(final LayoutManager layoutManager)
+    {
+        super.setLayoutManager(layoutManager);
+        if(null != mWrapAdapter)
+        {
+            mWrapAdapter.onAttachedToRecyclerView(this);
+        }
+    }
+
     public void addHeaderView(View view)
     {
         if (pullRefreshEnabled && !(mHeaderViews.get(0) instanceof ArrowRefreshHeader))
@@ -208,7 +217,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             ((TGRecyclerViewAdapter<?>) adapter).setOnItemClickListener(this.onItemClickListener);
         }
 
-        ((TGRecyclerViewAdapter)adapter).setRecyclerView(this);
         mWrapAdapter = new HeaderWrapAdapter(mHeaderViews, mFootViews, adapter);
         super.setAdapter(mWrapAdapter);
         mAdapter.registerAdapterDataObserver(mDataObserver);
@@ -481,21 +489,12 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         public void onAttachedToRecyclerView(RecyclerView recyclerView)
         {
             super.onAttachedToRecyclerView(recyclerView);
-            LayoutManager manager = recyclerView.getLayoutManager();
-            if (manager instanceof GridLayoutManager)
+            final LayoutManager layoutManager = recyclerView.getLayoutManager();
+            if(layoutManager instanceof GridLayoutManager)
             {
-                final GridLayoutManager gridManager = ((GridLayoutManager) manager);
-                gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup()
-                {
-                    @Override
-                    public int getSpanSize(int position)
-                    {
-                        return (isHeader(position) || isFooter(position))
-                                ? gridManager.getSpanCount() : 1;
-                    }
-                });
+                ((GridLayoutManager) layoutManager).setSpanSizeLookup(new HeaderSpanSizeLookup(this, (GridLayoutManager) layoutManager,
+                        new TGRecyclerViewAdapter.TGSpanSizeLookup((TGRecyclerViewAdapter) this.adapter)));
             }
-
             this.adapter.onAttachedToRecyclerView(recyclerView);
         }
 
@@ -508,8 +507,8 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                     && lp instanceof StaggeredGridLayoutManager.LayoutParams
                     && (isHeader(holder.getLayoutPosition()) || isFooter(holder.getLayoutPosition())))
             {
-                StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
-                p.setFullSpan(true);
+                StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) lp;
+                layoutParams.setFullSpan(true);
             }
 
             if (holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
@@ -655,30 +654,39 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             return -1;
         }
 
-//        @Override
-//        public void unregisterAdapterDataObserver(AdapterDataObserver observer)
-//        {
-//            if (adapter != null)
-//            {
-//                adapter.unregisterAdapterDataObserver(observer);
-//            }
-//        }
-//
-//        @Override
-//        public void registerAdapterDataObserver(AdapterDataObserver observer)
-//        {
-//            if (adapter != null)
-//            {
-//                adapter.registerAdapterDataObserver(observer);
-//            }
-//        }
-
         private class SimpleViewHolder extends ViewHolder
         {
             public SimpleViewHolder(View itemView)
             {
                 super(itemView);
             }
+        }
+    }
+
+    static class HeaderSpanSizeLookup extends GridLayoutManager.SpanSizeLookup
+    {
+        private HeaderWrapAdapter adapter;
+
+        private GridLayoutManager layoutManager;
+
+        private TGRecyclerViewAdapter.TGSpanSizeLookup internalSpanSizeLookup;
+
+        private int headCount;
+
+        HeaderSpanSizeLookup(HeaderWrapAdapter adapter, GridLayoutManager layoutManager,
+                             TGRecyclerViewAdapter.TGSpanSizeLookup internalSpanSizeLookup)
+        {
+            this.adapter = adapter;
+            this.layoutManager = layoutManager;
+            this.internalSpanSizeLookup = internalSpanSizeLookup;
+            this.headCount = adapter.getHeadersCount();
+        }
+
+        @Override
+        public int getSpanSize(int position)
+        {
+            return (adapter.isHeader(position) || adapter.isFooter(position))
+                    ? (layoutManager).getSpanCount() : internalSpanSizeLookup.getSpanSize(position - headCount);
         }
     }
 
