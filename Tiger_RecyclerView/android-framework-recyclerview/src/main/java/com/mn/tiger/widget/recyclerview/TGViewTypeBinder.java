@@ -162,6 +162,10 @@ class TGViewTypeBinder
                 viewTypeHolderMap.put(viewType,viewHolder);
                 return viewType;
             }
+            else
+            {
+                throw new IllegalArgumentException("[Method:generateViewTypeByGenericParamType] can not find target ViewHolder with dataClass = " + dataClass);
+            }
         }
 
         return TGRecyclerViewAdapter.NONE_VIEW_TYPE;

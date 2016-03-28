@@ -73,14 +73,14 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                                  Class<? extends TGRecyclerViewHolder>... viewHolderClasses)
     {
         this.context = context;
+        this.setHasStableIds(true);
+        viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
+
         this.items = new ArrayList<T>();
-        if (null != items)
+        if (null != items && items.size() > 0)
         {
             this.items.addAll(items);
         }
-
-        this.setHasStableIds(true);
-        viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
     }
 
     @Override
@@ -96,6 +96,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             {
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new TGSpanSizeLookup(this));
             }
+        }
+
+        if(items.size() > 0)
+        {
+            generateViewTypes(0 ,items.size() - 1);
         }
     }
 
@@ -126,6 +131,13 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     @Override
     public void onBindViewHolder(InternalRecyclerViewHolder<T> holder, int position)
     {
+        //设置FullSpan参数
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        if(null != layoutParams && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams)
+        {
+            ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(position));
+        }
+
         TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
         tgRecyclerViewHolder.setPosition(position);
         if(tgRecyclerViewHolder.recyclable()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recyclable()))
@@ -139,13 +151,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public void onViewAttachedToWindow(InternalRecyclerViewHolder<T> holder)
     {
         super.onViewAttachedToWindow(holder);
-        //设置FullSpan参数
-        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        int position = holder.getTGRecyclerViewHolder().getPosition();
-        if(null != layoutParams && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams)
-        {
-            ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(position));
-        }
         //保存ViewHolder
         viewTypeBinder.putViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
