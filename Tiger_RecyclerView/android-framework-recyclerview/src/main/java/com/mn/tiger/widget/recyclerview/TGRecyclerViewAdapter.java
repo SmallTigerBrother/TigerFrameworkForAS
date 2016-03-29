@@ -131,13 +131,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     @Override
     public void onBindViewHolder(InternalRecyclerViewHolder<T> holder, int position)
     {
-        //设置FullSpan参数
-        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        if(null != layoutParams && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams)
-        {
-            ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(position));
-        }
-
         TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
         tgRecyclerViewHolder.setPosition(position);
         if(tgRecyclerViewHolder.recyclable()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recyclable()))
@@ -151,6 +144,14 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public void onViewAttachedToWindow(InternalRecyclerViewHolder<T> holder)
     {
         super.onViewAttachedToWindow(holder);
+        //设置FullSpan参数
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        if(null != layoutParams && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams)
+        {
+            ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(
+                    holder.getTGRecyclerViewHolder().getPosition()));
+        }
+
         //保存ViewHolder
         viewTypeBinder.putViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
@@ -198,7 +199,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             viewHolder.setContext(context);
             viewHolder.setAdapter(this);
             viewHolder.setOnItemClickListener(onItemClickListener);
-            viewHolder.setRecyclerView((RecyclerView) recyclerView);
+            viewHolder.setRecyclerView(recyclerView);
         }
         return viewHolder;
     }
