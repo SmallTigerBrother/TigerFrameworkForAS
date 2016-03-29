@@ -4,7 +4,6 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
 
-import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.system.AppConfigs;
 import com.mn.tiger.system.SystemConfigs;
 
