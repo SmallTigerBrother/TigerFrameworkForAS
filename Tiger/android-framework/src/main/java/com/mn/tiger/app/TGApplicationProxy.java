@@ -45,8 +45,6 @@ public class TGApplicationProxy
         proxy.application = application;
         Logger.setPackageName(application.getPackageName());
 
-        SystemConfigs.initSystemConfigs(application);
-        AppConfigs.initAppConfigs(application);
         return proxy;
     }
 
@@ -56,8 +54,6 @@ public class TGApplicationProxy
         proxy.application = application;
         Logger.setPackageName(application.getPackageName());
 
-        SystemConfigs.initSystemConfigs(application);
-        AppConfigs.initAppConfigs(application);
         return proxy;
     }
 
