@@ -174,7 +174,7 @@ public class FacebookAuthorization extends AbsAuthorization
             {
                 authorizeCallback.onAuthorizeError(0, exception.getMessage(), exception.getLocalizedMessage());
             }
-            LOG.e("[Method:facebookCallback:onCancel] facebook authorize has error " + exception.getMessage());
+            LOG.e("[Method:facebookCallback:onError] facebook authorize has error " + exception.getMessage());
             exception.printStackTrace();
         }
     };

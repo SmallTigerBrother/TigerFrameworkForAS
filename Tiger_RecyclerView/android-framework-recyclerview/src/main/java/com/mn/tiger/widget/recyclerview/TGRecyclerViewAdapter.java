@@ -175,9 +175,9 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     }
 
     @Override
-    public  int getItemViewType(int position)
+    public int getItemViewType(int position)
     {
-        return viewTypeBinder.generateItemViewType(position);
+        return viewTypeBinder.generateItemViewType(position, false);
     }
 
     /**
@@ -211,15 +211,9 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     private void generateViewTypes(int startPosition, int endPosition)
     {
-        if(enableUnRecycleViewHolder)
+        for (int i = startPosition; i <= endPosition ; i++)
         {
-            if(null != viewTypeBinder)
-            {
-                for (int i = startPosition; i <= endPosition ; i++)
-                {
-                    viewTypeBinder.generateItemViewType(i);
-                }
-            }
+            viewTypeBinder.generateItemViewType(i, true);
         }
     }
 
@@ -454,7 +448,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if(null != data && position >= 0 && position <= this.items.size())
         {
             this.items.add(position, data);
-            generateViewTypes(position,position);
+            generateViewTypes(position,items.size() - 1);
             notifyItemInserted(position);
         }
     }
@@ -485,6 +479,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (items.size() > position && position >= 0)
         {
             items.remove(position);
+            generateViewTypes(position, items.size() - 1);
             notifyDataSetChanged();
 //            notifyItemRemoved(position);
 
@@ -507,6 +502,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (position > -1)
         {
             items.remove(item);
+            generateViewTypes(position, items.size() - 1);
             notifyDataSetChanged();
 //            notifyItemRemoved(position);
 
@@ -538,7 +534,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                 items.remove(item);
                 notifyItemRemoved(position);
             }
-
+            generateViewTypes(minPosition, items.size() - 1);
             notifyItemRangeChanged(minPosition, this.items.size() - minPosition);
         }
     }
@@ -563,7 +559,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                 items.remove(item);
                 notifyItemRemoved(position);
             }
-
+            generateViewTypes(minPosition, items.size() - 1);
             notifyItemRangeChanged(minPosition, this.items.size() - minPosition);
         }
     }
@@ -574,6 +570,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public final void removeAll()
     {
         items.clear();
+        viewTypeBinder.clear();
         notifyDataSetChanged();
     }
 

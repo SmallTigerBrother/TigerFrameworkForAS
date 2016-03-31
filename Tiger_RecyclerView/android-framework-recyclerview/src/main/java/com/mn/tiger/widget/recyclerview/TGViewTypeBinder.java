@@ -94,10 +94,15 @@ class TGViewTypeBinder
     /**
      * 获取指定位置的ViewType
      * @param position
+     * @param force 是否强制生成viewType，如果强制生成，则会生成新的ViewType，不重用就的ViewType
      * @return
      */
-    public int generateItemViewType(int position)
+    public int generateItemViewType(int position, boolean force)
     {
+        if(force)
+        {
+            positionViewTypeMap.remove(position);
+        }
         //首先根据position生成ViewType
         int viewType = generateViewTypeByPosition(position);
         //若根据position生成的ViewType不合法，则通过泛型参数类型生成ViewType
@@ -253,7 +258,7 @@ class TGViewTypeBinder
         TGRecyclerViewHolder viewHolder = null;
         if(null != recycleArray)
         {
-            viewHolder = recycleArray.getScrapViewArrayByType(generateItemViewType(position)).get(position);
+            viewHolder = recycleArray.getScrapViewArrayByType(generateItemViewType(position, false)).get(position);
         }
 
         if(null == viewHolder)
@@ -264,6 +269,16 @@ class TGViewTypeBinder
         return viewHolder;
     }
 
+    void clear()
+    {
+        this.allViewHolders.clear();
+        this.positionViewTypeMap.clear();
+        if(null != recycleArray)
+        {
+            recycleArray.allScrapViewArrays.clear();
+        }
+    }
+
     /**
      * 获取内部存储的简单实例，用户来获取其他数据
      * @param position
@@ -271,7 +286,7 @@ class TGViewTypeBinder
      */
     TGRecyclerViewHolder getSimpleViewHolderInstanceAtPosition(int position)
     {
-        int viewType = generateItemViewType(position);
+        int viewType = generateItemViewType(position, false);
         return viewTypeHolderMap.get(viewType);
     }
 
