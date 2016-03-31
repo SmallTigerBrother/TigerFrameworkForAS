@@ -85,8 +85,7 @@ public class TGRetrofit
                     formBodyBuilder.add(entry.getKey(), entry.getValue());
                 }
                 FormBody newFormBody = formBodyBuilder.build();
-                LOG.i("[Method:appendParams] method = " + originalRequest.method() + " ; url = " + originalRequest.url());
-                LOG.i("[Method:appendParams] params = " + stringify(newFormBody));
+                LOG.i("[Method:appendParams] method = " + originalRequest.method() + " ; url = " + originalRequest.url() + " ; params : " + stringify(newFormBody));
                 return originalRequest.newBuilder().post(newFormBody).build();
             }
             else if(requestBody instanceof MultipartBody)

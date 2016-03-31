@@ -59,7 +59,6 @@ public class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
         try
         {
             T result = null;
-            LOG.i("[Method:convert] result = " + rawData);
             result = adapter.fromJson(rawData);
             if (result instanceof TGResult)
             {

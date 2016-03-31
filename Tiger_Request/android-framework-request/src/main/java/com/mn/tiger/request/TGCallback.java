@@ -6,6 +6,8 @@ import android.content.Context;
 import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.log.Logger;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +59,15 @@ public abstract class TGCallback<T> implements Callback<T>
         {
             //请求成功
             this.success = true;
+            if(null != response.body())
+            {
+                LOG.i("[Method:onResponse] raw = " + response.raw() + "\n" + response.body().toString());
+            }
+            else
+            {
+                LOG.i("[Method:onResponse] raw = " + response.raw().toString());
+            }
+
             onRequestSuccess(response, response.body());
         }
         else
@@ -65,14 +76,14 @@ public abstract class TGCallback<T> implements Callback<T>
             {
                 //请求失败
                 this.success = false;
-                LOG.e("[Method:onResponse] code = " + response.code() + " message = " + response.message());
+                LOG.e("[Method:onResponse] error , url = " + call.request().url()  + " code = " + response.code() + " message = " + response.message());
                 onRequestError(response.code(), response.message(), response);
             }
             else
             {
                 //请求失败
                 this.success = false;
-                LOG.e("[Method:onResponse] code = -1");
+                LOG.e("[Method:onResponse] error, url = " + call.request().url() + " code = -1");
                 onRequestError(-1, "unknown error, the response is null", response);
             }
         }
@@ -86,6 +97,7 @@ public abstract class TGCallback<T> implements Callback<T>
     @Override
     public void onFailure(Call<T> call, Throwable t)
     {
+        LOG.e("[Method:onFailure] url = " + call.request().url() + (null != t ? t.getMessage() : ""));
         this.success = false;
         onRequestError(-1, t.getMessage(), null);
         onRequestOver(call);

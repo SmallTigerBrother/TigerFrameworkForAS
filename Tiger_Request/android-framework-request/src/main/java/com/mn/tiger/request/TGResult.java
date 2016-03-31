@@ -16,4 +16,10 @@ public class TGResult
     {
         return rawData;
     }
+
+    @Override
+    public String toString()
+    {
+        return rawData;
+    }
 }
