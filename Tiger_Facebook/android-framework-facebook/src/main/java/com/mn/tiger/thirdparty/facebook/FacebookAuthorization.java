@@ -16,6 +16,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
+import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.authorize.AbsAuthorization;
 import com.mn.tiger.authorize.IAuthorizeCallback;
 import com.mn.tiger.authorize.ILogoutCallback;
@@ -39,6 +40,7 @@ public class FacebookAuthorization extends AbsAuthorization
 
     public static final String PERMISSION_USER_BIRTHDAY = "user_birthday";
 
+    public static final String PERMISSION_PUBLIC_PROFILE = "public_profile";
 
     public static final String FIELD_ID = "id";
 
@@ -52,25 +54,31 @@ public class FacebookAuthorization extends AbsAuthorization
 
     public static final String FIELD_COVER = "cover";
 
+    public static final String FIELD_PICTURE = "picture";
+
+    public static final String FIELD_LINK_URL = "link";
 
     private CallbackManager callbackManager;
 
     private List<String> permissions;
 
+    private String[] userInfoFields;
+
     private IAuthorizeCallback authorizeCallback;
 
     private ILogoutCallback logoutCallback;
 
-    public FacebookAuthorization(String... permissions)
+    private Activity activity;
+
+    public FacebookAuthorization(String[] permissions, String[] userInfoFields)
     {
         super(null);
-
         this.permissions = new ArrayList<String>();
         if(null != permissions && permissions.length > 0)
         {
             this.permissions.addAll(Arrays.asList(permissions));
         }
-
+        this.userInfoFields = userInfoFields;
         callbackManager = CallbackManager.Factory.create();
     }
 
@@ -83,6 +91,7 @@ public class FacebookAuthorization extends AbsAuthorization
     @Override
     public void authorize(Activity activity, IAuthorizeCallback callback)
     {
+        this.activity = activity;
         this.authorizeCallback = callback;
         LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
@@ -91,7 +100,8 @@ public class FacebookAuthorization extends AbsAuthorization
     @Override
     public void logout(Activity activity, ILogoutCallback callback)
     {
-        this.logoutCallback = logoutCallback;
+        this.activity = activity;
+        this.logoutCallback = callback;
         LoginManager.getInstance().logOut();
     }
 
@@ -108,12 +118,42 @@ public class FacebookAuthorization extends AbsAuthorization
         @Override
         public void onSuccess(LoginResult loginResult)
         {
-            if(null != authorizeCallback)
+            final FacebookAuthorizeResult authorizeResult = new FacebookAuthorizeResult();
+            authorizeResult.setAccessToken(loginResult.getAccessToken().getToken());
+            authorizeResult.setUID(loginResult.getAccessToken().getUserId());
+            if(null != userInfoFields)
             {
-                TGAuthorizeResult authorizeResult = new TGAuthorizeResult();
-                authorizeResult.setAccessToken(loginResult.getAccessToken().getToken());
-                authorizeResult.setUID(loginResult.getAccessToken().getUserId());
-                authorizeCallback.onAuthorizeSuccess(authorizeResult);
+                requestFacebookUserInfo(activity, userInfoFields,new IFacebookUserInfoCallback()
+                {
+                    @Override
+                    public void onRequestUserInfoSuccess(FacebookUserInfo facebookUserInfo, String rawReResponse)
+                    {
+                        authorizeResult.setUserInfo(facebookUserInfo);
+                        if(null != authorizeCallback)
+                        {
+                            authorizeCallback.onAuthorizeSuccess(authorizeResult);
+                        }
+                    }
+
+                    @Override
+                    public void onRequestUserInfoError(int code, String message)
+                    {
+                        LOG.e("[Method:IFacebookUserInfoCallback:onRequestUserInfoError] get facebook userInfo error code = " +
+                                code + " message = " + message);
+                        if(null != authorizeCallback)
+                        {
+                            authorizeCallback.onAuthorizeError(code, message, message);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                LOG.w("[Method:facebookCallback:onSuccess] the userInfoFields is null, please make sure you do not want any user profiles");
+                if(null != authorizeCallback)
+                {
+                    authorizeCallback.onAuthorizeSuccess(authorizeResult);
+                }
             }
         }
 
@@ -145,8 +185,13 @@ public class FacebookAuthorization extends AbsAuthorization
      * @param userInfoCallback
      * @param paramFields 指定请求用户信息的Fields
      */
-    public void requestFacebookUserInfo(final Activity activity, final IFacebookUserInfoCallback userInfoCallback, String... paramFields)
+    public void requestFacebookUserInfo(final Activity activity,String[] paramFields ,final IFacebookUserInfoCallback userInfoCallback)
     {
+        if(activity instanceof TGActionBarActivity)
+        {
+            ((TGActionBarActivity) activity).showLoadingDialog();
+        }
+
         Bundle parameters = new Bundle();
         if(null != paramFields && paramFields.length > 0)
         {
@@ -168,6 +213,11 @@ public class FacebookAuthorization extends AbsAuthorization
             @Override
             public void onCompleted(final GraphResponse graphResponse)
             {
+                if(activity instanceof TGActionBarActivity)
+                {
+                    ((TGActionBarActivity)activity).dismissLoadingDialog();
+                }
+
                 if (TextUtils.isEmpty(graphResponse.getRawResponse()))
                 {
                     LoginManager.getInstance().logOut();
@@ -245,6 +295,16 @@ public class FacebookAuthorization extends AbsAuthorization
         private String birthday;
 
         /**
+         * 个人主页
+         */
+        private String link;
+
+        /**
+         * 用户头像
+         */
+        private FacebookPicture picture;
+
+        /**
          * The person's cover photo
          */
         private FacebookCover cover;
@@ -281,6 +341,16 @@ public class FacebookAuthorization extends AbsAuthorization
         public FacebookCover getCover()
         {
             return cover;
+        }
+
+        public FacebookPicture getPicture()
+        {
+            return picture;
+        }
+
+        public String getLink()
+        {
+            return link;
         }
     }
 
@@ -336,6 +406,33 @@ public class FacebookAuthorization extends AbsAuthorization
         public String getSource()
         {
             return source;
+        }
+    }
+
+    public static class FacebookPicture implements Serializable
+    {
+        private FacebookPictureData data;
+
+        public FacebookPictureData getData()
+        {
+            return data;
+        }
+    }
+
+    public static class FacebookPictureData implements Serializable
+    {
+        private boolean is_silhouette;
+
+        private String url;
+
+        public boolean isSilhouette()
+        {
+            return is_silhouette;
+        }
+
+        public String getUrl()
+        {
+            return url;
         }
     }
 }
