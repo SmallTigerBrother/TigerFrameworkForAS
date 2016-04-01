@@ -21,7 +21,7 @@ public abstract class TGRecyclerViewHolder<T>
     /**
      * 搭配使用的Adapter
      */
-    private TGRecyclerViewAdapter<T> adapter;
+    private TGRecyclerViewAdapter adapter;
 
     /**
      * 当前使用ViewHolder的位置
@@ -88,7 +88,7 @@ public abstract class TGRecyclerViewHolder<T>
      * 获取匹配的Adapter
      * @return
      */
-    public TGRecyclerViewAdapter<T> getAdapter()
+    public TGRecyclerViewAdapter getAdapter()
     {
         return adapter;
     }
@@ -97,7 +97,7 @@ public abstract class TGRecyclerViewHolder<T>
      * 设置匹配的Adapter
      * @param adapter
      */
-    public void setAdapter(TGRecyclerViewAdapter<T> adapter)
+    public void setAdapter(TGRecyclerViewAdapter adapter)
     {
         this.adapter = adapter;
     }

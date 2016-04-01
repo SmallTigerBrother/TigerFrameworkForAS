@@ -478,11 +478,15 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
         private int headerPosition = 1;
 
+        private int headerCount;
+
         public HeaderWrapAdapter(ArrayList<View> headerViews, ArrayList<View> footViews, Adapter adapter)
         {
             this.adapter = adapter;
             this.mHeaderViews = headerViews;
             this.mFootViews = footViews;
+            headerCount = getHeadersCount();
+//            setHasStableIds(true);
         }
 
         @Override
@@ -523,6 +527,8 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             super.onViewDetachedFromWindow(holder);
             if (holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
             {
+                TGRecyclerViewAdapter.InternalRecyclerViewHolder viewHolder = (TGRecyclerViewAdapter.InternalRecyclerViewHolder)holder;
+                viewHolder.getTGRecyclerViewHolder().setPosition(viewHolder.getCurrentPosition() - headerCount);
                 adapter.onViewDetachedFromWindow(holder);
             }
         }

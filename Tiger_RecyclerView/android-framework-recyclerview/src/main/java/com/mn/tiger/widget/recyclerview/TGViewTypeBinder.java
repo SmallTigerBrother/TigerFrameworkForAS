@@ -80,7 +80,8 @@ class TGViewTypeBinder
                 LOG.i("[Method:TGViewTypeBinder] dataClass == " + dataClass);
                 if(dataClass.equals(Object.class.getCanonicalName()))
                 {
-                    LOG.e("[Method:TGViewTypeBinder]the dataClass can not be Object, or you can return a constant value in 'getViewType' of TGRecyclerViewHolder");
+                    throw new IllegalArgumentException("the GenericParamType can not be Object, or you can return a constant value in 'getViewType' of "
+                            + viewHolderClass.getName());
                 }
                 dataTypeHolderMap.put(dataClass, viewHolder);
             }

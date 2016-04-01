@@ -61,6 +61,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     boolean enableUnRecycleViewHolder = false;
 
+    int viewPositionOffset = 0;
+
     /**
      * 支持多种数据类型的构造函数
      * （数据类型不支持泛型，例如不支持List<Abc>，如果要使用泛型，请自行写一个类extends ArrayList<Abc>）
@@ -116,7 +118,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     @Override
     public InternalRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        TGRecyclerViewHolder<T> viewHolder = createViewHolder(viewType);
+        TGRecyclerViewHolder viewHolder = createViewHolder(viewType);
         if(viewHolder.recyclable()  || (!enableUnRecycleViewHolder && !viewHolder.recyclable()))
         {
             viewHolder.convertView = viewHolder.initView(parent, viewType);
@@ -169,7 +171,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      * @param position
      * @return
      */
-    public final TGRecyclerViewHolder<T> getViewHolderAtPosition(int position)
+    public final TGRecyclerViewHolder getViewHolderAtPosition(int position)
     {
         return viewTypeBinder.getRecyclerViewHolderAtPosition(position);
     }
@@ -185,14 +187,14 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      *
      * @return
      */
-    protected final TGRecyclerViewHolder<T> createViewHolder(int viewType)
+    protected final TGRecyclerViewHolder createViewHolder(int viewType)
     {
-        TGRecyclerViewHolder<T> viewHolder = viewTypeBinder.newViewHolderByType(viewType);
+        TGRecyclerViewHolder viewHolder = viewTypeBinder.newViewHolderByType(viewType);
         initViewHolder(viewHolder);
         return viewHolder;
     }
 
-    final TGRecyclerViewHolder<T> initViewHolder(TGRecyclerViewHolder<T> viewHolder)
+    final TGRecyclerViewHolder initViewHolder(TGRecyclerViewHolder viewHolder)
     {
         if(null != viewHolder)
         {
@@ -667,6 +669,16 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         public TGRecyclerViewHolder<T> getTGRecyclerViewHolder()
         {
             return tgRecyclerViewHolder;
+        }
+
+        int getCurrentPosition()
+        {
+            int position = getAdapterPosition();
+            if(position < 0)
+            {
+                return getPosition();
+            }
+            return position;
         }
     }
 
