@@ -70,6 +70,8 @@ public class FacebookAuthorization extends AbsAuthorization
 
     private Activity activity;
 
+    private int retryCount = 0;
+
     public FacebookAuthorization(String[] permissions, String[] userInfoFields)
     {
         super(null);
@@ -170,12 +172,24 @@ public class FacebookAuthorization extends AbsAuthorization
         @Override
         public void onError(FacebookException exception)
         {
-            if(null != authorizeCallback)
-            {
-                authorizeCallback.onAuthorizeError(0, exception.getMessage(), exception.getLocalizedMessage());
-            }
             LOG.e("[Method:facebookCallback:onError] facebook authorize has error " + exception.getMessage());
-            exception.printStackTrace();
+
+            retryCount++;
+            if(retryCount < 2)
+            {
+                //退出登录
+                LoginManager.getInstance().logOut();
+                //重试
+                authorize(activity, authorizeCallback);
+            }
+            else
+            {
+                retryCount = 0;
+                if(null != authorizeCallback)
+                {
+                    authorizeCallback.onAuthorizeError(0, exception.getMessage(), exception.getLocalizedMessage());
+                }
+            }
         }
     };
 
