@@ -442,8 +442,6 @@ public class Commons
 			return Object.class.getName();
 		}
 
-		Type[] types = clazz.getGenericInterfaces();
-
 		Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
 		if (index >= params.length || index < 0)
 		{
