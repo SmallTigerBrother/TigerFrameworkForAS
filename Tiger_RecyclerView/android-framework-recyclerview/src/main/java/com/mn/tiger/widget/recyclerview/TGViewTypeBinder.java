@@ -80,7 +80,7 @@ class TGViewTypeBinder
                 LOG.i("[Method:TGViewTypeBinder] dataClass == " + dataClass);
                 if(dataClass.equals(Object.class.getCanonicalName()))
                 {
-                    throw new IllegalArgumentException("the GenericParamType can not be Object in "
+                    throw new IllegalArgumentException("the GenericParamType can not be void Or Object in "
                             + viewHolderClass.getName());
                 }
                 dataTypeHolderMap.put(dataClass, viewHolder);
