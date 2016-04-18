@@ -30,6 +30,8 @@ class TGViewTypeBinder
      */
     private HashMap<String, TGRecyclerViewHolder> dataTypeHolderMap;
 
+    private HashMap<String, Integer> dataViewTypeMap;
+
     /**
      * 绑定position，ViewType的Map，Key为position，Value为ViewType
      */
@@ -56,6 +58,7 @@ class TGViewTypeBinder
         this.allViewHolders = new HashMap<>();
         this.viewTypeHolderMap = new HashMap<>();
         this.positionViewTypeMap = new HashMap<>();
+        this.dataViewTypeMap = new HashMap<>(viewHolderClasses.length);
         //初始化各个类型ViewHolder的代理实例
         this.viewHolderInstances = new HashMap<>(viewHolderClasses.length);
         //初始化绑定Data类型，ViewHolder的Map
@@ -159,7 +162,13 @@ class TGViewTypeBinder
         if(null == viewType || viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
         {
             String dataClass = adapter.getItem(position).getClass().getCanonicalName();
-            viewType = createViewType();
+            viewType = dataViewTypeMap.get(dataClass);
+            if(null == viewType || viewType == TGRecyclerViewAdapter.NONE_VIEW_TYPE)
+            {
+                viewType = createViewType();
+                dataViewTypeMap.put(dataClass, viewType);
+            }
+
             //绑定ViewType
             TGRecyclerViewHolder viewHolder = dataTypeHolderMap.get(dataClass);
             if(null != viewHolder)

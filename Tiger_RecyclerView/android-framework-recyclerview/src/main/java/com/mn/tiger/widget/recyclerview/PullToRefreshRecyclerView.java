@@ -217,7 +217,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             ((TGRecyclerViewAdapter<?>) adapter).setOnItemClickListener(this.onItemClickListener);
         }
 
-        mWrapAdapter = new HeaderWrapAdapter(mHeaderViews, mFootViews, adapter);
+        mWrapAdapter = new HeaderWrapAdapter(mHeaderViews, mFootViews, (TGRecyclerViewAdapter)adapter);
         super.setAdapter(mWrapAdapter);
         mAdapter.registerAdapterDataObserver(mDataObserver);
     }
@@ -470,7 +470,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
     public static class HeaderWrapAdapter extends Adapter<ViewHolder>
     {
-        private Adapter adapter;
+        private TGRecyclerViewAdapter adapter;
 
         private ArrayList<View> mHeaderViews;
 
@@ -480,7 +480,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
         private int headerCount;
 
-        public HeaderWrapAdapter(ArrayList<View> headerViews, ArrayList<View> footViews, Adapter adapter)
+        public HeaderWrapAdapter(ArrayList<View> headerViews, ArrayList<View> footViews, TGRecyclerViewAdapter adapter)
         {
             this.adapter = adapter;
             this.mHeaderViews = headerViews;
@@ -497,7 +497,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             if(layoutManager instanceof GridLayoutManager)
             {
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new HeaderSpanSizeLookup(this, (GridLayoutManager) layoutManager,
-                        new TGRecyclerViewAdapter.TGSpanSizeLookup((TGRecyclerViewAdapter) this.adapter)));
+                        new TGRecyclerViewAdapter.TGSpanSizeLookup(this.adapter)));
             }
             this.adapter.onAttachedToRecyclerView(recyclerView);
         }
@@ -517,7 +517,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
             if (holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
             {
-                adapter.onViewAttachedToWindow(holder);
+                adapter.onViewAttachedToWindow((TGRecyclerViewAdapter.InternalRecyclerViewHolder)holder);
             }
         }
 
@@ -597,7 +597,28 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 adapterCount = adapter.getItemCount();
                 if (adjPosition < adapterCount)
                 {
-                    adapter.onBindViewHolder(holder, adjPosition);
+                    adapter.onBindViewHolder((TGRecyclerViewAdapter.InternalRecyclerViewHolder)holder, adjPosition);
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void onViewRecycled(ViewHolder holder)
+        {
+            super.onViewRecycled(holder);
+            if (isHeader(holder.getAdapterPosition()))
+            {
+                return;
+            }
+            int adjPosition = holder.getAdapterPosition() - getHeadersCount();
+            int adapterCount;
+            if (adapter != null)
+            {
+                adapterCount = adapter.getItemCount();
+                if (adjPosition >= 0 && adjPosition < adapterCount)
+                {
+                    adapter.onViewRecycled((TGRecyclerViewAdapter.InternalRecyclerViewHolder) holder);
                     return;
                 }
             }

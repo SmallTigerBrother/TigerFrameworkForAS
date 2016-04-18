@@ -140,6 +140,9 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             tgRecyclerViewHolder.updateViewDimension(recyclerView, holder.itemView, getItem(position), position, holder.getItemViewType());
             tgRecyclerViewHolder.fillData(recyclerView, holder.itemView, getItem(position), position, holder.getItemViewType());
         }
+
+        //保存ViewHolder
+        viewTypeBinder.putViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
 
     @Override
@@ -153,15 +156,12 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(
                     holder.getTGRecyclerViewHolder().getPosition()));
         }
-
-        //保存ViewHolder
-        viewTypeBinder.putViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
 
     @Override
-    public void onViewDetachedFromWindow(InternalRecyclerViewHolder<T> holder)
+    public void onViewRecycled(InternalRecyclerViewHolder<T> holder)
     {
-        super.onViewDetachedFromWindow(holder);
+        super.onViewRecycled(holder);
         viewTypeBinder.recycleViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
     }
 
