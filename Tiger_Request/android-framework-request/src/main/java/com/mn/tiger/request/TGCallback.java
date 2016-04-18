@@ -76,7 +76,19 @@ public abstract class TGCallback<T> implements Callback<T>
             {
                 //请求失败
                 this.success = false;
-                LOG.e("[Method:onResponse] error , url = " + call.request().url()  + " code = " + response.code() + " message = " + response.message());
+                if(null != response.body())
+                {
+                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + "\n" + response.body());
+                }
+                else if(null != response.errorBody())
+                {
+                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + "\n" + response.errorBody());
+                }
+                else
+                {
+                    LOG.e("[Method:onResponse] error , raw = " + response.raw());
+                }
+
                 onRequestError(response.code(), response.message(), response);
             }
             else
