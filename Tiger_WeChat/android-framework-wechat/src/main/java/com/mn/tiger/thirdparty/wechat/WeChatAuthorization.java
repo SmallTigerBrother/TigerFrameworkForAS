@@ -3,6 +3,7 @@ package com.mn.tiger.thirdparty.wechat;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.authorize.AbsAuthorization;
@@ -10,6 +11,7 @@ import com.mn.tiger.authorize.IAuthorizeCallback;
 import com.mn.tiger.authorize.ILogoutCallback;
 import com.mn.tiger.authorize.IRegisterCallback;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.request.GsonConverterFactory;
 import com.mn.tiger.request.TGCallback;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
@@ -150,8 +152,7 @@ public class WeChatAuthorization extends AbsAuthorization
     private void requestAccessToken(String code)
     {
         Call<WeChatAuthorizeResult> call = getWeChatAuthorizeService().getAccessToken(getAppID(), secret, code, "authorization_code");
-        TGCallback<WeChatAuthorizeResult, WeChatAuthorizeResult> callback =
-                new TGCallback<WeChatAuthorizeResult, WeChatAuthorizeResult>(activity)
+        TGCallback<WeChatAuthorizeResult> callback = new TGCallback<WeChatAuthorizeResult>(activity)
         {
             @Override
             public void onRequestSuccess(Response<WeChatAuthorizeResult> response, WeChatAuthorizeResult data)
@@ -173,13 +174,13 @@ public class WeChatAuthorization extends AbsAuthorization
             }
 
             @Override
-            protected boolean hasError(Call<WeChatAuthorizeResult> call, Response<WeChatAuthorizeResult> response)
+            public boolean hasError(Call<WeChatAuthorizeResult> call, Response<WeChatAuthorizeResult> response)
             {
                 return null == response || null == response.body();
             }
 
             @Override
-            protected void onRequestOver(Call<WeChatAuthorizeResult> call)
+            public void onRequestOver(Call<WeChatAuthorizeResult> call)
             {
                 super.onRequestOver(call);
                 if (activity instanceof TGActionBarActivity)
@@ -217,8 +218,8 @@ public class WeChatAuthorization extends AbsAuthorization
     private void requestUserInfo(String openId, String accessToken)
     {
         Call<WeChatAuthorizeResult.WeChatUser> call = getWeChatAuthorizeService().getUserInfo(accessToken, openId);
-        TGCallback<WeChatAuthorizeResult.WeChatUser, WeChatAuthorizeResult.WeChatUser> callback =
-                new TGCallback<WeChatAuthorizeResult.WeChatUser, WeChatAuthorizeResult.WeChatUser>(activity)
+        TGCallback<WeChatAuthorizeResult.WeChatUser> callback =
+                new TGCallback<WeChatAuthorizeResult.WeChatUser>(activity)
                 {
                     @Override
                     public void onRequestSuccess(Response<WeChatAuthorizeResult.WeChatUser> response, WeChatAuthorizeResult.WeChatUser data)
@@ -240,13 +241,13 @@ public class WeChatAuthorization extends AbsAuthorization
                     }
 
                     @Override
-                    protected boolean hasError(Call<WeChatAuthorizeResult.WeChatUser> call, Response<WeChatAuthorizeResult.WeChatUser> response)
+                    public boolean hasError(Call<WeChatAuthorizeResult.WeChatUser> call, Response<WeChatAuthorizeResult.WeChatUser> response)
                     {
                         return null == response || null == response.body();
                     }
 
                     @Override
-                    protected void onRequestOver(Call<WeChatAuthorizeResult.WeChatUser> call)
+                    public void onRequestOver(Call<WeChatAuthorizeResult.WeChatUser> call)
                     {
                         super.onRequestOver(call);
                         if (activity instanceof TGActionBarActivity)
@@ -280,7 +281,8 @@ public class WeChatAuthorization extends AbsAuthorization
     {
         if(null == weChatAuthorizeService)
         {
-            weChatAuthorizeService = new Retrofit.Builder().baseUrl("https://api.weixin.qq.com/").build().create(WeChatAuthorizeService.class);
+            weChatAuthorizeService = new Retrofit.Builder().baseUrl("https://api.weixin.qq.com/")
+                    .addConverterFactory(new GsonConverterFactory(new Gson())).build().create(WeChatAuthorizeService.class);
         }
 
         return weChatAuthorizeService;
