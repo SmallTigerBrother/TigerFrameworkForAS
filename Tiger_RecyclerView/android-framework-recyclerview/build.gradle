@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "2.1.1"
+version = "2.1.2"
 def siteUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS'    // project homepage
 def gitUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS.git' // project git
 group = "com.mn.tiger"
@@ -29,7 +29,7 @@ dependencies {
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
     compile 'com.mn.tiger:android-framework:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-logger:latest.integration'
-    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton:butterknife:8.0.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 }
 
