@@ -287,7 +287,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
                             configs.display();
                         }
                     }
-                }, 100);
+                }, 300);
             }
         }
 
