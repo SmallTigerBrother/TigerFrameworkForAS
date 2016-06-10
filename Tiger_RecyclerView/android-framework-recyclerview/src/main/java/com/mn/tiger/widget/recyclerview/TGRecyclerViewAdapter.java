@@ -137,8 +137,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         tgRecyclerViewHolder.setPosition(position);
         if(tgRecyclerViewHolder.recyclable()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recyclable()))
         {
-            tgRecyclerViewHolder.updateViewDimension(recyclerView, holder.itemView, getItem(position), position, holder.getItemViewType());
-            tgRecyclerViewHolder.fillData(recyclerView, holder.itemView, getItem(position), position, holder.getItemViewType());
+            tgRecyclerViewHolder.updateViewDimension(getItem(position), position, holder.getItemViewType());
+            tgRecyclerViewHolder.fillData(getItem(position), position, holder.getItemViewType());
         }
 
         //保存ViewHolder
@@ -201,7 +201,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             viewHolder.setContext(context);
             viewHolder.setAdapter(this);
             viewHolder.setOnItemClickListener(onItemClickListener);
-            viewHolder.setRecyclerView(recyclerView);
+            viewHolder.parent = recyclerView;
         }
         return viewHolder;
     }

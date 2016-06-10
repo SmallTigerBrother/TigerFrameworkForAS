@@ -28,12 +28,12 @@ public abstract class TGRecyclerViewHolder<T>
      */
     private int position;
 
-    private RecyclerView recyclerView;
+    protected RecyclerView parent;
 
     /**
      * 列表行视图
      */
-    View convertView;
+    protected View convertView;
 
     /**
      * Adapter真正使用的ViewHolder
@@ -107,7 +107,7 @@ public abstract class TGRecyclerViewHolder<T>
      * @param itemData
      * @param position
      */
-    public void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position, int viewType)
+    public void updateViewDimension(T itemData, int position, int viewType)
     {
 
     }
@@ -117,7 +117,7 @@ public abstract class TGRecyclerViewHolder<T>
      * @param itemData
      * @param position
      */
-    public abstract void fillData(ViewGroup parent, View convertView, T itemData, int position, int viewType);
+    public abstract void fillData(T itemData, int position, int viewType);
 
     /**
      * 获取列表行ViewType
@@ -165,24 +165,6 @@ public abstract class TGRecyclerViewHolder<T>
     protected TGRecyclerView.OnItemClickListener getOnItemClickListener()
     {
         return onItemClickListener;
-    }
-
-    /**
-     * 设置RecyclerView
-     * @param recyclerView
-     */
-    void setRecyclerView(RecyclerView recyclerView)
-    {
-        this.recyclerView = recyclerView;
-    }
-
-    /**
-     * 获取RecyclerView
-     * @return
-     */
-    protected RecyclerView getRecyclerView()
-    {
-        return recyclerView;
     }
 
     /**
@@ -304,7 +286,7 @@ public abstract class TGRecyclerViewHolder<T>
     {
         if(null != onItemClickListener)
         {
-            onItemClickListener.onItemClick(recyclerView, holder.itemView, this.position, holder.getItemId());
+            onItemClickListener.onItemClick(parent, holder.itemView, this.position, holder.getItemId());
         }
     }
 

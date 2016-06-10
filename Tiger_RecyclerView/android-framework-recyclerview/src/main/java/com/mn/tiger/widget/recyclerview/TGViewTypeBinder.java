@@ -235,8 +235,8 @@ class TGViewTypeBinder
                     this.adapter.initViewHolder(viewHolder);
                     viewHolder.convertView = viewHolder.initView(adapter.recyclerView, viewType);
                     viewHolder.attachOnItemClickListener(viewHolder.convertView);
-                    viewHolder.updateViewDimension(adapter.recyclerView, viewHolder.convertView, adapter.getItem(position), position, viewType);
-                    viewHolder.fillData(adapter.recyclerView, viewHolder.convertView, adapter.getItem(position), position, viewType);
+                    viewHolder.updateViewDimension(adapter.getItem(position), position, viewType);
+                    viewHolder.fillData(adapter.getItem(position), position, viewType);
                     recycleArray.addScrapView(viewHolder,position,viewType);
                 }
                 catch (Exception e)
@@ -246,7 +246,6 @@ class TGViewTypeBinder
             }
         }
     }
-
 
     /**
      * 自动生成ViewType
