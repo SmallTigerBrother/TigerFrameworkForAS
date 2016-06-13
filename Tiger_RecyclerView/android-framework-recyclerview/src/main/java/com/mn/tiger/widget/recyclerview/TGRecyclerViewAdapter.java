@@ -75,7 +75,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
                                  Class<? extends TGRecyclerViewHolder>... viewHolderClasses)
     {
         this.context = context;
-        this.setHasStableIds(true);
+//        this.setHasStableIds(true);
         viewTypeBinder = new TGViewTypeBinder(this, viewHolderClasses);
 
         this.items = new ArrayList<T>();
@@ -451,7 +451,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             this.items.add(position, data);
             generateViewTypes(position,items.size() - 1);
-            notifyItemInserted(position);
+            this.notifyItemInserted(position);
         }
     }
 
@@ -482,10 +482,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             items.remove(position);
             generateViewTypes(position, items.size() - 1);
-            notifyDataSetChanged();
-//            notifyItemRemoved(position);
-
-//            notifyItemRangeChanged(position, this.items.size() - position);
+//            notifyDataSetChanged();
+            notifyItemRemoved(position);
         }
         else
         {
@@ -505,10 +503,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             items.remove(item);
             generateViewTypes(position, items.size() - 1);
-            notifyDataSetChanged();
-//            notifyItemRemoved(position);
-
-//            notifyItemRangeChanged(position, this.items.size() - position);
+//            notifyDataSetChanged();
+            notifyItemRemoved(position);
         }
         else
         {
