@@ -2,7 +2,6 @@ package com.mn.tiger.utility;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.ExifInterface;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.view.ViewGroup.MarginLayoutParams;
 
 import com.mn.tiger.log.Logger;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -243,43 +241,6 @@ public class DisplayUtils
         {
             LOG.e("[Method:adjustViewSizeByHeight] the LayoutParams of View is null, please check your code");
         }
-    }
-
-    /**
-     * 获取照片角度
-     *
-     * @param picPath
-     * @return
-     */
-    public static int getPicOrientation(String picPath)
-    {
-        int orientation = 0;
-
-        try
-        {
-            ExifInterface exifInterface = new ExifInterface(picPath);
-            orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation)
-            {
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    orientation = 270;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    orientation = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    orientation = 90;
-                    break;
-                default:
-                    orientation = 0;
-                    break;
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return orientation;
     }
 
     public static boolean isSupportFullTheme()

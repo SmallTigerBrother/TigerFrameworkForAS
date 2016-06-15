@@ -16,6 +16,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -857,4 +858,40 @@ public class BitmapUtils
         return width_height;
     }
 
+    /**
+     * 获取照片角度
+     *
+     * @param picPath
+     * @return
+     */
+    public static int getPicOrientation(String picPath)
+    {
+        int orientation = 0;
+
+        try
+        {
+            ExifInterface exifInterface = new ExifInterface(picPath);
+            orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation)
+            {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    orientation = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    orientation = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    orientation = 90;
+                    break;
+                default:
+                    orientation = 0;
+                    break;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return orientation;
+    }
 }

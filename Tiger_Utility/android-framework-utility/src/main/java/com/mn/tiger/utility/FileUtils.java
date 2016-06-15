@@ -1,8 +1,11 @@
 package com.mn.tiger.utility;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.mn.tiger.log.Logger;
@@ -12,6 +15,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -923,5 +927,18 @@ public class FileUtils
             LOG.w("[Method:getDirSize] file is not exist, filePath == " + file.getAbsolutePath());
             return 0.0;
         }
+    }
+
+    public static void insertFile2Gallery(Context context, File file)
+    {
+        try
+        {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), file.getName(),null);
+        }
+        catch (FileNotFoundException e)
+        {
+            LOG.e("[Method:insertFile2Gallery]" + e);
+        }
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
     }
 }
