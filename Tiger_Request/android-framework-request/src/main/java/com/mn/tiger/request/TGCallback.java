@@ -129,9 +129,9 @@ public abstract class TGCallback<T> implements Callback<T>
     /**
      * 请求成功回调方法
      * @param response
-     * @param data
+     * @param result
      */
-    public abstract void onRequestSuccess(Response<T> response, T data);
+    public abstract void onRequestSuccess(Response<T> response, T result);
 
     /**
      * 请求错误回调方法
