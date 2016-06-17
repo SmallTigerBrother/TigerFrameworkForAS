@@ -102,7 +102,9 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
 
         private TGDraweeControllerListener controllerListener;
 
-        private int faceDuration = 1000;
+        private int fadeDuration = 1000;
+
+        private boolean tapToRetryEnabled = true;
 
         /**
          * 显示图片
@@ -121,7 +123,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             {
                 draweeHierarchy.setPlaceholderImage(placeHolder, ScalingUtils.ScaleType.CENTER_INSIDE);
             }
-            draweeHierarchy.setFadeDuration(faceDuration);
+            draweeHierarchy.setFadeDuration(fadeDuration);
 
             //设置圆角参数
             RoundingParams roundingParams = new RoundingParams();
@@ -146,7 +148,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             //初始化DraweeController
             AbstractDraweeController draweeController = Fresco.newDraweeControllerBuilder()
                     .setUri(uri.getValue())
-                    .setTapToRetryEnabled(true)
+                    .setTapToRetryEnabled(tapToRetryEnabled)
                     .setOldController(TGDraweeView.this.getController())
                     .setImageRequest(request)
                     .build();
@@ -225,9 +227,15 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
             return this;
         }
 
-        public FrescoConfigs setFaceDuration(int faceDuration)
+        public FrescoConfigs fadeDuration(int fadeDuration)
         {
-            this.faceDuration = faceDuration;
+            this.fadeDuration = fadeDuration;
+            return this;
+        }
+
+        public FrescoConfigs tapToRetryEnabled(boolean enabled)
+        {
+            this.tapToRetryEnabled = enabled;
             return this;
         }
     }
