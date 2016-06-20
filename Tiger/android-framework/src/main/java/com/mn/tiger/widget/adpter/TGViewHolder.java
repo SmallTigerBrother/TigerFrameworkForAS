@@ -17,14 +17,13 @@ public abstract class TGViewHolder<T>
 	private Context context;
 
 	/**
-	 * 列表航layoutID
-	 */
-	private int layoutId;
-
-	/**
 	 * 搭配使用的Adapter
 	 */
 	private TGListAdapter<T> adapter;
+
+	protected ViewGroup parent;
+
+	protected View convertView;
 
 	public TGViewHolder()
 	{
@@ -37,11 +36,11 @@ public abstract class TGViewHolder<T>
 	public View initView(ViewGroup parent, int viewType)
 	{
 		View convertView = null;
-		if (layoutId > 0)
+		if (getLayoutId() > 0)
 		{
 			try
 			{
-				convertView = LayoutInflater.from(context).inflate(layoutId, null);
+				convertView = LayoutInflater.from(context).inflate(getLayoutId(), null);
 				ButterKnife.bind(this, convertView);
 			}
 			catch (Exception e)
@@ -52,6 +51,7 @@ public abstract class TGViewHolder<T>
 
 		return convertView;
 	}
+
 
 	/**
 	 * 获取匹配的Adapter
@@ -76,7 +76,7 @@ public abstract class TGViewHolder<T>
 	 * @param itemData
 	 * @param position
 	 */
-	protected void updateViewDimension(ViewGroup parent, View convertView, T itemData, int position, int viewType)
+	protected void updateViewDimension(T itemData, int position, int viewType)
 	{
 
 	}
@@ -86,7 +86,7 @@ public abstract class TGViewHolder<T>
 	 * @param itemData
 	 * @param position
 	 */
-	public abstract void fillData(ViewGroup parent, View convertView, T itemData, int position, int viewType);
+	public abstract void fillData(T itemData, int position, int viewType);
 
 	protected int getItemViewType(int position)
 	{
@@ -103,15 +103,7 @@ public abstract class TGViewHolder<T>
 		this.context = context;
 	}
 
-	void setLayoutId(int layoutId)
-	{
-		this.layoutId = layoutId;
-	}
-
-	protected int getLayoutId()
-	{
-		return layoutId;
-	}
+	protected abstract int getLayoutId();
 
 	protected int getColor(int resId)
 	{

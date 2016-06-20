@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.mn.tiger.core.ActivityObserver;
 import com.mn.tiger.core.FragmentObserver;
 import com.mn.tiger.log.Logger;
 import com.mn.tiger.utility.CR;
@@ -81,7 +79,10 @@ public abstract class TGFragment extends Fragment
 		}
 		else
 		{
-			((ViewGroup)mainView.getParent()).removeView(mainView);
+			if(null != mainView.getParent())
+			{
+				((ViewGroup)mainView.getParent()).removeView(mainView);
+			}
 		}
 		
 		afterCreateView();

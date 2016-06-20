@@ -35,11 +35,6 @@ public class TGListAdapter<T> extends BaseAdapter
     private List<T> items = null;
 
     /**
-     * 列表行视图layoutId
-     */
-    private int convertViewLayoutId;
-
-    /**
      * viewholder类，用于视图重用，初始化列表行和填充列表行数据
      */
     private Class<? extends TGViewHolder<T>> viewHolderClass;
@@ -54,11 +49,9 @@ public class TGListAdapter<T> extends BaseAdapter
     /**
      * @param context
      * @param items               列表填充数据
-     * @param convertViewLayoutId 列表行视图layoutId
      * @param viewHolderClass     ViewHolder类名
      */
-    public TGListAdapter(Context context, List<T> items, int convertViewLayoutId,
-                         Class<? extends TGViewHolder<T>> viewHolderClass)
+    public TGListAdapter(Context context, List<T> items , Class<? extends TGViewHolder<T>> viewHolderClass)
     {
         this.context = context;
         this.items = new ArrayList<T>();
@@ -67,7 +60,6 @@ public class TGListAdapter<T> extends BaseAdapter
             this.items.addAll(items);
         }
 
-        this.convertViewLayoutId = convertViewLayoutId;
         this.viewHolderClass = viewHolderClass;
         this.internalViewHolder = initViewHolder();
     }
@@ -130,6 +122,8 @@ public class TGListAdapter<T> extends BaseAdapter
         TGViewHolder<T> viewHolder = initViewHolder();
         View convertView = viewHolder.initView(parent, getItemViewType(position));
         convertView.setTag(viewHolder);
+        viewHolder.convertView = convertView;
+        viewHolder.parent = parent;
 
         return convertView;
     }
@@ -147,10 +141,10 @@ public class TGListAdapter<T> extends BaseAdapter
         TGViewHolder<T> viewHolder = (TGViewHolder<T>) convertView.getTag();
 
         //更新列表行尺寸
-        viewHolder.updateViewDimension(parent, convertView, items.get(position), position, getItemViewType(position));
+        viewHolder.updateViewDimension(items.get(position), position, getItemViewType(position));
 
         //填充列表行数据
-        viewHolder.fillData(parent, convertView, items.get(position), position, getItemViewType(position));
+        viewHolder.fillData(items.get(position), position, getItemViewType(position));
     }
 
     /**
@@ -168,7 +162,6 @@ public class TGListAdapter<T> extends BaseAdapter
                 viewHolder = viewHolderClass.newInstance();
                 viewHolder.setContext(context);
                 viewHolder.setAdapter(this);
-                viewHolder.setLayoutId(convertViewLayoutId);
             }
             catch (Exception e)
             {
