@@ -84,11 +84,10 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
             TGFragmentPagerAdapter pagerAdapter = new TGFragmentPagerAdapter(
                     getFragmentManager(), getFragmentsFromTabs(tabModels));
             viewPager.setAdapter(pagerAdapter);
-            viewPager.setOnPageChangeListener(this);
+            viewPager.addOnPageChangeListener(this);
             viewPager.setOffscreenPageLimit(tabModels.length);
 
-            tabView.setAdapter(new TGListAdapter<TabModel>(this, Arrays.asList(tabModels),
-                    R.layout.tiger_fragment_tab_item, TabViewHolder.class));
+            tabView.setAdapter(new TGListAdapter<>(this, Arrays.asList(tabModels), TabViewHolder.class));
             tabView.setOnTabChangeListener(this);
             tabView.setSelection(0);
         }
@@ -101,7 +100,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
      */
     private ArrayList<Fragment> getFragmentsFromTabs(TabModel[] tabModels)
     {
-        ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+        ArrayList<Fragment> fragments = new ArrayList<>();
         for (int i = 0; i < tabModels.length; i++)
         {
             fragments.add(tabModels[i].getFragment());
@@ -266,6 +265,12 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         private TextView badgeView;
 
         @Override
+        protected int getLayoutId()
+        {
+            return R.layout.tiger_fragment_tab_item;
+        }
+
+        @Override
         public View initView(ViewGroup parent, int viewType)
         {
             View view = super.initView(parent, viewType);
@@ -282,7 +287,7 @@ public abstract class TGTabActivity extends TGActionBarActivity implements
         }
 
         @Override
-        public void fillData(ViewGroup parent, View convertView, TabModel itemData, int position, int viewType)
+        public void fillData(TabModel itemData, int position, int viewType)
         {
             imageView.setImageResource(itemData.getDefaultRes());
 

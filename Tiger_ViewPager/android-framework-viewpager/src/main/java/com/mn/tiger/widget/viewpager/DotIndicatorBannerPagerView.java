@@ -405,7 +405,7 @@ public class DotIndicatorBannerPagerView<T> extends RelativeLayout implements On
 	{
 		public DotTabAdapter(Activity activity, List<T> items)
 		{
-			super(activity, items, -1, null);
+			super(activity, items, null);
 		}
 
 		@Override
