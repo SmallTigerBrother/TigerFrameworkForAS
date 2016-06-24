@@ -122,6 +122,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if(viewHolder.recyclable()  || (!enableUnRecycleViewHolder && !viewHolder.recyclable()))
         {
             viewHolder.convertView = viewHolder.initView(parent, viewType);
+            viewHolder.afterInitView(viewType);
             viewHolder.attachOnItemClickListener(viewHolder.convertView);
         }
 

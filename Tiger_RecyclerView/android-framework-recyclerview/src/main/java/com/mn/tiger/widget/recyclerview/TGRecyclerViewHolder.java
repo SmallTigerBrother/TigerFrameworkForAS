@@ -72,6 +72,11 @@ public abstract class TGRecyclerViewHolder<T>
         return convertView;
     }
 
+    protected void afterInitView(int viewType)
+    {
+
+    }
+
     /**
      * 将OnItemClick事件绑定到View上
      * @param convertView
