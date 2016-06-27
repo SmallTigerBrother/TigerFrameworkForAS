@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 import com.mn.tiger.utility.DisplayUtils;
 
 import butterknife.ButterKnife;
@@ -205,7 +206,7 @@ public abstract class TGRecyclerViewHolder<T>
         return getContext().getResources().getDimensionPixelSize(resId);
     }
 
-    public int getTextSize(int resId)
+    public float getTextSize(int resId)
     {
         return DisplayUtils.px2sp(getContext(), getDimensionPixelSize(resId));
     }
