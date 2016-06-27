@@ -58,10 +58,10 @@ public class DisplayUtils
      * @return
      * @date 2013-3-8
      */
-    public static int px2sp(Context context, float pxValue)
+    public static float px2sp(Context context, float pxValue)
     {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (pxValue / scaledDensity + 0.5f);
+        return (pxValue / scaledDensity + 0.5f);
     }
 
     /**
