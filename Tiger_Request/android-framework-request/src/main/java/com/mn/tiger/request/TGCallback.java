@@ -61,7 +61,7 @@ public abstract class TGCallback<T> implements Callback<T>
             this.success = true;
             if(null != response.body())
             {
-                LOG.i("[Method:onResponse] raw = " + response.raw() + "\n" + response.body().toString());
+                LOG.i("[Method:onResponse] raw = " + response.raw() + "\n" + call.request());
             }
             else
             {
@@ -78,11 +78,11 @@ public abstract class TGCallback<T> implements Callback<T>
                 this.success = false;
                 if(null != response.body())
                 {
-                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + "\n" + response.body());
+                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + " \n" + response.body());
                 }
                 else if(null != response.errorBody())
                 {
-                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + "\n" + response.errorBody());
+                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + " \n" + response.errorBody());
                 }
                 else
                 {
