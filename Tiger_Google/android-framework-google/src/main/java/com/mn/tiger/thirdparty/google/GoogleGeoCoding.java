@@ -1,11 +1,13 @@
 package com.mn.tiger.thirdparty.google;
 
-import com.mn.tiger.app.TGApplicationProxy;
 import com.mn.tiger.lbs.geocoding.IGeoCoding;
 import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.TGHttpLoader;
-import com.mn.tiger.request.receiver.TGHttpResult;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Google地址解析功能
@@ -13,6 +15,17 @@ import com.mn.tiger.request.receiver.TGHttpResult;
 public class GoogleGeoCoding implements IGeoCoding
 {
     private static final Logger LOG = Logger.getLogger(GoogleGeoCoding.class);
+
+    private static Retrofit retrofit;
+
+    private static Retrofit getRetrofit()
+    {
+        if(null == retrofit)
+        {
+            retrofit = new Retrofit.Builder().baseUrl("http://maps.googleapis.com/maps/api/").build();
+        }
+        return retrofit;
+    }
 
 	/**
 	 * 执行地址解析
@@ -24,56 +37,33 @@ public class GoogleGeoCoding implements IGeoCoding
 			final IGeoCodeListener listener)
 	{
         LOG.i("[Method:geoCoding] latitde == " + latitude + " longitude == " + longitude);
-        String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude
-                + "," + longitude + "&sensor=false";
-
-        TGHttpLoader<GoogleGeoCodeResult> httpLoader = new TGHttpLoader<GoogleGeoCodeResult>();
-        httpLoader.loadByGet(TGApplicationProxy.getInstance().getApplication(), url, GoogleGeoCodeResult.class,
-                new TGHttpLoader.OnLoadCallback<GoogleGeoCodeResult>()
+        getRetrofit().create(GeoCodingService.class).geoCoding(latitude, longitude).enqueue(new Callback<GoogleGeoCodeResult>()
+        {
+            @Override
+            public void onResponse(Call<GoogleGeoCodeResult> call, Response<GoogleGeoCodeResult> response)
+            {
+                LOG.i("[Method:geoCoding:onResponse] " + response.body());
+                if(null != response.body() && null != response.body().getResults() && response.body().getResults().length > 0)
                 {
-                    @Override
-                    public void onLoadStart()
-                    {
-                    }
+                    GoogleAddressResult addressResult = response.body().getResults()[0];
+                    addressResult.setLatitude(latitude);
+                    addressResult.setLongitude(longitude);
 
-                    @Override
-                    public void onLoadSuccess(GoogleGeoCodeResult geoCodeResult, TGHttpResult tgHttpResult)
-                    {
-                        LOG.i("[Method:geoCoding:onLoadSuccess] " + geoCodeResult.toString());
-                        if(null != geoCodeResult && null != geoCodeResult.getResults() && geoCodeResult.getResults().length > 0)
-                        {
-                            GoogleAddressResult addressResult = geoCodeResult.getResults()[0];
-                            addressResult.setLatitude(latitude);
-                            addressResult.setLongitude(longitude);
+                    TGLocation location = addressResult.convert2Location();
+                    location.setTime(System.currentTimeMillis());
 
-                            TGLocation location = addressResult.convert2Location();
-                            location.setTime(System.currentTimeMillis());
+                    listener.onGeoCodingSuccess(location);
+                }
+            }
 
-                            listener.onGeoCodingSuccess(location);
-                        }
-                    }
-
-                    @Override
-                    public void onLoadError(int i, String s, TGHttpResult tgHttpResult)
-                    {
-                        if (null != listener)
-                        {
-                            listener.onGeoCodingError(i, s);
-                        }
-                    }
-
-                    @Override
-                    public void onLoadCache(GoogleGeoCodeResult geoCodeResult, TGHttpResult tgHttpResult)
-                    {
-                    }
-
-                    @Override
-                    public void onLoadOver()
-                    {
-                    }
-                });
+            @Override
+            public void onFailure(Call<GoogleGeoCodeResult> call, Throwable t)
+            {
+                if (null != listener)
+                {
+                    listener.onGeoCodingError(0, t.getMessage());
+                }
+            }
+        });
 	}
-
-
-
 }

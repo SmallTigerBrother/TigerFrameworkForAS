@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mn.tiger.lbs.location.ILocationManager;
 import com.mn.tiger.lbs.location.TGLocation;
 import com.mn.tiger.lbs.map.IMapManager;
+import com.mn.tiger.lbs.map.IMarker;
 import com.mn.tiger.log.Logger;
 
 import java.util.ArrayList;
@@ -79,6 +80,12 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
         }, 300);
     }
 
+    @Override
+    public void disallowScrollParentInterceptTouchEvent(ViewGroup scrollParent)
+    {
+
+    }
+
     /**
      * 初始化地图
      */
@@ -89,7 +96,14 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
             googleMap.setLocationSource(this);
             googleMap.getUiSettings().setAllGesturesEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            googleMap.setMyLocationEnabled(true);
+            try
+            {
+                googleMap.setMyLocationEnabled(true);
+            }
+            catch (SecurityException e)
+            {
+                e.printStackTrace();
+            }
 
             startNextTask();
         }
@@ -114,6 +128,24 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
     }
 
     @Override
+    public void centerZoomTo(double latitude, double longitude, float zoom)
+    {
+
+    }
+
+    @Override
+    public void zoomTo(float zoom)
+    {
+
+    }
+
+    @Override
+    public float getZoom()
+    {
+        return 0;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState)
     {
     }
@@ -134,7 +166,7 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
     }
 
     @Override
-    public void addMarker(final double latitude, final double longitude, final String title)
+    public IMarker addMarker(final double latitude, final double longitude, final String title)
     {
         taskList.add(new Runnable()
         {
@@ -154,6 +186,25 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
             }
         });
         startNextTask();
+        return null;
+    }
+
+    @Override
+    public IMarker addMarker(double latitude, double longitude, String title, String snippet)
+    {
+        return null;
+    }
+
+    @Override
+    public IMarker addMarker(double latitude, double longitude, String title, String snippet, int iconRes)
+    {
+        return null;
+    }
+
+    @Override
+    public IMarker addMarker(double latitude, double longitude, String title, String snippet, int iconRes, Object params)
+    {
+        return null;
     }
 
     @Override
@@ -214,6 +265,18 @@ public class GoogleMapManager implements IMapManager, LocationSource, LocationLi
                 public void onReceiveLocation(TGLocation location)
                 {
                     onLocationChanged(location.getLocation());
+                }
+
+                @Override
+                public void onLocationPermissionDeny()
+                {
+
+                }
+
+                @Override
+                public void onProviderDisabled(boolean isGPSDisabled, boolean isNetWorkDisable)
+                {
+
                 }
             });
             locationManager.requestLocationUpdates();

@@ -42,7 +42,7 @@ public class GoogleLocationManager implements ILocationManager
 
     public GoogleLocationManager()
     {
-        locationManager = (LocationManager) TGApplicationProxy.getInstance().getApplication().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) TGApplicationProxy.getApplication().getSystemService(Context.LOCATION_SERVICE);
         geoCoding = new GoogleGeoCoding();
     }
 
@@ -67,8 +67,8 @@ public class GoogleLocationManager implements ILocationManager
      */
     private void requestGPSLocationUpdates()
     {
-        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
-                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
+        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
+                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
         {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 20, gpsLocationListener);
         }
@@ -79,8 +79,8 @@ public class GoogleLocationManager implements ILocationManager
      */
     private void requestNetworkLocationUpdates()
     {
-        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
-                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
+        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
+                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
         {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2 * 1000, 20, networkLocationListener);
         }
@@ -91,8 +91,8 @@ public class GoogleLocationManager implements ILocationManager
      */
     private void removeNetworkLocationUpdates()
     {
-        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
-                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
+        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
+                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
         {
             locationManager.removeUpdates(networkLocationListener);
         }
@@ -101,8 +101,8 @@ public class GoogleLocationManager implements ILocationManager
     @Override
     public void removeLocationUpdates()
     {
-        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
-                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getInstance().getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
+        if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
+                && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
         {
             locationManager.removeUpdates(networkLocationListener);
             locationManager.removeUpdates(gpsLocationListener);
@@ -326,7 +326,7 @@ public class GoogleLocationManager implements ILocationManager
             }
         }
 
-        Context context = TGApplicationProxy.getInstance().getApplication();
+        Context context = TGApplicationProxy.getApplication();
         String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
         String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
 
