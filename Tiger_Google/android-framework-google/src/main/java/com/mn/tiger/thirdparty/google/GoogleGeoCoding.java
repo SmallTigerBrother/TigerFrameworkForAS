@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Google地址解析功能
@@ -22,7 +23,7 @@ public class GoogleGeoCoding implements IGeoCoding
     {
         if(null == retrofit)
         {
-            retrofit = new Retrofit.Builder().baseUrl("http://maps.googleapis.com/maps/api/").build();
+            retrofit = new Retrofit.Builder().baseUrl("http://maps.googleapis.com/maps/api/").addConverterFactory(GsonConverterFactory.create()).build();
         }
         return retrofit;
     }
@@ -37,7 +38,7 @@ public class GoogleGeoCoding implements IGeoCoding
 			final IGeoCodeListener listener)
 	{
         LOG.i("[Method:geoCoding] latitde == " + latitude + " longitude == " + longitude);
-        getRetrofit().create(GeoCodingService.class).geoCoding(latitude, longitude).enqueue(new Callback<GoogleGeoCodeResult>()
+        getRetrofit().create(GeoCodingService.class).geoCoding(latitude + "," + longitude, false).enqueue(new Callback<GoogleGeoCodeResult>()
         {
             @Override
             public void onResponse(Call<GoogleGeoCodeResult> call, Response<GoogleGeoCodeResult> response)
@@ -59,10 +60,7 @@ public class GoogleGeoCoding implements IGeoCoding
             @Override
             public void onFailure(Call<GoogleGeoCodeResult> call, Throwable t)
             {
-                if (null != listener)
-                {
-                    listener.onGeoCodingError(0, t.getMessage());
-                }
+                listener.onGeoCodingError(0, t.getMessage());
             }
         });
 	}

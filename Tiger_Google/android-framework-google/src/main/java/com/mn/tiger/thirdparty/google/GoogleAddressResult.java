@@ -40,24 +40,28 @@ public class GoogleAddressResult
 	{
 		if(null != address_components && address_components.length > 0)
 		{
-			AddressComponent addressComponent = address_components[address_components.length - 1];
-			if("country".equalsIgnoreCase(addressComponent.types[0]))
-			{
-				return addressComponent.long_name;
-			}
+            for (AddressComponent addressComponent : address_components)
+            {
+                if(containString(addressComponent.types, "country"))
+                {
+                    return addressComponent.long_name;
+                }
+            }
 		}
 		return "";
 	}
 
 	public String getProvince()
 	{
-		if(null != address_components && address_components.length > 1)
+		if(null != address_components)
 		{
-			AddressComponent addressComponent = address_components[address_components.length - 2];
-			if("administrative_area_level_1".equalsIgnoreCase(addressComponent.types[0]))
-			{
-				return addressComponent.long_name;
-			}
+            for (AddressComponent addressComponent : address_components)
+            {
+                if(containString(addressComponent.types, "administrative_area_level_1"))
+                {
+                    return addressComponent.long_name;
+                }
+            }
 		}
 		return "";
 	}
@@ -66,31 +70,43 @@ public class GoogleAddressResult
 	{
 		if(null != address_components && address_components.length > 2)
 		{
-			AddressComponent addressComponent = address_components[address_components.length - 3];
-			if("locality".equalsIgnoreCase(addressComponent.types[0]))
-			{
-				AddressComponent subAddressComponent = address_components[address_components.length - 4];
-				if(address_components.length > 3 && "sublocality_level_1".equalsIgnoreCase(subAddressComponent.types[0]))
-				{
-					return addressComponent.long_name + subAddressComponent.long_name;
-				}
-				return addressComponent.long_name;
-			}
+            String city = "";
+            for (AddressComponent addressComponent : address_components)
+            {
+                if(containString(addressComponent.types, "locality"))
+                {
+                    return addressComponent.long_name;
+                }
+            }
 		}
 		return "";
 	}
 
 	public String getStreet()
 	{
-		if(null != address_components && address_components.length > 0)
+		if(null != address_components)
 		{
-			AddressComponent addressComponent = address_components[0];
-			if("route".equalsIgnoreCase(addressComponent.types[0]))
-			{
-				return addressComponent.long_name;
-			}
+            for (AddressComponent addressComponent : address_components)
+            {
+                if(containString(addressComponent.types, "route"))
+                {
+                    return addressComponent.long_name;
+                }
+            }
 		}
 		return "";
+	}
+
+	private boolean containString(String[] array, String target)
+	{
+		for (String string : array)
+		{
+			if(target.equalsIgnoreCase(string))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
     public double getLatitude()
