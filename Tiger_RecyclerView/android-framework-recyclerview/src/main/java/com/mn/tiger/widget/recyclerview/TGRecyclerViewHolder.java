@@ -73,6 +73,12 @@ public abstract class TGRecyclerViewHolder<T>
         return convertView;
     }
 
+    /**
+     * 获取LayoutId
+     * @return
+     */
+    protected abstract int getLayoutId();
+
     protected void afterInitView(int viewType)
     {
 
@@ -144,12 +150,6 @@ public abstract class TGRecyclerViewHolder<T>
     {
         this.context = context;
     }
-
-    /**
-     * 获取LayoutId
-     * @return
-     */
-    protected abstract int getLayoutId();
 
     /**
      * 设置列表行点击事件
