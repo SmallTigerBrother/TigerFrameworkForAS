@@ -1,5 +1,7 @@
 package com.mn.tiger.rxjava;
 
+import android.util.Log;
+
 import rx.Subscriber;
 
 /**
@@ -18,6 +20,10 @@ public abstract class SimpleSubscriber<T> extends Subscriber<T>
     public void onError(Throwable e)
     {
         //do nothing
+        if(null != e)
+        {
+            Log.e("SimpleSubscriber","[Method:onError]" + e.getMessage());
+        }
     }
 
     @Override

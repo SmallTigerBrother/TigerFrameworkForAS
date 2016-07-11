@@ -1,6 +1,7 @@
 package com.mn.tiger.rxjava;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.mn.tiger.app.TGActionBarActivity;
 import com.mn.tiger.core.ActivityObserver;
@@ -37,6 +38,10 @@ public abstract class LoadingBarSubscriber<T> extends Subscriber<T> implements A
     public void onError(Throwable e)
     {
         activity.dismissLoadingDialog();
+        if(null != e)
+        {
+            Log.e("LoadingBarSubscriber","[Method:onError]" + e.getMessage());
+        }
     }
 
     @Override
