@@ -70,7 +70,14 @@ public class GoogleLocationManager implements ILocationManager
         if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
                 && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
         {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 20, gpsLocationListener);
+            try
+            {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 20, gpsLocationListener);
+            }
+            catch (Exception e)
+            {
+                LOG.e("[Method:requestGPSLocationUpdates]" + e.getMessage());
+            }
         }
     }
 
@@ -82,7 +89,14 @@ public class GoogleLocationManager implements ILocationManager
         if(PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_COARSE_LOCATION")
                 && PackageManager.PERMISSION_GRANTED == TGApplicationProxy.getApplication().checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION"))
         {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2 * 1000, 20, networkLocationListener);
+            try
+            {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2 * 1000, 20, networkLocationListener);
+            }
+            catch (Exception e)
+            {
+                LOG.e("[Method:requestNetworkLocationUpdates]" + e.getMessage());
+            }
         }
     }
 
