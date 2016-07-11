@@ -171,10 +171,10 @@ public class PackageUtils
 	 * @param key metaData的key
 	 * @return
 	 */
-	public static String getMetaData(Context context, String key)
+	public static Object getMetaData(Context context, String key)
 	{
 		Bundle metaData = null;
-		String metaDataValue = "";
+		Object metaDataValue = "";
 		try
 		{
 			ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
@@ -186,7 +186,7 @@ public class PackageUtils
 
 			if (null != metaData)
 			{
-				metaDataValue = metaData.getString(key,"");
+				metaDataValue = metaData.get(key);
 			}
 		}
 		catch (NameNotFoundException e)
