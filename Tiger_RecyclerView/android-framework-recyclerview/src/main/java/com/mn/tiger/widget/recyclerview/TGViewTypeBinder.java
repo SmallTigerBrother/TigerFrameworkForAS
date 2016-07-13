@@ -234,6 +234,7 @@ class TGViewTypeBinder
                     TGRecyclerViewHolder viewHolder = viewHolderInstance.getClass().newInstance();
                     this.adapter.initViewHolder(viewHolder);
                     viewHolder.convertView = viewHolder.initView(adapter.recyclerView, viewType);
+                    viewHolder.afterInitView(viewType);
                     viewHolder.attachOnItemClickListener(viewHolder.convertView);
                     viewHolder.updateViewDimension(adapter.getItem(position), position, viewType);
                     viewHolder.fillData(adapter.getItem(position), position, viewType);
