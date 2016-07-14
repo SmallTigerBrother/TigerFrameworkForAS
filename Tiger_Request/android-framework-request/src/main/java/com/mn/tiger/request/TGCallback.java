@@ -15,7 +15,7 @@ import retrofit2.Response;
 /**
  * Created by Dalang on 2016/3/13.
  */
-public abstract class TGCallback<T> implements Callback<T>
+public abstract class TGCallback<T extends TGResult> implements Callback<T>
 {
     private static final Logger LOG = Logger.getLogger(TGCallback.class);
 
@@ -61,11 +61,11 @@ public abstract class TGCallback<T> implements Callback<T>
             this.success = true;
             if(null != response.body())
             {
-                LOG.i("[Method:onResponse] raw = " + response.raw() + "\n" + call.request());
+                LOG.i("[Method:onResponse] raw = " + response.raw() + "\n" + response.body().getRawData());
             }
             else
             {
-                LOG.i("[Method:onResponse] raw = " + response.raw().toString());
+                LOG.i("[Method:onResponse] raw = " + response.raw());
             }
 
             onRequestSuccess(response, response.body());
@@ -78,7 +78,7 @@ public abstract class TGCallback<T> implements Callback<T>
                 this.success = false;
                 if(null != response.body())
                 {
-                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + " \n" + response.body());
+                    LOG.e("[Method:onResponse] error , raw = " + response.raw() + " \n" + response.body().getRawData());
                 }
                 else if(null != response.errorBody())
                 {
