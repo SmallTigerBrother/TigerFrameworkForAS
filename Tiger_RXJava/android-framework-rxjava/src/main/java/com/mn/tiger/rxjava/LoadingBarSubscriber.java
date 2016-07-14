@@ -40,7 +40,8 @@ public abstract class LoadingBarSubscriber<T> extends Subscriber<T> implements A
         activity.dismissLoadingDialog();
         if(null != e)
         {
-            Log.e("LoadingBarSubscriber","[Method:onError]" + e.getMessage());
+            Log.e("LoadingBarSubscriber","[Method:onError]");
+            e.printStackTrace();
         }
     }
 

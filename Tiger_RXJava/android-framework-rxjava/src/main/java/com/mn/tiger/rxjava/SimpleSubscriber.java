@@ -22,7 +22,8 @@ public abstract class SimpleSubscriber<T> extends Subscriber<T>
         //do nothing
         if(null != e)
         {
-            Log.e("SimpleSubscriber","[Method:onError]" + e.getMessage());
+            Log.e("SimpleSubscriber","[Method:onError]");
+            e.printStackTrace();
         }
     }
 
