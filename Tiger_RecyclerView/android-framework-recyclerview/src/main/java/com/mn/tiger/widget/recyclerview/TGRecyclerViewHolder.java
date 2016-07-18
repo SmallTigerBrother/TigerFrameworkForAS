@@ -191,26 +191,6 @@ public abstract class TGRecyclerViewHolder<T>
         return holder;
     }
 
-    protected int getColor(int resId)
-    {
-        return getContext().getResources().getColor(resId);
-    }
-
-    protected Drawable getDrawable(int resId)
-    {
-        return getContext().getResources().getDrawable(resId);
-    }
-
-    protected int getDimensionPixelSize(int resId)
-    {
-        return getContext().getResources().getDimensionPixelSize(resId);
-    }
-
-    public float getTextSize(int resId)
-    {
-        return DisplayUtils.px2sp(getContext(), getDimensionPixelSize(resId));
-    }
-
     /**
      * 获取当前填充的列表行的位置
      * @return
@@ -294,6 +274,36 @@ public abstract class TGRecyclerViewHolder<T>
         {
             onItemClickListener.onItemClick(parent, holder.itemView, this.position, holder.getItemId());
         }
+    }
+
+    protected int getColor(int resId)
+    {
+        return getContext().getResources().getColor(resId);
+    }
+
+    protected Drawable getDrawable(int resId)
+    {
+        return getContext().getResources().getDrawable(resId);
+    }
+
+    protected int getDimensionPixelSize(int resId)
+    {
+        return getContext().getResources().getDimensionPixelSize(resId);
+    }
+
+    public float getTextSize(int resId)
+    {
+        return DisplayUtils.px2sp(getContext(), getDimensionPixelSize(resId));
+    }
+
+    public String getString(int resId)
+    {
+        return context.getString(resId);
+    }
+
+    public String getString(int resId, Object[] formatArgs)
+    {
+        return context.getString(resId,formatArgs);
     }
 
     /**
