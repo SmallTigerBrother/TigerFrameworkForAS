@@ -68,7 +68,7 @@ public class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
         }
         catch (Exception e)
         {
-            LOG.e("[Method:convert] " + e.getMessage());
+            LOG.e("[Method:convert] " + e.getMessage() + "\n" + rawData);
             return null;
         }
     }

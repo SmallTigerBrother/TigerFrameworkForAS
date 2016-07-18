@@ -60,4 +60,9 @@ public class TGRequestBodyBuilder
         return buildTextPlain(value + "");
     }
 
+    public static RequestBody buildJSON(String value)
+    {
+        return RequestBody.create(MediaType.parse(TGMediaType.APPLICATION_JSON), value);
+    }
+
 }
