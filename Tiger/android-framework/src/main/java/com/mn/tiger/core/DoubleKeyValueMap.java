@@ -1,10 +1,11 @@
 package com.mn.tiger.core;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DoubleKeyValueMap<K1, K2, V>
+public class DoubleKeyValueMap<K1, K2, V> implements Serializable
 {
     private ConcurrentHashMap<K1, ConcurrentHashMap<K2, V>> k1_k2V_map;
 
