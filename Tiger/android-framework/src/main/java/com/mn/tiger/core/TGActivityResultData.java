@@ -94,7 +94,6 @@ public class TGActivityResultData implements Serializable
             return this;
         }
 
-
         public Builder appendToggleArray(int type, long[] array, boolean selected)
         {
             if(null != array)
@@ -122,6 +121,11 @@ public class TGActivityResultData implements Serializable
 
         public Builder append(int type, long key, long value)
         {
+            Long oldValue = longValueMap.get(type,key);
+            if(null != oldValue)
+            {
+                value = value + oldValue.longValue();
+            }
             longValueMap.put(type, key, value);
             return this;
         }
