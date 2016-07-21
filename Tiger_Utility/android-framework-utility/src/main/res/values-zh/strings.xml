@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hour_ago">%1$s小时以前</string>
+    <string name="hours_ago">%1$s小时以前</string>
+    <string name="minutes_ago">%1$s分钟以前</string>
+    <string name="minute_ago">%1$s分钟以前</string>
+    <string name="just_now">刚刚</string>
+</resources>

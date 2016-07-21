@@ -6,6 +6,7 @@ import android.content.Context;
 import com.mn.tiger.log.Logger;
 
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -221,29 +222,44 @@ public class DateUtils
 	 * @param time
 	 * @return
 	 */
-	public static String computeHowLongAgo(Context ctx, long time)
+	public static String computeHowLongAgo(Context ctx, long time, String dateFormat)
 	{
 		long now = System.currentTimeMillis();
 		long diff = now - time;
 		String timeAgo = "";
+		Format format = new SimpleDateFormat(dateFormat);
 
 		if (diff > ONE_DAY)
 		{
-			timeAgo = DATE_FORMAT.format(new Date(time));
+			timeAgo = format.format(new Date(time));
 		}
 		else if (diff > ONE_HOURS)
 		{
 			int hours = (int) (diff / ONE_HOURS);
-			timeAgo = ctx.getString(CR.getStringId(ctx, "hours_ago, hours"));
+            if(hours > 1)
+            {
+                timeAgo = ctx.getString(R.string.hours_ago, hours);
+            }
+            else
+            {
+                timeAgo = ctx.getString(R.string.hour_ago, hours);
+            }
 		}
 		else if (diff > ONE_MINUTES)
 		{
-			int minutes = (int) (diff / ONE_MINUTES);
-			timeAgo = ctx.getString(CR.getStringId(ctx, "minutes_ago"), minutes);
+            int minutes = (int) (diff / ONE_MINUTES);
+            if(minutes > 1)
+            {
+                timeAgo = ctx.getString(R.string.minutes_ago, minutes);
+            }
+            else
+            {
+                timeAgo = ctx.getString(R.string.minute_ago, minutes);
+            }
 		}
 		else
 		{
-			timeAgo = ctx.getString(CR.getStringId(ctx, "just_now"));
+			timeAgo = ctx.getString(R.string.just_now);
 		}
 
 		return timeAgo;

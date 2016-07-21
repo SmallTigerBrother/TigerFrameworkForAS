@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hour_ago">%1$s hour ago</string>
+    <string name="hours_ago">%1$s hours ago</string>
+    <string name="minutes_ago">%1$s minutes ago</string>
+    <string name="minute_ago">%1$s minute ago</string>
+    <string name="just_now">just now</string>
+</resources>
