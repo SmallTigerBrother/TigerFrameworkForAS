@@ -145,6 +145,11 @@ public class FacebookSharePlugin extends TGSharePlugin<ShareContent, FacebookSha
             photoBuilder.setBitmap(bitmap);
         }
 
+        public void setImageUrl(String imageUrl)
+        {
+            photoBuilder.setImageUrl(Uri.parse(imageUrl));
+        }
+
         @Override
         public ShareContent build()
         {
