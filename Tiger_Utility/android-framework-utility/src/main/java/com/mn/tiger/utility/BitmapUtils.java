@@ -417,35 +417,34 @@ public class BitmapUtils
     /**
      * 该方法的作用:快照截图
      *
-     * @param v
+     * @param view
      * @return
      * @date 2014年3月25日
      */
-    public static Bitmap getViewBitmap(View v)
+    public static Bitmap getViewBitmap(View view)
     {
+        view.clearFocus();
+        view.setPressed(false);
 
-        v.clearFocus();
-        v.setPressed(false);
-
-        boolean willNotCache = v.willNotCacheDrawing();
-        v.setWillNotCacheDrawing(false);
-        int color = v.getDrawingCacheBackgroundColor();
-        v.setDrawingCacheBackgroundColor(0);
+        boolean willNotCache = view.willNotCacheDrawing();
+        view.setWillNotCacheDrawing(false);
+        int color = view.getDrawingCacheBackgroundColor();
+        view.setDrawingCacheBackgroundColor(0);
         if (color != 0)
         {
-            v.destroyDrawingCache();
+            view.destroyDrawingCache();
         }
-        v.buildDrawingCache();
-        Bitmap cacheBitmap = v.getDrawingCache();
+        view.buildDrawingCache();
+        Bitmap cacheBitmap = view.getDrawingCache();
         if (cacheBitmap == null)
         {
             return null;
         }
         Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
         // Restore the view
-        v.destroyDrawingCache();
-        v.setWillNotCacheDrawing(willNotCache);
-        v.setDrawingCacheBackgroundColor(color);
+        view.destroyDrawingCache();
+        view.setWillNotCacheDrawing(willNotCache);
+        view.setDrawingCacheBackgroundColor(color);
         return bitmap;
     }
 
