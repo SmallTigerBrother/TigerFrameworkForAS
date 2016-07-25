@@ -8,6 +8,7 @@ import com.mn.tiger.utility.Commons;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by peng on 15/11/4.
@@ -313,13 +314,21 @@ class TGViewTypeBinder
 
     /**
      * 释放指定位置的viewHolder
-     * @param position
      * @param viewHolder
      */
-    void recycleViewHolder(int position, TGRecyclerViewHolder viewHolder)
+    void recycleViewHolder(TGRecyclerViewHolder viewHolder)
     {
         viewHolder.setRecycled(true);
-        allViewHolders.remove(position);
+        Iterator<Map.Entry<Integer, TGRecyclerViewHolder>> iterator = allViewHolders.entrySet().iterator();
+        while (iterator.hasNext())
+        {
+            Map.Entry<Integer, TGRecyclerViewHolder> entry = iterator.next();
+            if(entry.getValue() == viewHolder)
+            {
+                iterator.remove();
+                return;
+            }
+        }
     }
 
     /**

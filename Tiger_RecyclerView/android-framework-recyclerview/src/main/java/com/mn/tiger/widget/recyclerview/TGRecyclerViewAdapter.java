@@ -163,7 +163,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public void onViewRecycled(InternalRecyclerViewHolder<T> holder)
     {
         super.onViewRecycled(holder);
-        viewTypeBinder.recycleViewHolder(holder.getTGRecyclerViewHolder().getPosition(), holder.getTGRecyclerViewHolder());
+        viewTypeBinder.recycleViewHolder(holder.getTGRecyclerViewHolder());
     }
 
     /**
