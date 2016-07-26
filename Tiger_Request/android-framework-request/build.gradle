@@ -51,6 +51,7 @@ dependencies {
     compile 'com.mn.tiger:android-framework:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
     compile 'com.squareup.retrofit2:retrofit:latest.integration'
+    compile 'io.reactivex:rxandroid:1.2.0'
 }
 
 install {

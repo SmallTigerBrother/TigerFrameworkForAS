@@ -1,4 +1,4 @@
-package com.mn.tiger.request;
+package com.mn.tiger.request.convertor;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;

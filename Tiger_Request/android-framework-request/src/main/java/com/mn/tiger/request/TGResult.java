@@ -7,7 +7,7 @@ public class TGResult
 {
     private String rawData;
 
-    void setRawData(String rawData)
+    public void setRawData(String rawData)
     {
         this.rawData = rawData;
     }

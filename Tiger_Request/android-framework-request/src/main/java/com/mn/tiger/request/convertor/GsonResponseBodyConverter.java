@@ -1,7 +1,8 @@
-package com.mn.tiger.request;
+package com.mn.tiger.request.convertor;
 
 import com.google.gson.TypeAdapter;
 import com.mn.tiger.log.Logger;
+import com.mn.tiger.request.TGResult;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
