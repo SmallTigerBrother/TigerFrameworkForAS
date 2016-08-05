@@ -70,8 +70,6 @@ public abstract class LoadingBarSubscriber<T> extends Subscriber<T> implements A
         {
             this.unsubscribe();
         }
-
-        activity.unregisterActivityObserver(this);
     }
 
     @Override
