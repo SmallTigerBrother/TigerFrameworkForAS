@@ -14,8 +14,6 @@ import android.view.Window;
 import android.widget.FrameLayout;
 
 import com.mn.tiger.core.ActivityObserver;
-import com.mn.tiger.task.TGTaskManager;
-import com.mn.tiger.task.TaskType;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.SystemBarConfigs;
 import com.mn.tiger.widget.TGImageButton;
@@ -59,8 +57,6 @@ public class TGActionBarActivity extends Activity
      * Activity声明周期观察者
      */
     private Vector<ActivityObserver> observers;
-
-    private LinkedList<Integer> httpTaskIDList = new LinkedList<Integer>();
 
     private LinkedList<Call> executedCalls = new LinkedList<>();
 
@@ -274,31 +270,9 @@ public class TGActionBarActivity extends Activity
             observers.clear();
         }
 
-        onCancelHttpLoader();
-
         onCancelCalls();
 
         super.onDestroy();
-    }
-
-    /**
-     * 将HttpLoader的taskID注册到Activity中
-     *
-     * @param taskID
-     */
-    public void registerHttpLoader(int taskID)
-    {
-        httpTaskIDList.add(taskID);
-    }
-
-    /**
-     * 取消注册HttpLoader
-     *
-     * @param taskID
-     */
-    public void unRegisterHttpLoader(int taskID)
-    {
-        httpTaskIDList.remove(Integer.valueOf(taskID));
     }
 
     public <T> void enqueue(Call<T> call, Callback<T> callback)
@@ -344,18 +318,6 @@ public class TGActionBarActivity extends Activity
             call.cancel();
         }
         executedCalls.clear();
-    }
-
-    /**
-     * 取消Http请求
-     */
-    protected void onCancelHttpLoader()
-    {
-        for (Integer taskID : httpTaskIDList)
-        {
-            TGTaskManager.getInstance().cancelTask(taskID, TaskType.TASK_TYPE_HTTP);
-        }
-        httpTaskIDList.clear();
     }
 
     /**
