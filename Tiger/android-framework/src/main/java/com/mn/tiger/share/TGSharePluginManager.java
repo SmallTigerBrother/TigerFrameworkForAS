@@ -47,10 +47,20 @@ public class TGSharePluginManager
     public static final int TAG_TWITTER = 1006;
 
     /**
+     * TAG——邮件分享
+     */
+    public static final int TAG_EMAIL = 1007;
+
+    /**
+     * TAG——短信分享
+     */
+    public static final int TAG_SMS = 1008;
+
+    /**
      * 插件map
      */
     @SuppressWarnings("rawtypes")
-    private ConcurrentHashMap<Integer, TGSharePlugin> pushPluginMap;
+    private ConcurrentHashMap<Integer, TGSharePlugin> pluginMap;
 
     /**
      * 插件管理器单例
@@ -80,7 +90,7 @@ public class TGSharePluginManager
     @SuppressWarnings("rawtypes")
     private TGSharePluginManager()
     {
-        pushPluginMap = new ConcurrentHashMap<Integer, TGSharePlugin>();
+        pluginMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -91,110 +101,48 @@ public class TGSharePluginManager
     public void registerPlugin(TGSharePlugin plugin)
     {
         //微信朋友圈
-        try
+        String className = plugin.getClass().getName();
+        if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.wechat.WeChatTimeLineSharePlugin"))
         {
-            Class weChatTimeLineSharePluginClass = Class.forName("com.mn.tiger.thirdparty.wechat.WeChatTimeLineSharePlugin");
-            if(weChatTimeLineSharePluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_WEI_CHAT_TIME_LINE, plugin);
-                return;
-            }
+            pluginMap.put(TAG_WEI_CHAT_TIME_LINE, plugin);
+            return;
         }
-        catch (Exception e)
+        else if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.wechat.WeChatSharePlugin"))
         {
-            LOG.e("[Method:registerPlugin]", e);
+            pluginMap.put(TAG_WEI_CHAT, plugin);
         }
-
-        //微信
-        try
+        else if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.weibo.WeiBoSharePlugin"))
         {
-            Class weChatSharePluginClass = Class.forName("com.mn.tiger.thirdparty.wechat.WeChatSharePlugin");
-            if(weChatSharePluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_WEI_CHAT, plugin);
-                return;
-            }
+            pluginMap.put(TAG_WEI_BO, plugin);
         }
-        catch (Exception e)
+        else if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.qq.QQZoneSharePlugin"))
         {
-            LOG.e("[Method:registerPlugin]", e);
+            pluginMap.put(TAG_QQ_ZONE, plugin);
         }
-
-        //微博
-        try
+        else if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.qq.QQSharePlugin"))
         {
-            Class weiBoSharePluginClass = Class.forName("com.mn.tiger.thirdparty.weibo.WeiBoSharePlugin");
-            if(weiBoSharePluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_WEI_BO, plugin);
-                return;
-            }
+            pluginMap.put(TAG_QQ, plugin);
         }
-        catch (Exception e)
+        else if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.facebook.FacebookSharePlugin"))
         {
-            LOG.e("[Method:registerPlugin]", e);
+            pluginMap.put(TAG_FACEBOOK, plugin);
         }
-
-        //QQ空间
-        try
+        else if(className.equalsIgnoreCase("com.mn.tiger.thirdparty.twitter.TwitterSharePlugin"))
         {
-            Class qqZoneSharePluginClass = Class.forName("com.mn.tiger.thirdparty.qq.QQZoneSharePlugin");
-            if(qqZoneSharePluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_QQ_ZONE, plugin);
-                return;
-            }
+            pluginMap.put(TAG_TWITTER, plugin);
         }
-        catch (Exception e)
+        else if(plugin instanceof EmailSharePlugin)
         {
-            LOG.e("[Method:registerPlugin]", e);
+            pluginMap.put(TAG_EMAIL, plugin);
         }
-
-        //QQ
-        try
+        else if(plugin instanceof SMSSharePlugin)
         {
-            Class qqSharePluginClass = Class.forName("com.mn.tiger.thirdparty.qq.QQSharePlugin");
-            if(qqSharePluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_QQ, plugin);
-                return;
-            }
+            pluginMap.put(TAG_SMS, plugin);
         }
-        catch (Exception e)
+        else
         {
-            LOG.e("[Method:registerPlugin]", e);
+            LOG.e("[Method:registerPlugin] unknown plugin " + className);
         }
-
-        //facebook
-        try
-        {
-            Class facebookSharePluginClass = Class.forName("com.mn.tiger.thirdparty.facebook.FacebookSharePlugin");
-            if(facebookSharePluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_FACEBOOK, plugin);
-                return;
-            }
-        }
-        catch (Exception e)
-        {
-            LOG.e("[Method:registerPlugin]", e);
-        }
-
-        //Twitter
-        try
-        {
-            Class twitterPluginClass = Class.forName("com.mn.tiger.thirdparty.twitter.TwitterSharePlugin");
-            if(twitterPluginClass.isInstance(plugin))
-            {
-                pushPluginMap.put(TAG_TWITTER, plugin);
-                return;
-            }
-        }
-        catch (Exception e)
-        {
-            LOG.e("[Method:registerPlugin]", e);
-        }
-
     }
 
     /**
@@ -203,7 +151,7 @@ public class TGSharePluginManager
      */
     public void unregisterPlugin(String tag)
     {
-        pushPluginMap.remove(tag);
+        pluginMap.remove(tag);
     }
 
     /**
@@ -214,7 +162,7 @@ public class TGSharePluginManager
     @SuppressWarnings("rawtypes")
     public TGSharePlugin getPlugin(Integer tag)
     {
-        return pushPluginMap.get(tag);
+        return pluginMap.get(tag);
     }
 
     /**

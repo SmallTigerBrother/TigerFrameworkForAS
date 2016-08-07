@@ -12,10 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 分享插件
- * @param <T> 分享数据类型
- * @param <H> 分享结果数据类型
+ * @param <Msg> 分享数据类型
+ * @param <Result> 分享结果数据类型
  */
-public abstract class TGSharePlugin<T, H extends TGShareResult>
+public abstract class TGSharePlugin<Msg, Result extends TGShareResult>
 {
 	protected final Logger LOG = Logger.getLogger(this.getClass());
 
@@ -24,19 +24,19 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	/**
 	 * 分享信息建造者
 	 */
-	private TGShareMsgBuilder<T> msgBuilder;
+	private TGShareMsgBuilder<Msg> msgBuilder;
 	
 	/**
 	 * 当前分享信息
 	 */
-	private T shareMsg;
+	private Msg shareMsg;
 	
 	private Context context;
 	
 	/**
 	 * 结果回调接口Map
 	 */
-	private ConcurrentHashMap<String, IShareResultHandler<H>> resultHandlerMap;
+	private ConcurrentHashMap<String, IShareResultHandler<Result>> resultHandlerMap;
 	
 	/**
 	 * 分享类型Map
@@ -56,7 +56,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	{
 		this.context = context;
 		this.appID = appID;
-		this.resultHandlerMap = new ConcurrentHashMap<String, IShareResultHandler<H>>();
+		this.resultHandlerMap = new ConcurrentHashMap<String, IShareResultHandler<Result>>();
 		this.shareTypeMap = new ConcurrentHashMap<String, Integer>();
 		
 		registerApp();
@@ -73,8 +73,8 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * @param msgBuilder 分享消息建造者
 	 * @param handler 结果回调接口
 	 */
-	public final synchronized <E extends TGShareMsgBuilder<T>> void share(Activity activity,
-			E msgBuilder, IShareResultHandler<H> handler)
+	public final synchronized <E extends TGShareMsgBuilder<Msg>> void share(Activity activity,
+																			E msgBuilder, IShareResultHandler<Result> handler)
 	{
 		LOG.d("[Method:share]");
 		
@@ -97,13 +97,13 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * @param activity
 	 * @param shareMsg 分享信息
 	 */
-	protected abstract void sendShareMsg(Activity activity, T shareMsg);
+	protected abstract void sendShareMsg(Activity activity, Msg shareMsg);
 	
 	/**
 	 * 获取分享信息
 	 * @return
 	 */
-	protected final T getShareMsg()
+	protected final Msg getShareMsg()
 	{
 		if(null != msgBuilder)
 		{
@@ -118,7 +118,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * @param shareMsg 分享信息
 	 * @return
 	 */
-	protected String getMsgIndicator(T shareMsg)
+	protected String getMsgIndicator(Msg shareMsg)
     {
         return INDICATOR;
     }
@@ -128,7 +128,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * @param shareResult 分享结果
 	 * @return
 	 */
-	protected String getResultIndicator(H shareResult)
+	protected String getResultIndicator(Result shareResult)
     {
         return INDICATOR;
     }
@@ -137,7 +137,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 接收分享结果
 	 * @param result 分享结果
 	 */
-    public final boolean handleShareResult(H result)
+    public final boolean handleShareResult(Result result)
 	{
 		LOG.d("[Method:handleShareResult] result == " + result.toString());
 		
@@ -150,7 +150,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 		//设置信息分享类型
 		result.setShareType(shareTypeMap.get(getResultIndicator(result)));
 		//获取分享结果回调接口
-		IShareResultHandler<H> handler = resultHandlerMap.get(getResultIndicator(result));
+		IShareResultHandler<Result> handler = resultHandlerMap.get(getResultIndicator(result));
 
         if(result.isCanceled())
         {
@@ -191,7 +191,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 分享成功回调（不可添加操作界面相关的代码）
 	 * @param result 分享结果
 	 */
-	public void onShareSuccess(H result)
+	public void onShareSuccess(Result result)
     {
 
     }
@@ -200,7 +200,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 分享失败回调（不可添加操作界面相关的代码）
 	 * @param result 分享结果
 	 */
-	public void onShareFailed(H result)
+	public void onShareFailed(Result result)
     {
 
     }
@@ -208,7 +208,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	/**
 	 * 分享完成，不论分享成功或失败都会回调
 	 */
-	public void onShareOver(H result)
+	public void onShareOver(Result result)
     {
 
     }
@@ -217,7 +217,7 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
      * 分享取消（不可添加操作界面相关的代码）
      * @param result
      */
-    public void onShareCanceled(H result)
+    public void onShareCanceled(Result result)
     {
 
     }
@@ -226,13 +226,13 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 移除结果回调接口，防止内存泄露
 	 * @param result 分享结果
 	 */
-	protected final void onRemoveResultHandler(H result)
+	protected final void onRemoveResultHandler(Result result)
 	{
 		//删除handler
 		resultHandlerMap.remove(getResultIndicator(result));
 	}
 	
-	protected final boolean hasSendMessage(H result)
+	protected final boolean hasSendMessage(Result result)
 	{
 		if(null != shareTypeMap.get(getResultIndicator(result)))
 		{
@@ -246,9 +246,9 @@ public abstract class TGSharePlugin<T, H extends TGShareResult>
 	 * 移除结果回调接口
 	 * @param resultHandler
 	 */
-	protected final void removeResultHandler(IShareResultHandler<H> resultHandler)
+	protected final void removeResultHandler(IShareResultHandler<Result> resultHandler)
 	{
-		Iterator<Entry<String, IShareResultHandler<H>>> iterator =
+		Iterator<Entry<String, IShareResultHandler<Result>>> iterator =
 				resultHandlerMap.entrySet().iterator();
 		while (iterator.hasNext())
 		{
