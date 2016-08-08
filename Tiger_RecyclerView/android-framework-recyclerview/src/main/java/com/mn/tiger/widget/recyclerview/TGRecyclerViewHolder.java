@@ -301,7 +301,7 @@ public abstract class TGRecyclerViewHolder<T>
         return context.getString(resId);
     }
 
-    public String getString(int resId, Object[] formatArgs)
+    public String getString(int resId, Object... formatArgs)
     {
         return context.getString(resId,formatArgs);
     }
