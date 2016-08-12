@@ -166,7 +166,14 @@ public class TGAutoFlipViewPager extends ViewPager
 	@Override
 	public void setCurrentItem(int item)
 	{
-		currentPageNum = item;
+		if(item >= getAdapter().getCount())
+		{
+			currentPageNum = 0;
+		}
+		else
+		{
+			currentPageNum = item;
+		}
 		super.setCurrentItem(currentPageNum);
 	}
 

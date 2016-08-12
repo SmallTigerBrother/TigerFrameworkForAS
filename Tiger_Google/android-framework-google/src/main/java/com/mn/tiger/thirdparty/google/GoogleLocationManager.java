@@ -341,8 +341,8 @@ public class GoogleLocationManager implements ILocationManager
         }
 
         Context context = TGApplicationProxy.getApplication();
-        String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
-        String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
+        String chinaZH = context.getResources().getString(CR.getStringId(context, "tiger_china_zh"));
+        String chinaEN = context.getResources().getString(CR.getStringId(context, "tiger_china_en"));
 
         if(!location.getCountry().equalsIgnoreCase(chinaZH) && !location.getCountry().equalsIgnoreCase(chinaEN))
         {
