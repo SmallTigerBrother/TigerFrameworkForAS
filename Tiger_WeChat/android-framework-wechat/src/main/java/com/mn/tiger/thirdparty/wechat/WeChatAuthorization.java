@@ -11,14 +11,14 @@ import com.mn.tiger.authorize.IAuthorizeCallback;
 import com.mn.tiger.authorize.ILogoutCallback;
 import com.mn.tiger.authorize.IRegisterCallback;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.GsonConverterFactory;
-import com.mn.tiger.request.TGCallback;
+import com.mn.tiger.request.convertor.GsonConverterFactory;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
 import com.squareup.otto.Subscribe;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -152,12 +152,13 @@ public class WeChatAuthorization extends AbsAuthorization
     private void requestAccessToken(String code)
     {
         Call<WeChatAuthorizeResult> call = getWeChatAuthorizeService().getAccessToken(getAppID(), secret, code, "authorization_code");
-        TGCallback<WeChatAuthorizeResult> callback = new TGCallback<WeChatAuthorizeResult>(activity)
+        Callback<WeChatAuthorizeResult> callback = new Callback<WeChatAuthorizeResult>()
         {
             @Override
-            public void onRequestSuccess(Response<WeChatAuthorizeResult> response, WeChatAuthorizeResult data)
+            public void onResponse(Call<WeChatAuthorizeResult> call, Response<WeChatAuthorizeResult> response)
             {
                 LOG.i("[Method:requestAccessToken:onRequestSuccess]");
+                WeChatAuthorizeResult data = response.body();
                 if (null != data)
                 {
                     if (data.getErrCode() > 0)
@@ -171,18 +172,7 @@ public class WeChatAuthorization extends AbsAuthorization
                         requestUserInfo(data.getUID(), data.getAccessToken());
                     }
                 }
-            }
 
-            @Override
-            public boolean hasError(Call<WeChatAuthorizeResult> call, Response<WeChatAuthorizeResult> response)
-            {
-                return null == response || null == response.body();
-            }
-
-            @Override
-            public void onRequestOver(Call<WeChatAuthorizeResult> call)
-            {
-                super.onRequestOver(call);
                 if (activity instanceof TGActionBarActivity)
                 {
                     ((TGActionBarActivity) activity).dismissLoadingDialog();
@@ -190,11 +180,14 @@ public class WeChatAuthorization extends AbsAuthorization
             }
 
             @Override
-            public void onRequestError(int code, String message, Response<WeChatAuthorizeResult> response)
+            public void onFailure(Call<WeChatAuthorizeResult> call, Throwable t)
             {
-                super.onRequestError(code, message, response);
                 LOG.i("[Method:requestAccessToken:onRequestError]");
-                ToastUtils.showToast(activity, message);
+                ToastUtils.showToast(activity, t.getMessage());
+                if (activity instanceof TGActionBarActivity)
+                {
+                    ((TGActionBarActivity) activity).dismissLoadingDialog();
+                }
             }
         };
         //发送请求
@@ -218,13 +211,14 @@ public class WeChatAuthorization extends AbsAuthorization
     private void requestUserInfo(String openId, String accessToken)
     {
         Call<WeChatAuthorizeResult.WeChatUser> call = getWeChatAuthorizeService().getUserInfo(accessToken, openId);
-        TGCallback<WeChatAuthorizeResult.WeChatUser> callback =
-                new TGCallback<WeChatAuthorizeResult.WeChatUser>(activity)
+        Callback<WeChatAuthorizeResult.WeChatUser> callback =
+                new Callback<WeChatAuthorizeResult.WeChatUser>()
                 {
                     @Override
-                    public void onRequestSuccess(Response<WeChatAuthorizeResult.WeChatUser> response, WeChatAuthorizeResult.WeChatUser data)
+                    public void onResponse(Call<WeChatAuthorizeResult.WeChatUser> call, Response<WeChatAuthorizeResult.WeChatUser> response)
                     {
                         LOG.i("[Method:requestUserInfo:onRequestSuccess]");
+                        WeChatAuthorizeResult.WeChatUser data = response.body();
                         if (null != data)
                         {
                             if (data.getErrCode() > 0)
@@ -238,18 +232,7 @@ public class WeChatAuthorization extends AbsAuthorization
                                 LOG.i("[Method:requestUserInfo] onAuthorizeSuccess with userInfo");
                             }
                         }
-                    }
 
-                    @Override
-                    public boolean hasError(Call<WeChatAuthorizeResult.WeChatUser> call, Response<WeChatAuthorizeResult.WeChatUser> response)
-                    {
-                        return null == response || null == response.body();
-                    }
-
-                    @Override
-                    public void onRequestOver(Call<WeChatAuthorizeResult.WeChatUser> call)
-                    {
-                        super.onRequestOver(call);
                         if (activity instanceof TGActionBarActivity)
                         {
                             ((TGActionBarActivity) activity).dismissLoadingDialog();
@@ -257,11 +240,14 @@ public class WeChatAuthorization extends AbsAuthorization
                     }
 
                     @Override
-                    public void onRequestError(int code, String message, Response<WeChatAuthorizeResult.WeChatUser> response)
+                    public void onFailure(Call<WeChatAuthorizeResult.WeChatUser> call, Throwable t)
                     {
-                        super.onRequestError(code, message, response);
                         LOG.w("[Method:requestUserInfo:onRequestError]");
-                        ToastUtils.showToast(activity, message);
+                        ToastUtils.showToast(activity, t.getMessage());
+                        if (activity instanceof TGActionBarActivity)
+                        {
+                            ((TGActionBarActivity) activity).dismissLoadingDialog();
+                        }
                     }
                 };
 
@@ -282,7 +268,7 @@ public class WeChatAuthorization extends AbsAuthorization
         if(null == weChatAuthorizeService)
         {
             weChatAuthorizeService = new Retrofit.Builder().baseUrl("https://api.weixin.qq.com/")
-                    .addConverterFactory(new GsonConverterFactory(new Gson())).build().create(WeChatAuthorizeService.class);
+                                                           .addConverterFactory(new GsonConverterFactory(new Gson())).build().create(WeChatAuthorizeService.class);
         }
 
         return weChatAuthorizeService;
