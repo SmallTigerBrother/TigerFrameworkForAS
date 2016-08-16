@@ -39,7 +39,7 @@ public class BaiduLocationManager implements ILocationManager
      */
     BaiduLocationManager()
     {
-        locationClient = new LocationClient(TGApplicationProxy.getInstance().getApplication());
+        locationClient = new LocationClient(TGApplicationProxy.getApplication());
         locationClient.registerLocationListener(locationListener);
 
         LocationClientOption option = new LocationClientOption();
@@ -97,7 +97,7 @@ public class BaiduLocationManager implements ILocationManager
             }
         }
 
-        Context context = TGApplicationProxy.getInstance().getApplication();
+        Context context = TGApplicationProxy.getApplication();
         String chinaZH = context.getResources().getString(CR.getStringId(context, "china_zh"));
         String chinaEN = context.getResources().getString(CR.getStringId(context, "china_en"));
 

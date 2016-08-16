@@ -8,7 +8,7 @@ group = "com.mn.tiger"
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '22.0.1'
+    buildToolsVersion '24.0.1'
 
     defaultConfig {
         minSdkVersion 15
@@ -50,7 +50,7 @@ dependencies {
     compile 'com.mn.tiger:android-framework-logger:latest.integration'
     compile 'com.mn.tiger:android-framework-lbs:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
-    compile files('locSDK_5.3.jar')
+    compile files('libs/locSDK_5.3.jar')
 }
 
 install {
