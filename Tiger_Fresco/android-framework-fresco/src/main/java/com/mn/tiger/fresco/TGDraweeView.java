@@ -67,9 +67,9 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
     }
 
     @Override
-    protected void onDetachedFromWindow()
+    protected void onDetach()
     {
-        super.onDetachedFromWindow();
+        super.onDetach();
         //移除缓存记录
         if(HASH_CODE_CACHE.size() > 0)
         {
@@ -102,7 +102,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
 
         private TGDraweeControllerListener controllerListener;
 
-        private int fadeDuration = 1000;
+        private int fadeDuration = 300;
 
         private boolean tapToRetryEnabled = true;
 
@@ -295,7 +295,7 @@ public class TGDraweeView extends DraweeView<GenericDraweeHierarchy>
                             configs.display();
                         }
                     }
-                }, 300);
+                }, 500);
             }
         }
 
