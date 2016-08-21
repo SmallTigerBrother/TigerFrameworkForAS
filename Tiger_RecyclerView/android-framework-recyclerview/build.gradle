@@ -29,7 +29,7 @@ dependencies {
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
     compile 'com.mn.tiger:android-framework-logger:latest.integration'
     compile 'com.jakewharton:butterknife:8.0.1'
-    compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
 }
 
 install {
