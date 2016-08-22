@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/Tiger_ViewPager.iml" filepath="$PROJECT_DIR$/Tiger_ViewPager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-framework-viewpager/android-framework-viewpager.iml" filepath="$PROJECT_DIR$/android-framework-viewpager/android-framework-viewpager.iml" />
-    </modules>
-  </component>
-</project>
