@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/Tiger_Upload.iml" filepath="$PROJECT_DIR$/Tiger_Upload.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-framework-upload/android-framework-upload.iml" filepath="$PROJECT_DIR$/android-framework-upload/android-framework-upload.iml" />
-    </modules>
-  </component>
-</project>
