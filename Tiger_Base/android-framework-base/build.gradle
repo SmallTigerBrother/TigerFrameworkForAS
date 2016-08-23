@@ -51,6 +51,7 @@ dependencies {
     compile 'com.google.code.gson:gson:latest.integration'
     compile 'com.mn.tiger:android-framework-utility:latest.integration'
     compile 'com.mn.tiger:android-framework-logger:latest.integration'
+    compile 'io.reactivex:rxandroid:1.2.0'
 }
 
 install {
