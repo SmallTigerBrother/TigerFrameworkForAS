@@ -157,6 +157,15 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             ((StaggeredGridLayoutManager.LayoutParams)layoutParams).setFullSpan(holder.getTGRecyclerViewHolder().isFullSpan(
                     holder.getTGRecyclerViewHolder().getPosition()));
         }
+
+        holder.getTGRecyclerViewHolder().onViewAttachedToWindow();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(InternalRecyclerViewHolder<T> holder)
+    {
+        super.onViewDetachedFromWindow(holder);
+        holder.getTGRecyclerViewHolder().onViewDetachedFromWindow();
     }
 
     @Override

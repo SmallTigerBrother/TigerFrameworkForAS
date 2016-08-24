@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.mn.tiger.utility.DisplayUtils;
 
 import butterknife.ButterKnife;
@@ -85,36 +84,6 @@ public abstract class TGRecyclerViewHolder<T>
     }
 
     /**
-     * 将OnItemClick事件绑定到View上
-     * @param convertView
-     */
-    public void attachOnItemClickListener(View convertView)
-    {
-        if(null != internalOnClickListener)
-        {
-            convertView.setOnClickListener(internalOnClickListener);
-        }
-    }
-
-    /**
-     * 获取匹配的Adapter
-     * @return
-     */
-    public TGRecyclerViewAdapter getAdapter()
-    {
-        return adapter;
-    }
-
-    /**
-     * 设置匹配的Adapter
-     * @param adapter
-     */
-    public void setAdapter(TGRecyclerViewAdapter adapter)
-    {
-        this.adapter = adapter;
-    }
-
-    /**
      * 更新列表行的尺寸
      * @param itemData
      * @param position
@@ -141,16 +110,6 @@ public abstract class TGRecyclerViewHolder<T>
         return TGRecyclerViewAdapter.NONE_VIEW_TYPE;
     }
 
-    protected Context getContext()
-    {
-        return context;
-    }
-
-    void setContext(Context context)
-    {
-        this.context = context;
-    }
-
     /**
      * 设置列表行点击事件
      * @param onItemClickListener
@@ -174,6 +133,58 @@ public abstract class TGRecyclerViewHolder<T>
     }
 
     /**
+     * 将OnItemClick事件绑定到View上
+     * @param convertView
+     */
+    void attachOnItemClickListener(View convertView)
+    {
+        //防止在没有设置onItemClickListener时, internalOnClickListener覆盖ViewHolder中设置的OnClickListener
+        if(null != onItemClickListener)
+        {
+            convertView.setOnClickListener(internalOnClickListener);
+        }
+    }
+
+    /**
+     * 执行列表行点击事件
+     */
+    protected void performOnItemClick()
+    {
+        if(null != onItemClickListener)
+        {
+            onItemClickListener.onItemClick(parent, holder.itemView, this.position, holder.getItemId());
+        }
+    }
+
+    /**
+     * 获取匹配的Adapter
+     * @return
+     */
+    public TGRecyclerViewAdapter getAdapter()
+    {
+        return adapter;
+    }
+
+    /**
+     * 设置匹配的Adapter
+     * @param adapter
+     */
+    void setAdapter(TGRecyclerViewAdapter adapter)
+    {
+        this.adapter = adapter;
+    }
+
+    protected Context getContext()
+    {
+        return context;
+    }
+
+    void setContext(Context context)
+    {
+        this.context = context;
+    }
+
+    /**
      * 设置内部的ViewHolder
      * @param holder
      */
@@ -189,6 +200,16 @@ public abstract class TGRecyclerViewHolder<T>
     protected TGRecyclerViewAdapter.InternalRecyclerViewHolder<T> getInternalRecyclerViewHolder()
     {
         return holder;
+    }
+
+    public void onViewAttachedToWindow()
+    {
+
+    }
+
+    public void onViewDetachedFromWindow()
+    {
+
     }
 
     /**
@@ -263,17 +284,6 @@ public abstract class TGRecyclerViewHolder<T>
     protected void onRecycled()
     {
 
-    }
-
-    /**
-     * 执行列表行点击事件
-     */
-    protected void performOnItemClick()
-    {
-        if(null != onItemClickListener)
-        {
-            onItemClickListener.onItemClick(parent, holder.itemView, this.position, holder.getItemId());
-        }
     }
 
     protected int getColor(int resId)
