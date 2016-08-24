@@ -28,6 +28,11 @@ public abstract class LoadingBarSubscriber<T> extends Subscriber<T> implements A
         activity.showLoadingDialog();
     }
 
+    public TGActionBarActivity getActivity()
+    {
+        return activity;
+    }
+
     @Override
     public void onCompleted()
     {
