@@ -34,7 +34,7 @@ public class TGAudioPlayer
 
     private int PROGRESS_TIME_INTERVAL = 200;
 
-    private Mode mode = Mode.SINGLE;
+    private boolean looping = false;
 
     private boolean speakerphoneOn = false;
 
@@ -65,104 +65,61 @@ public class TGAudioPlayer
         timeHandler = new Handler();
     }
 
-    public void setMode(Mode mode)
+    public void setLooping(boolean looping)
     {
-        this.mode = mode;
+        this.looping = looping;
+    }
+
+    public void setSpeakerphoneOn(boolean speakerphoneOn)
+    {
+        this.speakerphoneOn = speakerphoneOn;
+    }
+
+    public void start(int resId, OnPlayListener listener)
+    {
+        this.currentDataSource = "android.resource://" + TGApplicationProxy.getApplication().getPackageName() + "/" + resId;
+        this.onPlayListener = listener;
+
+        try
+        {
+            mediaPlayer = MediaPlayer.create(TGApplicationProxy.getApplication(), resId);
+            play();
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
+        }
+
     }
 
     public void start(FileDescriptor dataSource, OnPlayListener listener)
     {
-        start(dataSource, listener, false);
-    }
-
-    public void start(FileDescriptor dataSource, OnPlayListener listener, final boolean speakerphoneOn)
-    {
         this.currentFileDataSource = dataSource;
         this.currentDataSource = currentFileDataSource.toString();
         this.onPlayListener = listener;
-        this.speakerphoneOn = speakerphoneOn;
-        //setOnCompletionListener 当前多媒体对象播放完成时发生的事件
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-        {
-            @Override
-            public void onCompletion(MediaPlayer mp)
-            {
-                switch (mode)
-                {
-                    case SINGLE:
-                        if (null != onPlayListener)
-                        {
-                            onPlayListener.onPlayComplete(currentDataSource);
-                        }
-                        break;
-                    case SINGLE_CIRCLE:
-                        //重新播放
-                        start(currentFileDataSource, onPlayListener, speakerphoneOn);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
 
         try
         {
-            playDuration = 0;
             mediaPlayer.reset(); //重置多媒体
             mediaPlayer.setDataSource(currentFileDataSource);//为多媒体对象设置播放路径
-            play(speakerphoneOn);
+            play();
         }
         catch (Exception e)
         {
             LOG.e(e);
         }
-    }
-
-    public void start(String dataSource)
-    {
-        start(dataSource, null, false);
     }
 
     public void start(final String dataSource, final OnPlayListener listener)
     {
-        start(dataSource, listener, false);
-    }
-
-    public void start(final String dataSource, final OnPlayListener listener, boolean speakerphoneOn)
-    {
         this.currentDataSource = dataSource;
         this.onPlayListener = listener;
-        this.speakerphoneOn = speakerphoneOn;
-        //setOnCompletionListener 当前多媒体对象播放完成时发生的事件
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-        {
-            @Override
-            public void onCompletion(MediaPlayer mp)
-            {
-                switch (mode)
-                {
-                    case SINGLE:
-                        if (null != onPlayListener)
-                        {
-                            onPlayListener.onPlayComplete(currentDataSource);
-                        }
-                        break;
-                    case SINGLE_CIRCLE:
-                        //重新播放
-                        start(currentDataSource, onPlayListener, TGAudioPlayer.this.speakerphoneOn);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
 
         try
         {
-            playDuration = 0;
             mediaPlayer.reset(); //重置多媒体
             mediaPlayer.setDataSource(currentDataSource);//为多媒体对象设置播放路径
-            play(speakerphoneOn);
+            play();
         }
         catch (Exception e)
         {
@@ -170,8 +127,10 @@ public class TGAudioPlayer
         }
     }
 
-    private void play(boolean speakerphoneOn) throws IOException
+    private void play() throws IOException
     {
+        playDuration = 0;
+
         AudioManager audioManager = (AudioManager)TGApplicationProxy.getApplication().getSystemService(Context.AUDIO_SERVICE);
         if(speakerphoneOn)
         {
@@ -182,8 +141,30 @@ public class TGAudioPlayer
             audioManager.setMode(AudioManager.STREAM_MUSIC);
         }
 
+        //setOnCompletionListener 当前多媒体对象播放完成时发生的事件
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+        {
+            @Override
+            public void onCompletion(MediaPlayer mp)
+            {
+                if (null != onPlayListener)
+                {
+                    onPlayListener.onPlayComplete(currentDataSource);
+                }
+            }
+        });
+
         playDuration = 0;
-        mediaPlayer.prepare();//准备播放
+        mediaPlayer.setLooping(true);
+        try
+        {
+            mediaPlayer.prepare();//准备播放
+        }
+        catch (Exception e)
+        {
+            LOG.e(e);
+        }
+
         mediaPlayer.start();//开始播放
 
         final int audioDuration = mediaPlayer.getDuration();
