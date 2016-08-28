@@ -37,6 +37,8 @@ public class TGNotificationBuilder
 	 */
 	private int type;
 
+	private int id = -1;
+
 	public TGNotificationBuilder(Context context)
 	{
 		this.context = context;
@@ -47,7 +49,25 @@ public class TGNotificationBuilder
 		// 初始化intent
 		intent.setAction(NOTIFICATION_CLICK_ACTION);
 	}
-	
+
+	public void setId(int id)
+	{
+		if(id <= 0)
+		{
+			throw new IllegalArgumentException("Notification id must large than 0 !");
+		}
+		this.id = id;
+	}
+
+	public int getId()
+	{
+		if(id <= 0)
+		{
+			id = IdCreator.generateId();
+		}
+		return id;
+	}
+
 	public void setClass(Class<?> cls)
 	{
 		intent.setClass(context, cls);
@@ -68,9 +88,14 @@ public class TGNotificationBuilder
 	 * 
 	 * @param type
 	 */
-	void setNotificationType(int type)
+	public void setNotificationType(int type)
 	{
 		this.type = type;
+	}
+
+	public int getNotificationType()
+	{
+		return type;
 	}
 
 	/**
@@ -140,6 +165,15 @@ public class TGNotificationBuilder
 	{
 		
 	}
-	
+
+	private static class IdCreator
+	{
+		private static int id = 0;
+
+		public static int generateId()
+		{
+			return ++id;
+		}
+	}
 }
 

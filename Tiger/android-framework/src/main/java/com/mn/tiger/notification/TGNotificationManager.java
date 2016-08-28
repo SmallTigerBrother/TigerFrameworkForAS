@@ -20,32 +20,27 @@ public abstract class TGNotificationManager
 
     /**
      * 显示通知
-     *
-     * @param type    通知类型
      * @param builder 通知信息建造者
      */
-    public void showNotification(Context context, int type, TGNotificationBuilder builder)
+    public void showNotification(Context context, TGNotificationBuilder builder)
     {
-        LOG.d("[Method:showNotification] type == " + type);
+        LOG.d("[Method:showNotification] type == " + builder.getNotificationType());
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        builder.setNotificationType(type);
-        notificationManager.notify(type, builder.build());
+        notificationManager.notify(builder.getId(), builder.build());
     }
 
     /**
      * 显示通知
-     * @param type    通知类型（用户区分不同的通知）
      * @param builder 通知信息建造者
      */
-    public void showCancelNotification(Context context, int type, TGNotificationBuilder builder)
+    public void showCancelNotification(Context context, TGNotificationBuilder builder)
     {
-        LOG.d("[Method:showCancelNotification] type == " + type);
+        LOG.d("[Method:showCancelNotification] type == " + builder.getNotificationType());
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        builder.setNotificationType(type);
-        notificationManager.notify(type, builder.build());
-        notificationManager.cancel(type);
+        notificationManager.notify(builder.getId(), builder.build());
+        notificationManager.cancel(builder.getId());
     }
 
     /**
