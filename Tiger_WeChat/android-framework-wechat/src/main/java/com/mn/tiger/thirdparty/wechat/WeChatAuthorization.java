@@ -11,7 +11,6 @@ import com.mn.tiger.authorize.IAuthorizeCallback;
 import com.mn.tiger.authorize.ILogoutCallback;
 import com.mn.tiger.authorize.IRegisterCallback;
 import com.mn.tiger.log.Logger;
-import com.mn.tiger.request.convertor.GsonConverterFactory;
 import com.mn.tiger.utility.CR;
 import com.mn.tiger.utility.ToastUtils;
 import com.squareup.otto.Subscribe;
@@ -21,6 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by peng on 15/11/10.
@@ -268,7 +268,9 @@ public class WeChatAuthorization extends AbsAuthorization
         if(null == weChatAuthorizeService)
         {
             weChatAuthorizeService = new Retrofit.Builder().baseUrl("https://api.weixin.qq.com/")
-                                                           .addConverterFactory(new GsonConverterFactory(new Gson())).build().create(WeChatAuthorizeService.class);
+                                                           .addConverterFactory(GsonConverterFactory.create())
+                                                           .build()
+                                                           .create(WeChatAuthorizeService.class);
         }
 
         return weChatAuthorizeService;
