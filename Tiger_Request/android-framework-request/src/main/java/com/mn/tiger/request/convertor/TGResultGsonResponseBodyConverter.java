@@ -10,15 +10,15 @@ import java.lang.reflect.Type;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
-public class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
+public class TGResultGsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
 {
-    private static final Logger LOG = Logger.getLogger(GsonResponseBodyConverter.class);
+    private static final Logger LOG = Logger.getLogger(TGResultGsonResponseBodyConverter.class);
 
     private TypeAdapter<T> adapter;
 
     private Type type;
 
-    public GsonResponseBodyConverter()
+    public TGResultGsonResponseBodyConverter()
     {
     }
 

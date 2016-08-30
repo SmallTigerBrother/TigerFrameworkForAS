@@ -20,7 +20,7 @@ import retrofit2.Retrofit;
  * you must {@linkplain Retrofit.Builder#addConverterFactory(Converter.Factory) add this instance}
  * last to allow the other converters a chance to see their types.
  */
-public class GsonConverterFactory extends Converter.Factory
+public class TGResultGsonConverterFactory extends Converter.Factory
 {
     private final Gson gson;
 
@@ -28,18 +28,18 @@ public class GsonConverterFactory extends Converter.Factory
 
     private Class gsonRequestBodyConverterClass;
 
-    public GsonConverterFactory(Gson gson)
+    public TGResultGsonConverterFactory(Gson gson)
     {
         if (gson == null) throw new NullPointerException("gson == null");
         this.gson = gson;
     }
 
-    public  <T extends GsonResponseBodyConverter> void setResponseBodyConverter(Class<T> clazz)
+    public  <T extends TGResultGsonResponseBodyConverter> void setResponseBodyConverter(Class<T> clazz)
     {
         this.gsonResponseBodyConverterClass = clazz;
     }
 
-    public <T extends GsonRequestBodyConverter> void setRequestBodyConverter(Class<T> clazz)
+    public <T extends TGResultGsonRequestBodyConverter> void setRequestBodyConverter(Class<T> clazz)
     {
         this.gsonRequestBodyConverterClass = clazz;
     }
@@ -49,15 +49,15 @@ public class GsonConverterFactory extends Converter.Factory
                                                             Retrofit retrofit)
     {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        GsonResponseBodyConverter converter = null;
+        TGResultGsonResponseBodyConverter converter = null;
         if(null == gsonResponseBodyConverterClass)
         {
-            gsonResponseBodyConverterClass = GsonResponseBodyConverter.class;
+            gsonResponseBodyConverterClass = TGResultGsonResponseBodyConverter.class;
         }
 
         try
         {
-            converter = (GsonResponseBodyConverter) gsonResponseBodyConverterClass.newInstance();
+            converter = (TGResultGsonResponseBodyConverter) gsonResponseBodyConverterClass.newInstance();
         }
         catch (Exception e)
         {
@@ -78,15 +78,15 @@ public class GsonConverterFactory extends Converter.Factory
                                                           Annotation[] methodAnnotations, Retrofit retrofit)
     {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        GsonRequestBodyConverter converter = null;
+        TGResultGsonRequestBodyConverter converter = null;
         if(null == gsonRequestBodyConverterClass)
         {
-            gsonRequestBodyConverterClass = GsonRequestBodyConverter.class;
+            gsonRequestBodyConverterClass = TGResultGsonRequestBodyConverter.class;
         }
 
         try
         {
-            converter = (GsonRequestBodyConverter) gsonRequestBodyConverterClass.newInstance();
+            converter = (TGResultGsonRequestBodyConverter) gsonRequestBodyConverterClass.newInstance();
         }
         catch (Exception e)
         {
