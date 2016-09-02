@@ -67,15 +67,16 @@ public abstract class SwipeItemRecyclerViewHolder<T> extends TGRecyclerViewHolde
     }
 
     @Override
-    public void updateViewDimension(T itemData, int position, int viewType)
+    public void onViewAttachedToWindow()
     {
+        super.onViewAttachedToWindow();
         if(null != convertView)
         {
             //设置侧滑参数
-            ((SwipeItemLayout)convertView).setSwipeable(isSwipeable(position));
-            ((SwipeItemLayout)convertView).setSwipeDirection(getSwipeDirection(position));
-            ((SwipeItemLayout)convertView).setBottomMode(getBottomMode(position));
-            ((SwipeItemLayout)convertView).setSpringDistance(getSpringDistance(position));
+            ((SwipeItemLayout)convertView).setSwipeable(isSwipeable(getPosition()));
+            ((SwipeItemLayout)convertView).setSwipeDirection(getSwipeDirection(getPosition()));
+            ((SwipeItemLayout)convertView).setBottomMode(getBottomMode(getPosition()));
+            ((SwipeItemLayout)convertView).setSpringDistance(getSpringDistance(getPosition()));
         }
     }
 
