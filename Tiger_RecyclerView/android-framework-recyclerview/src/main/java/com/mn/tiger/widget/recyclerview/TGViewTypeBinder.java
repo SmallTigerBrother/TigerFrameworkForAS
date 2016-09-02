@@ -137,7 +137,6 @@ class TGViewTypeBinder
         {
             for (TGRecyclerViewHolder viewHolderInstance : viewHolderInstances.values())
             {
-                viewHolderInstance.setPosition(position);
                 viewType = viewHolderInstance.getItemViewType(position);
                 //缓存ViewType
                 if(viewType != TGRecyclerViewAdapter.NONE_VIEW_TYPE)
