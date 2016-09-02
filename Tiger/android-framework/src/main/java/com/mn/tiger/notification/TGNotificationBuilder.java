@@ -146,6 +146,16 @@ public class TGNotificationBuilder
 		intent.putExtra(key, value);
 	}
 
+	public void putExtra(String key, boolean value)
+	{
+		intent.putExtra(key, value);
+	}
+
+	public void putExtra(String key, long value)
+	{
+		intent.putExtra(key, value);
+	}
+
 	/**
 	 * 构造通知
 	 */

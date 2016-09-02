@@ -1,9 +1,11 @@
 package com.mn.tiger.authorize;
 
+import java.io.Serializable;
+
 /**
  * 认证结果
  */
-public class TGAuthorizeResult
+public class TGAuthorizeResult implements Serializable
 {
 	/**
 	 * 用户Id

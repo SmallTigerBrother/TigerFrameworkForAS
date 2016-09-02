@@ -82,7 +82,7 @@ public class TGCache
 		cacheFile = getNormalCacheFile(context, key);
 		if (cacheFile.exists())
 		{
-			content = getDiskCache(cacheFile.getAbsolutePath());
+			content = getDiskCache(cacheFile);
 		}
 
 		return content;
@@ -92,23 +92,16 @@ public class TGCache
 	 * 该方法的作用:获取硬盘缓存内容
 	 *
 	 * @date 2014年3月4日
-	 * @param fileAbsPath
-	 *            文件绝对路径
+	 * @param file 缓存文件
 	 * @return
 	 */
-	public static Object getDiskCache(String fileAbsPath)
+	private static Object getDiskCache(File file)
 	{
 		Object object = null;
 		ObjectInputStream objectInputStream = null;
 		FileInputStream inputStream = null;
 		try
 		{
-			File file = new File(fileAbsPath);
-			if (file == null || !file.exists())
-			{
-				return null;
-			}
-
 			inputStream = new FileInputStream(file);
 			objectInputStream = new ObjectInputStream(new BufferedInputStream(inputStream));
 
@@ -117,6 +110,10 @@ public class TGCache
 		catch (Exception e)
 		{
 			LOG.e("[Method:getDiskCache]",e);
+			if(file.exists())
+			{
+				file.delete();
+			}
 		}
 		finally
 		{
@@ -140,9 +137,9 @@ public class TGCache
 	{
 		ObjectOutputStream objectoutputStream = null;
 		FileOutputStream outStream = null;
+		File cacheFile = new File(fileAbsPath);
 		try
 		{
-			File cacheFile = new File(fileAbsPath);
 			if (!cacheFile.exists())
 			{
 				cacheFile.createNewFile();
@@ -156,6 +153,10 @@ public class TGCache
 		catch (Exception e)
 		{
 			LOG.e("[Method:saveAsDiskCache]", e);
+			if(cacheFile.exists())
+			{
+				cacheFile.delete();
+			}
 		}
 		finally
 		{
@@ -223,7 +224,11 @@ public class TGCache
 	{
 		File dir = context.getDir("cache", Context.MODE_PRIVATE);
 		File file = new File(dir, filePath);
-		return getDiskCache(file.getAbsolutePath());
+		if(file.exists())
+		{
+			return getDiskCache(file);
+		}
+		return null;
 	}
 
 	/**
