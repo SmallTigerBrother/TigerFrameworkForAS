@@ -67,9 +67,8 @@ public abstract class SwipeItemRecyclerViewHolder<T> extends TGRecyclerViewHolde
     }
 
     @Override
-    void setPosition(int position)
+    public void updateViewDimension(T itemData, int position, int viewType)
     {
-        super.setPosition(position);
         if(null != convertView)
         {
             //设置侧滑参数

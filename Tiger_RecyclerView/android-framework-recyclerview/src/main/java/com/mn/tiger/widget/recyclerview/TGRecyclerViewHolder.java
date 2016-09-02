@@ -23,11 +23,6 @@ public abstract class TGRecyclerViewHolder<T>
      */
     private TGRecyclerViewAdapter adapter;
 
-    /**
-     * 当前使用ViewHolder的位置
-     */
-    private int position;
-
     protected RecyclerView parent;
 
     /**
@@ -152,7 +147,7 @@ public abstract class TGRecyclerViewHolder<T>
     {
         if(null != onItemClickListener)
         {
-            onItemClickListener.onItemClick(parent, holder.itemView, this.position, holder.getItemId());
+            onItemClickListener.onItemClick(parent, holder.itemView, getPosition(), holder.getItemId());
         }
     }
 
@@ -218,16 +213,7 @@ public abstract class TGRecyclerViewHolder<T>
      */
     public int getPosition()
     {
-        return position;
-    }
-
-    /**
-     * 设置当前填充的列表行的位置
-     * @param position
-     */
-    void setPosition(int position)
-    {
-        this.position = position;
+        return holder.getCurrentPosition();
     }
 
     /**

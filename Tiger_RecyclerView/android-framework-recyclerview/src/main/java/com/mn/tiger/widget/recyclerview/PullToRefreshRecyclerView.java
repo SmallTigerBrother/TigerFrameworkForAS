@@ -486,7 +486,6 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             this.mHeaderViews = headerViews;
             this.mFootViews = footViews;
             headerCount = getHeadersCount();
-//            setHasStableIds(true);
         }
 
         @Override
@@ -499,6 +498,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new HeaderSpanSizeLookup(this, (GridLayoutManager) layoutManager,
                         new TGRecyclerViewAdapter.TGSpanSizeLookup(this.adapter)));
             }
+            this.adapter.setViewPositionOffset(headerCount);
             this.adapter.onAttachedToRecyclerView(recyclerView);
         }
 
@@ -528,8 +528,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             if (holder instanceof TGRecyclerViewAdapter.InternalRecyclerViewHolder)
             {
                 TGRecyclerViewAdapter.InternalRecyclerViewHolder viewHolder = (TGRecyclerViewAdapter.InternalRecyclerViewHolder)holder;
-                viewHolder.getTGRecyclerViewHolder().setPosition(viewHolder.getCurrentPosition() - headerCount);
-                adapter.onViewDetachedFromWindow(holder);
+                adapter.onViewDetachedFromWindow(viewHolder);
             }
         }
 
@@ -590,7 +589,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             {
                 return;
             }
-            int adjPosition = position - getHeadersCount();
+            int adjPosition = position - headerCount;
             int adapterCount;
             if (adapter != null)
             {

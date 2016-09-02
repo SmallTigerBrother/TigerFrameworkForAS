@@ -61,7 +61,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     boolean enableUnRecycleViewHolder = false;
 
-    int viewPositionOffset = 0;
+    private int viewPositionOffset = 0;
 
     /**
      * 支持多种数据类型的构造函数
@@ -115,6 +115,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         this.enableUnRecycleViewHolder = enableUnRecycleViewHolder;
     }
 
+    void setViewPositionOffset(int viewPositionOffset)
+    {
+        this.viewPositionOffset = viewPositionOffset;
+    }
+
     @Override
     public InternalRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
@@ -128,6 +133,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
 
         InternalRecyclerViewHolder<T> internalRecyclerViewHolder = new InternalRecyclerViewHolder<T>(viewHolder.convertView);
         internalRecyclerViewHolder.setTGRecyclerViewHolder(viewHolder);
+        internalRecyclerViewHolder.setViewPositionOffset(viewPositionOffset);
         return internalRecyclerViewHolder;
     }
 
@@ -135,7 +141,6 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     public void onBindViewHolder(InternalRecyclerViewHolder<T> holder, int position)
     {
         TGRecyclerViewHolder tgRecyclerViewHolder = holder.getTGRecyclerViewHolder();
-        tgRecyclerViewHolder.setPosition(position);
         if(tgRecyclerViewHolder.recyclable()  || (!enableUnRecycleViewHolder && !tgRecyclerViewHolder.recyclable()))
         {
             tgRecyclerViewHolder.updateViewDimension(getItem(position), position, holder.getItemViewType());
@@ -303,7 +308,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             {
                 this.items.clear();
                 this.items.addAll(data);
-                generateViewTypes(0, data.size() - 1);
+                generateViewTypes(0, items.size() - 1);
             }
             notifyDataSetChanged();
         }
@@ -320,7 +325,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             this.items.clear();
             this.items.addAll(Arrays.asList(data));
-            generateViewTypes(0, data.length - 1);
+            generateViewTypes(0, items.size() - 1);
             notifyDataSetChanged();
         }
     }
@@ -416,7 +421,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.addAll(data);
-            generateViewTypes(items.size() - data.size(), data.size() -1 );
+            generateViewTypes(items.size() - data.size(), items.size() - 1 );
             notifyItemRangeInserted(items.size() - data.size(), data.size());
         }
     }
@@ -431,7 +436,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if (null != data)
         {
             this.items.addAll(Arrays.asList(data));
-            generateViewTypes(items.size() - data.length, data.length - 1);
+            generateViewTypes(items.size() - data.length, items.size() - 1);
             notifyItemRangeInserted(items.size() - data.length, data.length);
         }
     }
@@ -475,7 +480,7 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         if(null != data && position >= 0 && position <= this.items.size())
         {
             this.items.addAll(position, Arrays.asList(data));
-            generateViewTypes(position, position + data.length - 1);
+            generateViewTypes(position, items.size() - 1);
             notifyItemRangeInserted(position, data.length);
         }
     }
@@ -661,6 +666,8 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
     {
         private TGRecyclerViewHolder<T> tgRecyclerViewHolder;
 
+        private int viewPositionOffset = 0;
+
         public InternalRecyclerViewHolder(View itemView)
         {
             super(itemView);
@@ -670,6 +677,11 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
         {
             this.tgRecyclerViewHolder = tgRecyclerViewHolder;
             this.tgRecyclerViewHolder.setInternalRecyclerViewHolder(this);
+        }
+
+        void setViewPositionOffset(int viewPositionOffset)
+        {
+            this.viewPositionOffset = viewPositionOffset;
         }
 
         public TGRecyclerViewHolder<T> getTGRecyclerViewHolder()
@@ -682,9 +694,9 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
             int position = getAdapterPosition();
             if(position < 0)
             {
-                return getPosition();
+                return getPosition() - viewPositionOffset;
             }
-            return position;
+            return position - viewPositionOffset;
         }
     }
 
