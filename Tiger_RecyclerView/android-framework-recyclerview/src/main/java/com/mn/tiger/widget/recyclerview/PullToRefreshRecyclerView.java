@@ -98,6 +98,10 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             mRefreshHeader.setProgressStyle(mRefreshProgressStyle);
         }
         mHeaderViews.add(view);
+        if(null != mWrapAdapter)
+        {
+            mWrapAdapter.adapter.setViewPositionOffset(mWrapAdapter.getHeadersCount());
+        }
     }
 
     protected void addFootView(final View view)
@@ -478,14 +482,11 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
         private int headerPosition = 1;
 
-        private int headerCount;
-
         public HeaderWrapAdapter(ArrayList<View> headerViews, ArrayList<View> footViews, TGRecyclerViewAdapter adapter)
         {
             this.adapter = adapter;
             this.mHeaderViews = headerViews;
             this.mFootViews = footViews;
-            headerCount = getHeadersCount();
         }
 
         @Override
@@ -498,8 +499,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new HeaderSpanSizeLookup(this, (GridLayoutManager) layoutManager,
                         new TGRecyclerViewAdapter.TGSpanSizeLookup(this.adapter)));
             }
-            headerCount = getHeadersCount();
-            this.adapter.setViewPositionOffset(headerCount);
+            this.adapter.setViewPositionOffset(getHeadersCount());
             this.adapter.onAttachedToRecyclerView(recyclerView);
         }
 
@@ -590,7 +590,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
             {
                 return;
             }
-            int adjPosition = position - headerCount;
+            int adjPosition = position - getHeadersCount();
             int adapterCount;
             if (adapter != null)
             {
@@ -678,7 +678,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                     return adapter.getItemId(adjPosition);
                 }
             }
-            return -1;
+            return -position;
         }
 
         private class SimpleViewHolder extends ViewHolder
