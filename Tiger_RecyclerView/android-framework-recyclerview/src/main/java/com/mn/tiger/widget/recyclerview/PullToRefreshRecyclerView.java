@@ -88,7 +88,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         }
     }
 
-    public void addHeaderView(View view)
+    protected void addHeaderView(View view)
     {
         if (pullRefreshEnabled && !(mHeaderViews.get(0) instanceof ArrowRefreshHeader))
         {
@@ -100,7 +100,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         mHeaderViews.add(view);
     }
 
-    public void addFootView(final View view)
+    protected void addFootView(final View view)
     {
         mFootViews.clear();
         mFootViews.add(view);
@@ -498,6 +498,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new HeaderSpanSizeLookup(this, (GridLayoutManager) layoutManager,
                         new TGRecyclerViewAdapter.TGSpanSizeLookup(this.adapter)));
             }
+            headerCount = getHeadersCount();
             this.adapter.setViewPositionOffset(headerCount);
             this.adapter.onAttachedToRecyclerView(recyclerView);
         }
