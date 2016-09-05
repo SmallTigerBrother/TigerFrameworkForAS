@@ -61,6 +61,9 @@ public class TGRecyclerViewAdapter<T> extends RecyclerView.Adapter<TGRecyclerVie
      */
     boolean enableUnRecycleViewHolder = false;
 
+    /**
+     * 列表行位置偏移量
+     */
     private int viewPositionOffset = 0;
 
     /**
