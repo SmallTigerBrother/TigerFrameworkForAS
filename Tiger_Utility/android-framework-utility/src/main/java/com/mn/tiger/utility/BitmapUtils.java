@@ -384,6 +384,43 @@ public class BitmapUtils
         return newBM;
     }
 
+    public static boolean compressBitmapByWidth(Context context, File original, String destPath, int maxWidth)
+    {
+        Bitmap bitmap = BitmapUtils.decodeBitmap(context, original);
+        if (null != bitmap)
+        {
+            //读取图片尺寸
+            int[] widthAndHeight = BitmapUtils.getLocalImageWidthAndHeight(original.getPath());
+            //计算缩放比例
+            double scale = 1;
+            int targetWidth = widthAndHeight[0];
+            int targetHeight = widthAndHeight[1];
+            if (widthAndHeight[0] > maxWidth)
+            {
+                scale = new Double(maxWidth) / new Double(widthAndHeight[0]);
+                targetWidth = maxWidth;
+                targetHeight = (int) (widthAndHeight[1] * scale);
+            }
+
+            //获取缩放后图片
+            boolean compressResult = false;
+            Bitmap scaledBitmap = BitmapUtils.scaleBitmap(bitmap, targetWidth, targetHeight);
+            if (null != scaledBitmap)
+            {
+                compressResult = BitmapUtils.saveBitmapToFile(scaledBitmap, destPath);
+                scaledBitmap.recycle();
+                scaledBitmap = null;
+            }
+            //返回压缩后的图片信息
+            bitmap.recycle();
+            bitmap = null;
+
+            LOG.d("[Method:compressBitmap] compress success " + destPath);
+            return compressResult;
+        }
+        return false;
+    }
+
     /**
      * 该方法的作用:设置圆角
      *
@@ -458,7 +495,7 @@ public class BitmapUtils
      */
     public static Bitmap decodeBitmap(Context context, File imageFile)
     {
-        return decodeBitmap(context, imageFile, 32);
+        return decodeBitmap(context, imageFile, 10);
     }
 
     /**
@@ -485,16 +522,16 @@ public class BitmapUtils
         // 设置最大缩放比例
         if (maxInSampleSize < 1)
         {
-            maxInSampleSize = 64;
+            maxInSampleSize = 10;
         }
 
         while (null == bitmap)
         {
-            bitmap = getScaledBitmap(context, imageFile, options);
+            bitmap = decodeBitmap(context, imageFile, options);
 
-            options.inSampleSize = options.inSampleSize * 2;
+            options.inSampleSize = options.inSampleSize + 1;
 
-            if (options.inSampleSize > maxInSampleSize * 2)
+            if (options.inSampleSize > maxInSampleSize)
             {
                 return null;
             }
@@ -511,7 +548,7 @@ public class BitmapUtils
      * @return
      * @date 2013-10-16
      */
-    public static Bitmap getScaledBitmap(Context context, File imageFile, Options options)
+    public static Bitmap decodeBitmap(Context context, File imageFile, Options options)
     {
         Bitmap bitmap = null;
         options.inPreferredConfig = Config.RGB_565;
@@ -526,12 +563,12 @@ public class BitmapUtils
         }
         catch (OutOfMemoryError err)
         {
-            LOG.e("[Method:getScaledBitmap] inSampleSize == " + options.inSampleSize, err);
+            LOG.e("[Method:decodeBitmap] inSampleSize == " + options.inSampleSize, err);
             return null;
         }
         catch (FileNotFoundException e)
         {
-            LOG.e("[Method:getScaledBitmap]", e);
+            LOG.e("[Method:decodeBitmap]", e);
         }
         finally
         {
@@ -549,7 +586,7 @@ public class BitmapUtils
      * @param size   文件大小
      * @return
      */
-    public static Bitmap compressBitmapBytes(Bitmap bitmap, int size)
+    public static Bitmap compressBitmapBySize(Bitmap bitmap, int size)
     {
         Bitmap localBitmap = null;
         try
