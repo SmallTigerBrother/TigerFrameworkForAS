@@ -39,6 +39,10 @@ public class TGNotificationBuilder
 
 	private int id = -1;
 
+	private int pendingFlag = PendingIntent.FLAG_UPDATE_CURRENT;
+
+    private int requestCode = 0;
+
 	public TGNotificationBuilder(Context context)
 	{
 		this.context = context;
@@ -156,14 +160,24 @@ public class TGNotificationBuilder
 		intent.putExtra(key, value);
 	}
 
+	public void setPendingFlag(int pendingFlag)
+	{
+		this.pendingFlag = pendingFlag;
+	}
+
+    public void setRequestCode(int requestCode)
+    {
+        this.requestCode = requestCode;
+    }
+
 	/**
 	 * 构造通知
 	 */
 	final Notification build()
 	{
 		intent.putExtra(NOTIFICATION_TYPE, type);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent,
+				pendingFlag);
 		builder.setContentIntent(pendingIntent);
 
 		onBuildNotification(context, type);
