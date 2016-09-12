@@ -143,6 +143,7 @@ class TGViewTypeBinder
                 {
                     positionViewTypeMap.put(position,viewType);
                     viewTypeHolderMap.put(viewType, viewHolderInstance);
+                    LOG.d("[Method:generateViewTypeByPosition] viewType == " + viewType + "  position == " + position);
                     return viewType;
                 }
             }
@@ -175,6 +176,7 @@ class TGViewTypeBinder
             {
                 positionViewTypeMap.put(position, viewType);
                 viewTypeHolderMap.put(viewType,viewHolder);
+                LOG.d("[Method:generateViewTypeByGenericParamType] viewType == " + viewType + "  position == " + position);
                 return viewType;
             }
             else
