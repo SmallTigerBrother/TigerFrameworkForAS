@@ -175,61 +175,45 @@ public class StringUtils
 	}
 
 	/**
-	 * 该方法的作用: String 转换成Unicode
-	 *
-	 * @date 2014-01-23
-	 * @param string
-	 *            传入汉字
-	 * @return
+	 * 字符串转换unicode
 	 */
-	public static String string2Unicode(String string)
-	{
-		if (!isEmptyOrNull(string))
-		{
-			char[] charArray = string.toCharArray();
-			StringBuffer buffer = new StringBuffer();
-			// 遍历数组中所有元素，转换成int型，再拼接
-			int code = 0;
-			for (char ch : charArray)
-			{
-				code = (int) ch;
-				buffer.append(code);
-			}
-			return buffer.toString();
+	public static String string2Unicode(String string) {
+
+		StringBuffer unicode = new StringBuffer();
+
+		for (int i = 0; i < string.length(); i++) {
+
+			// 取出每一个字符
+			char c = string.charAt(i);
+
+			// 转换为unicode
+			unicode.append("\\u" + Integer.toHexString(c));
 		}
-		return null;
+
+		return unicode.toString();
 	}
 
 	/**
-	 * 该方法的作用: Unicode转换成String
-	 *
-	 * @date 2014-01-23
-	 * @param string
-	 * @return
+	 * unicode 转字符串
 	 */
-	public static String unicode2String(String string)
-	{
-		if (!isEmptyOrNull(string))
-		{
-			// 计算共有多少字符
-			int end = 0;
-			String noSpace = string.trim();
-			int count = noSpace.length() / 5;
-			StringBuffer buffer = new StringBuffer();
-			int uCode = 0;
+	public static String unicode2String(String unicode) {
 
-			for (int j = 0; j < count; j++)
-			{
-				// 截取每个字符的Unicode并转换成char型
-				end += 5;
-				uCode = Integer.valueOf(noSpace.substring(j * 5, end));
-				buffer.append((char) uCode);
+		StringBuffer string = new StringBuffer();
 
-			}
-			return buffer.toString();
+		String[] hex = unicode.split("\\\\u");
+
+		for (int i = 1; i < hex.length; i++) {
+
+			// 转换出每一个代码点
+			int data = Integer.parseInt(hex[i], 16);
+
+			// 追加成string
+			string.append((char) data);
 		}
-		return null;
+
+		return string.toString();
 	}
+
 
 	/**
 	 * 该方法的作用:获取url中某参数的值 参数:传入需要获取的参数的名 返回:该参数的值(字符串型) 异常:
