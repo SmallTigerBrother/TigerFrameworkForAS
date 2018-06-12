@@ -38,7 +38,7 @@ public class FrescoUtils
         try
         {
             SoLoader.init(context, false);
-            SoLoader.loadLibrary("webp");
+            SoLoader.loadLibrary("static-webp");
         }
         catch(UnsatisfiedLinkError nle)
         {
