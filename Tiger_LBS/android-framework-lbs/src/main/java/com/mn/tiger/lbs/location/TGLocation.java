@@ -23,6 +23,10 @@ public class TGLocation implements Serializable
 
     private String address = "";
 
+    private String cityCode = "";
+
+    private String adCode = "";
+
     private long time;
 
     private Location location;
@@ -119,5 +123,21 @@ public class TGLocation implements Serializable
     public void setLocation(Location location)
     {
         this.location = location;
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public String getAdCode() {
+        return adCode;
+    }
+
+    public void setAdCode(String adCode) {
+        this.adCode = adCode;
     }
 }
