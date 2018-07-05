@@ -141,6 +141,8 @@ public class AMapLocationManager implements ILocationManager
             tgLocation.setProvince(location.getProvince());
             tgLocation.setAddress(location.getAddress());
             tgLocation.setStreet(location.getRoad());
+            tgLocation.setCityCode(location.getCityCode());
+            tgLocation.setAdCode(location.getAdCode());
             return tgLocation;
         }
 

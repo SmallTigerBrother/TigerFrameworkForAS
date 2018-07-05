@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "2.0.1"
+version = "2.0.3"
 def siteUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS'    // project homepage
 def gitUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS.git' // project git
 group = "com.mn.tiger"
@@ -50,7 +50,7 @@ dependencies {
     compile 'com.mn.tiger:android-framework:2.0.2@aar'
     compile 'com.mn.tiger:android-framework-logger:latest.integration@aar'
     compile 'com.mn.tiger:android-framework-utility:latest.integration@aar'
-    compile 'com.mn.tiger:android-framework-lbs:latest.integration@aar'
+    compile 'com.mn.tiger:android-framework-lbs:2.0.2@aar'
     compile files('libs/AMap_Location_V4.1.0_20180619.jar')
     compile files('libs/AMap_Services_V2.5.0.jar')
     compile files('libs/Android_2DMapApi_V2.5.0.jar')
