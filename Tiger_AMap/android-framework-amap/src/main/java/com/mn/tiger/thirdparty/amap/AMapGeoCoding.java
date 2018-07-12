@@ -44,6 +44,8 @@ public class AMapGeoCoding implements IGeoCoding
                         location.setLongitude(longitude);
                         location.setProvince(address.getProvince());
                         location.setCity(address.getCity());
+                        location.setCityCode(address.getCityCode());
+                        location.setAdCode(address.getAdCode());
                         location.setAddress(address.getFormatAddress());
                         location.setStreet(address.getStreetNumber().getStreet());
                         location.setCountry(context.getString(CR.getStringId(context, "tiger_china_zh")));
