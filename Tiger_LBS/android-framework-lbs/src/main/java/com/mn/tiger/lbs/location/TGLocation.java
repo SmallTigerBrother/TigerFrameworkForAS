@@ -27,6 +27,8 @@ public class TGLocation implements Serializable
 
     private String adCode = "";
 
+    private String district = "";
+
     private long time;
 
     private Location location;
@@ -139,5 +141,13 @@ public class TGLocation implements Serializable
 
     public void setAdCode(String adCode) {
         this.adCode = adCode;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
     }
 }
