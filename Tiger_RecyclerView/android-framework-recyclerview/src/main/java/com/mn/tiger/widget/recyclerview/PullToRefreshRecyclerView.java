@@ -129,7 +129,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
         {
             if (footView instanceof LoadingMoreFooter)
             {
-                ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_COMPLETE);
+                ((LoadingMoreFooter) footView).setState(LoadingMoreFooter.STATE_NOMORE);
             }
             else
             {
