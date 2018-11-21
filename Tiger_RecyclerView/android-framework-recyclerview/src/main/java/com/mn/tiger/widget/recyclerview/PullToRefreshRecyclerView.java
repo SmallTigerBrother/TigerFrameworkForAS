@@ -155,7 +155,7 @@ public class PullToRefreshRecyclerView extends RecyclerView implements IPullToRe
 
     public View getFootView(){
         if( mFootViews != null &&  mFootViews.size() > 0){
-            mFootViews.get(0);
+            return mFootViews.get(0);
         }
 
         return null;

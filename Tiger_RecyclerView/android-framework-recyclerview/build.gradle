@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "2.2.2"
+apply plugin: 'maven'
+version = "2.2.3"
 def siteUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS'    // project homepage
 def gitUrl = 'https://github.com/SmallTigerBrother/TigerFrameworkForAS.git' // project git
 group = "com.mn.tiger"
@@ -31,6 +32,19 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
 }
+Properties properties2 = new Properties()
+properties2.load(project.rootProject.file('local.properties').newDataInputStream())
+
+uploadArchives{
+    repositories.mavenDeployer{
+        // 配置本地仓库路径，项目根目录下的repository目录中
+        repository(url: uri(properties2.getProperty("sdk.dir") + "/extras/android/m2repository"))
+        pom.groupId = "com.mn.tiger"// 唯一标识（通常为模块包名，也可以任意）
+        pom.artifactId = "android-framework-recyclerview" // 项目名称（通常为类库模块名称，也可以任意）
+        pom.version = "2.2.2" // 版本号
+    }
+}
+
 
 install {
     repositories.mavenInstaller {
