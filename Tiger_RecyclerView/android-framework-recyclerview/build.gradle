@@ -41,7 +41,7 @@ uploadArchives{
         repository(url: uri(properties2.getProperty("sdk.dir") + "/extras/android/m2repository"))
         pom.groupId = "com.mn.tiger"// 唯一标识（通常为模块包名，也可以任意）
         pom.artifactId = "android-framework-recyclerview" // 项目名称（通常为类库模块名称，也可以任意）
-        pom.version = "2.2.2" // 版本号
+        pom.version = version // 版本号
     }
 }
 
